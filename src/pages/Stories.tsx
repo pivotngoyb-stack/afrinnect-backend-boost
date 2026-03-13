@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
+import { supabase } from '@/integrations/supabase/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, Plus, X, Camera, ImagePlus } from 'lucide-react';
 import { Link } from 'react-router-dom';
