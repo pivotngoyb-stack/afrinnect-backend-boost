@@ -95,7 +95,7 @@ const AdminContent = lazy(() => import("./pages/AdminContent"));
 const AdminVIPEvents = lazy(() => import("./pages/AdminVIPEvents"));
 const AdminManual = lazy(() => import("./pages/AdminManual"));
 const AdminLaunchChecklist = lazy(() => import("./pages/AdminLaunchChecklist"));
-
+const Login = lazy(() => import("./pages/Login"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const App = () => (
@@ -110,6 +110,7 @@ const App = () => (
             {/* Public */}
             <Route path="/" element={<Landing />} />
             <Route path="/landing" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/waitlist" element={<Waitlist />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
