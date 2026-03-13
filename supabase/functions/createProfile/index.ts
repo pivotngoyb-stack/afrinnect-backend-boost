@@ -67,22 +67,22 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Check for existing profile — delete incomplete/test profiles, block real ones
+    // Idempotent create: if profile exists, return it (or repair incomplete one)
     const { data: existingProfile } = await admin
       .from('user_profiles')
-      .select('id, display_name, photos')
+      .select('*')
       .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
       .maybeSingle();
 
     if (existingProfile) {
-      // If it's a placeholder/test profile (no photos, generic name), replace it
-      const isIncomplete = !existingProfile.photos || existingProfile.photos.length === 0;
-      if (isIncomplete) {
-        await admin.from('user_profiles').delete().eq('id', existingProfile.id);
-      } else {
+      const hasPhotos = Array.isArray(existingProfile.photos) && existingProfile.photos.length > 0;
+
+      if (hasPhotos) {
         return new Response(
-          JSON.stringify({ error: 'You already have a profile', profile: existingProfile }),
-          { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          JSON.stringify({ profile: existingProfile, already_exists: true }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
     }
@@ -112,11 +112,27 @@ Deno.serve(async (req) => {
       insertData.device_info = { id: device_id ?? null, name: device_name ?? null };
     }
 
-    const { data: profile, error: createError } = await admin
-      .from('user_profiles')
-      .insert(insertData)
-      .select('*')
-      .single();
+    let profile: any = null;
+    let createError: any = null;
+
+    if (existingProfile) {
+      const updateResult = await admin
+        .from('user_profiles')
+        .update(insertData)
+        .eq('id', existingProfile.id)
+        .select('*')
+        .single();
+      profile = updateResult.data;
+      createError = updateResult.error;
+    } else {
+      const insertResult = await admin
+        .from('user_profiles')
+        .insert(insertData)
+        .select('*')
+        .single();
+      profile = insertResult.data;
+      createError = insertResult.error;
+    }
 
     if (createError) {
       console.error('Profile creation error:', createError);
