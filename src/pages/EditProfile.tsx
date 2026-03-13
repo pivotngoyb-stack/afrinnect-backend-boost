@@ -60,7 +60,14 @@ const CULTURAL_VALUES = [
 ];
 
 export default function EditProfile() {
-  const { t } = useLanguage();
+  const { t: rawT } = useLanguage();
+  // editProfile and errors keys are nested under onboarding in translations
+  const t = (key: string) => {
+    if (key.startsWith('editProfile.') || key.startsWith('errors.') || key.startsWith('goal.')) {
+      return rawT(`onboarding.${key}`);
+    }
+    return rawT(key);
+  };
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
