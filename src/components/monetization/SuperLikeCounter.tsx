@@ -44,6 +44,7 @@ export default function SuperLikeCounter({ userProfile, onBuyMore }) {
   const tier = userProfile?.subscription_tier || 'free';
   const isUnlimitedTier = tier === 'elite' || tier === 'vip';
 
+  if (!userProfile?.id) return null;
   if (isLoading) return <div className="flex items-center gap-2 bg-primary/10 rounded-full px-3 py-1.5"><Loader2 size={14} className="animate-spin text-primary" /></div>;
   if (isUnlimitedTier) return <div className="flex items-center gap-2 bg-gradient-to-r from-primary to-purple-500 rounded-full px-3 py-1.5 text-primary-foreground"><Star size={14} className="fill-yellow-300 text-yellow-300" /><span className="text-xs font-bold">∞ Super Likes</span></div>;
 
