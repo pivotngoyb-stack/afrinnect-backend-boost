@@ -196,8 +196,8 @@ export default function SupportChat() {
                     {message.role === 'user' ? (
                       <p className="text-sm">{message.content}</p>
                     ) : (
+                      <div className="text-sm prose prose-sm max-w-none">
                       <ReactMarkdown
-                        className="text-sm prose prose-sm max-w-none"
                         components={{
                           p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
                           ul: ({ children }) => <ul className="list-disc ml-4 mb-2">{children}</ul>,
@@ -209,6 +209,7 @@ export default function SupportChat() {
                       >
                         {message.content}
                       </ReactMarkdown>
+                      </div>
                     )}
                   </div>
                 </div>
