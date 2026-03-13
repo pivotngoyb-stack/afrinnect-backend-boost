@@ -65,7 +65,9 @@ export const auth = {
 // =============================================
 // ENTITY HELPERS (replaces base44.entities)
 // =============================================
-const createEntityHelper = (tableName: string) => ({
+const createEntityHelper = (tableName: string) => {
+  const client = supabase as any;
+  return {
   async list(sort = '-created_at', limit = 50): Promise<any[]> {
     const ascending = !sort.startsWith('-');
     const column = sort.replace('-', '');
