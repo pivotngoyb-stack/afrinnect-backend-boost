@@ -1162,8 +1162,10 @@ export default function Home() {
             console.log('Feedback submitted:', reasons);
           }}
         />
+        <div className="h-20" />
         </main>
           </div>
+        <BottomNav />
     </PullToRefresh>
           );
           }
