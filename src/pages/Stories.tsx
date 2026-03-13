@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
+import { supabase } from '@/integrations/supabase/client';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, Plus, X, Camera, ImagePlus } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -41,19 +42,28 @@ export default function Stories() {
     loadProfile();
   }, []);
 
-  // Load stories - Only from matches (like Tinder/Bumble)
+  // Load stories - Only from matches
   const loadStories = useCallback(async () => {
     if (!myProfile) return;
     setIsLoading(true);
 
     try {
-      // First, get all my matches to know whose stories I can see
-      const matches = await base44.entities.Match.filter({
-        $or: [
-          { user1_id: myProfile.id, is_match: true, status: 'active' },
-          { user2_id: myProfile.id, is_match: true, status: 'active' }
-        ]
-      });
+      // Get matches using proper Supabase OR syntax
+      const { data: matches1 } = await supabase
+        .from('matches')
+        .select('*')
+        .eq('user1_id', myProfile.id)
+        .eq('is_match', true)
+        .eq('status', 'active');
+
+      const { data: matches2 } = await supabase
+        .from('matches')
+        .select('*')
+        .eq('user2_id', myProfile.id)
+        .eq('is_match', true)
+        .eq('status', 'active');
+
+      const matches = [...(matches1 || []), ...(matches2 || [])];
 
       // Get matched profile IDs
       const matchedProfileIds = matches.map(m => 
@@ -63,12 +73,19 @@ export default function Stories() {
       // Always include my own profile
       const allowedProfileIds = [myProfile.id, ...matchedProfileIds];
 
-      // Get all non-expired stories
-      const allStories = await base44.entities.Story.filter(
-        { is_expired: false },
-        '-created_date',
-        100
-      );
+      // Try to get stories - table may not exist yet
+      let allStories: any[] = [];
+      try {
+        const { data, error } = await supabase
+          .from('stories' as any)
+          .select('*')
+          .eq('is_expired', false)
+          .order('created_at', { ascending: false })
+          .limit(100);
+        if (!error && data) allStories = data;
+      } catch (e) {
+        // stories table may not exist yet
+      }
 
       // Filter: only from matches + my own, and not expired
       const now = new Date();
