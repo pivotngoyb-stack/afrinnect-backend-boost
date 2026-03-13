@@ -80,8 +80,11 @@ export default function Stories() {
           .select('*')
           .eq('is_expired', false)
           .order('created_at', { ascending: false })
-          .limit(100
-      );
+          .limit(100);
+        if (!error && data) allStories = data;
+      } catch (e) {
+        // stories table may not exist yet
+      }
 
       // Filter: only from matches + my own, and not expired
       const now = new Date();
