@@ -14,6 +14,417 @@ export type Database = {
   }
   public: {
     Tables: {
+      likes: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_priority: boolean | null
+          is_seen: boolean | null
+          is_super_like: boolean | null
+          liked_id: string
+          liked_user_id: string
+          liker_id: string
+          liker_user_id: string
+          priority_boost_expires: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_priority?: boolean | null
+          is_seen?: boolean | null
+          is_super_like?: boolean | null
+          liked_id: string
+          liked_user_id: string
+          liker_id: string
+          liker_user_id: string
+          priority_boost_expires?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_priority?: boolean | null
+          is_seen?: boolean | null
+          is_super_like?: boolean | null
+          liked_id?: string
+          liked_user_id?: string
+          liker_id?: string
+          liker_user_id?: string
+          priority_boost_expires?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "likes_liked_id_fkey"
+            columns: ["liked_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_liker_id_fkey"
+            columns: ["liker_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      matches: {
+        Row: {
+          compatibility_reasons: string[] | null
+          compatibility_score: number | null
+          created_at: string | null
+          expires_at: string | null
+          first_message_sent: boolean | null
+          first_message_sent_at: string | null
+          first_message_sent_by: string | null
+          has_nudged: boolean | null
+          id: string
+          is_expired: boolean | null
+          is_match: boolean | null
+          is_super_like: boolean | null
+          last_chance_sent: boolean | null
+          matched_at: string | null
+          status: Database["public"]["Enums"]["match_status_type"] | null
+          typing_user_id: string | null
+          updated_at: string | null
+          user1_id: string
+          user1_liked: boolean | null
+          user1_user_id: string
+          user2_id: string
+          user2_liked: boolean | null
+          user2_user_id: string
+        }
+        Insert: {
+          compatibility_reasons?: string[] | null
+          compatibility_score?: number | null
+          created_at?: string | null
+          expires_at?: string | null
+          first_message_sent?: boolean | null
+          first_message_sent_at?: string | null
+          first_message_sent_by?: string | null
+          has_nudged?: boolean | null
+          id?: string
+          is_expired?: boolean | null
+          is_match?: boolean | null
+          is_super_like?: boolean | null
+          last_chance_sent?: boolean | null
+          matched_at?: string | null
+          status?: Database["public"]["Enums"]["match_status_type"] | null
+          typing_user_id?: string | null
+          updated_at?: string | null
+          user1_id: string
+          user1_liked?: boolean | null
+          user1_user_id: string
+          user2_id: string
+          user2_liked?: boolean | null
+          user2_user_id: string
+        }
+        Update: {
+          compatibility_reasons?: string[] | null
+          compatibility_score?: number | null
+          created_at?: string | null
+          expires_at?: string | null
+          first_message_sent?: boolean | null
+          first_message_sent_at?: string | null
+          first_message_sent_by?: string | null
+          has_nudged?: boolean | null
+          id?: string
+          is_expired?: boolean | null
+          is_match?: boolean | null
+          is_super_like?: boolean | null
+          last_chance_sent?: boolean | null
+          matched_at?: string | null
+          status?: Database["public"]["Enums"]["match_status_type"] | null
+          typing_user_id?: string | null
+          updated_at?: string | null
+          user1_id?: string
+          user1_liked?: boolean | null
+          user1_user_id?: string
+          user2_id?: string
+          user2_liked?: boolean | null
+          user2_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matches_user1_id_fkey"
+            columns: ["user1_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matches_user2_id_fkey"
+            columns: ["user2_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          idempotency_key: string | null
+          is_deleted: boolean | null
+          is_flagged: boolean | null
+          is_read: boolean | null
+          is_translated: boolean | null
+          like_note: string | null
+          match_id: string
+          media_url: string | null
+          message_type: Database["public"]["Enums"]["message_type"]
+          read_at: string | null
+          receiver_id: string
+          receiver_user_id: string
+          sender_id: string
+          sender_user_id: string
+          sequence_number: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          idempotency_key?: string | null
+          is_deleted?: boolean | null
+          is_flagged?: boolean | null
+          is_read?: boolean | null
+          is_translated?: boolean | null
+          like_note?: string | null
+          match_id: string
+          media_url?: string | null
+          message_type?: Database["public"]["Enums"]["message_type"]
+          read_at?: string | null
+          receiver_id: string
+          receiver_user_id: string
+          sender_id: string
+          sender_user_id: string
+          sequence_number?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          idempotency_key?: string | null
+          is_deleted?: boolean | null
+          is_flagged?: boolean | null
+          is_read?: boolean | null
+          is_translated?: boolean | null
+          like_note?: string | null
+          match_id?: string
+          media_url?: string | null
+          message_type?: Database["public"]["Enums"]["message_type"]
+          read_at?: string | null
+          receiver_id?: string
+          receiver_user_id?: string
+          sender_id?: string
+          sender_user_id?: string
+          sequence_number?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          created_at: string | null
+          from_profile_id: string | null
+          id: string
+          is_admin: boolean | null
+          is_read: boolean | null
+          link_to: string | null
+          message: string
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+          updated_at: string | null
+          user_id: string
+          user_profile_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          from_profile_id?: string | null
+          id?: string
+          is_admin?: boolean | null
+          is_read?: boolean | null
+          link_to?: string | null
+          message: string
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+          updated_at?: string | null
+          user_id: string
+          user_profile_id: string
+        }
+        Update: {
+          created_at?: string | null
+          from_profile_id?: string | null
+          id?: string
+          is_admin?: boolean | null
+          is_read?: boolean | null
+          link_to?: string | null
+          message?: string
+          title?: string
+          type?: Database["public"]["Enums"]["notification_type"]
+          updated_at?: string | null
+          user_id?: string
+          user_profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_from_profile_id_fkey"
+            columns: ["from_profile_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_profile_id_fkey"
+            columns: ["user_profile_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      passes: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_rewindable: boolean | null
+          passed_id: string
+          passer_id: string
+          passer_user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_rewindable?: boolean | null
+          passed_id: string
+          passer_id: string
+          passer_user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_rewindable?: boolean | null
+          passed_id?: string
+          passer_id?: string
+          passer_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "passes_passed_id_fkey"
+            columns: ["passed_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "passes_passer_id_fkey"
+            columns: ["passer_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscriptions: {
+        Row: {
+          amount_paid: number | null
+          auto_renew: boolean | null
+          boosts_remaining: number | null
+          created_at: string | null
+          currency: string | null
+          end_date: string | null
+          external_id: string | null
+          id: string
+          payment_provider:
+            | Database["public"]["Enums"]["payment_provider_type"]
+            | null
+          plan_type: Database["public"]["Enums"]["subscription_plan_type"]
+          regional_pricing: boolean | null
+          start_date: string | null
+          status: Database["public"]["Enums"]["subscription_status_type"]
+          super_likes_remaining: number | null
+          updated_at: string | null
+          user_profile_id: string
+        }
+        Insert: {
+          amount_paid?: number | null
+          auto_renew?: boolean | null
+          boosts_remaining?: number | null
+          created_at?: string | null
+          currency?: string | null
+          end_date?: string | null
+          external_id?: string | null
+          id?: string
+          payment_provider?:
+            | Database["public"]["Enums"]["payment_provider_type"]
+            | null
+          plan_type: Database["public"]["Enums"]["subscription_plan_type"]
+          regional_pricing?: boolean | null
+          start_date?: string | null
+          status: Database["public"]["Enums"]["subscription_status_type"]
+          super_likes_remaining?: number | null
+          updated_at?: string | null
+          user_profile_id: string
+        }
+        Update: {
+          amount_paid?: number | null
+          auto_renew?: boolean | null
+          boosts_remaining?: number | null
+          created_at?: string | null
+          currency?: string | null
+          end_date?: string | null
+          external_id?: string | null
+          id?: string
+          payment_provider?:
+            | Database["public"]["Enums"]["payment_provider_type"]
+            | null
+          plan_type?: Database["public"]["Enums"]["subscription_plan_type"]
+          regional_pricing?: boolean | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["subscription_status_type"]
+          super_likes_remaining?: number | null
+          updated_at?: string | null
+          user_profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_user_profile_id_fkey"
+            columns: ["user_profile_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_profiles: {
         Row: {
           ai_safety_score: number | null
