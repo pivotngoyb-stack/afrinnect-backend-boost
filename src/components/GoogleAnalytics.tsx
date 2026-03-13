@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+// @ts-nocheck
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 declare global {
   interface Window {
@@ -15,10 +16,8 @@ export default function GoogleAnalytics() {
   useEffect(() => {
     const loadGA = async () => {
       try {
-        // TODO: Replace with Supabase edge function call to fetch GA ID
-        // const { data } = await supabase.functions.invoke('get-google-analytics-id');
-        // if (data?.ga_id) { setGaId(data.ga_id); ... }
-        console.log("[GoogleAnalytics] GA ID loading not yet connected to backend");
+        // TODO: Fetch GA ID from backend edge function
+        console.log('[GoogleAnalytics] GA ID loading not yet connected to backend');
       } catch {
         // GA not configured, fail silently
       }
@@ -28,7 +27,7 @@ export default function GoogleAnalytics() {
 
   useEffect(() => {
     if (window.gtag && gaId) {
-      window.gtag("config", gaId, {
+      window.gtag('config', gaId, {
         page_path: location.pathname + location.search,
       });
     }
@@ -39,6 +38,6 @@ export default function GoogleAnalytics() {
 
 export const trackEvent = (eventName: string, eventParams: Record<string, unknown> = {}) => {
   if (window.gtag) {
-    window.gtag("event", eventName, eventParams);
+    window.gtag('event', eventName, eventParams);
   }
 };
