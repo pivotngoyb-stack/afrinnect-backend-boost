@@ -30,8 +30,8 @@ const AFRICAN_COUNTRIES = [
   'Algeria', 'Tunisia', 'Libya', 'Somalia', 'Eritrea', 'Djibouti'
 ];
 
-// RESTRICTED: Only USA and Canada for residence
-const ALLOWED_RESIDENCE_COUNTRIES = ['United States', 'Canada'];
+// RESTRICTED: Only USA, Canada, and Pakistan for residence
+const ALLOWED_RESIDENCE_COUNTRIES = ['United States', 'Canada', 'Pakistan'];
 
 const ALL_COUNTRIES = [
   ...AFRICAN_COUNTRIES,
@@ -313,8 +313,8 @@ export default function Onboarding() {
             
             // Only allow USA and Canada (Bypass for Admin)
             const isAdmin = user?.role === 'admin' || user?.email === 'pivotngoyb@gmail.com';
-            if (!isAdmin && (!country || (country !== 'United States' && country !== 'Canada' && country !== 'United States of America'))) {
-              alert('Afrinnect is currently only available in the United States and Canada. You will be redirected to join our waitlist.');
+            if (!isAdmin && (!country || !['United States', 'Canada', 'Pakistan', 'United States of America'].includes(country))) {
+              alert('Afrinnect is currently only available in the United States, Canada, and Pakistan. You will be redirected to join our waitlist.');
               // Log them out and redirect to waitlist
               await base44.auth.logout(createPageUrl('Waitlist'));
               return;
