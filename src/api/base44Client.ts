@@ -11,8 +11,22 @@ export const auth = {
   async me() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
-    const { data: profile } = await client.from('user_profiles').select('*').eq('user_id', user.id).single();
-    return { id: user.id, email: user.email, full_name: user.user_metadata?.full_name, ...(profile || {}) };
+
+    const { data: profile } = await client
+      .from('user_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    return {
+      ...(profile || {}),
+      profile_id: profile?.id ?? null,
+      id: user.id,
+      user_id: user.id,
+      email: user.email,
+      full_name: user.user_metadata?.full_name,
+      auth_role: user.role,
+    };
   },
   async isAuthenticated() {
     const { data: { session } } = await supabase.auth.getSession();
