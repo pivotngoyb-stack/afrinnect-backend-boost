@@ -1,4 +1,3 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4';
 
 const corsHeaders = {
@@ -6,37 +5,36 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
 
   try {
     const authHeader = req.headers.get('Authorization');
-
     if (!authHeader) {
       return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
+        JSON.stringify({ error: 'Missing authorization header' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
+    const token = authHeader.replace('Bearer ', '');
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
+    // Validate user token explicitly
     const userClient = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } },
     });
 
-    const {
-      data: { user },
-      error: userError,
-    } = await userClient.auth.getUser();
+    const { data: { user }, error: userError } = await userClient.auth.getUser(token);
 
     if (userError || !user) {
+      console.error('JWT validation error:', userError);
       return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
+        JSON.stringify({ error: 'Invalid authentication token' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -69,6 +67,7 @@ serve(async (req) => {
       );
     }
 
+    // Check for existing profile
     const { data: existingProfile } = await admin
       .from('user_profiles')
       .select('id')
@@ -102,13 +101,9 @@ serve(async (req) => {
     if (Array.isArray(interests)) insertData.interests = interests;
     if (location) insertData.location = location;
     if (primary_photo) insertData.primary_photo = primary_photo;
-
     if (device_id) insertData.device_ids = [device_id];
     if (device_id || device_name) {
-      insertData.device_info = {
-        id: device_id ?? null,
-        name: device_name ?? null,
-      };
+      insertData.device_info = { id: device_id ?? null, name: device_name ?? null };
     }
 
     const { data: profile, error: createError } = await admin
@@ -118,6 +113,7 @@ serve(async (req) => {
       .single();
 
     if (createError) {
+      console.error('Profile creation error:', createError);
       return new Response(
         JSON.stringify({ error: createError.message }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -130,7 +126,6 @@ serve(async (req) => {
     );
   } catch (error) {
     console.error('createProfile error:', error);
-
     return new Response(
       JSON.stringify({ error: (error as Error).message ?? 'Unexpected error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
