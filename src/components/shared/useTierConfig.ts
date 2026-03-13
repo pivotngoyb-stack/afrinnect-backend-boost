@@ -73,3 +73,8 @@ export function formatLimitDisplay(limit: number, suffix = '/day') {
 }
 
 export { DEFAULT_TIERS };
+
+// Hook for components that need tier config
+export function useTierConfig() {
+  return DEFAULT_TIERS;
+}
