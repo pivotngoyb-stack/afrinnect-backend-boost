@@ -206,6 +206,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
+        <AppBottomNav />
       </BrowserRouter>
       <InstallPrompt />
     </TooltipProvider>
