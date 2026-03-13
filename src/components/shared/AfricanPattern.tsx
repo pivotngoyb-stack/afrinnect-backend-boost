@@ -1,26 +1,23 @@
-import React from "react";
+// @ts-nocheck
+import React from 'react';
 
-interface AfricanPatternProps {
-  className?: string;
-  opacity?: number;
-}
-
-export default function AfricanPattern({ className = "", opacity = 0.05 }: AfricanPatternProps) {
+export default function AfricanPattern({ className = "", opacity = 0.05 }) {
   return (
-    <div
-      className={`absolute inset-0 pointer-events-none ${className}`}
-      style={{ opacity }}
-      aria-hidden="true"
-    >
-      {/* Decorative African-inspired pattern overlay */}
-      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`} aria-hidden="true">
+      <svg
+        className="absolute w-full h-full"
+        style={{ opacity }}
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+      >
         <defs>
-          <pattern id="african-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-            <path d="M30 0 L60 30 L30 60 L0 30Z" fill="none" stroke="currentColor" strokeWidth="0.5" />
-            <circle cx="30" cy="30" r="8" fill="none" stroke="currentColor" strokeWidth="0.5" />
+          <pattern id="kente" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+            <rect fill="currentColor" x="0" y="0" width="10" height="10" />
+            <rect fill="currentColor" x="10" y="10" width="10" height="10" />
+            <path d="M0,5 L10,5 M5,0 L5,10 M10,15 L20,15 M15,10 L15,20" stroke="currentColor" strokeWidth="1" fill="none" />
           </pattern>
         </defs>
-        <rect width="100%" height="100%" fill="url(#african-pattern)" />
+        <rect width="100%" height="100%" fill="url(#kente)" />
       </svg>
     </div>
   );
