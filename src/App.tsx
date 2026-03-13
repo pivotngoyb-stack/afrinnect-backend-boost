@@ -208,6 +208,7 @@ const App = () => (
       </BrowserRouter>
       <InstallPrompt />
     </TooltipProvider>
+    </LanguageProvider>
   </QueryClientProvider>
 );
 
