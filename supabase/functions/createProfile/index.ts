@@ -67,18 +67,24 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Check for existing profile
+    // Check for existing profile — delete incomplete/test profiles, block real ones
     const { data: existingProfile } = await admin
       .from('user_profiles')
-      .select('id')
+      .select('id, display_name, photos')
       .eq('user_id', user.id)
       .maybeSingle();
 
     if (existingProfile) {
-      return new Response(
-        JSON.stringify({ error: 'You already have a profile', profile: existingProfile }),
-        { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      // If it's a placeholder/test profile (no photos, generic name), replace it
+      const isIncomplete = !existingProfile.photos || existingProfile.photos.length === 0;
+      if (isIncomplete) {
+        await admin.from('user_profiles').delete().eq('id', existingProfile.id);
+      } else {
+        return new Response(
+          JSON.stringify({ error: 'You already have a profile', profile: existingProfile }),
+          { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
     }
 
     const insertData: Record<string, unknown> = {
