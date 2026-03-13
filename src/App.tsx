@@ -95,7 +95,7 @@ const AdminContent = lazy(() => import("./pages/AdminContent"));
 const AdminVIPEvents = lazy(() => import("./pages/AdminVIPEvents"));
 const AdminManual = lazy(() => import("./pages/AdminManual"));
 const AdminLaunchChecklist = lazy(() => import("./pages/AdminLaunchChecklist"));
-
+const Login = lazy(() => import("./pages/Login"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const App = () => (
