@@ -1,74 +1,103 @@
 // @ts-nocheck
 import React, { useState, useEffect, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ArrowLeft, Send, Loader2, Sparkles, Heart, MessageCircle
+  ArrowLeft, Send, Loader2, Sparkles
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent } from "@/components/ui/card";
 import ReactMarkdown from 'react-markdown';
+import { toast } from 'sonner';
+
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ubuntu-ai`;
 
 export default function SupportChat() {
-  const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    const initConversation = async () => {
-      try {
-        // Create or get existing conversation
-        const conv = await base44.agents.createConversation({
-          agent_name: 'SupportAgent',
-          metadata: {
-            name: 'Support Chat',
-            description: 'Chat with Ubuntu AI'
-          }
-        });
-        setConversation(conv);
-        setMessages(conv.messages || []);
-      } catch (error) {
-        console.error('Error initializing conversation:', error);
-      }
-    };
-    initConversation();
-  }, []);
-
-  useEffect(() => {
-    if (!conversation) return;
-
-    const unsubscribe = base44.agents.subscribeToConversation(conversation.id, (data) => {
-      setMessages(data.messages || []);
-      setSending(false);
-    });
-
-    return () => unsubscribe();
-  }, [conversation?.id]);
-
-  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   const handleSend = async () => {
-    if (!input.trim() || !conversation || sending) return;
+    if (!input.trim() || sending) return;
 
-    setSending(true);
+    const userMsg = { role: 'user', content: input.trim() };
+    const newMessages = [...messages, userMsg];
+    setMessages(newMessages);
     setInput('');
+    setSending(true);
+
+    let assistantSoFar = '';
 
     try {
-      await base44.agents.addMessage(conversation, {
-        role: 'user',
-        content: input
+      const resp = await fetch(CHAT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({ messages: newMessages }),
       });
+
+      if (!resp.ok) {
+        const errData = await resp.json().catch(() => ({}));
+        throw new Error(errData.error || `Request failed (${resp.status})`);
+      }
+
+      if (!resp.body) throw new Error('No response body');
+
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let textBuffer = '';
+      let streamDone = false;
+
+      while (!streamDone) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        textBuffer += decoder.decode(value, { stream: true });
+
+        let newlineIndex;
+        while ((newlineIndex = textBuffer.indexOf('\n')) !== -1) {
+          let line = textBuffer.slice(0, newlineIndex);
+          textBuffer = textBuffer.slice(newlineIndex + 1);
+
+          if (line.endsWith('\r')) line = line.slice(0, -1);
+          if (line.startsWith(':') || line.trim() === '') continue;
+          if (!line.startsWith('data: ')) continue;
+
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === '[DONE]') { streamDone = true; break; }
+
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = parsed.choices?.[0]?.delta?.content;
+            if (content) {
+              assistantSoFar += content;
+              setMessages(prev => {
+                const last = prev[prev.length - 1];
+                if (last?.role === 'assistant') {
+                  return prev.map((m, i) => i === prev.length - 1 ? { ...m, content: assistantSoFar } : m);
+                }
+                return [...prev, { role: 'assistant', content: assistantSoFar }];
+              });
+            }
+          } catch {
+            textBuffer = line + '\n' + textBuffer;
+            break;
+          }
+        }
+      }
     } catch (error) {
       console.error('Error sending message:', error);
-      setSending(false);
+      toast.error(error.message || 'Failed to send message');
     }
+
+    setSending(false);
   };
 
   const quickPrompts = [
@@ -83,9 +112,9 @@ export default function SupportChat() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-accent/20 flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b">
+      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-lg border-b border-border">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link to={createPageUrl('Settings')}>
             <Button variant="ghost" size="icon">
@@ -93,12 +122,12 @@ export default function SupportChat() {
             </Button>
           </Link>
           <div className="flex items-center gap-3 flex-1">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-amber-600 flex items-center justify-center">
-              <Sparkles size={20} className="text-white" />
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+              <Sparkles size={20} className="text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-lg font-bold">Ubuntu AI</h1>
-              <p className="text-xs text-gray-500">Your support assistant</p>
+              <h1 className="text-lg font-bold text-foreground">Ubuntu AI</h1>
+              <p className="text-xs text-muted-foreground">Your support assistant</p>
             </div>
           </div>
         </div>
@@ -114,11 +143,11 @@ export default function SupportChat() {
               animate={{ opacity: 1, y: 0 }}
               className="text-center py-8"
             >
-              <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-600 to-amber-600 flex items-center justify-center">
-                <Sparkles size={40} className="text-white" />
+              <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <Sparkles size={40} className="text-primary-foreground" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">Hi! I'm Ubuntu AI 👋</h2>
-              <p className="text-gray-600 mb-6">
+              <h2 className="text-2xl font-bold mb-2 text-foreground">Hi! I'm Ubuntu AI 👋</h2>
+              <p className="text-muted-foreground mb-6">
                 I'm here to help with app questions, dating advice, and creative conversation ideas!
               </p>
 
@@ -128,7 +157,7 @@ export default function SupportChat() {
                   <Button
                     key={idx}
                     variant="outline"
-                    className="h-auto py-4 px-4 justify-start text-left hover:bg-purple-50 hover:border-purple-300"
+                    className="h-auto py-4 px-4 justify-start text-left hover:bg-primary/10 hover:border-primary/30"
                     onClick={() => handleQuickPrompt(prompt.prompt)}
                   >
                     <span className="text-2xl mr-3">{prompt.icon}</span>
@@ -151,17 +180,17 @@ export default function SupportChat() {
                 <div className={`max-w-[80%] ${message.role === 'user' ? 'order-2' : 'order-1'}`}>
                   {message.role !== 'user' && (
                     <div className="flex items-center gap-2 mb-1">
-                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-600 to-amber-600 flex items-center justify-center">
-                        <Sparkles size={12} className="text-white" />
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                        <Sparkles size={12} className="text-primary-foreground" />
                       </div>
-                      <span className="text-xs font-medium text-gray-600">Ubuntu AI</span>
+                      <span className="text-xs font-medium text-muted-foreground">Ubuntu AI</span>
                     </div>
                   )}
                   <div
                     className={`rounded-2xl px-4 py-3 ${
                       message.role === 'user'
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-white border border-gray-200 text-gray-800'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-card border border-border text-card-foreground'
                     }`}
                   >
                     {message.role === 'user' ? (
@@ -182,26 +211,20 @@ export default function SupportChat() {
                       </ReactMarkdown>
                     )}
                   </div>
-                  {message.role !== 'user' && message.tool_calls?.length > 0 && (
-                    <div className="mt-2 text-xs text-gray-500 flex items-center gap-1">
-                      <Loader2 size={12} className="animate-spin" />
-                      Thinking...
-                    </div>
-                  )}
                 </div>
               </motion.div>
             ))}
           </AnimatePresence>
 
-          {sending && (
+          {sending && messages[messages.length - 1]?.role !== 'assistant' && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="flex justify-start"
             >
-              <div className="flex items-center gap-2 bg-white rounded-2xl px-4 py-3 border border-gray-200">
-                <Loader2 size={16} className="animate-spin text-purple-600" />
-                <span className="text-sm text-gray-600">Ubuntu AI is typing...</span>
+              <div className="flex items-center gap-2 bg-card rounded-2xl px-4 py-3 border border-border">
+                <Loader2 size={16} className="animate-spin text-primary" />
+                <span className="text-sm text-muted-foreground">Ubuntu AI is typing...</span>
               </div>
             </motion.div>
           )}
@@ -211,7 +234,7 @@ export default function SupportChat() {
       </main>
 
       {/* Input */}
-      <div className="sticky bottom-0 bg-white border-t p-4 pb-24">
+      <div className="sticky bottom-0 bg-background border-t border-border p-4 pb-24">
         <div className="max-w-4xl mx-auto flex gap-3">
           <Textarea
             value={input}
@@ -230,7 +253,7 @@ export default function SupportChat() {
           <Button
             onClick={handleSend}
             disabled={!input.trim() || sending}
-            className="bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-700 hover:to-amber-700"
+            className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
             size="icon"
           >
             <Send size={20} />
