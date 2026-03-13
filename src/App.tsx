@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/components/i18n/LanguageContext";
 import InstallPrompt from "@/components/mobile/InstallPrompt";
+import AppBottomNav from "@/components/shared/AppBottomNav";
 
 const queryClient = new QueryClient();
 

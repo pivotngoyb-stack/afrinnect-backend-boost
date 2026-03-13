@@ -1165,7 +1165,7 @@ export default function Home() {
         <div className="h-20" />
         </main>
           </div>
-        <BottomNav />
+        
     </PullToRefresh>
           );
           }
