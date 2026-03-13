@@ -47,7 +47,7 @@ import PremiumBadgeOnProfile from '@/components/monetization/PremiumBadgeOnProfi
 import MatchMilestones from '@/components/monetization/MatchMilestones';
 import VIPEventsPromo from '@/components/monetization/VIPEventsPromo.jsx';
 import FoundingMemberBanner from '@/components/founding/FoundingMemberBanner';
-import BottomNav from '@/components/shared/BottomNav';
+
 
 export default function Home() {
   usePerformanceMonitor('Home');
