@@ -504,7 +504,9 @@ export type Database = {
           user_id: string
           verification_selfie_url: string | null
           verification_status: Json | null
+          video_profile_url: string | null
           violation_count: number | null
+          voice_intro_url: string | null
           warning_count: number | null
         }
         Insert: {
@@ -585,7 +587,9 @@ export type Database = {
           user_id: string
           verification_selfie_url?: string | null
           verification_status?: Json | null
+          video_profile_url?: string | null
           violation_count?: number | null
+          voice_intro_url?: string | null
           warning_count?: number | null
         }
         Update: {
@@ -666,7 +670,9 @@ export type Database = {
           user_id?: string
           verification_selfie_url?: string | null
           verification_status?: Json | null
+          video_profile_url?: string | null
           violation_count?: number | null
+          voice_intro_url?: string | null
           warning_count?: number | null
         }
         Relationships: []
