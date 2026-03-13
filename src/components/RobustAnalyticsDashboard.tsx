@@ -222,7 +222,7 @@ export default function RobustAnalyticsDashboard() {
             {topEvents.map((item, idx) => (
               <div key={idx} className="flex items-center justify-between">
                 <span className="text-sm">{item.event}</span>
-                <span className="font-semibold">{item.count}</span>
+                <span className="font-semibold">{item.count as React.ReactNode}</span>
               </div>
             ))}
           </div>
