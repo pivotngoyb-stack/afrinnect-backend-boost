@@ -1,183 +1,107 @@
 /**
  * Base44 Compatibility Shim
  * Drop-in replacement that wraps Supabase client to match Base44 API patterns.
- * All existing components can keep their imports unchanged.
  */
 import { supabase } from "@/integrations/supabase/client";
 
-// =============================================
-// AUTH HELPERS (replaces base44.auth)
-// =============================================
+const client: any = supabase;
+
+// AUTH HELPERS
 export const auth = {
   async me() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
-
-    const { data: profile } = await supabase
-      .from('user_profiles')
-      .select('*')
-      .eq('user_id', user.id)
-      .single();
-
-    return {
-      id: user.id,
-      email: user.email,
-      full_name: user.user_metadata?.full_name,
-      role: (profile as any)?.is_test_user ? 'admin' : 'user',
-      ...(profile || {})
-    };
+    const { data: profile } = await client.from('user_profiles').select('*').eq('user_id', user.id).single();
+    return { id: user.id, email: user.email, full_name: user.user_metadata?.full_name, ...(profile || {}) };
   },
-
   async isAuthenticated() {
     const { data: { session } } = await supabase.auth.getSession();
     return !!session;
   },
-
   async logout(redirectUrl?: string) {
     await supabase.auth.signOut();
-    if (redirectUrl) {
-      window.location.href = redirectUrl;
-    } else {
-      window.location.reload();
-    }
+    if (redirectUrl) window.location.href = redirectUrl;
+    else window.location.reload();
   },
-
   redirectToLogin(nextUrl?: string) {
     window.location.href = `/login${nextUrl ? `?next=${encodeURIComponent(nextUrl)}` : ''}`;
   },
-
   async updateMe(data: any) {
     const user = await this.me();
     if (!user) throw new Error('Not authenticated');
-
-    const { data: updated, error } = await supabase
-      .from('user_profiles')
-      .update(data)
-      .eq('user_id', user.id)
-      .select()
-      .single();
-
+    const { data: updated, error } = await client.from('user_profiles').update(data).eq('user_id', user.id).select().single();
     if (error) throw error;
     return updated;
   }
 };
 
-// =============================================
-// ENTITY HELPERS (replaces base44.entities)
-// =============================================
-const createEntityHelper = (tableName: string) => {
-  const client = supabase as any;
-  return {
+// ENTITY HELPERS
+const createEntityHelper = (tableName: string) => ({
   async list(sort = '-created_at', limit = 50): Promise<any[]> {
     const ascending = !sort.startsWith('-');
     const column = sort.replace('-', '');
-
-    const { data, error } = await supabase
-      .from(tableName)
-      .select('*')
-      .order(column, { ascending })
-      .limit(limit);
-
+    const { data, error } = await client.from(tableName).select('*').order(column, { ascending }).limit(limit);
     if (error) throw error;
     return data || [];
   },
-
   async filter(filters: Record<string, any>, sort = '-created_at', limit = 50): Promise<any[]> {
     const ascending = !sort.startsWith('-');
     const column = sort.replace('-', '');
-
-    let query = supabase.from(tableName).select('*');
-
+    let query = client.from(tableName).select('*');
     Object.entries(filters).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        query = query.in(key, value);
-      } else if (typeof value === 'object' && value !== null) {
+      if (Array.isArray(value)) { query = query.in(key, value); }
+      else if (typeof value === 'object' && value !== null) {
         Object.entries(value as Record<string, any>).forEach(([op, val]) => {
-          if (op === '$gte') query = query.gte(key, val as any);
-          if (op === '$lte') query = query.lte(key, val as any);
-          if (op === '$gt') query = query.gt(key, val as any);
-          if (op === '$lt') query = query.lt(key, val as any);
-          if (op === '$ne') query = query.neq(key, val as any);
+          if (op === '$gte') query = query.gte(key, val);
+          if (op === '$lte') query = query.lte(key, val);
+          if (op === '$gt') query = query.gt(key, val);
+          if (op === '$lt') query = query.lt(key, val);
+          if (op === '$ne') query = query.neq(key, val);
         });
-      } else {
-        query = query.eq(key, value);
-      }
+      } else { query = query.eq(key, value); }
     });
-
-    const { data, error } = await query
-      .order(column, { ascending })
-      .limit(limit);
-
+    const { data, error } = await query.order(column, { ascending }).limit(limit);
     if (error) throw error;
     return data || [];
   },
-
   async create(data: any): Promise<any> {
-    const { data: created, error } = await supabase
-      .from(tableName)
-      .insert(data)
-      .select()
-      .single();
-
+    const { data: created, error } = await client.from(tableName).insert(data).select().single();
     if (error) throw error;
     return created;
   },
-
   async bulkCreate(items: any[]): Promise<any[]> {
-    const { data, error } = await supabase
-      .from(tableName)
-      .insert(items)
-      .select();
-
+    const { data, error } = await client.from(tableName).insert(items).select();
     if (error) throw error;
     return data || [];
   },
-
   async update(id: string, data: any): Promise<any> {
-    const { data: updated, error } = await supabase
-      .from(tableName)
-      .update(data)
-      .eq('id', id)
-      .select()
-      .single();
-
+    const { data: updated, error } = await client.from(tableName).update(data).eq('id', id).select().single();
     if (error) throw error;
     return updated;
   },
-
   async delete(id: string): Promise<boolean> {
-    const { error } = await supabase
-      .from(tableName)
-      .delete()
-      .eq('id', id);
-
+    const { error } = await client.from(tableName).delete().eq('id', id);
     if (error) throw error;
     return true;
   },
-
-  async schema(): Promise<any> {
-    return {};
+  async count(filters?: Record<string, any>): Promise<number> {
+    let query = client.from(tableName).select('*', { count: 'exact', head: true });
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => { query = query.eq(key, value); });
+    }
+    const { count, error } = await query;
+    if (error) throw error;
+    return count || 0;
   },
-
+  async schema(): Promise<any> { return {}; },
   subscribe(callback: (event: any) => void) {
     const channel = supabase
       .channel(`${tableName}_changes`)
-      .on('postgres_changes',
-        { event: '*', schema: 'public', table: tableName },
-        (payload) => {
-          callback({
-            type: payload.eventType,
-            id: (payload.new as any)?.id || (payload.old as any)?.id,
-            data: payload.new,
-            old_data: payload.old
-          });
-        }
-      )
+      .on('postgres_changes', { event: '*', schema: 'public', table: tableName }, (payload) => {
+        callback({ type: payload.eventType, id: (payload.new as any)?.id || (payload.old as any)?.id, data: payload.new, old_data: payload.old });
+      })
       .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { supabase.removeChannel(channel); };
   }
 });
 
@@ -262,112 +186,64 @@ export const entities: Record<string, ReturnType<typeof createEntityHelper>> = {
   AIInsight: createEntityHelper('ai_insights'),
 };
 
-// =============================================
-// INTEGRATIONS (replaces base44.integrations)
-// =============================================
+// INTEGRATIONS
 export const integrations = {
   Core: {
     async InvokeLLM({ prompt, add_context_from_internet, response_json_schema, file_urls }: any) {
       const { data, error } = await supabase.functions.invoke('openai-chat', {
-        body: {
-          prompt,
-          addContext: add_context_from_internet,
-          jsonSchema: response_json_schema,
-          fileUrls: file_urls
-        }
+        body: { prompt, addContext: add_context_from_internet, jsonSchema: response_json_schema, fileUrls: file_urls }
       });
-
       if (error) throw error;
       return data;
     },
-
     async UploadFile({ file }: { file: File }) {
       const fileName = `${Date.now()}_${file.name}`;
-      const { data, error } = await supabase.storage
-        .from('photos')
-        .upload(fileName, file);
-
+      const { error } = await supabase.storage.from('photos').upload(fileName, file);
       if (error) throw error;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('photos')
-        .getPublicUrl(fileName);
-
+      const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(fileName);
       return { file_url: publicUrl };
     },
-
     async SendEmail({ to, subject, body, from_name }: any) {
-      const { data, error } = await supabase.functions.invoke('send-email', {
-        body: { to, subject, body, fromName: from_name }
-      });
-
+      const { data, error } = await supabase.functions.invoke('send-email', { body: { to, subject, body, fromName: from_name } });
       if (error) throw error;
       return data;
     },
-
     async GenerateImage({ prompt, existing_image_urls }: any) {
-      const { data, error } = await supabase.functions.invoke('generate-image', {
-        body: { prompt, existingImageUrls: existing_image_urls }
-      });
-
+      const { data, error } = await supabase.functions.invoke('generate-image', { body: { prompt, existingImageUrls: existing_image_urls } });
       if (error) throw error;
       return data;
     }
   }
 };
 
-// =============================================
-// FUNCTIONS (replaces base44.functions)
-// =============================================
+// FUNCTIONS
 export const functions = {
   async invoke(functionName: string, payload?: any) {
-    const { data, error } = await supabase.functions.invoke(functionName, {
-      body: payload
-    });
-
+    const { data, error } = await supabase.functions.invoke(functionName, { body: payload });
     if (error) throw error;
     return { data };
   }
 };
 
-// =============================================
 // ANALYTICS
-// =============================================
 export const analytics = {
   track({ eventName, properties }: { eventName: string; properties?: any }) {
     console.log('Track event:', eventName, properties);
   }
 };
 
-// =============================================
 // USERS
-// =============================================
 export const users = {
   async inviteUser(email: string, role: string) {
-    const { data, error } = await supabase.functions.invoke('invite-user', {
-      body: { email, role }
-    });
-
+    const { data, error } = await supabase.functions.invoke('invite-user', { body: { email, role } });
     if (error) throw error;
     return data;
   }
 };
 
-// =============================================
 // MAIN EXPORT
-// =============================================
-export const base44 = {
-  auth,
-  entities,
-  integrations,
-  functions,
-  analytics,
-  users
-};
-
-// Also export InvokeLLM directly for components that import it
+export const base44 = { auth, entities, integrations, functions, analytics, users };
 export const InvokeLLM = integrations.Core.InvokeLLM;
 export const UploadFile = integrations.Core.UploadFile;
 export const SendEmail = integrations.Core.SendEmail;
-
 export default base44;
