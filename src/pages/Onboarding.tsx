@@ -805,7 +805,10 @@ export default function Onboarding() {
       {/* Safety Education Modal */}
       <SafetyEducationModal
         open={showSafetyEducation}
-        onClose={() => setShowSafetyEducation(false)}
+        onClose={() => {
+          setShowSafetyEducation(false);
+          navigate(createPageUrl('Home'));
+        }}
         onComplete={() => {
           setShowSafetyEducation(false);
           navigate(createPageUrl('Home'));
