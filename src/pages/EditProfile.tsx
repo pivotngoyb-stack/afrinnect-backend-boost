@@ -192,13 +192,13 @@ export default function EditProfile() {
         // Metric is already in formData.height_cm
         saveData.height_cm = formData.height_cm ? parseInt(formData.height_cm) : null;
       }
-      
 
 
       if (profile) {
-        await base44.functions.invoke('updateUserProfile', saveData);
+        // Update existing profile directly via Supabase
+        await base44.auth.updateMe(saveData);
       } else {
-        // Fallback creation via secure function
+        // Create via edge function
         const response = await base44.functions.invoke('createProfile', saveData);
         if (response.data.error) throw new Error(response.data.error);
         setProfile(response.data.profile);
