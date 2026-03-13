@@ -112,11 +112,27 @@ Deno.serve(async (req) => {
       insertData.device_info = { id: device_id ?? null, name: device_name ?? null };
     }
 
-    const { data: profile, error: createError } = await admin
-      .from('user_profiles')
-      .insert(insertData)
-      .select('*')
-      .single();
+    let profile: any = null;
+    let createError: any = null;
+
+    if (existingProfile) {
+      const updateResult = await admin
+        .from('user_profiles')
+        .update(insertData)
+        .eq('id', existingProfile.id)
+        .select('*')
+        .single();
+      profile = updateResult.data;
+      createError = updateResult.error;
+    } else {
+      const insertResult = await admin
+        .from('user_profiles')
+        .insert(insertData)
+        .select('*')
+        .single();
+      profile = insertResult.data;
+      createError = insertResult.error;
+    }
 
     if (createError) {
       console.error('Profile creation error:', createError);
