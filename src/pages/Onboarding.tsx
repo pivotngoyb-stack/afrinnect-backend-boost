@@ -182,12 +182,6 @@ export default function Onboarding() {
 
   const createProfileMutation = useMutation({
   mutationFn: async () => {
-    // CRITICAL: Check for existing profile (prevent duplicates)
-    const existingProfiles = await base44.entities.UserProfile.filter({ user_id: user.id });
-    if (existingProfiles.length > 0) {
-      throw new Error(t('errors.existingProfile'));
-    }
-
       // Get device fingerprint
       const deviceId = navigator.userAgent + '_' + new Date().getTime();
       
@@ -197,15 +191,6 @@ export default function Onboarding() {
         const phoneCheck = await base44.entities.UserProfile.filter({ phone_number: phoneNumber });
         if (phoneCheck.length >= 2) {
           throw new Error(t('errors.phoneRegistered'));
-        }
-      }
-
-      // Check account limit (strict 1 account per user_id, allows re-registration after deletion)
-      const isAdmin = user?.role === 'admin' || user?.email === 'pivotngoyb@gmail.com';
-      if (!isAdmin) {
-        const allUserProfiles = await base44.entities.UserProfile.filter({ user_id: user.id });
-        if (allUserProfiles.length >= 1) {
-          throw new Error("You already have an account. Please log in.");
         }
       }
 
