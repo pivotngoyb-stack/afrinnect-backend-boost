@@ -252,6 +252,7 @@ export default function Onboarding() {
         }
       }, 3000);
     },
+    },
     onError: (error) => {
       // Parse and display user-friendly error messages
       let friendlyMessage = "Something went wrong. Please try again.";
