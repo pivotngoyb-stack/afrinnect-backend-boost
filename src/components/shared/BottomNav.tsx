@@ -1,13 +1,15 @@
-import { Home, Heart, MessageCircle, Compass, User } from 'lucide-react';
+import { Heart, Sparkles, CalendarDays, UserRoundPen } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { icon: Home, label: 'Home', path: '/home' },
-  { icon: Compass, label: 'Discover', path: '/events' },
+  { icon: ({ size, strokeWidth, className }: any) => (
+    <div className={cn("rounded-full border-2 w-[22px] h-[22px]", className)} style={{ borderWidth: strokeWidth > 2 ? 2.5 : 1.8 }} />
+  ), label: 'Discover', path: '/home' },
+  { icon: Sparkles, label: 'Stories', path: '/stories' },
   { icon: Heart, label: 'Matches', path: '/matches' },
-  { icon: MessageCircle, label: 'Chat', path: '/chat' },
-  { icon: User, label: 'Profile', path: '/profile' },
+  { icon: CalendarDays, label: 'Events', path: '/events' },
+  { icon: UserRoundPen, label: 'Edit', path: '/editprofile' },
 ];
 
 export default function BottomNav() {
@@ -23,11 +25,18 @@ export default function BottomNav() {
               key={path}
               to={path}
               className={cn(
-                "flex flex-col items-center justify-center gap-0.5 flex-1 h-full touch-manipulation transition-colors",
+                "flex flex-col items-center justify-center gap-1 flex-1 h-full touch-manipulation transition-colors",
                 isActive ? "text-primary" : "text-muted-foreground"
               )}
             >
-              <Icon size={22} strokeWidth={isActive ? 2.5 : 1.8} />
+              {label === 'Discover' ? (
+                <div className={cn(
+                  "rounded-full w-[24px] h-[24px] border-2 transition-colors",
+                  isActive ? "border-primary" : "border-muted-foreground"
+                )} />
+              ) : (
+                <Icon size={22} strokeWidth={isActive ? 2.5 : 1.8} />
+              )}
               <span className="text-[10px] font-medium">{label}</span>
             </Link>
           );
