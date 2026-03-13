@@ -143,14 +143,7 @@ export default function Home() {
         setIsCheckingAuth(false);
         
         // Defer non-critical checks to background
-        setTimeout(async () => {
-          try {
-            const user = await base44.auth.me();
-            // Ban check and subscription revalidation in background
-            base44.functions.invoke('checkBannedUser', { email: user.email }).catch(() => {});
-            base44.functions.invoke('revalidateSubscription').catch(() => {});
-          } catch (e) {}
-        }, 1000);
+        // Ban check and subscription revalidation removed - edge functions not yet implemented
       } catch (e) {
         navigate(createPageUrl('Landing'));
       }
