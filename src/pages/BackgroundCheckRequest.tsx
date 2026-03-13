@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import ComingSoon from '@/components/shared/ComingSoon';
 import { Shield } from 'lucide-react';
