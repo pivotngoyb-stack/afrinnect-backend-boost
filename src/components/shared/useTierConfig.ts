@@ -74,7 +74,10 @@ export function formatLimitDisplay(limit: number, suffix = '/day') {
 
 export { DEFAULT_TIERS };
 
-// Hook for components that need tier config
+export function invalidateTierCache() {
+  // No-op stub — tier cache invalidation placeholder
+}
+
 export function useTierConfig() {
   return DEFAULT_TIERS;
 }
