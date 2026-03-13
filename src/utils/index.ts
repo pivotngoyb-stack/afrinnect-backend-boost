@@ -2,6 +2,14 @@
  * Utility functions for the Afrinnect app
  */
 
+// Create page URL helper (replaces Base44 routing)
+export const createPageUrl = (pageName: string, params?: Record<string, string>): string => {
+  const basePath = `/${pageName.toLowerCase().replace(/\s+/g, '-')}`;
+  if (!params) return basePath;
+  const searchParams = new URLSearchParams(params);
+  return `${basePath}?${searchParams.toString()}`;
+};
+
 // Format date to relative time
 export const formatRelativeTime = (date: string | Date): string => {
   const now = new Date();
