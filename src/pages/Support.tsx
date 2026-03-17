@@ -66,7 +66,7 @@ export default function Support() {
 
   const { data: tickets = [], isLoading } = useQuery({
     queryKey: ['support-tickets', user?.id],
-    queryFn: () => base44.entities.SupportTicket.filter({ user_id: user.id }, '-created_date'),
+    queryFn: () => base44.entities.SupportTicket.filter({ user_id: user.id }, '-created_at'),
     enabled: !!user
   });
 
@@ -215,7 +215,7 @@ export default function Support() {
                             </Badge>
                           </div>
                           <span className="text-xs text-gray-400">
-                            {new Date(ticket.created_date).toLocaleDateString()}
+                            {new Date(ticket.created_at).toLocaleDateString()}
                           </span>
                         </div>
                       </CardContent>
@@ -250,7 +250,7 @@ export default function Support() {
                         Resolved
                       </Badge>
                       <span className="text-xs text-gray-400">
-                        {new Date(ticket.created_date).toLocaleDateString()}
+                        {new Date(ticket.created_at).toLocaleDateString()}
                       </span>
                     </div>
                   </CardContent>

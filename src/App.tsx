@@ -115,7 +115,7 @@ const App = () => (
             <Route path="/waitlist" element={<Waitlist />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
-            <Route path="/community-guidelines" element={<CommunityGuidelines />} />
+            <Route path="/communityguidelines" element={<CommunityGuidelines />} />
             <Route path="/success-stories" element={<SuccessStories />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
             <Route path="/password-reset" element={<PasswordReset />} />
