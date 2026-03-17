@@ -114,25 +114,35 @@ export default function Settings() {
       
       // Collect all user data (GDPR compliant)
       const profile = await base44.entities.UserProfile.filter({ user_id: user.id });
-      const matches = await base44.entities.Match.filter({
-        $or: [{ user1_id: myProfile?.id }, { user2_id: myProfile?.id }]
-      });
-      const messages = await base44.entities.Message.filter({
-        $or: [{ sender_id: myProfile?.id }, { receiver_id: myProfile?.id }]
-      });
-      const likes = await base44.entities.Like.filter({ liker_id: myProfile?.id });
-      const subscriptions = await base44.entities.Subscription.filter({ user_profile_id: myProfile?.id });
+      
+      // Fetch matches using two queries (no $or support)
+      const matches1 = await base44.entities.Match.filter({ user1_user_id: user.id });
+      const matches2 = await base44.entities.Match.filter({ user2_user_id: user.id });
+      const matches = [...matches1, ...matches2];
+      
+      // Fetch messages using two queries
+      const sentMessages = await base44.entities.Message.filter({ sender_user_id: user.id });
+      const receivedMessages = await base44.entities.Message.filter({ receiver_user_id: user.id });
+      const messages = [...sentMessages, ...receivedMessages];
+      
+      const likes = await base44.entities.Like.filter({ liker_user_id: user.id });
+      
+      let subscriptions = [];
+      if (myProfile?.id) {
+        try {
+          subscriptions = await base44.entities.Subscription.filter({ user_profile_id: myProfile.id });
+        } catch (e) { /* may fail due to RLS */ }
+      }
       
       const exportData = {
         exported_at: new Date().toISOString(),
         user: {
           email: user.email,
           full_name: user.full_name,
-          created_date: user.created_date
         },
         profile: profile[0] || null,
         matches: matches,
-        messages: messages.map(m => ({ ...m, content: '[MESSAGE CONTENT]' })), // Privacy
+        messages: messages.map(m => ({ ...m, content: m.content })),
         likes_sent: likes,
         subscriptions: subscriptions
       };
