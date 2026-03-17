@@ -215,7 +215,7 @@ export default function Support() {
                             </Badge>
                           </div>
                           <span className="text-xs text-gray-400">
-                            {new Date(ticket.created_date).toLocaleDateString()}
+                            {new Date(ticket.created_at).toLocaleDateString()}
                           </span>
                         </div>
                       </CardContent>
