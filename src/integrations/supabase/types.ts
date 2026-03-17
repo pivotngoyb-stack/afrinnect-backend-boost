@@ -354,6 +354,45 @@ export type Database = {
           },
         ]
       }
+      stories: {
+        Row: {
+          caption: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_expired: boolean | null
+          media_type: string
+          media_url: string
+          updated_at: string
+          user_profile_id: string
+          views: string[] | null
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_expired?: boolean | null
+          media_type?: string
+          media_url: string
+          updated_at?: string
+          user_profile_id: string
+          views?: string[] | null
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_expired?: boolean | null
+          media_type?: string
+          media_url?: string
+          updated_at?: string
+          user_profile_id?: string
+          views?: string[] | null
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           amount_paid: number | null
@@ -424,6 +463,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      support_tickets: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          id: string
+          priority: string
+          status: string
+          subject: string
+          updated_at: string
+          user_email: string | null
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description: string
+          id?: string
+          priority?: string
+          status?: string
+          subject: string
+          updated_at?: string
+          user_email?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          priority?: string
+          status?: string
+          subject?: string
+          updated_at?: string
+          user_email?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       user_profiles: {
         Row: {
