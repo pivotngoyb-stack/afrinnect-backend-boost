@@ -14,6 +14,444 @@ export type Database = {
   }
   public: {
     Tables: {
+      ab_tests: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          name: string
+          results: Json | null
+          start_date: string | null
+          status: string | null
+          target_metric: string | null
+          updated_at: string | null
+          variants: Json | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          name: string
+          results?: Json | null
+          start_date?: string | null
+          status?: string | null
+          target_metric?: string | null
+          updated_at?: string | null
+          variants?: Json | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          name?: string
+          results?: Json | null
+          start_date?: string | null
+          status?: string | null
+          target_metric?: string | null
+          updated_at?: string | null
+          variants?: Json | null
+        }
+        Relationships: []
+      }
+      admin_audit_logs: {
+        Row: {
+          action: string
+          admin_user_id: string
+          created_at: string | null
+          details: Json | null
+          id: string
+          ip_address: string | null
+          target_id: string | null
+          target_type: string | null
+        }
+        Insert: {
+          action: string
+          admin_user_id: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Update: {
+          action?: string
+          admin_user_id?: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Relationships: []
+      }
+      advertisements: {
+        Row: {
+          clicks: number | null
+          created_at: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          image_url: string | null
+          impressions: number | null
+          is_active: boolean | null
+          placement: string | null
+          start_date: string | null
+          target_audience: string | null
+          target_url: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          clicks?: number | null
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_url?: string | null
+          impressions?: number | null
+          is_active?: boolean | null
+          placement?: string | null
+          start_date?: string | null
+          target_audience?: string | null
+          target_url?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          clicks?: number | null
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_url?: string | null
+          impressions?: number | null
+          is_active?: boolean | null
+          placement?: string | null
+          start_date?: string | null
+          target_audience?: string | null
+          target_url?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      ai_insights: {
+        Row: {
+          created_at: string | null
+          data: Json | null
+          description: string | null
+          id: string
+          insight_type: string
+          is_dismissed: boolean | null
+          priority: string | null
+          title: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          data?: Json | null
+          description?: string | null
+          id?: string
+          insight_type: string
+          is_dismissed?: boolean | null
+          priority?: string | null
+          title?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          data?: Json | null
+          description?: string | null
+          id?: string
+          insight_type?: string
+          is_dismissed?: boolean | null
+          priority?: string | null
+          title?: string | null
+        }
+        Relationships: []
+      }
+      background_checks: {
+        Row: {
+          created_at: string | null
+          id: string
+          provider: string | null
+          result: Json | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+          user_profile_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          provider?: string | null
+          result?: Json | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+          user_profile_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          provider?: string | null
+          result?: Json | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+          user_profile_id?: string
+        }
+        Relationships: []
+      }
+      broadcast_messages: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string
+          recipients_count: number | null
+          sent_at: string | null
+          sent_by: string | null
+          status: string | null
+          target_audience: string | null
+          target_country: string | null
+          target_tier: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message: string
+          recipients_count?: number | null
+          sent_at?: string | null
+          sent_by?: string | null
+          status?: string | null
+          target_audience?: string | null
+          target_country?: string | null
+          target_tier?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string
+          recipients_count?: number | null
+          sent_at?: string | null
+          sent_by?: string | null
+          status?: string | null
+          target_audience?: string | null
+          target_country?: string | null
+          target_tier?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      date_feedbacks: {
+        Row: {
+          created_at: string | null
+          created_date: string | null
+          feedback_notes: string | null
+          id: string
+          match_id: string | null
+          met_in_person: boolean | null
+          partner_profile_id: string | null
+          rating: number | null
+          safety_concerns: boolean | null
+          user_profile_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_date?: string | null
+          feedback_notes?: string | null
+          id?: string
+          match_id?: string | null
+          met_in_person?: boolean | null
+          partner_profile_id?: string | null
+          rating?: number | null
+          safety_concerns?: boolean | null
+          user_profile_id: string
+        }
+        Update: {
+          created_at?: string | null
+          created_date?: string | null
+          feedback_notes?: string | null
+          id?: string
+          match_id?: string | null
+          met_in_person?: boolean | null
+          partner_profile_id?: string | null
+          rating?: number | null
+          safety_concerns?: boolean | null
+          user_profile_id?: string
+        }
+        Relationships: []
+      }
+      disputes: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          evidence_urls: string[] | null
+          id: string
+          reason: string
+          related_action_id: string | null
+          related_report_id: string | null
+          resolution: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+          user_profile_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          evidence_urls?: string[] | null
+          id?: string
+          reason: string
+          related_action_id?: string | null
+          related_report_id?: string | null
+          resolution?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+          user_profile_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          evidence_urls?: string[] | null
+          id?: string
+          reason?: string
+          related_action_id?: string | null
+          related_report_id?: string | null
+          resolution?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+          user_profile_id?: string | null
+        }
+        Relationships: []
+      }
+      error_logs: {
+        Row: {
+          created_at: string | null
+          device_info: Json | null
+          error_message: string | null
+          error_type: string | null
+          id: string
+          is_resolved: boolean | null
+          page_url: string | null
+          severity: string | null
+          stack_trace: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          device_info?: Json | null
+          error_message?: string | null
+          error_type?: string | null
+          id?: string
+          is_resolved?: boolean | null
+          page_url?: string | null
+          severity?: string | null
+          stack_trace?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          device_info?: Json | null
+          error_message?: string | null
+          error_type?: string | null
+          id?: string
+          is_resolved?: boolean | null
+          page_url?: string | null
+          severity?: string | null
+          stack_trace?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      fake_profile_detections: {
+        Row: {
+          confidence_score: number | null
+          created_at: string | null
+          detection_type: string | null
+          flags: Json | null
+          id: string
+          reviewed_by: string | null
+          status: string | null
+          updated_at: string | null
+          user_profile_id: string
+        }
+        Insert: {
+          confidence_score?: number | null
+          created_at?: string | null
+          detection_type?: string | null
+          flags?: Json | null
+          id?: string
+          reviewed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_profile_id: string
+        }
+        Update: {
+          confidence_score?: number | null
+          created_at?: string | null
+          detection_type?: string | null
+          flags?: Json | null
+          id?: string
+          reviewed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_profile_id?: string
+        }
+        Relationships: []
+      }
+      feature_flags: {
+        Row: {
+          config: Json | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_enabled: boolean | null
+          name: string
+          percentage: number | null
+          target_audience: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_enabled?: boolean | null
+          name: string
+          percentage?: number | null
+          target_audience?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_enabled?: boolean | null
+          name?: string
+          percentage?: number | null
+          target_audience?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       likes: {
         Row: {
           created_at: string | null
@@ -70,6 +508,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      match_feedbacks: {
+        Row: {
+          created_at: string | null
+          feedback_notes: string | null
+          feedback_type: string | null
+          id: string
+          match_id: string | null
+          rating: number | null
+          user_profile_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          feedback_notes?: string | null
+          feedback_type?: string | null
+          id?: string
+          match_id?: string | null
+          rating?: number | null
+          user_profile_id: string
+        }
+        Update: {
+          created_at?: string | null
+          feedback_notes?: string | null
+          feedback_type?: string | null
+          id?: string
+          match_id?: string | null
+          rating?: number | null
+          user_profile_id?: string
+        }
+        Relationships: []
       }
       matches: {
         Row: {
@@ -252,6 +720,92 @@ export type Database = {
           },
         ]
       }
+      moderation_actions: {
+        Row: {
+          action_type: string
+          created_at: string | null
+          details: Json | null
+          expires_at: string | null
+          id: string
+          performed_by: string | null
+          reason: string | null
+          rule_id: string | null
+          target_profile_id: string | null
+          target_user_id: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string | null
+          details?: Json | null
+          expires_at?: string | null
+          id?: string
+          performed_by?: string | null
+          reason?: string | null
+          rule_id?: string | null
+          target_profile_id?: string | null
+          target_user_id: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string | null
+          details?: Json | null
+          expires_at?: string | null
+          id?: string
+          performed_by?: string | null
+          reason?: string | null
+          rule_id?: string | null
+          target_profile_id?: string | null
+          target_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "moderation_actions_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "moderation_rules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      moderation_rules: {
+        Row: {
+          action: string
+          conditions: Json | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          rule_type: string
+          severity: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          action: string
+          conditions?: Json | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          rule_type: string
+          severity?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          action?: string
+          conditions?: Json | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          rule_type?: string
+          severity?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string | null
@@ -353,6 +907,234 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      photo_moderations: {
+        Row: {
+          ai_flags: Json | null
+          ai_score: number | null
+          created_at: string | null
+          id: string
+          photo_url: string
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+          updated_at: string | null
+          user_profile_id: string
+        }
+        Insert: {
+          ai_flags?: Json | null
+          ai_score?: number | null
+          created_at?: string | null
+          id?: string
+          photo_url: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_profile_id: string
+        }
+        Update: {
+          ai_flags?: Json | null
+          ai_score?: number | null
+          created_at?: string | null
+          id?: string
+          photo_url?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_profile_id?: string
+        }
+        Relationships: []
+      }
+      profile_analytics: {
+        Row: {
+          created_at: string | null
+          created_date: string | null
+          device_type: string | null
+          event_data: Json | null
+          event_type: string
+          id: string
+          page_url: string | null
+          session_id: string | null
+          user_profile_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_date?: string | null
+          device_type?: string | null
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          page_url?: string | null
+          session_id?: string | null
+          user_profile_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_date?: string | null
+          device_type?: string | null
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          page_url?: string | null
+          session_id?: string | null
+          user_profile_id?: string | null
+        }
+        Relationships: []
+      }
+      reports: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          evidence_urls: string[] | null
+          id: string
+          reason: string
+          reported_id: string
+          reported_user_id: string
+          reporter_id: string
+          reporter_user_id: string
+          resolution: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          evidence_urls?: string[] | null
+          id?: string
+          reason: string
+          reported_id: string
+          reported_user_id: string
+          reporter_id: string
+          reporter_user_id: string
+          resolution?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          evidence_urls?: string[] | null
+          id?: string
+          reason?: string
+          reported_id?: string
+          reported_user_id?: string
+          reporter_id?: string
+          reporter_user_id?: string
+          resolution?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      safety_checks: {
+        Row: {
+          check_in_time: string | null
+          created_at: string | null
+          emergency_contact: Json | null
+          id: string
+          is_safe: boolean | null
+          location: Json | null
+          match_id: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+          user_profile_id: string
+        }
+        Insert: {
+          check_in_time?: string | null
+          created_at?: string | null
+          emergency_contact?: Json | null
+          id?: string
+          is_safe?: boolean | null
+          location?: Json | null
+          match_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+          user_profile_id: string
+        }
+        Update: {
+          check_in_time?: string | null
+          created_at?: string | null
+          emergency_contact?: Json | null
+          id?: string
+          is_safe?: boolean | null
+          location?: Json | null
+          match_id?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+          user_profile_id?: string
+        }
+        Relationships: []
+      }
+      scam_analyses: {
+        Row: {
+          analysis_type: string | null
+          created_at: string | null
+          id: string
+          risk_factors: Json | null
+          risk_score: number | null
+          status: string | null
+          updated_at: string | null
+          user_profile_id: string
+        }
+        Insert: {
+          analysis_type?: string | null
+          created_at?: string | null
+          id?: string
+          risk_factors?: Json | null
+          risk_score?: number | null
+          status?: string | null
+          updated_at?: string | null
+          user_profile_id: string
+        }
+        Update: {
+          analysis_type?: string | null
+          created_at?: string | null
+          id?: string
+          risk_factors?: Json | null
+          risk_score?: number | null
+          status?: string | null
+          updated_at?: string | null
+          user_profile_id?: string
+        }
+        Relationships: []
+      }
+      screenshot_alerts: {
+        Row: {
+          context: string | null
+          created_at: string | null
+          detected_user_id: string | null
+          id: string
+          user_profile_id: string
+        }
+        Insert: {
+          context?: string | null
+          created_at?: string | null
+          detected_user_id?: string | null
+          id?: string
+          user_profile_id: string
+        }
+        Update: {
+          context?: string | null
+          created_at?: string | null
+          detected_user_id?: string | null
+          id?: string
+          user_profile_id?: string
+        }
+        Relationships: []
       }
       stories: {
         Row: {
@@ -500,6 +1282,36 @@ export type Database = {
           updated_at?: string
           user_email?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      system_settings: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          key: string
+          updated_at: string | null
+          updated_by: string | null
+          value: Json | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          key: string
+          updated_at?: string | null
+          updated_by?: string | null
+          value?: Json | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          key?: string
+          updated_at?: string | null
+          updated_by?: string | null
+          value?: Json | null
         }
         Relationships: []
       }
@@ -752,6 +1564,51 @@ export type Database = {
           violation_count?: number | null
           voice_intro_url?: string | null
           warning_count?: number | null
+        }
+        Relationships: []
+      }
+      verification_requests: {
+        Row: {
+          created_at: string | null
+          document_url: string | null
+          id: string
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          selfie_url: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+          user_profile_id: string
+          verification_type: string
+        }
+        Insert: {
+          created_at?: string | null
+          document_url?: string | null
+          id?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          selfie_url?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+          user_profile_id: string
+          verification_type: string
+        }
+        Update: {
+          created_at?: string | null
+          document_url?: string | null
+          id?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          selfie_url?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+          user_profile_id?: string
+          verification_type?: string
         }
         Relationships: []
       }
