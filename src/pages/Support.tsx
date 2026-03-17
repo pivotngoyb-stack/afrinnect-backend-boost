@@ -66,7 +66,7 @@ export default function Support() {
 
   const { data: tickets = [], isLoading } = useQuery({
     queryKey: ['support-tickets', user?.id],
-    queryFn: () => base44.entities.SupportTicket.filter({ user_id: user.id }, '-created_date'),
+    queryFn: () => base44.entities.SupportTicket.filter({ user_id: user.id }, '-created_at'),
     enabled: !!user
   });
 
