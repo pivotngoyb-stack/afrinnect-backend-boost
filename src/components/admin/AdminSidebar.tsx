@@ -39,8 +39,10 @@ export default function AdminSidebar({ activePage, pendingReports = 0 }) {
     { label: 'Moderation', icon: Shield, page: 'AdminModeration', badge: pendingReports },
     { label: 'Analytics', icon: TrendingUp, page: 'AdminAnalytics' },
     { label: 'Subscriptions', icon: DollarSign, page: 'AdminSubscriptions' },
+    { label: 'VIP Events', icon: Gift, page: 'AdminVIPEvents' },
     { label: 'Ambassadors', icon: Star, page: 'AdminAmbassadors' },
     { label: 'Broadcast', icon: Megaphone, page: 'AdminBroadcast' },
+    { label: 'Content', icon: MessageSquare, page: 'AdminContent' },
     { label: 'Feature Flags', icon: Zap, page: 'AdminFeatureFlags' },
     { label: 'Settings', icon: Settings, page: 'AdminSettings' },
   ];
