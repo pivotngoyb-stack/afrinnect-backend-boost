@@ -202,6 +202,7 @@ const App = () => (
             <Route path="/adminambassadors" element={<AdminAmbassadors />} />
             <Route path="/admincontent" element={<AdminContent />} />
             <Route path="/adminvipevents" element={<AdminVIPEvents />} />
+            <Route path="/adminfeatureflags" element={<AdminFeatureFlags />} />
             <Route path="/adminmanual" element={<AdminManual />} />
             <Route path="/adminlaunchchecklist" element={<AdminLaunchChecklist />} />
 
