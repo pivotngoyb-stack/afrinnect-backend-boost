@@ -9,7 +9,16 @@ import { LanguageProvider } from "@/components/i18n/LanguageContext";
 import InstallPrompt from "@/components/mobile/InstallPrompt";
 import AppBottomNav from "@/components/shared/AppBottomNav";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60000,
+      gcTime: 300000,
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
 // Loading fallback
 const PageLoader = () => (
