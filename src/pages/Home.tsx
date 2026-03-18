@@ -79,23 +79,8 @@ export default function Home() {
   const { prompt: upgradePrompt, dismissPrompt } = useUpgradePrompts(myProfile);
   const { tiers: tierConfig } = useTierConfig();
 
-  // Fetch AI Behavior Analysis Recommendations - DEFERRED to avoid blocking initial load
-  useEffect(() => {
-    if (!myProfile?.id) return;
-    
-    // Delay recommendation fetch to not block initial render
-    const timer = setTimeout(async () => {
-      try {
-        const recs = await base44.entities.UserRecommendation.filter({ user_id: myProfile.id, is_dismissed: false });
-        if (recs.length > 0) {
-          setRecommendations(recs);
-        }
-        // Skip analyzeBehavior on page load - too slow
-      } catch(e) {}
-    }, 3000);
-    
-    return () => clearTimeout(timer);
-  }, [myProfile?.id]);
+  // Fetch AI Behavior Analysis Recommendations - DISABLED (table doesn't exist yet)
+  // useEffect(() => { ... }, [myProfile?.id]);
 
   // OPTIMIZATION: Prefetch Activity Data - DEFERRED
   useEffect(() => {
