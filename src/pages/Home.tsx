@@ -90,7 +90,7 @@ export default function Home() {
     const timer = setTimeout(() => {
       queryClient.prefetchQuery({
         queryKey: ['who-likes-me', myProfile.id],
-        queryFn: () => base44.entities.Like.filter({ liked_id: myProfile.id, is_seen: false }, '-created_date', 50),
+        queryFn: () => base44.entities.Like.filter({ liked_id: myProfile.id, is_seen: false }, '-created_at', 50),
         staleTime: 120000
       });
     }, 2000);

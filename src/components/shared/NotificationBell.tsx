@@ -47,8 +47,8 @@ export default function NotificationBell({ className = "", variant = "ghost" }) 
       }
     },
     enabled: !!myProfile?.id,
-    refetchInterval: 30000,
-    staleTime: 10000
+    refetchInterval: 60000,
+    staleTime: 30000
   });
 
   return (
