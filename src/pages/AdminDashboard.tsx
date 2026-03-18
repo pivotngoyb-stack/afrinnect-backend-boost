@@ -153,7 +153,10 @@ export default function AdminDashboard() {
     { label: 'Analytics', icon: TrendingUp, page: 'AdminAnalytics' },
     { label: 'Subscriptions', icon: DollarSign, page: 'AdminSubscriptions' },
     { label: 'VIP Events', icon: Heart, page: 'AdminVIPEvents' },
+    { label: 'Ambassadors', icon: Users, page: 'AdminAmbassadors' },
+    { label: 'Broadcast', icon: MessageSquare, page: 'AdminBroadcast' },
     { label: 'Content', icon: MessageSquare, page: 'AdminContent' },
+    { label: 'Feature Flags', icon: Activity, page: 'AdminFeatureFlags' },
     { label: 'Settings', icon: Settings, page: 'AdminSettings' },
   ];
 

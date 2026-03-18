@@ -48,6 +48,7 @@ export default function AdminSidebar({ activePage, pendingReports = 0 }) {
   ];
 
   const utilityItems = [
+    { label: 'Launch Checklist', icon: Flag, page: 'AdminLaunchChecklist' },
     { label: 'Admin Manual', icon: Book, page: 'AdminManual' },
   ];
 
