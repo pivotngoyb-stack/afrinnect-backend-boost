@@ -315,21 +315,28 @@ export default function Home() {
     return finalScore;
   };
 
-  // Fetch profiles for discovery - OPTIMIZED via Backend Function
+  // Fetch profiles for discovery - client-side filtering (fast, no edge function needed)
   const { data: profiles = [], isLoading, refetch } = useQuery({
     queryKey: ['discovery-profiles', filters, discoveryMode, myProfile?.id],
     queryFn: async () => {
-      const savedFilters = myProfile?.filters || {};
-      const combinedFilters = { ...savedFilters, ...filters };
-
       try {
-        const response = await base44.functions.invoke('getDiscoveryProfiles', {
-           filters: combinedFilters,
-           mode: discoveryMode,
-           myProfileId: myProfile.id,
-           limit: 15
+        // Fetch profiles directly - much faster than calling a non-existent edge function
+        const allProfiles = await base44.entities.UserProfile.filter(
+          { is_active: true, is_banned: false },
+          '-created_at',
+          50
+        );
+        
+        // Filter out own profile, blocked users, and apply basic filters
+        const myBlockedUsers = myProfile?.blocked_users || [];
+        const filtered = allProfiles.filter(p => {
+          if (p.user_id === myProfile.user_id) return false;
+          if (myBlockedUsers.includes(p.id)) return false;
+          if (myProfile.looking_for?.length && !myProfile.looking_for.includes(p.gender)) return false;
+          return true;
         });
-        return response.data.profiles || [];
+        
+        return filtered;
       } catch (error) {
         console.error('Failed to fetch profiles:', error);
         return [];
