@@ -18,6 +18,7 @@ export const auth = {
       .eq('user_id', user.id)
       .maybeSingle();
 
+    const isAdmin = user.email?.toLowerCase() === 'pivotngoyb@gmail.com';
     return {
       ...(profile || {}),
       profile_id: profile?.id ?? null,
@@ -26,6 +27,7 @@ export const auth = {
       email: user.email,
       full_name: user.user_metadata?.full_name,
       auth_role: user.role,
+      role: isAdmin ? 'admin' : 'user',
     };
   },
   async isAuthenticated() {
