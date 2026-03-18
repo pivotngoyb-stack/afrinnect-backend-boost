@@ -94,6 +94,8 @@ const AdminBroadcast = lazy(() => import("./pages/AdminBroadcast"));
 const AdminAmbassadors = lazy(() => import("./pages/AdminAmbassadors"));
 const AdminContent = lazy(() => import("./pages/AdminContent"));
 const AdminVIPEvents = lazy(() => import("./pages/AdminVIPEvents"));
+const AdminVIPEvents = lazy(() => import("./pages/AdminVIPEvents"));
+const AdminFeatureFlags = lazy(() => import("./pages/AdminFeatureFlags"));
 const AdminManual = lazy(() => import("./pages/AdminManual"));
 const AdminLaunchChecklist = lazy(() => import("./pages/AdminLaunchChecklist"));
 const Login = lazy(() => import("./pages/Login"));
