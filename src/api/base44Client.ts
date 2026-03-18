@@ -12,13 +12,17 @@ export const auth = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
 
-    const { data: profile } = await client
-      .from('user_profiles')
-      .select('*')
-      .eq('user_id', user.id)
-      .maybeSingle();
+    // Fetch profile and server-side role in parallel
+    const [profileResult, roleResult] = await Promise.all([
+      client.from('user_profiles').select('*').eq('user_id', user.id).maybeSingle(),
+      client.from('user_roles').select('role').eq('user_id', user.id),
+    ]);
 
-    const isAdmin = user.email?.toLowerCase() === 'pivotngoyb@gmail.com';
+    const profile = profileResult.data;
+    const roles = (roleResult.data || []).map((r: any) => r.role);
+    const isAdmin = roles.includes('admin');
+    const isModerator = roles.includes('moderator');
+
     return {
       ...(profile || {}),
       profile_id: profile?.id ?? null,
@@ -27,7 +31,8 @@ export const auth = {
       email: user.email,
       full_name: user.user_metadata?.full_name,
       auth_role: user.role,
-      role: isAdmin ? 'admin' : 'user',
+      role: isAdmin ? 'admin' : isModerator ? 'moderator' : 'user',
+      roles,
     };
   },
   async isAuthenticated() {
