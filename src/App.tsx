@@ -94,6 +94,8 @@ const AdminBroadcast = lazy(() => import("./pages/AdminBroadcast"));
 const AdminAmbassadors = lazy(() => import("./pages/AdminAmbassadors"));
 const AdminContent = lazy(() => import("./pages/AdminContent"));
 const AdminVIPEvents = lazy(() => import("./pages/AdminVIPEvents"));
+const AdminVIPEvents = lazy(() => import("./pages/AdminVIPEvents"));
+const AdminFeatureFlags = lazy(() => import("./pages/AdminFeatureFlags"));
 const AdminManual = lazy(() => import("./pages/AdminManual"));
 const AdminLaunchChecklist = lazy(() => import("./pages/AdminLaunchChecklist"));
 const Login = lazy(() => import("./pages/Login"));
@@ -200,6 +202,7 @@ const App = () => (
             <Route path="/adminambassadors" element={<AdminAmbassadors />} />
             <Route path="/admincontent" element={<AdminContent />} />
             <Route path="/adminvipevents" element={<AdminVIPEvents />} />
+            <Route path="/adminfeatureflags" element={<AdminFeatureFlags />} />
             <Route path="/adminmanual" element={<AdminManual />} />
             <Route path="/adminlaunchchecklist" element={<AdminLaunchChecklist />} />
 
