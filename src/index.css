@@ -101,5 +101,35 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    overscroll-behavior: none;
+  }
+
+  /* Native-feel scrolling and transitions */
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Hardware-accelerated animations */
+  .animate-spin, [class*="motion"] {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  /* Prevent pull-to-refresh in Capacitor */
+  body.capacitor {
+    overscroll-behavior-y: contain;
+  }
+
+  /* Safe area insets for notched devices */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
