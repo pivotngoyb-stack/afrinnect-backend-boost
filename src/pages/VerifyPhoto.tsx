@@ -1,328 +1,246 @@
-// @ts-nocheck
-import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
-import { useMutation } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import {
-  Camera, CheckCircle, Shield, Loader2, AlertCircle
-} from 'lucide-react';
+import { Camera, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { toast } from "sonner";
+
+type Pose = 'center' | 'left' | 'right';
+type Step = 'intro' | Pose | 'verifying' | 'success' | 'failed';
+
+interface VerificationResult {
+  verified: boolean;
+  confidence: number;
+  reason: string;
+}
+
+function useCamera(active: boolean) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [stream, setStream] = useState<MediaStream | null>(null);
+
+  useEffect(() => {
+    if (!active) {
+      if (stream) {
+        stream.getTracks().forEach(t => t.stop());
+        setStream(null);
+      }
+      return;
+    }
+
+    let cancelled = false;
+    navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: 640, height: 640 }
+    }).then(s => {
+      if (cancelled) { s.getTracks().forEach(t => t.stop()); return; }
+      setStream(s);
+      if (videoRef.current) videoRef.current.srcObject = s;
+    }).catch(() => toast.error("Camera access denied. Please enable camera permissions."));
+
+    return () => {
+      cancelled = true;
+      if (stream) stream.getTracks().forEach(t => t.stop());
+    };
+  }, [active]);
+
+  return { videoRef, stream };
+}
+
+async function uploadCapture(videoEl: HTMLVideoElement): Promise<string> {
+  const canvas = document.createElement('canvas');
+  canvas.width = videoEl.videoWidth;
+  canvas.height = videoEl.videoHeight;
+  canvas.getContext('2d')!.drawImage(videoEl, 0, 0);
+
+  const blob = await new Promise<Blob>((resolve) =>
+    canvas.toBlob(b => resolve(b!), 'image/jpeg', 0.85)
+  );
+
+  const fileName = `verification/${Date.now()}_${Math.random().toString(36).slice(2)}.jpg`;
+  const { error } = await supabase.storage.from('photos').upload(fileName, blob);
+  if (error) throw error;
+  const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(fileName);
+  return publicUrl;
+}
 
 export default function VerifyPhoto() {
-  const [myProfile, setMyProfile] = useState(null);
-  const [step, setStep] = useState('intro'); // intro, center, left, right, verifying, success, failed
-  const [captures, setCaptures] = useState({ center: null, left: null, right: null });
-  const [verificationResult, setVerificationResult] = useState(null);
-  const videoRef = React.useRef(null);
-  const canvasRef = React.useRef(null);
-  const [stream, setStream] = useState(null);
+  const navigate = useNavigate();
+  const [step, setStep] = useState<Step>('intro');
+  const [captures, setCaptures] = useState<Record<Pose, string | null>>({ center: null, left: null, right: null });
+  const [result, setResult] = useState<VerificationResult | null>(null);
+  const [capturing, setCapturing] = useState(false);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const user = await base44.auth.me();
-        if (user) {
-          const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
-          if (profiles.length > 0) {
-            setMyProfile(profiles[0]);
-          }
-        }
-      } catch (e) {
-        console.log('Not logged in');
-      }
-    };
-    fetchProfile();
-  }, []);
+  const cameraActive = ['center', 'left', 'right'].includes(step);
+  const { videoRef } = useCamera(cameraActive);
 
-  // Camera handling
-  const startCamera = async () => {
+  const captureAndAdvance = useCallback(async (pose: Pose) => {
+    if (!videoRef.current || capturing) return;
+    setCapturing(true);
     try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'user', width: 640, height: 640 } 
-      });
-      setStream(mediaStream);
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-      }
-    } catch (err) {
-      console.error("Error accessing camera:", err);
-      alert("Camera access denied. Please enable camera permissions to verify.");
-    }
-  };
+      const url = await uploadCapture(videoRef.current);
+      setCaptures(prev => ({ ...prev, [pose]: url }));
 
-  const stopCamera = () => {
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-      setStream(null);
-    }
-  };
-
-  useEffect(() => {
-    if (['center', 'left', 'right'].includes(step)) {
-      startCamera();
-    } else {
-      stopCamera();
-    }
-    return () => stopCamera();
-  }, [step]);
-
-  const captureFrame = async (pose) => {
-    if (!videoRef.current || !canvasRef.current) return;
-
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    const context = canvas.getContext('2d');
-
-    // Set canvas dimensions to match video
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-
-    // Flip horizontally for user experience (mirror) -> Capture mirrored? 
-    // Usually better to capture raw, but users expect mirror. 
-    // Let's draw it normally for analysis.
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    // Convert to blob
-    canvas.toBlob(async (blob) => {
-      if (!blob) return;
-      
-      // Temporary placeholder while uploading
-      const tempUrl = URL.createObjectURL(blob);
-      setCaptures(prev => ({ ...prev, [pose]: tempUrl }));
-
-      // Upload immediately
-      try {
-        // Convert blob to file
-        const file = new File([blob], `verification_${pose}.jpg`, { type: 'image/jpeg' });
-        const { file_url } = await base44.integrations.Core.UploadFile({ file });
-        
-        setCaptures(prev => ({ ...prev, [pose]: file_url }));
-        
-        // Advance step
-        if (pose === 'center') setStep('left');
-        else if (pose === 'left') setStep('right');
-        else if (pose === 'right') verifyMutation.mutate({ 
-            center: captures.center, 
-            left: captures.left, 
-            right: file_url 
+      if (pose === 'center') setStep('left');
+      else if (pose === 'left') setStep('right');
+      else if (pose === 'right') {
+        // All captured — verify
+        setStep('verifying');
+        setCaptures(prev => {
+          // Use latest captures including current
+          const finalCaptures = { ...prev, [pose]: url };
+          runVerification(finalCaptures);
+          return finalCaptures;
         });
-
-      } catch (error) {
-        console.error('Upload failed:', error);
-        alert('Failed to upload frame. Please try again.');
       }
-    }, 'image/jpeg', 0.8);
-  };
+    } catch {
+      toast.error('Failed to capture photo. Please try again.');
+    } finally {
+      setCapturing(false);
+    }
+  }, [capturing]);
 
-  const verifyMutation = useMutation({
-    mutationFn: async (finalCaptures) => {
-      setStep('verifying');
-      
-      // Ensure we have all URLs (passed from captureFrame or state)
-      const centerUrl = captures.center || finalCaptures.center;
-      const leftUrl = captures.left || finalCaptures.left;
-      const rightUrl = finalCaptures.right; // passed directly
-
-      const result = await base44.functions.invoke('verifyVideoIdentity', {
-        centerUrl,
-        leftUrl,
-        rightUrl
+  const runVerification = async (caps: Record<Pose, string | null>) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('verify-photo', {
+        body: {
+          centerUrl: caps.center,
+          leftUrl: caps.left,
+          rightUrl: caps.right,
+        },
       });
 
-      return result.data;
-    },
-    onSuccess: (data) => {
-      setVerificationResult(data);
-      if (data.verified) {
-        setStep('success');
-      } else {
-        setStep('failed');
-      }
-    },
-    onError: () => {
+      if (error) throw error;
+
+      setResult({
+        verified: data.verified,
+        confidence: data.confidence || 0,
+        reason: data.reason || '',
+      });
+      setStep(data.verified ? 'success' : 'failed');
+    } catch (err: any) {
+      console.error('Verification error:', err);
+      setResult({ verified: false, confidence: 0, reason: err.message || 'Verification request failed' });
       setStep('failed');
     }
-  });
+  };
 
-  const resetVerification = () => {
+  const reset = () => {
     setCaptures({ center: null, left: null, right: null });
-    setVerificationResult(null);
+    setResult(null);
     setStep('intro');
   };
 
   if (step === 'success') {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="text-center max-w-md"
-        >
-          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center shadow-xl">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center max-w-md">
+          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-primary flex items-center justify-center shadow-xl">
             <CheckCircle size={48} className="text-white" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Identity Verified! ✓</h2>
-          <p className="text-gray-500 mb-2">
-            Your video verification was successful.
-          </p>
-          <p className="text-sm text-gray-400 mb-8">
-            Confidence: {verificationResult?.confidence}%
-          </p>
-          <Link to={createPageUrl('Home')}>
-            <Button className="bg-purple-600 hover:bg-purple-700 w-full">
-              Continue to Afrinnect
-            </Button>
-          </Link>
+          <h2 className="text-2xl font-bold text-foreground mb-2">Identity Verified! ✓</h2>
+          <p className="text-muted-foreground mb-2">Your video verification was successful.</p>
+          <p className="text-sm text-muted-foreground mb-8">Confidence: {result?.confidence}%</p>
+          <Button onClick={() => navigate('/home')} className="w-full">Continue to Afrinnect</Button>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
-      {/* Header - No back button if verification is mandatory */}
-      <header className="bg-white border-b">
-        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
-          <div className="w-10" /> {/* Spacer - no back button during mandatory verification */}
-          <h1 className="text-lg font-bold flex-1 text-center">Video Verification</h1>
-          <div className="w-10" /> {/* Spacer for centering */}
+    <div className="min-h-screen bg-background pb-24">
+      <header className="bg-card border-b border-border">
+        <div className="max-w-2xl mx-auto px-4 py-3 text-center">
+          <h1 className="text-lg font-bold text-foreground">Video Verification</h1>
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-6">
         {step === 'intro' && (
-          <Card className="mb-6">
+          <Card>
             <CardContent className="p-6 text-center">
-              <div className="w-20 h-20 mx-auto mb-4 bg-purple-100 rounded-full flex items-center justify-center">
-                <Camera size={40} className="text-purple-600" />
+              <div className="w-20 h-20 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
+                <Camera size={40} className="text-primary" />
               </div>
               <h2 className="text-xl font-bold mb-2">Let's verify it's really you</h2>
-              <p className="text-gray-600 mb-6">
+              <p className="text-muted-foreground mb-6">
                 We'll ask you to perform 3 simple head movements to confirm you're a real person.
               </p>
-              
               <div className="space-y-4 mb-8 text-left max-w-xs mx-auto">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-bold">1</div>
-                  <p>Center your face</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-bold">2</div>
-                  <p>Turn head Left</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-bold">3</div>
-                  <p>Turn head Right</p>
-                </div>
+                {['Center your face', 'Turn head Left', 'Turn head Right'].map((text, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center font-bold text-foreground">{i + 1}</div>
+                    <p className="text-foreground">{text}</p>
+                  </div>
+                ))}
               </div>
-
-              <Button onClick={() => setStep('center')} className="w-full py-6 text-lg bg-purple-600 hover:bg-purple-700">
-                Start Verification
-              </Button>
+              <Button onClick={() => setStep('center')} className="w-full py-6 text-lg">Start Verification</Button>
             </CardContent>
           </Card>
         )}
 
-        {['center', 'left', 'right'].includes(step) && (
+        {cameraActive && (
           <div className="flex flex-col items-center">
-            <h2 className="text-2xl font-bold mb-4 text-center">
+            <h2 className="text-2xl font-bold mb-4 text-center text-foreground">
               {step === 'center' && "Look Straight Ahead"}
               {step === 'left' && "Turn Head Left ←"}
               {step === 'right' && "Turn Head Right →"}
             </h2>
-
-            <div className="relative w-64 h-80 bg-black rounded-3xl overflow-hidden shadow-xl mb-8 border-4 border-purple-600">
-              <video 
-                ref={videoRef} 
-                autoPlay 
-                playsInline 
-                muted 
-                className="w-full h-full object-cover transform -scale-x-100" // Mirror effect
-              />
-              <canvas ref={canvasRef} className="hidden" />
-              
-              {/* Overlay Guide */}
+            <div className="relative w-64 h-80 bg-black rounded-3xl overflow-hidden shadow-xl mb-8 border-4 border-primary">
+              <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover transform -scale-x-100" />
               <div className="absolute inset-0 border-2 border-white/50 rounded-full m-8 pointer-events-none" />
             </div>
-
-            <Button 
-              onClick={() => captureFrame(step)}
-              className="w-full max-w-xs py-6 text-lg bg-purple-600 hover:bg-purple-700"
-            >
-              <Camera className="mr-2" />
-              Capture & Continue
+            <Button onClick={() => captureAndAdvance(step as Pose)} disabled={capturing} className="w-full max-w-xs py-6 text-lg">
+              {capturing ? <Loader2 className="mr-2 animate-spin" /> : <Camera className="mr-2" />}
+              {capturing ? 'Uploading...' : 'Capture & Continue'}
             </Button>
           </div>
         )}
 
         {step === 'verifying' && (
           <div className="text-center py-12">
-            <Loader2 size={64} className="text-purple-600 animate-spin mx-auto mb-6" />
-            <h2 className="text-xl font-bold mb-2">Verifying Identity...</h2>
-            <p className="text-gray-500">Analyzing your movements and face match.</p>
+            <Loader2 size={64} className="text-primary animate-spin mx-auto mb-6" />
+            <h2 className="text-xl font-bold mb-2 text-foreground">Verifying Identity...</h2>
+            <p className="text-muted-foreground">Analyzing your photos. This may take a few seconds.</p>
           </div>
         )}
 
         {step === 'failed' && (
           <div className="space-y-6">
-            <Alert className="border-red-200 bg-red-50">
-              <AlertCircle className="h-4 w-4 text-red-600" />
-              <AlertDescription className="text-red-800">
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
                 <strong className="text-lg block mb-2">Verification Failed</strong>
-                <p className="mb-4">
-                  {verificationResult?.reason || "We couldn't verify your identity. Please make sure your face is clearly visible and you follow the movement instructions."}
-                </p>
+                <p>{result?.reason || "We couldn't verify your identity. Please try again with good lighting."}</p>
               </AlertDescription>
             </Alert>
 
-            {/* Show captured photos with option to remove */}
             <Card>
               <CardContent className="p-4">
-                <h3 className="font-semibold mb-3">Captured Photos</h3>
+                <h3 className="font-semibold mb-3 text-foreground">Captured Photos</h3>
                 <div className="grid grid-cols-3 gap-2 mb-4">
-                  {['center', 'left', 'right'].map(pose => (
-                    <div key={pose} className="relative">
+                  {(['center', 'left', 'right'] as Pose[]).map(pose => (
+                    <div key={pose}>
                       {captures[pose] ? (
-                        <img 
-                          src={captures[pose]} 
-                          alt={pose} 
-                          className="w-full aspect-square object-cover rounded-lg"
-                        />
+                        <img src={captures[pose]!} alt={pose} className="w-full aspect-square object-cover rounded-lg" />
                       ) : (
-                        <div className="w-full aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
-                          <Camera size={20} className="text-gray-400" />
+                        <div className="w-full aspect-square bg-muted rounded-lg flex items-center justify-center">
+                          <Camera size={20} className="text-muted-foreground" />
                         </div>
                       )}
-                      <p className="text-xs text-center mt-1 capitalize text-gray-500">{pose}</p>
+                      <p className="text-xs text-center mt-1 capitalize text-muted-foreground">{pose}</p>
                     </div>
                   ))}
                 </div>
-                <p className="text-sm text-gray-600 mb-4">
-                  If these photos don't match your profile picture, you may need to update your profile photo first, then try verification again.
-                </p>
               </CardContent>
             </Card>
 
             <div className="space-y-3">
-              <Button
-                onClick={resetVerification}
-                className="w-full bg-purple-600 hover:bg-purple-700"
-              >
-                <Camera className="mr-2" size={18} />
-                Retake Photos
+              <Button onClick={reset} className="w-full"><Camera className="mr-2" size={18} />Retake Photos</Button>
+              <Button variant="outline" className="w-full" onClick={() => navigate('/edit-profile')}>
+                Update Profile Photo First
               </Button>
-              <Link to={createPageUrl('EditProfile')} className="block">
-                <Button
-                  variant="outline"
-                  className="w-full"
-                >
-                  Update Profile Photo First
-                </Button>
-              </Link>
             </div>
           </div>
         )}
