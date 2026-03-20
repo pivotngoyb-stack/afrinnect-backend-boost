@@ -47,6 +47,8 @@ import PremiumBadgeOnProfile from '@/components/monetization/PremiumBadgeOnProfi
 import MatchMilestones from '@/components/monetization/MatchMilestones';
 import VIPEventsPromo from '@/components/monetization/VIPEventsPromo.jsx';
 import FoundingMemberBanner from '@/components/founding/FoundingMemberBanner';
+import { useVerificationGate } from '@/hooks/useVerificationGate';
+import VerificationGateBanner from '@/components/shared/VerificationGateBanner';
 
 
 export default function Home() {
