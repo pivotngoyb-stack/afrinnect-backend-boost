@@ -170,34 +170,13 @@ export default function FounderProgramManagement() {
     }
   });
 
-  // Manage user mutation - try backend function first, fallback to local
+  // Manage user mutation - direct local update
   const manageUserMutation = useMutation({
     mutationFn: async (data) => {
-      // Try backend function first
-      try {
-        const actionMap = {
-          'grant': 'grant_status',
-          'revoke': 'revoke_status',
-          'extend': 'extend_trial'
-        };
-
-        // Find profile by email first
-        const profiles = await base44.entities.UserProfile.filter({ created_by: data.email });
-        if (profiles.length === 0) {
-          throw new Error('User not found');
-        }
-        const profile = profiles[0];
-
-        // adminManageFounder not implemented - use local fallback
-        throw new Error('Use local fallback');
-      } catch (e) {
-        console.log('Backend function unavailable, using local update');
-      }
-
-      // Fallback: Local update
+      // Find profile by email
       const profiles = await base44.entities.UserProfile.filter({ created_by: data.email });
       if (profiles.length === 0) {
-        throw new Error('User not found');
+        throw new Error('User not found with that email');
       }
       const profile = profiles[0];
 
