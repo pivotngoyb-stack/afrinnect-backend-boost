@@ -37,10 +37,39 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const { selfie_url, profile_photo_url, user_profile_id } = body;
+    const { centerUrl, leftUrl, rightUrl, selfie_url, profile_photo_url, user_profile_id } = body;
 
-    if (!selfie_url || !user_profile_id) {
-      return new Response(JSON.stringify({ error: "selfie_url and user_profile_id are required" }), {
+    // Support both old format (selfie_url) and new format (centerUrl/leftUrl/rightUrl)
+    const mainSelfie = selfie_url || centerUrl;
+
+    // Look up user profile if not provided
+    let profileId = user_profile_id;
+    let profilePhotoUrl = profile_photo_url;
+
+    if (!profileId || !profilePhotoUrl) {
+      const { data: profile } = await supabase
+        .from("user_profiles")
+        .select("id, photos")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (profile) {
+        profileId = profileId || profile.id;
+        if (!profilePhotoUrl && profile.photos && Array.isArray(profile.photos) && profile.photos.length > 0) {
+          profilePhotoUrl = profile.photos[0];
+        }
+      }
+    }
+
+    if (!mainSelfie) {
+      return new Response(JSON.stringify({ error: "At least one selfie photo is required" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (!profileId) {
+      return new Response(JSON.stringify({ error: "User profile not found" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -51,63 +80,87 @@ Deno.serve(async (req) => {
       .from("photo_verifications")
       .insert({
         user_id: user.id,
-        user_profile_id,
-        selfie_url,
-        profile_photo_url: profile_photo_url || null,
+        user_profile_id: profileId,
+        selfie_url: mainSelfie,
+        profile_photo_url: profilePhotoUrl || null,
         status: "pending",
-        verification_type: "selfie_match",
+        verification_type: "video_selfie",
       })
       .select()
       .single();
 
     if (insertError) throw insertError;
 
-    // Use AI to compare selfie with profile photo if both provided
+    // Use AI to verify the person
     let aiResult = null;
-    if (profile_photo_url) {
-      try {
-        const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
-        if (lovableApiKey) {
-          const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${lovableApiKey}`,
-            },
-            body: JSON.stringify({
-              model: "google/gemini-2.5-flash",
-              messages: [
-                {
-                  role: "user",
-                  content: [
-                    { type: "text", text: "Compare these two photos. Are they the same person? Reply with JSON: {\"match\": true/false, \"confidence\": 0-100, \"reason\": \"brief explanation\"}. Only return the JSON." },
-                    { type: "image_url", image_url: { url: selfie_url } },
-                    { type: "image_url", image_url: { url: profile_photo_url } },
-                  ],
-                },
-              ],
-              max_tokens: 200,
-            }),
-          });
+    try {
+      const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
+      if (lovableApiKey) {
+        const imageContent: any[] = [
+          {
+            type: "text",
+            text: `You are a photo verification system. Analyze the provided selfie images to determine:
+1. Is there a real human face clearly visible in the selfie(s)?
+2. Does the person appear to be a real person (not a photo of a photo, screen, or printed image)?
+3. If a profile photo is also provided, do the selfie(s) match the same person in the profile photo?
 
-          if (aiResponse.ok) {
-            const aiData = await aiResponse.json();
-            const content = aiData.choices?.[0]?.message?.content || "";
-            // Parse JSON from response
-            const jsonMatch = content.match(/\{[\s\S]*\}/);
-            if (jsonMatch) {
-              aiResult = JSON.parse(jsonMatch[0]);
-            }
-          }
+Reply with ONLY this JSON:
+{"verified": true/false, "confidence": 0-100, "is_real_person": true/false, "faces_match": true/false/null, "reason": "brief explanation"}
+
+Be generous with matching - different angles, lighting, and expressions are expected. Focus on key facial features.`,
+          },
+          { type: "image_url", image_url: { url: mainSelfie } },
+        ];
+
+        // Add additional pose images if provided
+        if (leftUrl) {
+          imageContent.push({ type: "image_url", image_url: { url: leftUrl } });
         }
-      } catch (aiErr) {
-        console.error("AI comparison error:", aiErr);
-        // Continue without AI — manual review will handle it
+        if (rightUrl) {
+          imageContent.push({ type: "image_url", image_url: { url: rightUrl } });
+        }
+        // Add profile photo for comparison if available
+        if (profilePhotoUrl) {
+          imageContent.push({ type: "text", text: "This is the user's current profile photo for comparison:" });
+          imageContent.push({ type: "image_url", image_url: { url: profilePhotoUrl } });
+        }
+
+        const aiResponse = await fetch("https://ai-gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${lovableApiKey}`,
+          },
+          body: JSON.stringify({
+            model: "google/gemini-2.5-flash",
+            messages: [{ role: "user", content: imageContent }],
+            max_tokens: 300,
+          }),
+        });
+
+        if (aiResponse.ok) {
+          const aiData = await aiResponse.json();
+          const content = aiData.choices?.[0]?.message?.content || "";
+          const jsonMatch = content.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            aiResult = JSON.parse(jsonMatch[0]);
+          }
+        } else {
+          console.error("AI response error:", aiResponse.status, await aiResponse.text());
+        }
       }
+    } catch (aiErr) {
+      console.error("AI comparison error:", aiErr);
     }
 
-    // Update verification with AI result
-    const newStatus = aiResult?.match && aiResult?.confidence > 70 ? "approved" : "pending_review";
+    // Determine approval: real person + (faces match if profile photo exists)
+    const isApproved = aiResult?.is_real_person && 
+      aiResult?.confidence > 60 && 
+      (profilePhotoUrl ? aiResult?.faces_match !== false : true);
+
+    const newStatus = isApproved ? "approved" : "pending_review";
+    const verified = isApproved;
+
     await supabase
       .from("photo_verifications")
       .update({
@@ -122,7 +175,7 @@ Deno.serve(async (req) => {
       await supabase
         .from("user_profiles")
         .update({ is_photo_verified: true })
-        .eq("id", user_profile_id);
+        .eq("id", profileId);
     }
 
     // Log audit
@@ -130,15 +183,18 @@ Deno.serve(async (req) => {
       admin_user_id: user.id,
       action: "photo_verification_submitted",
       target_type: "user_profile",
-      target_id: user_profile_id,
+      target_id: profileId,
       details: { status: newStatus, ai_confidence: aiResult?.confidence || null },
     });
 
     return new Response(
       JSON.stringify({
         success: true,
+        verified,
         verification_id: verification.id,
         status: newStatus,
+        confidence: aiResult?.confidence || null,
+        reason: aiResult?.reason || (verified ? "Verification successful" : "Could not verify identity"),
         ai_result: aiResult,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
