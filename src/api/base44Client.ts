@@ -272,6 +272,7 @@ const functionNameMap: Record<string, string> = {
   inviteUser: 'invite-user',
   sendEmail: 'send-email',
   sendMessage: 'send-message',
+  blockUser: 'block-user',
   stripeWebhook: 'stripe-webhook',
   verifyVideoIdentity: 'verify-photo',
   moderateContent: 'moderate-content',
