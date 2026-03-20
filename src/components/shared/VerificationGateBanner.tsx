@@ -20,7 +20,7 @@ export default function VerificationGateBanner({ matchCount }: VerificationGateB
           You've reached {matchCount} matches! To continue liking, swiping, and messaging, 
           please verify your identity with a quick photo check.
         </p>
-        <Button size="sm" onClick={() => navigate('/verify-photo')} className="gap-2">
+        <Button size="sm" onClick={() => navigate('/verifyphoto')} className="gap-2">
           <Camera size={16} />
           Verify Now
         </Button>
