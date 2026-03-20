@@ -76,6 +76,7 @@ export default function Chat() {
   const messagesEndRef = useRef(null);
   const typingTimeoutRef = useRef(null);
   const queryClient = useQueryClient();
+  const { isGated: isVerificationGated, matchCount: gateMatchCount } = useVerificationGate(myProfile);
 
   // Real-time WebSocket connection
   const { 
