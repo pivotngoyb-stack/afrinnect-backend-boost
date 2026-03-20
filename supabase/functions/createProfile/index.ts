@@ -142,6 +142,52 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Auto-assign founding member status if enabled
+    if (profile && !existingProfile) {
+      try {
+        const { data: founderSettings } = await admin
+          .from('system_settings')
+          .select('value')
+          .eq('key', 'founder_program')
+          .maybeSingle();
+
+        const config = founderSettings?.value;
+        if (config?.founders_mode_enabled && config?.auto_assign_new_users) {
+          const trialDays = config.trial_days || 183;
+          const trialEndsAt = new Date(Date.now() + trialDays * 24 * 60 * 60 * 1000).toISOString();
+
+          const { error: founderError } = await admin
+            .from('user_profiles')
+            .update({
+              is_founding_member: true,
+              founding_member_granted_at: new Date().toISOString(),
+              founding_member_trial_ends_at: trialEndsAt,
+              founding_member_source: 'auto_signup',
+              is_premium: true,
+              subscription_tier: 'premium',
+              premium_until: trialEndsAt.split('T')[0],
+              badges: ['founding_member'],
+            })
+            .eq('id', profile.id);
+
+          if (founderError) {
+            console.error('Founder auto-assign error:', founderError);
+          } else {
+            console.log(`Auto-assigned founding member to ${profile.id}`);
+            // Re-fetch profile with updated fields
+            const { data: updated } = await admin
+              .from('user_profiles')
+              .select('*')
+              .eq('id', profile.id)
+              .single();
+            if (updated) profile = updated;
+          }
+        }
+      } catch (e) {
+        console.error('Founder check error:', e);
+      }
+    }
+
     return new Response(
       JSON.stringify({ profile }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
