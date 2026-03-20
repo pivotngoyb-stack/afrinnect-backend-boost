@@ -72,7 +72,7 @@ export default function AdminUsers() {
   const loadUsers = async () => {
     setLoading(true);
     try {
-      const profiles = await base44.entities.UserProfile.list('-created_date', 1000);
+      const profiles = await base44.entities.UserProfile.list('-created_at', 1000);
       setUsers(profiles);
     } catch (error) {
       console.error('Error loading users:', error);
