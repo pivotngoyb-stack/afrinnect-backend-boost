@@ -617,6 +617,10 @@ export default function Home() {
       setCurrentIndex(prev => prev + 1);
     },
     onError: (error) => {
+      if (error.message === 'verification_required') {
+        // Handled by banner display
+        return;
+      }
       if (error.message === 'daily_limit_reached') {
         setShowLimitPaywall(true);
       }
