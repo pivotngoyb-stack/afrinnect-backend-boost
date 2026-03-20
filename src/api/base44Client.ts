@@ -60,7 +60,9 @@ export const auth = {
 const createEntityHelper = (tableName: string) => ({
   async list(sort = '-created_at', limit = 50): Promise<any[]> {
     const ascending = !sort.startsWith('-');
-    const column = sort.replace('-', '');
+    let column = sort.replace('-', '');
+    // Map legacy column names
+    if (column === 'created_date') column = 'created_at';
     const { data, error } = await client.from(tableName).select('*').order(column, { ascending }).limit(limit);
     if (error) throw error;
     return data || [];
