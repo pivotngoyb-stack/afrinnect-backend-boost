@@ -50,14 +50,23 @@ export default function BlockedUsers() {
   });
 
   const unblockMutation = useMutation({
-    mutationFn: async (userId) => {
-      await base44.entities.UserProfile.update(myProfile.id, {
-        blocked_users: myProfile.blocked_users.filter(id => id !== userId)
+    mutationFn: async (userId: string) => {
+      const response = await base44.functions.invoke('blockUser', {
+        action: 'unblock',
+        target_profile_id: userId,
       });
+      if (response?.error) throw new Error(response.error);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['blocked-users']);
-      queryClient.invalidateQueries(['profile']);
+      // Refetch profile to update blocked_users list
+      const refetchProfile = async () => {
+        const user = await base44.auth.me();
+        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        if (profiles.length > 0) setMyProfile(profiles[0]);
+      };
+      refetchProfile();
+      queryClient.invalidateQueries({ queryKey: ['blocked-users'] });
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
     }
   });
 

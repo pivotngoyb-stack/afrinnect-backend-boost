@@ -302,13 +302,15 @@ export default function Chat() {
     }
   });
 
-  // Block user mutation
+  // Block user mutation - uses backend for proper validation
   const blockMutation = useMutation({
     mutationFn: async () => {
-      await base44.entities.UserProfile.update(myProfile.id, {
-        blocked_users: [...(myProfile.blocked_users || []), otherProfile.id]
+      const response = await base44.functions.invoke('blockUser', {
+        action: 'block',
+        target_profile_id: otherProfile.id,
+        match_id: match?.id,
       });
-      await base44.entities.Match.update(match.id, { status: 'blocked' });
+      if (response?.error) throw new Error(response.error);
     },
     onSuccess: () => {
       window.location.href = createPageUrl('Matches');
