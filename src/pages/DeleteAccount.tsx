@@ -41,6 +41,12 @@ export default function DeleteAccount() {
     setError(null);
     
     try {
+      // Get current session to ensure we have a valid token
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('You must be logged in to delete your account.');
+      }
+
       const { data, error: fnError } = await supabase.functions.invoke('delete-account', {
         body: { reason, confirmDelete: true }
       });
@@ -48,10 +54,11 @@ export default function DeleteAccount() {
       if (fnError) throw fnError;
       if (data?.error) throw new Error(data.error);
       
-      // Logout and redirect
+      // Logout and redirect - use navigate for native app compatibility
       await supabase.auth.signOut();
-      window.location.href = '/';
+      navigate('/', { replace: true });
     } catch (err) {
+      console.error('Delete account error:', err);
       setError(err.message || 'Failed to delete account. Please try again.');
       setIsDeleting(false);
       setShowFinalConfirm(false);
