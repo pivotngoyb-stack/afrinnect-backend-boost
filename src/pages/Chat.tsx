@@ -336,7 +336,7 @@ export default function Chat() {
 
   const handleSend = () => {
     if (!messageText.trim()) return;
-
+    if (isVerificationGated) return;
     // Prevent duplicate sends
     if (sendMessageMutation.isPending) return;
 
