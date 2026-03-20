@@ -685,6 +685,51 @@ export type Database = {
         }
         Relationships: []
       }
+      content_moderations: {
+        Row: {
+          ai_result: Json | null
+          confidence: number | null
+          content_type: string | null
+          content_url: string | null
+          created_at: string | null
+          id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+          text_content: string | null
+          user_id: string
+          user_profile_id: string | null
+        }
+        Insert: {
+          ai_result?: Json | null
+          confidence?: number | null
+          content_type?: string | null
+          content_url?: string | null
+          created_at?: string | null
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          text_content?: string | null
+          user_id: string
+          user_profile_id?: string | null
+        }
+        Update: {
+          ai_result?: Json | null
+          confidence?: number | null
+          content_type?: string | null
+          content_url?: string | null
+          created_at?: string | null
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          text_content?: string | null
+          user_id?: string
+          user_profile_id?: string | null
+        }
+        Relationships: []
+      }
       contest_periods: {
         Row: {
           contest_id: string | null
