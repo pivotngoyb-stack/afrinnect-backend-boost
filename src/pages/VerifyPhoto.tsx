@@ -136,7 +136,7 @@ export default function VerifyPhoto() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center max-w-md">
-          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center shadow-xl">
+          <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-primary flex items-center justify-center shadow-xl">
             <CheckCircle size={48} className="text-white" />
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">Identity Verified! ✓</h2>
