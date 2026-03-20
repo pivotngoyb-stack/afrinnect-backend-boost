@@ -80,14 +80,21 @@ Deno.serve(async (req) => {
           }
 
           // Country match
-          if (profile.country && candidate.country && profile.country === candidate.country) {
+          if (profile.current_country && candidate.current_country && profile.current_country === candidate.current_country) {
             score += 15;
             reasons.push("Same country");
           }
 
           // Age compatibility (within 5 years)
-          if (profile.age && candidate.age) {
-            const ageDiff = Math.abs(profile.age - candidate.age);
+          const getAge = (bd: string) => {
+            if (!bd) return null;
+            const diff = Date.now() - new Date(bd).getTime();
+            return Math.floor(diff / (365.25 * 24 * 60 * 60 * 1000));
+          };
+          const pAge = getAge(profile.birth_date);
+          const cAge = getAge(candidate.birth_date);
+          if (pAge && cAge) {
+            const ageDiff = Math.abs(pAge - cAge);
             if (ageDiff <= 3) { score += 15; reasons.push("Close in age"); }
             else if (ageDiff <= 5) { score += 10; reasons.push("Similar age"); }
             else if (ageDiff <= 10) { score += 5; }
