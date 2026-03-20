@@ -365,7 +365,7 @@ export default function AdminUsers() {
                             {u.current_city ? `${u.current_city}, ` : ''}{u.current_country}
                           </td>
                           <td className="p-4 text-slate-400">
-                            {new Date(u.created_date).toLocaleDateString()}
+                            {u.created_at ? new Date(u.created_at).toLocaleDateString() : '-'}
                           </td>
                           <td className="p-4 text-slate-400">
                             {u.last_active ? new Date(u.last_active).toLocaleDateString() : 'Never'}
