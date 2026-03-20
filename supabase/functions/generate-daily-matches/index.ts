@@ -21,7 +21,7 @@ Deno.serve(async (req) => {
     // Get all active profiles
     const { data: profiles, error: profilesErr } = await supabase
       .from("user_profiles")
-      .select("id, user_id, gender, looking_for, age, country, interests, religion, education_level, relationship_goal, subscription_tier")
+      .select("id, user_id, gender, looking_for, birth_date, current_country, interests, religion, education, relationship_goal, subscription_tier")
       .eq("is_active", true)
       .limit(1000);
 
