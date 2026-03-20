@@ -243,6 +243,7 @@ export default function Chat() {
     }
   }, [sendMessageMutation.isSuccess, sendMessageMutation.isError, matchId, queryClient]);
 
+  const { isGated: isVerificationGated, matchCount: gateMatchCount } = useVerificationGate(myProfile);
 
 
   // Image mutation
