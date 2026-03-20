@@ -1171,6 +1171,7 @@ export type Database = {
           id: string
           is_active: boolean | null
           max_redemptions: number | null
+          trial_days: number | null
         }
         Insert: {
           code: string
@@ -1182,6 +1183,7 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           max_redemptions?: number | null
+          trial_days?: number | null
         }
         Update: {
           code?: string
@@ -1193,6 +1195,7 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           max_redemptions?: number | null
+          trial_days?: number | null
         }
         Relationships: []
       }
