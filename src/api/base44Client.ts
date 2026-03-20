@@ -271,7 +271,10 @@ const functionNameMap: Record<string, string> = {
   generateImage: 'generate-image',
   inviteUser: 'invite-user',
   sendEmail: 'send-email',
+  sendMessage: 'send-message',
   stripeWebhook: 'stripe-webhook',
+  verifyVideoIdentity: 'verify-photo',
+  moderateContent: 'moderate-content',
   ubuntuAi: 'ubuntu-ai',
   createProfile: 'createProfile',
 };

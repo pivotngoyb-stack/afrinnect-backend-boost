@@ -80,13 +80,15 @@ export default function EventChat() {
         throw new Error('Only event attendees can chat');
       }
 
-      // AI content moderation
-      const moderationResult = await base44.integrations.Core.InvokeLLM({
-        prompt: `Is this message appropriate for an event chat? Reply ONLY with "yes" or "no": "${message}"`,
+      // AI content moderation via backend
+      const moderationResponse = await base44.functions.invoke('moderateContent', {
+        text_content: message.trim(),
+        content_type: 'message',
+        user_profile_id: myProfile.id,
       });
 
-      if (moderationResult.toLowerCase().includes('no')) {
-        throw new Error('Message contains inappropriate content');
+      if (moderationResponse?.moderation?.action === 'reject') {
+        throw new Error('Message flagged by safety filter: ' + (moderationResponse.moderation.reason || 'inappropriate content'));
       }
 
       await base44.entities.Message.create({

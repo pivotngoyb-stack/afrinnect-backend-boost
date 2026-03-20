@@ -285,16 +285,15 @@ export default function Chat() {
     }
   });
 
-  // Report mutation
+  // Report mutation - uses backend edge function for proper validation
   const reportMutation = useMutation({
     mutationFn: async () => {
-      await base44.entities.Report.create({
-        reporter_id: myProfile.id,
+      const response = await base44.functions.invoke('submitReport', {
         reported_id: otherProfile.id,
         report_type: 'harassment',
         description: reportReason,
-        status: 'pending'
       });
+      if (response?.error) throw new Error(response.error);
     },
     onSuccess: () => {
       setShowReport(false);
