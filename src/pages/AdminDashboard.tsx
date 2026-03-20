@@ -1,8 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import { createPageUrl } from "@/utils";
 import { 
   Users, MessageSquare, Heart, Shield, TrendingUp, AlertTriangle,
   Settings, BarChart3, UserX, Eye, Clock, DollarSign, Activity,
@@ -12,13 +11,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, 
   DropdownMenuTrigger, DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -36,106 +33,62 @@ export default function AdminDashboard() {
 
   const checkAuth = async () => {
     try {
-      const currentUser = await base44.auth.me();
-      if (!currentUser || currentUser.role !== 'admin') {
-        navigate(createPageUrl('Home'));
-        return;
-      }
-      setUser(currentUser);
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) { navigate('/home'); return; }
+      
+      const { data: roles } = await supabase.from('user_roles').select('role').eq('user_id', authUser.id);
+      const isAdmin = roles?.some(r => r.role === 'admin');
+      if (!isAdmin) { navigate('/home'); return; }
+      
+      setUser({ ...authUser, full_name: authUser.user_metadata?.full_name || authUser.email, role: 'admin' });
       await loadDashboardData();
     } catch (error) {
-      navigate(createPageUrl('Home'));
+      navigate('/home');
     }
   };
 
   const loadDashboardData = async () => {
     setLoading(true);
     try {
-      const [profiles, matches, messages, reports, likes, subscriptions] = await Promise.all([
-        base44.entities.UserProfile.list('-created_date', 1000),
-        base44.entities.Match.filter({ is_match: true }, '-created_date', 1000),
-        base44.entities.Message.list('-created_date', 500),
-        base44.entities.Report.filter({ status: 'pending' }, '-created_date', 50),
-        base44.entities.Like.list('-created_date', 1000),
-        base44.entities.Subscription.filter({ status: 'active' }, '-created_date', 200)
+      // Use admin-stats edge function for efficient server-side aggregation
+      const { data, error } = await supabase.functions.invoke('admin-stats');
+      
+      if (error) throw error;
+      if (data?.stats) {
+        setStats(data.stats);
+        
+        // Set alerts
+        const newAlerts = [];
+        if (data.stats.pendingReports > 10) {
+          newAlerts.push({ type: 'danger', message: `${data.stats.pendingReports} pending reports need attention`, icon: AlertTriangle });
+        }
+        if (data.stats.urgentTickets > 5) {
+          newAlerts.push({ type: 'warning', message: `${data.stats.urgentTickets} urgent support tickets`, icon: AlertTriangle });
+        }
+        if (parseFloat(data.stats.dauMauRatio || 0) < 20) {
+          newAlerts.push({ type: 'info', message: 'DAU/MAU ratio below target (20%)', icon: TrendingUp });
+        }
+        if (data.stats.pendingVerifications > 0) {
+          newAlerts.push({ type: 'info', message: `${data.stats.pendingVerifications} pending verifications`, icon: Shield });
+        }
+        setAlerts(newAlerts);
+      }
+      
+      // Fetch recent activity separately (lightweight)
+      const [recentSignups, recentReports] = await Promise.all([
+        supabase.from('user_profiles').select('display_name, created_at').order('created_at', { ascending: false }).limit(5),
+        supabase.from('reports').select('report_type, created_at').order('created_at', { ascending: false }).limit(5),
       ]);
 
-      // Calculate stats
-      const now = new Date();
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-      const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
-
-      const activeProfiles = profiles.filter(p => p.is_active && !p.is_banned);
-      const newUsersToday = profiles.filter(p => new Date(p.created_date) >= today);
-      const newUsersWeek = profiles.filter(p => new Date(p.created_date) >= weekAgo);
-      const premiumUsers = profiles.filter(p => p.is_premium);
-      const bannedUsers = profiles.filter(p => p.is_banned);
-      const suspendedUsers = profiles.filter(p => p.is_suspended);
-
-      const matchesToday = matches.filter(m => new Date(m.created_date) >= today);
-      const messagesToday = messages.filter(m => new Date(m.created_date) >= today);
-
-      // DAU calculation (users active in last 24 hours)
-      const dau = profiles.filter(p => {
-        if (!p.last_active) return false;
-        return new Date(p.last_active) >= new Date(now.getTime() - 24 * 60 * 60 * 1000);
-      }).length;
-
-      // MAU calculation (users active in last 30 days)
-      const mau = profiles.filter(p => {
-        if (!p.last_active) return false;
-        return new Date(p.last_active) >= monthAgo;
-      }).length;
-
-      // Revenue (estimated from active subscriptions)
-      const revenue = subscriptions.reduce((sum, sub) => sum + (sub.amount_paid || 0), 0);
-
-      setStats({
-        totalUsers: profiles.length,
-        activeUsers: activeProfiles.length,
-        newUsersToday: newUsersToday.length,
-        newUsersWeek: newUsersWeek.length,
-        premiumUsers: premiumUsers.length,
-        conversionRate: profiles.length > 0 ? ((premiumUsers.length / profiles.length) * 100).toFixed(1) : 0,
-        bannedUsers: bannedUsers.length,
-        suspendedUsers: suspendedUsers.length,
-        totalMatches: matches.length,
-        matchesToday: matchesToday.length,
-        totalMessages: messages.length,
-        messagesToday: messagesToday.length,
-        totalLikes: likes.length,
-        pendingReports: reports.length,
-        dau,
-        mau,
-        dauMauRatio: mau > 0 ? ((dau / mau) * 100).toFixed(1) : 0,
-        revenue,
-        activeSubscriptions: subscriptions.length
-      });
-
-      // Set alerts
-      const newAlerts = [];
-      if (reports.length > 10) {
-        newAlerts.push({ type: 'danger', message: `${reports.length} pending reports need attention`, icon: AlertTriangle });
-      }
-      if (bannedUsers.length > 50) {
-        newAlerts.push({ type: 'warning', message: `High ban rate: ${bannedUsers.length} users banned`, icon: UserX });
-      }
-      if (parseFloat(stats?.dauMauRatio || 0) < 20) {
-        newAlerts.push({ type: 'info', message: 'DAU/MAU ratio below target (20%)', icon: TrendingUp });
-      }
-      setAlerts(newAlerts);
-
-      // Recent activity
       const activities = [
-        ...newUsersToday.slice(0, 5).map(u => ({ type: 'signup', user: u.display_name, time: u.created_date })),
-        ...matchesToday.slice(0, 5).map(m => ({ type: 'match', time: m.matched_at || m.created_date })),
-        ...reports.slice(0, 5).map(r => ({ type: 'report', reportType: r.report_type, time: r.created_date }))
+        ...(recentSignups.data || []).map(u => ({ type: 'signup', user: u.display_name, time: u.created_at })),
+        ...(recentReports.data || []).map(r => ({ type: 'report', reportType: r.report_type, time: r.created_at })),
       ].sort((a, b) => new Date(b.time) - new Date(a.time)).slice(0, 10);
-
       setRecentActivity(activities);
     } catch (error) {
       console.error('Error loading dashboard:', error);
+      // Fallback: still show the page
+      setStats({});
     }
     setLoading(false);
   };
@@ -147,17 +100,17 @@ export default function AdminDashboard() {
   };
 
   const navItems = [
-    { label: 'Overview', icon: BarChart3, page: 'AdminDashboard', active: true },
-    { label: 'Users', icon: Users, page: 'AdminUsers' },
-    { label: 'Moderation', icon: Shield, page: 'AdminModeration', badge: stats?.pendingReports },
-    { label: 'Analytics', icon: TrendingUp, page: 'AdminAnalytics' },
-    { label: 'Subscriptions', icon: DollarSign, page: 'AdminSubscriptions' },
-    { label: 'VIP Events', icon: Heart, page: 'AdminVIPEvents' },
-    { label: 'Ambassadors', icon: Users, page: 'AdminAmbassadors' },
-    { label: 'Broadcast', icon: MessageSquare, page: 'AdminBroadcast' },
-    { label: 'Content', icon: MessageSquare, page: 'AdminContent' },
-    { label: 'Feature Flags', icon: Activity, page: 'AdminFeatureFlags' },
-    { label: 'Settings', icon: Settings, page: 'AdminSettings' },
+    { label: 'Overview', icon: BarChart3, page: '/admin', active: true },
+    { label: 'Users', icon: Users, page: '/admin/users' },
+    { label: 'Moderation', icon: Shield, page: '/admin/moderation', badge: stats?.pendingReports },
+    { label: 'Analytics', icon: TrendingUp, page: '/admin/analytics' },
+    { label: 'Subscriptions', icon: DollarSign, page: '/admin/subscriptions' },
+    { label: 'VIP Events', icon: Heart, page: '/admin/vip-events' },
+    { label: 'Ambassadors', icon: Users, page: '/admin/ambassadors' },
+    { label: 'Broadcast', icon: MessageSquare, page: '/admin/broadcast' },
+    { label: 'Content', icon: MessageSquare, page: '/admin/content' },
+    { label: 'Feature Flags', icon: Activity, page: '/admin/feature-flags' },
+    { label: 'Settings', icon: Settings, page: '/admin/settings' },
   ];
 
   if (loading) {
@@ -175,7 +128,6 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-slate-950 flex">
       {/* Sidebar */}
       <aside className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-slate-900 border-r border-slate-800 transition-all duration-300 flex flex-col`}>
-        {/* Logo */}
         <div className="p-4 border-b border-slate-800">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center">
@@ -190,13 +142,12 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 p-4">
           <ul className="space-y-2">
             {navItems.map((item) => (
               <li key={item.page}>
                 <button
-                  onClick={() => navigate(createPageUrl(item.page))}
+                  onClick={() => navigate(item.page)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
                     item.active 
                       ? 'bg-orange-500/20 text-orange-400' 
@@ -218,7 +169,6 @@ export default function AdminDashboard() {
           </ul>
         </nav>
 
-        {/* User */}
         <div className="p-4 border-t border-slate-800">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -235,11 +185,11 @@ export default function AdminDashboard() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 bg-slate-900 border-slate-800">
-              <DropdownMenuItem onClick={() => navigate(createPageUrl('Home'))} className="text-slate-300 hover:text-white hover:bg-slate-800">
+              <DropdownMenuItem onClick={() => navigate('/home')} className="text-slate-300 hover:text-white hover:bg-slate-800">
                 <Eye className="w-4 h-4 mr-2" /> View App
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-slate-800" />
-              <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-red-400 hover:text-red-300 hover:bg-slate-800">
+              <DropdownMenuItem onClick={async () => { await supabase.auth.signOut(); navigate('/'); }} className="text-red-400 hover:text-red-300 hover:bg-slate-800">
                 <LogOut className="w-4 h-4 mr-2" /> Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -249,7 +199,6 @@ export default function AdminDashboard() {
 
       {/* Main Content */}
       <main className="flex-1 overflow-auto">
-        {/* Top Bar */}
         <header className="sticky top-0 z-10 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800 px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -295,7 +244,6 @@ export default function AdminDashboard() {
                 }`}>
                   <alert.icon className="w-5 h-5" />
                   <span>{alert.message}</span>
-                  <Button variant="ghost" size="sm" className="ml-auto">View</Button>
                 </div>
               ))}
             </div>
@@ -308,8 +256,8 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-slate-400 text-sm">Total Users</p>
-                    <p className="text-2xl font-bold text-white">{stats?.totalUsers?.toLocaleString()}</p>
-                    <p className="text-green-400 text-xs">+{stats?.newUsersToday} today</p>
+                    <p className="text-2xl font-bold text-white">{stats?.totalProfiles?.toLocaleString() || 0}</p>
+                    <p className="text-green-400 text-xs">+{stats?.newUsersThisWeek || 0} this week</p>
                   </div>
                   <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
                     <Users className="w-6 h-6 text-blue-400" />
@@ -323,8 +271,8 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-slate-400 text-sm">DAU / MAU</p>
-                    <p className="text-2xl font-bold text-white">{stats?.dau} / {stats?.mau}</p>
-                    <p className="text-slate-400 text-xs">{stats?.dauMauRatio}% ratio</p>
+                    <p className="text-2xl font-bold text-white">{stats?.dau || 0} / {stats?.mau || 0}</p>
+                    <p className="text-slate-400 text-xs">{stats?.dauMauRatio || 0}% ratio</p>
                   </div>
                   <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center">
                     <Activity className="w-6 h-6 text-green-400" />
@@ -338,8 +286,8 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-slate-400 text-sm">Premium Users</p>
-                    <p className="text-2xl font-bold text-white">{stats?.premiumUsers}</p>
-                    <p className="text-orange-400 text-xs">{stats?.conversionRate}% conversion</p>
+                    <p className="text-2xl font-bold text-white">{stats?.premiumUsers || 0}</p>
+                    <p className="text-orange-400 text-xs">{stats?.conversionRate || 0}% conversion</p>
                   </div>
                   <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
                     <DollarSign className="w-6 h-6 text-orange-400" />
@@ -353,7 +301,7 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-slate-400 text-sm">Pending Reports</p>
-                    <p className="text-2xl font-bold text-white">{stats?.pendingReports}</p>
+                    <p className="text-2xl font-bold text-white">{stats?.pendingReports || 0}</p>
                     <p className="text-red-400 text-xs">Needs review</p>
                   </div>
                   <div className="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center">
@@ -367,18 +315,18 @@ export default function AdminDashboard() {
           {/* Secondary Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
             {[
-              { label: 'Total Matches', value: stats?.totalMatches, sub: `+${stats?.matchesToday} today`, color: 'pink' },
-              { label: 'Messages Sent', value: stats?.totalMessages, sub: `+${stats?.messagesToday} today`, color: 'purple' },
-              { label: 'Total Likes', value: stats?.totalLikes, sub: 'All time', color: 'red' },
-              { label: 'Active Subs', value: stats?.activeSubscriptions, sub: 'Paying users', color: 'green' },
-              { label: 'Banned Users', value: stats?.bannedUsers, sub: 'Permanent', color: 'slate' },
-              { label: 'Suspended', value: stats?.suspendedUsers, sub: 'Temporary', color: 'yellow' },
+              { label: 'Total Matches', value: stats?.totalMatches || 0, sub: `+${stats?.matchesThisWeek || 0} this week`, color: 'text-pink-400' },
+              { label: 'Messages', value: stats?.totalMessages || 0, sub: 'All time', color: 'text-purple-400' },
+              { label: 'Total Likes', value: stats?.totalLikes || 0, sub: 'All time', color: 'text-red-400' },
+              { label: 'Active Subs', value: stats?.activeSubscriptions || 0, sub: `$${(stats?.totalRevenue || 0).toFixed(0)} revenue`, color: 'text-green-400' },
+              { label: 'Banned', value: stats?.bannedUsers || 0, sub: 'Permanent', color: 'text-slate-400' },
+              { label: 'Suspended', value: stats?.suspendedUsers || 0, sub: 'Temporary', color: 'text-yellow-400' },
             ].map((metric, i) => (
               <Card key={i} className="bg-slate-900 border-slate-800">
                 <CardContent className="p-4">
                   <p className="text-slate-400 text-xs">{metric.label}</p>
                   <p className="text-xl font-bold text-white">{metric.value?.toLocaleString()}</p>
-                  <p className={`text-${metric.color}-400 text-xs`}>{metric.sub}</p>
+                  <p className={`${metric.color} text-xs`}>{metric.sub}</p>
                 </CardContent>
               </Card>
             ))}
@@ -386,22 +334,21 @@ export default function AdminDashboard() {
 
           {/* Quick Actions & Activity */}
           <div className="grid md:grid-cols-3 gap-6">
-            {/* Quick Actions */}
             <Card className="bg-slate-900 border-slate-800">
               <CardHeader>
                 <CardTitle className="text-white">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 {[
-                  { label: 'Review Reports', icon: Flag, page: 'AdminModeration', badge: stats?.pendingReports, color: 'red' },
-                  { label: 'Manage Users', icon: Users, page: 'AdminUsers', color: 'blue' },
-                  { label: 'View Analytics', icon: TrendingUp, page: 'AdminAnalytics', color: 'green' },
-                  { label: 'System Settings', icon: Settings, page: 'AdminSettings', color: 'slate' },
-                  { label: 'Send Broadcast', icon: Bell, page: 'AdminBroadcast', color: 'purple' },
+                  { label: 'Review Reports', icon: Flag, page: '/admin/moderation', badge: stats?.pendingReports, color: 'red' },
+                  { label: 'Manage Users', icon: Users, page: '/admin/users', color: 'blue' },
+                  { label: 'View Analytics', icon: TrendingUp, page: '/admin/analytics', color: 'green' },
+                  { label: 'System Settings', icon: Settings, page: '/admin/settings', color: 'slate' },
+                  { label: 'Send Broadcast', icon: Bell, page: '/admin/broadcast', color: 'purple' },
                 ].map((action, i) => (
                   <button
                     key={i}
-                    onClick={() => navigate(createPageUrl(action.page))}
+                    onClick={() => navigate(action.page)}
                     className="w-full flex items-center gap-3 p-3 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors group"
                   >
                     <div className={`w-8 h-8 rounded-lg bg-${action.color}-500/20 flex items-center justify-center`}>
@@ -417,11 +364,9 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
 
-            {/* Recent Activity */}
             <Card className="bg-slate-900 border-slate-800 md:col-span-2">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-white">Recent Activity</CardTitle>
-                <Button variant="ghost" size="sm" className="text-slate-400">View All</Button>
               </CardHeader>
               <CardContent>
                 <ScrollArea className="h-[300px]">
@@ -429,19 +374,17 @@ export default function AdminDashboard() {
                     {recentActivity.map((activity, i) => (
                       <div key={i} className="flex items-center gap-4">
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          activity.type === 'signup' ? 'bg-green-500/20' :
-                          activity.type === 'match' ? 'bg-pink-500/20' :
-                          'bg-red-500/20'
+                          activity.type === 'signup' ? 'bg-green-500/20' : 'bg-red-500/20'
                         }`}>
-                          {activity.type === 'signup' ? <Users className="w-5 h-5 text-green-400" /> :
-                           activity.type === 'match' ? <Heart className="w-5 h-5 text-pink-400" /> :
-                           <Flag className="w-5 h-5 text-red-400" />}
+                          {activity.type === 'signup' 
+                            ? <Users className="w-5 h-5 text-green-400" />
+                            : <Flag className="w-5 h-5 text-red-400" />}
                         </div>
                         <div className="flex-1">
                           <p className="text-white text-sm">
-                            {activity.type === 'signup' ? `${activity.user} signed up` :
-                             activity.type === 'match' ? 'New match created' :
-                             `New report: ${activity.reportType}`}
+                            {activity.type === 'signup' 
+                              ? `${activity.user || 'New user'} signed up`
+                              : `New report: ${activity.reportType}`}
                           </p>
                           <p className="text-slate-400 text-xs">
                             {new Date(activity.time).toLocaleString()}
@@ -449,6 +392,9 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                     ))}
+                    {recentActivity.length === 0 && (
+                      <p className="text-slate-500 text-center py-8">No recent activity</p>
+                    )}
                   </div>
                 </ScrollArea>
               </CardContent>
