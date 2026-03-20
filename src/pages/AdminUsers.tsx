@@ -38,7 +38,7 @@ export default function AdminUsers() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [tierFilter, setTierFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("-created_date");
+  const [sortBy, setSortBy] = useState("-created_at");
   const [page, setPage] = useState(1);
   const [selectedUser, setSelectedUser] = useState(null);
   const [actionDialog, setActionDialog] = useState({ open: false, type: null, user: null });
