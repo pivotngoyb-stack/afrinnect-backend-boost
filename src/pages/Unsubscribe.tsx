@@ -1,9 +1,8 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, AlertTriangle, Loader2, Crown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function Unsubscribe() {
+  const navigate = useNavigate();
   const [myProfile, setMyProfile] = useState(null);
   const [reason, setReason] = useState('');
   const [feedback, setFeedback] = useState('');
@@ -21,49 +21,39 @@ export default function Unsubscribe() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const user = await base44.auth.me();
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
-        if (profiles.length > 0) setMyProfile(profiles[0]);
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { navigate('/'); return; }
+        const { data: profiles } = await supabase.from('user_profiles').select('*').eq('user_id', user.id).limit(1);
+        if (profiles && profiles.length > 0) setMyProfile(profiles[0]);
       } catch (e) {
-        window.location.href = createPageUrl('Landing');
+        navigate('/');
       }
     };
     fetchProfile();
-  }, []);
+  }, [navigate]);
 
-  // Fetch active subscription
   const { data: subscription } = useQuery({
     queryKey: ['active-subscription', myProfile?.id],
     queryFn: async () => {
-      const subs = await base44.entities.Subscription.filter({
-        user_profile_id: myProfile.id,
-        status: 'active'
-      });
-      return subs[0];
+      const { data } = await supabase
+        .from('subscriptions')
+        .select('*')
+        .eq('user_profile_id', myProfile.id)
+        .eq('status', 'active')
+        .limit(1);
+      return data?.[0] || null;
     },
     enabled: !!myProfile
   });
 
   const cancelMutation = useMutation({
     mutationFn: async () => {
-      if (!subscription) throw new Error('No active subscription');
-
-      // Update subscription
-      await base44.entities.Subscription.update(subscription.id, {
-        status: 'cancelled',
-        auto_renew: false
+      const { data, error } = await supabase.functions.invoke('cancel-subscription', {
+        body: { subscription_id: subscription?.id, reason, feedback }
       });
-
-      // Don't downgrade immediately - let them keep premium until expiry
-      // Just notify them
-
-      await base44.entities.Notification.create({
-        user_profile_id: myProfile.id,
-        type: 'admin_message',
-        title: 'Subscription Cancelled',
-        message: `Your subscription will remain active until ${new Date(subscription.end_date).toLocaleDateString()}. We're sad to see you go!`,
-        is_admin: true
-      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      return data;
     },
     onSuccess: () => {
       setCancelled(true);
@@ -73,25 +63,25 @@ export default function Unsubscribe() {
   if (!myProfile || !subscription) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-purple-600" size={40} />
+        <Loader2 className="animate-spin text-primary" size={40} />
       </div>
     );
   }
 
   if (cancelled) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="p-8 text-center">
             <AlertTriangle size={60} className="mx-auto mb-6 text-amber-600" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Subscription Cancelled</h2>
-            <p className="text-gray-600 mb-6">
+            <h2 className="text-2xl font-bold text-foreground mb-4">Subscription Cancelled</h2>
+            <p className="text-muted-foreground mb-6">
               Your premium features will remain active until{' '}
               <span className="font-semibold">
                 {new Date(subscription.end_date).toLocaleDateString()}
               </span>
             </p>
-            <Link to={createPageUrl('Profile')}>
+            <Link to="/profile">
               <Button className="w-full">Go to Profile</Button>
             </Link>
           </CardContent>
@@ -101,10 +91,10 @@ export default function Unsubscribe() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
-      <header className="bg-white border-b sticky top-0 z-40">
+    <div className="min-h-screen bg-background pb-24">
+      <header className="bg-card border-b sticky top-0 z-40">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
-          <Link to={createPageUrl('Profile')}>
+          <Link to="/profile">
             <Button variant="ghost" size="icon">
               <ArrowLeft size={24} />
             </Button>
@@ -121,7 +111,6 @@ export default function Unsubscribe() {
           </AlertDescription>
         </Alert>
 
-        {/* Current Subscription */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -131,19 +120,19 @@ export default function Unsubscribe() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex justify-between">
-              <span className="text-gray-600">Plan</span>
+              <span className="text-muted-foreground">Plan</span>
               <span className="font-semibold capitalize">
-                {subscription.plan_type.replace('_', ' ')}
+                {subscription.plan_type?.replace('_', ' ')}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Amount</span>
+              <span className="text-muted-foreground">Amount</span>
               <span className="font-semibold">
                 ${subscription.amount_paid} {subscription.currency}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Renewal Date</span>
+              <span className="text-muted-foreground">Renewal Date</span>
               <span className="font-semibold">
                 {new Date(subscription.end_date).toLocaleDateString()}
               </span>
@@ -151,7 +140,6 @@ export default function Unsubscribe() {
           </CardContent>
         </Card>
 
-        {/* Feedback Form */}
         <Card>
           <CardHeader>
             <CardTitle>Help Us Improve</CardTitle>
@@ -187,13 +175,12 @@ export default function Unsubscribe() {
           </CardContent>
         </Card>
 
-        {/* Benefits You'll Lose */}
-        <Card className="border-amber-300 bg-amber-50">
+        <Card className="border-amber-300 bg-amber-50 dark:bg-amber-950/20">
           <CardHeader>
-            <CardTitle className="text-amber-900">You'll Lose Access To:</CardTitle>
+            <CardTitle className="text-amber-900 dark:text-amber-200">You'll Lose Access To:</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-2 text-amber-800">
+            <ul className="space-y-2 text-amber-800 dark:text-amber-300">
               <li>• Unlimited likes and super likes</li>
               <li>• Advanced filters (location, religion, etc.)</li>
               <li>• See who likes you</li>
@@ -204,7 +191,6 @@ export default function Unsubscribe() {
           </CardContent>
         </Card>
 
-        {/* Actions */}
         <div className="space-y-3">
           <Button
             onClick={() => cancelMutation.mutate()}
@@ -223,7 +209,7 @@ export default function Unsubscribe() {
             )}
           </Button>
 
-          <Link to={createPageUrl('Profile')}>
+          <Link to="/profile">
             <Button variant="outline" className="w-full" size="lg">
               Keep My Subscription
             </Button>

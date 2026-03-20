@@ -238,9 +238,33 @@ export const integrations = {
 };
 
 // FUNCTIONS
+// Map legacy camelCase function names to kebab-case edge function names
+const functionNameMap: Record<string, string> = {
+  deleteAccount: 'delete-account',
+  rateLimitAuth: 'rate-limit-auth',
+  acceptLegalTerms: 'accept-legal-terms',
+  submitReport: 'submit-report',
+  mlMatchingEngine: 'ml-matching-engine',
+  sendOTP: 'send-otp',
+  cancelSubscription: 'cancel-subscription',
+  sendNewsletterEmail: 'send-newsletter-email',
+  sendPushNotification: 'send-push-notification',
+  getFounderStats: 'get-founder-stats',
+  chatSuggestions: 'chat-suggestions',
+  profileOptimization: 'profile-optimization',
+  openaiChat: 'openai-chat',
+  generateImage: 'generate-image',
+  inviteUser: 'invite-user',
+  sendEmail: 'send-email',
+  stripeWebhook: 'stripe-webhook',
+  ubuntuAi: 'ubuntu-ai',
+  createProfile: 'createProfile',
+};
+
 export const functions = {
   async invoke(functionName: string, payload?: any) {
-    const { data, error } = await supabase.functions.invoke(functionName, { body: payload });
+    const resolvedName = functionNameMap[functionName] || functionName;
+    const { data, error } = await supabase.functions.invoke(resolvedName, { body: payload });
     if (error) throw error;
     return { data };
   }

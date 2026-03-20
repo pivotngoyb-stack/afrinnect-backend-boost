@@ -657,6 +657,33 @@ export type Database = {
         }
         Relationships: []
       }
+      deleted_accounts: {
+        Row: {
+          deleted_at: string | null
+          email: string | null
+          id: string
+          metadata: Json | null
+          reason: string | null
+          user_id: string
+        }
+        Insert: {
+          deleted_at?: string | null
+          email?: string | null
+          id?: string
+          metadata?: Json | null
+          reason?: string | null
+          user_id: string
+        }
+        Update: {
+          deleted_at?: string | null
+          email?: string | null
+          id?: string
+          metadata?: Json | null
+          reason?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       disputes: {
         Row: {
           created_at: string | null
@@ -986,6 +1013,39 @@ export type Database = {
           transaction_id?: string | null
           user_id?: string
           user_profile_id?: string
+        }
+        Relationships: []
+      }
+      legal_acceptances: {
+        Row: {
+          accepted_at: string
+          created_at: string | null
+          guidelines_version: string
+          id: string
+          ip_address: string | null
+          privacy_version: string
+          terms_version: string
+          user_id: string
+        }
+        Insert: {
+          accepted_at?: string
+          created_at?: string | null
+          guidelines_version?: string
+          id?: string
+          ip_address?: string | null
+          privacy_version?: string
+          terms_version?: string
+          user_id: string
+        }
+        Update: {
+          accepted_at?: string
+          created_at?: string | null
+          guidelines_version?: string
+          id?: string
+          ip_address?: string | null
+          privacy_version?: string
+          terms_version?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -2194,6 +2254,42 @@ export type Database = {
           sort_order?: number | null
           tier?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_ml_profiles: {
+        Row: {
+          compatibility_weights: Json | null
+          created_at: string | null
+          id: string
+          interaction_history: Json | null
+          last_calculated_at: string | null
+          preferences: Json | null
+          updated_at: string | null
+          user_id: string
+          user_profile_id: string | null
+        }
+        Insert: {
+          compatibility_weights?: Json | null
+          created_at?: string | null
+          id?: string
+          interaction_history?: Json | null
+          last_calculated_at?: string | null
+          preferences?: Json | null
+          updated_at?: string | null
+          user_id: string
+          user_profile_id?: string | null
+        }
+        Update: {
+          compatibility_weights?: Json | null
+          created_at?: string | null
+          id?: string
+          interaction_history?: Json | null
+          last_calculated_at?: string | null
+          preferences?: Json | null
+          updated_at?: string | null
+          user_id?: string
+          user_profile_id?: string | null
         }
         Relationships: []
       }

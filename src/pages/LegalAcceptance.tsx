@@ -1,8 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
+import { supabase } from '@/integrations/supabase/client';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Shield, FileText, Users, CheckCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import Logo from '@/components/shared/Logo';
 
 export default function LegalAcceptance() {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [accepted, setAccepted] = useState({
@@ -22,27 +22,36 @@ export default function LegalAcceptance() {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (!authUser) {
+          navigate('/login');
+          return;
+        }
+        setUser(authUser);
         
         // Check if already accepted
-        const acceptances = await base44.entities.LegalAcceptance.filter({ user_id: currentUser.id });
+        const { data: acceptances } = await supabase
+          .from('legal_acceptances')
+          .select('id')
+          .eq('user_id', authUser.id)
+          .limit(1);
         
-        if (acceptances.length > 0) {
-          // Already accepted - redirect to appropriate page
-          const profiles = await base44.entities.UserProfile.filter({ user_id: currentUser.id });
-          window.location.href = profiles.length > 0 ? createPageUrl('Home') : createPageUrl('Onboarding');
+        if (acceptances && acceptances.length > 0) {
+          const { data: profiles } = await supabase
+            .from('user_profiles')
+            .select('id')
+            .eq('user_id', authUser.id)
+            .limit(1);
+          navigate(profiles && profiles.length > 0 ? '/home' : '/onboarding');
         } else {
-          // Not accepted yet - show the page
           setIsLoading(false);
         }
       } catch (e) {
-        // Not logged in - redirect to login
-        base44.auth.redirectToLogin(window.location.href);
+        navigate('/login');
       }
     };
     checkUser();
-  }, []);
+  }, [navigate]);
 
   const handleAccept = async () => {
     if (!user) return;
@@ -53,12 +62,15 @@ export default function LegalAcceptance() {
     }
 
     try {
-      await base44.functions.invoke('acceptLegalTerms', {
-        terms_version: "1.0",
-        privacy_version: "1.0", 
-        guidelines_version: "1.0"
+      const { error } = await supabase.functions.invoke('accept-legal-terms', {
+        body: {
+          terms_version: "1.0",
+          privacy_version: "1.0", 
+          guidelines_version: "1.0"
+        }
       });
-      window.location.href = createPageUrl('Onboarding');
+      if (error) throw error;
+      navigate('/onboarding');
     } catch (error) {
       console.error("Failed to accept terms:", error);
       alert("Something went wrong. Please try again.");
@@ -106,7 +118,7 @@ export default function LegalAcceptance() {
                   <p className="text-sm text-white/70 mb-2">
                     Our rules for using Afrinnect, including account responsibilities and prohibited conduct.
                   </p>
-                  <Link to={createPageUrl('Terms')} target="_blank">
+                  <Link to="/terms" target="_blank">
                     <Button variant="link" className="text-amber-400 p-0 h-auto">
                       Read Full Terms →
                     </Button>
@@ -131,7 +143,7 @@ export default function LegalAcceptance() {
                   <p className="text-sm text-white/70 mb-2">
                     How we collect, use, and protect your personal information and data.
                   </p>
-                  <Link to={createPageUrl('Privacy')} target="_blank">
+                  <Link to="/privacy" target="_blank">
                     <Button variant="link" className="text-green-400 p-0 h-auto">
                       Read Privacy Policy →
                     </Button>
@@ -156,7 +168,7 @@ export default function LegalAcceptance() {
                   <p className="text-sm text-white/70 mb-2">
                     Standards for respectful behavior and safety in our community.
                   </p>
-                  <Link to={createPageUrl('CommunityGuidelines')} target="_blank">
+                  <Link to="/communityguidelines" target="_blank">
                     <Button variant="link" className="text-blue-400 p-0 h-auto">
                       Read Guidelines →
                     </Button>
