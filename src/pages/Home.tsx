@@ -931,6 +931,8 @@ export default function Home() {
       {/* Founding Member Banner */}
       <FoundingMemberBanner profile={myProfile} />
 
+      {isVerificationGated && <VerificationGateBanner matchCount={gateMatchCount} />}
+
       <main className="flex-1 flex flex-col overflow-hidden px-4" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         {/* Activity Summary Banner */}
         <ActivitySummaryBanner userProfile={myProfile} />
