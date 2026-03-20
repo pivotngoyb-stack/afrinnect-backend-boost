@@ -51,8 +51,7 @@ export default function FounderProgramManagement() {
     queryFn: async () => {
       // Try backend function first (if available)
       try {
-        const result = await base44.functions.invoke('getFounderStats', {});
-        const response = result?.data || result;
+        const response = await base44.functions.invoke('getFounderStats', {});
         if (response?.success && response?.data) {
           return {
             total_founders: response.data.summary?.total || 0,
