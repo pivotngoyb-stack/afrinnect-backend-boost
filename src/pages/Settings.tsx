@@ -162,8 +162,7 @@ export default function Settings() {
 
   const deleteAccountMutation = useMutation({
     mutationFn: async () => {
-      await base44.functions.invoke('deleteAccount', {});
-      // Logout happens automatically if account is deleted, but we force client logout
+      await base44.functions.invoke('deleteAccount', { reason: 'Deleted from settings', confirmDelete: true });
       await base44.auth.logout(createPageUrl('Landing'));
     }
   });
