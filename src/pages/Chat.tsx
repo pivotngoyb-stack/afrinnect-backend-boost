@@ -44,6 +44,8 @@ import MessageLimitPaywall from '@/components/paywall/MessageLimitPaywall';
 
 import ReadReceipts from '@/components/chat/ReadReceipts';
 import PremiumTypingIndicator from '@/components/chat/PremiumTypingIndicator';
+import { useVerificationGate } from '@/hooks/useVerificationGate';
+import VerificationGateBanner from '@/components/shared/VerificationGateBanner';
 
 export default function Chat() {
   usePerformanceMonitor('Chat');
