@@ -189,19 +189,8 @@ export default function FounderProgramManagement() {
         }
         const profile = profiles[0];
 
-        const response = await base44.functions.invoke('adminManageFounder', {
-          action: actionMap[data.action],
-          data: {
-            userProfileId: profile.id,
-            trialDays: data.trial_days,
-            additionalDays: data.extend_days
-          }
-        });
-
-        if (response.success) {
-          return { action: `${data.action} completed successfully` };
-        }
-        throw new Error(response.error || 'Action failed');
+        // adminManageFounder not implemented - use local fallback
+        throw new Error('Use local fallback');
       } catch (e) {
         console.log('Backend function unavailable, using local update');
       }
