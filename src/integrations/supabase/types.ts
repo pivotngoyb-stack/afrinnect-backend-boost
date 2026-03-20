@@ -1175,6 +1175,51 @@ export type Database = {
         }
         Relationships: []
       }
+      id_verifications: {
+        Row: {
+          ai_result: Json | null
+          created_at: string | null
+          id: string
+          id_back_url: string | null
+          id_front_url: string
+          id_type: string
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+          user_id: string
+          user_profile_id: string
+        }
+        Insert: {
+          ai_result?: Json | null
+          created_at?: string | null
+          id?: string
+          id_back_url?: string | null
+          id_front_url: string
+          id_type?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          user_id: string
+          user_profile_id: string
+        }
+        Update: {
+          ai_result?: Json | null
+          created_at?: string | null
+          id?: string
+          id_back_url?: string | null
+          id_front_url?: string
+          id_type?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          user_id?: string
+          user_profile_id?: string
+        }
+        Relationships: []
+      }
       in_app_purchases: {
         Row: {
           amount: number | null
@@ -1892,6 +1937,48 @@ export type Database = {
           status?: string | null
           updated_at?: string | null
           user_profile_id?: string
+        }
+        Relationships: []
+      }
+      photo_verifications: {
+        Row: {
+          ai_result: Json | null
+          created_at: string | null
+          id: string
+          profile_photo_url: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          selfie_url: string
+          status: string | null
+          user_id: string
+          user_profile_id: string
+          verification_type: string | null
+        }
+        Insert: {
+          ai_result?: Json | null
+          created_at?: string | null
+          id?: string
+          profile_photo_url?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          selfie_url: string
+          status?: string | null
+          user_id: string
+          user_profile_id: string
+          verification_type?: string | null
+        }
+        Update: {
+          ai_result?: Json | null
+          created_at?: string | null
+          id?: string
+          profile_photo_url?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          selfie_url?: string
+          status?: string | null
+          user_id?: string
+          user_profile_id?: string
+          verification_type?: string | null
         }
         Relationships: []
       }
@@ -2830,6 +2917,8 @@ export type Database = {
           is_active: boolean | null
           is_banned: boolean | null
           is_founding_member: boolean | null
+          is_id_verified: boolean | null
+          is_photo_verified: boolean | null
           is_premium: boolean | null
           is_suspended: boolean | null
           is_test_user: boolean | null
@@ -2913,6 +3002,8 @@ export type Database = {
           is_active?: boolean | null
           is_banned?: boolean | null
           is_founding_member?: boolean | null
+          is_id_verified?: boolean | null
+          is_photo_verified?: boolean | null
           is_premium?: boolean | null
           is_suspended?: boolean | null
           is_test_user?: boolean | null
@@ -2996,6 +3087,8 @@ export type Database = {
           is_active?: boolean | null
           is_banned?: boolean | null
           is_founding_member?: boolean | null
+          is_id_verified?: boolean | null
+          is_photo_verified?: boolean | null
           is_premium?: boolean | null
           is_suspended?: boolean | null
           is_test_user?: boolean | null
