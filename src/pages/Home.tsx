@@ -80,6 +80,7 @@ export default function Home() {
   const navigate = useNavigate();
   const { prompt: upgradePrompt, dismissPrompt } = useUpgradePrompts(myProfile);
   const { tiers: tierConfig } = useTierConfig();
+  const { isGated: isVerificationGated, matchCount: gateMatchCount } = useVerificationGate(myProfile);
 
   // Fetch AI Behavior Analysis Recommendations - DISABLED (table doesn't exist yet)
   // useEffect(() => { ... }, [myProfile?.id]);
