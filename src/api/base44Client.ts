@@ -57,19 +57,34 @@ export const auth = {
 };
 
 // ENTITY HELPERS
+// Add legacy aliases so code using created_date still works
+const addLegacyAliases = (rows: any[]): any[] =>
+  rows.map(r => r && !r.created_date && r.created_at ? { ...r, created_date: r.created_at } : r);
+
+const mapFilterKeys = (filters: Record<string, any>): Record<string, any> => {
+  const mapped: Record<string, any> = {};
+  for (const [key, value] of Object.entries(filters)) {
+    mapped[key === 'created_date' ? 'created_at' : key] = value;
+  }
+  return mapped;
+};
+
 const createEntityHelper = (tableName: string) => ({
   async list(sort = '-created_at', limit = 50): Promise<any[]> {
     const ascending = !sort.startsWith('-');
-    const column = sort.replace('-', '');
+    let column = sort.replace('-', '');
+    if (column === 'created_date') column = 'created_at';
     const { data, error } = await client.from(tableName).select('*').order(column, { ascending }).limit(limit);
     if (error) throw error;
-    return data || [];
+    return addLegacyAliases(data || []);
   },
   async filter(filters: Record<string, any>, sort = '-created_at', limit = 50): Promise<any[]> {
     const ascending = !sort.startsWith('-');
-    const column = sort.replace('-', '');
+    let column = sort.replace('-', '');
+    if (column === 'created_date') column = 'created_at';
+    const mappedFilters = mapFilterKeys(filters);
     let query = client.from(tableName).select('*');
-    Object.entries(filters).forEach(([key, value]) => {
+    Object.entries(mappedFilters).forEach(([key, value]) => {
       if (Array.isArray(value)) { query = query.in(key, value); }
       else if (typeof value === 'object' && value !== null) {
         Object.entries(value as Record<string, any>).forEach(([op, val]) => {
@@ -83,22 +98,22 @@ const createEntityHelper = (tableName: string) => ({
     });
     const { data, error } = await query.order(column, { ascending }).limit(limit);
     if (error) throw error;
-    return data || [];
+    return addLegacyAliases(data || []);
   },
   async create(data: any): Promise<any> {
     const { data: created, error } = await client.from(tableName).insert(data).select().single();
     if (error) throw error;
-    return created;
+    return addLegacyAliases([created])[0];
   },
   async bulkCreate(items: any[]): Promise<any[]> {
     const { data, error } = await client.from(tableName).insert(items).select();
     if (error) throw error;
-    return data || [];
+    return addLegacyAliases(data || []);
   },
   async update(id: string, data: any): Promise<any> {
     const { data: updated, error } = await client.from(tableName).update(data).eq('id', id).select().single();
     if (error) throw error;
-    return updated;
+    return addLegacyAliases([updated])[0];
   },
   async delete(id: string): Promise<boolean> {
     const { error } = await client.from(tableName).delete().eq('id', id);

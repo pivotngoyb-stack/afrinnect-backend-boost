@@ -38,7 +38,7 @@ export default function AdminUsers() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [tierFilter, setTierFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("-created_date");
+  const [sortBy, setSortBy] = useState("-created_at");
   const [page, setPage] = useState(1);
   const [selectedUser, setSelectedUser] = useState(null);
   const [actionDialog, setActionDialog] = useState({ open: false, type: null, user: null });
@@ -72,7 +72,7 @@ export default function AdminUsers() {
   const loadUsers = async () => {
     setLoading(true);
     try {
-      const profiles = await base44.entities.UserProfile.list('-created_date', 1000);
+      const profiles = await base44.entities.UserProfile.list('-created_at', 1000);
       setUsers(profiles);
     } catch (error) {
       console.error('Error loading users:', error);
@@ -232,7 +232,7 @@ export default function AdminUsers() {
                       u.is_banned ? 'Banned' : u.is_suspended ? 'Suspended' : u.is_active ? 'Active' : 'Inactive',
                       u.subscription_tier || 'free',
                       `"${u.current_city || ''}, ${u.current_country || ''}"`,
-                      u.created_date ? new Date(u.created_date).toLocaleDateString() : '',
+                      u.created_at ? new Date(u.created_at).toLocaleDateString() : '',
                       u.last_active ? new Date(u.last_active).toLocaleDateString() : 'Never'
                     ].join(','))
                   ].join('\n');
@@ -298,8 +298,8 @@ export default function AdminUsers() {
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent className="bg-slate-800 border-slate-700">
-                    <SelectItem value="-created_date">Newest First</SelectItem>
-                    <SelectItem value="created_date">Oldest First</SelectItem>
+                    <SelectItem value="-created_at">Newest First</SelectItem>
+                    <SelectItem value="created_at">Oldest First</SelectItem>
                     <SelectItem value="-last_active">Recently Active</SelectItem>
                     <SelectItem value="display_name">Name A-Z</SelectItem>
                   </SelectContent>
@@ -365,7 +365,7 @@ export default function AdminUsers() {
                             {u.current_city ? `${u.current_city}, ` : ''}{u.current_country}
                           </td>
                           <td className="p-4 text-slate-400">
-                            {new Date(u.created_date).toLocaleDateString()}
+                            {u.created_at ? new Date(u.created_at).toLocaleDateString() : '-'}
                           </td>
                           <td className="p-4 text-slate-400">
                             {u.last_active ? new Date(u.last_active).toLocaleDateString() : 'Never'}
