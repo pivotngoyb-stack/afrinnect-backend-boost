@@ -298,8 +298,8 @@ export default function AdminUsers() {
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent className="bg-slate-800 border-slate-700">
-                    <SelectItem value="-created_date">Newest First</SelectItem>
-                    <SelectItem value="created_date">Oldest First</SelectItem>
+                    <SelectItem value="-created_at">Newest First</SelectItem>
+                    <SelectItem value="created_at">Oldest First</SelectItem>
                     <SelectItem value="-last_active">Recently Active</SelectItem>
                     <SelectItem value="display_name">Name A-Z</SelectItem>
                   </SelectContent>
