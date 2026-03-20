@@ -103,17 +103,17 @@ const createEntityHelper = (tableName: string) => ({
   async create(data: any): Promise<any> {
     const { data: created, error } = await client.from(tableName).insert(data).select().single();
     if (error) throw error;
-    return created;
+    return addLegacyAliases([created])[0];
   },
   async bulkCreate(items: any[]): Promise<any[]> {
     const { data, error } = await client.from(tableName).insert(items).select();
     if (error) throw error;
-    return data || [];
+    return addLegacyAliases(data || []);
   },
   async update(id: string, data: any): Promise<any> {
     const { data: updated, error } = await client.from(tableName).update(data).eq('id', id).select().single();
     if (error) throw error;
-    return updated;
+    return addLegacyAliases([updated])[0];
   },
   async delete(id: string): Promise<boolean> {
     const { error } = await client.from(tableName).delete().eq('id', id);
