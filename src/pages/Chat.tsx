@@ -617,6 +617,8 @@ export default function Chat() {
         />
       )}
 
+      {isVerificationGated && <VerificationGateBanner matchCount={gateMatchCount} />}
+
       {/* Input - Native Keyboard Optimized */}
       <div className="bg-white border-t border-gray-100" style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))', padding: '12px 16px' }}>
         <div className="flex items-center gap-2">
