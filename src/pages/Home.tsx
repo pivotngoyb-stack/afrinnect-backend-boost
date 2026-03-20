@@ -47,6 +47,8 @@ import PremiumBadgeOnProfile from '@/components/monetization/PremiumBadgeOnProfi
 import MatchMilestones from '@/components/monetization/MatchMilestones';
 import VIPEventsPromo from '@/components/monetization/VIPEventsPromo.jsx';
 import FoundingMemberBanner from '@/components/founding/FoundingMemberBanner';
+import { useVerificationGate } from '@/hooks/useVerificationGate';
+import VerificationGateBanner from '@/components/shared/VerificationGateBanner';
 
 
 export default function Home() {
@@ -78,6 +80,7 @@ export default function Home() {
   const navigate = useNavigate();
   const { prompt: upgradePrompt, dismissPrompt } = useUpgradePrompts(myProfile);
   const { tiers: tierConfig } = useTierConfig();
+  const { isGated: isVerificationGated, matchCount: gateMatchCount } = useVerificationGate(myProfile);
 
   // Fetch AI Behavior Analysis Recommendations - DISABLED (table doesn't exist yet)
   // useEffect(() => { ... }, [myProfile?.id]);
@@ -397,6 +400,11 @@ export default function Home() {
     mutationFn: async ({ likedId, isSuperLike = false, likeNote = null }) => {
       if (!myProfile) return;
 
+      // Check verification gate
+      if (isVerificationGated) {
+        throw new Error('verification_required');
+      }
+
       // Check daily limit
       if (!canLike()) {
         throw new Error('daily_limit_reached');
@@ -609,6 +617,10 @@ export default function Home() {
       setCurrentIndex(prev => prev + 1);
     },
     onError: (error) => {
+      if (error.message === 'verification_required') {
+        // Handled by banner display
+        return;
+      }
       if (error.message === 'daily_limit_reached') {
         setShowLimitPaywall(true);
       }
@@ -918,6 +930,8 @@ export default function Home() {
 
       {/* Founding Member Banner */}
       <FoundingMemberBanner profile={myProfile} />
+
+      {isVerificationGated && <VerificationGateBanner matchCount={gateMatchCount} />}
 
       <main className="flex-1 flex flex-col overflow-hidden px-4" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         {/* Activity Summary Banner */}

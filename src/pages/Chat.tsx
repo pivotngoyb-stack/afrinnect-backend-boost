@@ -44,6 +44,8 @@ import MessageLimitPaywall from '@/components/paywall/MessageLimitPaywall';
 
 import ReadReceipts from '@/components/chat/ReadReceipts';
 import PremiumTypingIndicator from '@/components/chat/PremiumTypingIndicator';
+import { useVerificationGate } from '@/hooks/useVerificationGate';
+import VerificationGateBanner from '@/components/shared/VerificationGateBanner';
 
 export default function Chat() {
   usePerformanceMonitor('Chat');
@@ -74,6 +76,7 @@ export default function Chat() {
   const messagesEndRef = useRef(null);
   const typingTimeoutRef = useRef(null);
   const queryClient = useQueryClient();
+  const { isGated: isVerificationGated, matchCount: gateMatchCount } = useVerificationGate(myProfile);
 
   // Real-time WebSocket connection
   const { 
@@ -242,7 +245,6 @@ export default function Chat() {
   }, [sendMessageMutation.isSuccess, sendMessageMutation.isError, matchId, queryClient]);
 
 
-
   // Image mutation
   const sendImageMutation = useMutation({
     mutationFn: async (file) => {
@@ -334,7 +336,7 @@ export default function Chat() {
 
   const handleSend = () => {
     if (!messageText.trim()) return;
-
+    if (isVerificationGated) return;
     // Prevent duplicate sends
     if (sendMessageMutation.isPending) return;
 
@@ -615,6 +617,8 @@ export default function Chat() {
         />
       )}
 
+      {isVerificationGated && <VerificationGateBanner matchCount={gateMatchCount} />}
+
       {/* Input - Native Keyboard Optimized */}
       <div className="bg-white border-t border-gray-100" style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))', padding: '12px 16px' }}>
         <div className="flex items-center gap-2">
@@ -674,7 +678,7 @@ export default function Chat() {
               if (navigator.vibrate) navigator.vibrate(20);
               handleSend();
             }}
-            disabled={!messageText.trim() || sendMessageMutation.isPending}
+            disabled={!messageText.trim() || sendMessageMutation.isPending || isVerificationGated}
             className="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 h-11 w-11 p-0 rounded-full touch-manipulation transition-all active:scale-95"
           >
             <Send size={20} />
