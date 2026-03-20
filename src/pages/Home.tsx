@@ -400,6 +400,11 @@ export default function Home() {
     mutationFn: async ({ likedId, isSuperLike = false, likeNote = null }) => {
       if (!myProfile) return;
 
+      // Check verification gate
+      if (isVerificationGated) {
+        throw new Error('verification_required');
+      }
+
       // Check daily limit
       if (!canLike()) {
         throw new Error('daily_limit_reached');
