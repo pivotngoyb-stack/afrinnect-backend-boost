@@ -52,7 +52,7 @@ export default function FounderProgramManagement() {
       // Try backend function first (if available)
       try {
         const response = await base44.functions.invoke('getFounderStats', {});
-        if (response.success && response.data) {
+        if (response?.success && response?.data) {
           return {
             total_founders: response.data.summary?.total || 0,
             active_trials: response.data.summary?.active || 0,
@@ -170,45 +170,13 @@ export default function FounderProgramManagement() {
     }
   });
 
-  // Manage user mutation - try backend function first, fallback to local
+  // Manage user mutation - direct local update
   const manageUserMutation = useMutation({
     mutationFn: async (data) => {
-      // Try backend function first
-      try {
-        const actionMap = {
-          'grant': 'grant_status',
-          'revoke': 'revoke_status',
-          'extend': 'extend_trial'
-        };
-
-        // Find profile by email first
-        const profiles = await base44.entities.UserProfile.filter({ created_by: data.email });
-        if (profiles.length === 0) {
-          throw new Error('User not found');
-        }
-        const profile = profiles[0];
-
-        const response = await base44.functions.invoke('adminManageFounder', {
-          action: actionMap[data.action],
-          data: {
-            userProfileId: profile.id,
-            trialDays: data.trial_days,
-            additionalDays: data.extend_days
-          }
-        });
-
-        if (response.success) {
-          return { action: `${data.action} completed successfully` };
-        }
-        throw new Error(response.error || 'Action failed');
-      } catch (e) {
-        console.log('Backend function unavailable, using local update');
-      }
-
-      // Fallback: Local update
+      // Find profile by email
       const profiles = await base44.entities.UserProfile.filter({ created_by: data.email });
       if (profiles.length === 0) {
-        throw new Error('User not found');
+        throw new Error('User not found with that email');
       }
       const profile = profiles[0];
 

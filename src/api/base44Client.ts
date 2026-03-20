@@ -266,7 +266,7 @@ export const functions = {
     const resolvedName = functionNameMap[functionName] || functionName;
     const { data, error } = await supabase.functions.invoke(resolvedName, { body: payload });
     if (error) throw error;
-    return { data };
+    return data;
   }
 };
 

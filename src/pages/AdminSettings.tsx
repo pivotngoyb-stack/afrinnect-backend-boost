@@ -421,12 +421,12 @@ export default function AdminSettings() {
                     {featureFlags.map((flag) => (
                       <div key={flag.id} className="flex items-center justify-between p-4 bg-slate-800 rounded-lg">
                         <div>
-                          <p className="text-white font-medium">{flag.display_name}</p>
+                          <p className="text-white font-medium">{flag.name}</p>
                           <p className="text-slate-400 text-sm">{flag.description}</p>
                         </div>
                         <div className="flex items-center gap-4">
-                          {flag.rollout_percentage !== undefined && (
-                            <span className="text-slate-400 text-sm">{flag.rollout_percentage}% rollout</span>
+                          {flag.percentage !== undefined && flag.percentage !== null && (
+                            <span className="text-slate-400 text-sm">{flag.percentage}% rollout</span>
                           )}
                           <Switch
                             checked={flag.is_enabled}
