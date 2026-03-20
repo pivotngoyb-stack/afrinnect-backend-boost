@@ -232,7 +232,7 @@ export default function AdminUsers() {
                       u.is_banned ? 'Banned' : u.is_suspended ? 'Suspended' : u.is_active ? 'Active' : 'Inactive',
                       u.subscription_tier || 'free',
                       `"${u.current_city || ''}, ${u.current_country || ''}"`,
-                      u.created_date ? new Date(u.created_date).toLocaleDateString() : '',
+                      u.created_at ? new Date(u.created_at).toLocaleDateString() : '',
                       u.last_active ? new Date(u.last_active).toLocaleDateString() : 'Never'
                     ].join(','))
                   ].join('\n');
