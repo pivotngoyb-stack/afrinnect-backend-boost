@@ -1,1 +1,7 @@
 project_id = "uadeiglyltniknemagpk"
+
+[functions.chat-suggestions]
+verify_jwt = false
+
+[functions.profile-optimization]
+verify_jwt = false
