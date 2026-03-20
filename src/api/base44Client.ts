@@ -69,7 +69,8 @@ const createEntityHelper = (tableName: string) => ({
   },
   async filter(filters: Record<string, any>, sort = '-created_at', limit = 50): Promise<any[]> {
     const ascending = !sort.startsWith('-');
-    const column = sort.replace('-', '');
+    let column = sort.replace('-', '');
+    if (column === 'created_date') column = 'created_at';
     let query = client.from(tableName).select('*');
     Object.entries(filters).forEach(([key, value]) => {
       if (Array.isArray(value)) { query = query.in(key, value); }
