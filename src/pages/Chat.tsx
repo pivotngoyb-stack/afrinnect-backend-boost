@@ -678,7 +678,7 @@ export default function Chat() {
               if (navigator.vibrate) navigator.vibrate(20);
               handleSend();
             }}
-            disabled={!messageText.trim() || sendMessageMutation.isPending}
+            disabled={!messageText.trim() || sendMessageMutation.isPending || isVerificationGated}
             className="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 h-11 w-11 p-0 rounded-full touch-manipulation transition-all active:scale-95"
           >
             <Send size={20} />
