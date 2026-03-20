@@ -5,3 +5,36 @@ verify_jwt = false
 
 [functions.profile-optimization]
 verify_jwt = false
+
+[functions.rate-limit-auth]
+verify_jwt = false
+
+[functions.send-otp]
+verify_jwt = false
+
+[functions.delete-account]
+verify_jwt = false
+
+[functions.accept-legal-terms]
+verify_jwt = false
+
+[functions.submit-report]
+verify_jwt = false
+
+[functions.ml-matching-engine]
+verify_jwt = false
+
+[functions.cancel-subscription]
+verify_jwt = false
+
+[functions.send-newsletter-email]
+verify_jwt = false
+
+[functions.get-founder-stats]
+verify_jwt = false
+
+[functions.send-push-notification]
+verify_jwt = false
+
+[functions.send-email]
+verify_jwt = false
