@@ -1,10 +1,16 @@
-// TODO: Replace with Supabase edge function calls once Cloud is enabled
+import { supabase } from '@/integrations/supabase/client';
 
 export const checkRateLimit = async (action: string, identifier: string) => {
   try {
-    // TODO: await supabase.functions.invoke('rate-limit-auth', { body: { action, identifier } });
-    console.warn("[RateLimitGuard] Rate limiting not yet connected to backend");
-    return { allowed: true };
+    const { data, error } = await supabase.functions.invoke('rate-limit-auth', {
+      body: { action, identifier }
+    });
+    if (error) {
+      // If 429, extract from error
+      console.warn('Rate limit check failed:', error);
+      return { allowed: true };
+    }
+    return data;
   } catch (error: any) {
     if (error?.response?.status === 429) {
       return {

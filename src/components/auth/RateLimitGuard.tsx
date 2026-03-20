@@ -1,18 +1,20 @@
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/integrations/supabase/client';
 
-// Client-side rate limiting helper
 export const checkRateLimit = async (action: string, identifier: string) => {
   try {
-    const response = await base44.functions.invoke('rateLimitAuth', {
-      action,
-      identifier
+    const { data, error } = await supabase.functions.invoke('rate-limit-auth', {
+      body: { action, identifier }
     });
-    return response.data;
+    if (error) {
+      console.warn('Rate limit check failed:', error);
+      return { allowed: true };
+    }
+    return data;
   } catch (error: any) {
-    if (error.response?.status === 429) {
+    if (error?.response?.status === 429) {
       return {
         allowed: false,
-        error: error.response.data.error || 'Too many attempts. Please try again later.'
+        error: error.response.data?.error || 'Too many attempts. Please try again later.'
       };
     }
     console.warn('Rate limit check failed:', error);
@@ -20,7 +22,6 @@ export const checkRateLimit = async (action: string, identifier: string) => {
   }
 };
 
-// Get client IP (approximate)
 export const getClientIP = async (): Promise<string> => {
   try {
     const response = await fetch('https://api.ipify.org?format=json');
@@ -32,19 +33,16 @@ export const getClientIP = async (): Promise<string> => {
   }
 };
 
-// Email validation
 export const validateEmail = (email: string): boolean => {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(email);
 };
 
-// Phone validation
 export const validatePhone = (phone: string): boolean => {
   const re = /^\+\d{10,15}$/;
   return re.test(phone);
 };
 
-// Password strength validation
 export const validatePassword = (password: string): { valid: boolean; error?: string } => {
   if (password.length < 8) return { valid: false, error: 'Password must be at least 8 characters' };
   if (!/[A-Z]/.test(password)) return { valid: false, error: 'Password must contain uppercase letter' };
