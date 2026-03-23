@@ -478,6 +478,26 @@ export default function Onboarding() {
             max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split('T')[0]}
             className="mt-1 h-11 border-2 focus:border-purple-500"
           />
+          {formData.birth_date && calculateAge(formData.birth_date) < 18 && (
+            <p className="mt-2 text-sm text-destructive font-medium">
+              Afrinnect is only available for users 18 and older.
+            </p>
+          )}
+        </div>
+
+        {/* Age confirmation checkbox */}
+        <div className="flex items-start gap-3 pt-2">
+          <input
+            type="checkbox"
+            id="age-confirm"
+            checked={formData.age_confirmed || false}
+            onChange={(e) => updateField('age_confirmed', e.target.checked)}
+            className="mt-1 h-4 w-4 rounded border-gray-300 accent-purple-600"
+          />
+          <label htmlFor="age-confirm" className="text-sm text-muted-foreground leading-tight">
+            I confirm that I am 18 years or older and agree to the{' '}
+            <a href="/terms" className="text-primary underline">Terms of Service</a>.
+          </label>
         </div>
 
         <div>
