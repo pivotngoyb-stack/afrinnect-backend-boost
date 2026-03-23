@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Volume2, VolumeX, Pause, Heart, Send, MoreHorizontal, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 const STORY_DURATION = 5000;
@@ -15,7 +15,7 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
   const [showHeart, setShowHeart] = useState(false);
   const [replyText, setReplyText] = useState('');
   const [showMenu, setShowMenu] = useState(false);
-  
+
   const videoRef = useRef(null);
   const timerRef = useRef(null);
   const lastTapRef = useRef(0);
@@ -24,20 +24,21 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
   const story = stories[currentIndex];
   const isMyStory = story?.user_profile_id === myProfileId;
 
+  // Mark as viewed
   useEffect(() => {
     if (!story || !myProfileId || isMyStory) return;
     if (story.views?.includes(myProfileId)) return;
 
-    base44.entities.Story.update(story.id, {
-      views: [...(story.views || []), myProfileId]
-    }).catch(() => {});
+    supabase.from('stories').update({
+      views: [...(story.views || []), myProfileId],
+    }).eq('id', story.id).then(() => {});
   }, [story?.id, myProfileId, isMyStory]);
 
   useEffect(() => {
     setProgress(0);
     setIsPaused(false);
     setShowMenu(false);
-    
+
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
       videoRef.current.play().catch(() => {});
@@ -98,7 +99,7 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
     touchStartRef.current = {
       x: e.touches[0].clientX,
       y: e.touches[0].clientY,
-      time: Date.now()
+      time: Date.now(),
     };
   };
 
@@ -115,7 +116,7 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
     if (dt < 200 && Math.abs(dx) < 30 && Math.abs(dy) < 30) {
       const now = Date.now();
       const screenW = window.innerWidth;
-      
+
       if (now - lastTapRef.current < 300) {
         setShowHeart(true);
         if (navigator.vibrate) navigator.vibrate([50, 50]);
@@ -125,8 +126,7 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
         else if (touch.clientX > screenW * 0.7) onNext();
       }
       lastTapRef.current = now;
-    }
-    else if (dy > 100 && Math.abs(dx) < 50) {
+    } else if (dy > 100 && Math.abs(dx) < 50) {
       onClose();
     }
 
@@ -136,7 +136,8 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
   const handleDelete = async () => {
     if (!confirm('Delete this story?')) return;
     try {
-      await base44.entities.Story.delete(story.id);
+      const { error } = await supabase.from('stories').delete().eq('id', story.id);
+      if (error) throw error;
       toast.success('Story deleted');
       onClose();
     } catch (e) {
@@ -163,10 +164,10 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
       className="fixed inset-0 bg-black z-50 select-none"
     >
       {/* Progress bars */}
-      <div className="absolute top-0 left-0 right-0 flex gap-1 p-2 z-30">
+      <div className="absolute top-0 left-0 right-0 flex gap-1 p-2 z-30" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         {stories.map((_, i) => (
           <div key={i} className="flex-1 h-[3px] bg-white/30 rounded-full overflow-hidden">
-            <div 
+            <div
               className="h-full bg-white rounded-full transition-all duration-75"
               style={{ width: i === currentIndex ? `${progress}%` : i < currentIndex ? '100%' : '0%' }}
             />
@@ -177,18 +178,19 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-3 pt-8 z-30">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-white/50">
+          <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-white/50 bg-gray-800">
             <img
-              src={story.user_profile?.primary_photo || 'https://via.placeholder.com/80'}
+              src={story.user_profile?.primary_photo}
               alt=""
               className="w-full h-full object-cover"
+              onError={e => { e.target.style.display = 'none'; }}
             />
           </div>
           <div>
             <p className="text-white font-semibold text-sm leading-tight">
               {story.user_profile?.display_name || 'User'}
             </p>
-            <p className="text-white/60 text-xs">{timeAgo(story.created_date)}</p>
+            <p className="text-white/60 text-xs">{timeAgo(story.created_at)}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -331,7 +333,7 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
 
       {/* Reply input */}
       {!isMyStory && (
-        <div className="absolute bottom-4 left-4 right-4 z-30">
+        <div className="absolute bottom-4 left-4 right-4 z-30" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
           <div className="flex items-center gap-3">
             <Input
               value={replyText}
@@ -344,20 +346,31 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
               <button
                 onClick={async () => {
                   try {
-                    const matches = await base44.entities.Match.filter({
-                      $or: [
-                        { user1_id: myProfileId, user2_id: story.user_profile_id, is_match: true },
-                        { user1_id: story.user_profile_id, user2_id: myProfileId, is_match: true }
-                      ]
-                    });
-                    
-                    if (matches.length > 0) {
-                      await base44.entities.Message.create({
-                        match_id: matches[0].id,
+                    // Find match between me and story author
+                    const { data: m1 } = await supabase
+                      .from('matches')
+                      .select('id')
+                      .eq('user1_id', myProfileId)
+                      .eq('user2_id', story.user_profile_id)
+                      .eq('is_match', true)
+                      .limit(1);
+
+                    const { data: m2 } = await supabase
+                      .from('matches')
+                      .select('id')
+                      .eq('user2_id', myProfileId)
+                      .eq('user1_id', story.user_profile_id)
+                      .eq('is_match', true)
+                      .limit(1);
+
+                    const match = m1?.[0] || m2?.[0];
+                    if (match) {
+                      await supabase.from('messages').insert({
+                        match_id: match.id,
                         sender_id: myProfileId,
                         receiver_id: story.user_profile_id,
                         content: `Replied to your story: ${replyText}`,
-                        message_type: 'text'
+                        message_type: 'text',
                       });
                       toast.success('Reply sent!');
                     } else {
@@ -368,9 +381,9 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
                   }
                   setReplyText('');
                 }}
-                className="w-11 h-11 bg-gradient-to-r from-pink-500 to-orange-500 rounded-full flex items-center justify-center"
+                className="w-11 h-11 bg-primary rounded-full flex items-center justify-center"
               >
-                <Send size={18} className="text-white" />
+                <Send size={18} className="text-primary-foreground" />
               </button>
             )}
           </div>
