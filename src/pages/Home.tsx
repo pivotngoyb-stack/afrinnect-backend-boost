@@ -1004,7 +1004,7 @@ export default function Home() {
                   </p>
                   <div className="space-y-3 w-full">
                     <Button 
-                      onClick={() => setDiscoveryMode('global')}
+                      onClick={() => navigate('/explore')}
                       className="w-full h-14 text-lg bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-700 hover:to-amber-700 shadow-lg"
                     >
                       <Globe size={20} className="mr-2" />
