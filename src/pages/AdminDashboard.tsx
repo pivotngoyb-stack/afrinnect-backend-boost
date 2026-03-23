@@ -100,17 +100,17 @@ export default function AdminDashboard() {
   };
 
   const navItems = [
-    { label: 'Overview', icon: BarChart3, page: '/admin', active: true },
-    { label: 'Users', icon: Users, page: '/admin/users' },
-    { label: 'Moderation', icon: Shield, page: '/admin/moderation', badge: stats?.pendingReports },
-    { label: 'Analytics', icon: TrendingUp, page: '/admin/analytics' },
-    { label: 'Subscriptions', icon: DollarSign, page: '/admin/subscriptions' },
-    { label: 'VIP Events', icon: Heart, page: '/admin/vip-events' },
-    { label: 'Ambassadors', icon: Users, page: '/admin/ambassadors' },
-    { label: 'Broadcast', icon: MessageSquare, page: '/admin/broadcast' },
-    { label: 'Content', icon: MessageSquare, page: '/admin/content' },
-    { label: 'Feature Flags', icon: Activity, page: '/admin/feature-flags' },
-    { label: 'Settings', icon: Settings, page: '/admin/settings' },
+    { label: 'Overview', icon: BarChart3, page: '/admindashboard', active: true },
+    { label: 'Users', icon: Users, page: '/adminusers' },
+    { label: 'Moderation', icon: Shield, page: '/adminmoderation', badge: stats?.pendingReports },
+    { label: 'Analytics', icon: TrendingUp, page: '/adminanalytics' },
+    { label: 'Subscriptions', icon: DollarSign, page: '/adminsubscriptions' },
+    { label: 'VIP Events', icon: Heart, page: '/adminvipevents' },
+    { label: 'Ambassadors', icon: Users, page: '/adminambassadors' },
+    { label: 'Broadcast', icon: MessageSquare, page: '/adminbroadcast' },
+    { label: 'Content', icon: MessageSquare, page: '/admincontent' },
+    { label: 'Feature Flags', icon: Activity, page: '/adminfeatureflags' },
+    { label: 'Settings', icon: Settings, page: '/adminsettings' },
   ];
 
   if (loading) {
