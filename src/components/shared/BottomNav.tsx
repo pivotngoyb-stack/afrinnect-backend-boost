@@ -1,13 +1,13 @@
-import { Heart, Sparkles, CalendarDays, UserRoundPen } from 'lucide-react';
+import { Heart, Sparkles, CalendarDays, UserRoundPen, Users } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 const navItems = [
+  { type: 'icon' as const, icon: Users, label: 'Community', path: '/communities' },
   { type: 'discover' as const, label: 'Discover', path: '/home' },
-  { type: 'icon' as const, icon: Sparkles, label: 'Stories', path: '/stories' },
   { type: 'icon' as const, icon: Heart, label: 'Matches', path: '/matches' },
   { type: 'icon' as const, icon: CalendarDays, label: 'Events', path: '/events' },
-  { type: 'icon' as const, icon: UserRoundPen, label: 'Edit', path: '/editprofile' },
+  { type: 'icon' as const, icon: UserRoundPen, label: 'Profile', path: '/editprofile' },
 ];
 
 export default function BottomNav() {
