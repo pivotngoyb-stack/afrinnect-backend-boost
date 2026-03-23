@@ -148,6 +148,7 @@ const App = () => (
             <Route path="/deleteaccount" element={<DeleteAccount />} />
 
             {/* Discovery & Social */}
+            <Route path="/explore" element={<Explore />} />
             <Route path="/events" element={<Events />} />
             <Route path="/eventdetails" element={<EventDetails />} />
             <Route path="/eventchat" element={<EventChat />} />
