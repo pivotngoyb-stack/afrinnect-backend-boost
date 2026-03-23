@@ -21,6 +21,9 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
 
   useEffect(() => {
     // Listen for auth state changes (handles OAuth redirect callback)
@@ -141,6 +144,10 @@ export default function Login() {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!ageConfirmed) {
+      toast.error('You must confirm that you are 18 years or older.');
+      return;
+    }
     setLoading(true);
     try {
       const { error } = await supabase.auth.signUp({
@@ -245,7 +252,21 @@ export default function Login() {
                   <Label htmlFor="signup-password">Password</Label>
                   <Input id="signup-password" type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} disabled={anyLoading} />
                 </div>
-                <Button type="submit" className="w-full" disabled={anyLoading}>
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="age-confirm-signup"
+                    checked={ageConfirmed}
+                    onChange={(e) => setAgeConfirmed(e.target.checked)}
+                    className="mt-1 h-4 w-4 rounded border-gray-300"
+                    disabled={anyLoading}
+                  />
+                  <label htmlFor="age-confirm-signup" className="text-xs text-muted-foreground leading-tight">
+                    I confirm that I am 18 years or older and agree to the{' '}
+                    <a href="/terms" className="text-primary underline">Terms of Service</a>.
+                  </label>
+                </div>
+                <Button type="submit" className="w-full" disabled={anyLoading || !ageConfirmed}>
                   {loading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Creating account...</> : 'Sign Up'}
                 </Button>
               </form>

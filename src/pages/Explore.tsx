@@ -27,12 +27,18 @@ export default function Explore() {
   const { data: profiles = [], isLoading } = useQuery({
     queryKey: ['explore-profiles', currentUser?.id],
     queryFn: async () => {
+      // Calculate the max birth_date for 18+ (must be born on or before this date)
+      const eighteenYearsAgo = new Date();
+      eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+      const maxBirthDate = eighteenYearsAgo.toISOString().split('T')[0];
+
       const { data, error } = await supabase
         .from('user_profiles')
-        .select('id, user_id, display_name, primary_photo, country_of_origin, city, age, bio, is_verified')
+        .select('id, user_id, display_name, primary_photo, country_of_origin, city, age, bio, is_verified, birth_date')
         .eq('is_active', true)
         .eq('is_banned', false)
         .neq('user_id', currentUser?.id || '')
+        .lte('birth_date', maxBirthDate)
         .order('created_at', { ascending: false })
         .limit(200);
 

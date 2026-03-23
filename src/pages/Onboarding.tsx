@@ -348,11 +348,12 @@ export default function Onboarding() {
     switch (step) {
       case 0: return true; // Welcome
       case 1: 
-        // Combined: Name + DOB + Gender + Looking For
+        // Combined: Name + DOB + Gender + Looking For + Age confirmation
         const nameValid = formData.display_name && formData.display_name.trim().length >= 2;
         const ageValid = formData.birth_date && calculateAge(formData.birth_date) >= 18;
         const genderValid = formData.gender && formData.looking_for.length > 0;
-        return nameValid && ageValid && genderValid;
+        const ageConfirmed = formData.age_confirmed === true;
+        return nameValid && ageValid && genderValid && ageConfirmed;
       case 2: 
         // Combined: Location + Heritage + Goal
         const locationValid = formData.country_of_origin && formData.current_country && formData.current_city;
@@ -478,6 +479,26 @@ export default function Onboarding() {
             max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split('T')[0]}
             className="mt-1 h-11 border-2 focus:border-purple-500"
           />
+          {formData.birth_date && calculateAge(formData.birth_date) < 18 && (
+            <p className="mt-2 text-sm text-destructive font-medium">
+              Afrinnect is only available for users 18 and older.
+            </p>
+          )}
+        </div>
+
+        {/* Age confirmation checkbox */}
+        <div className="flex items-start gap-3 pt-2">
+          <input
+            type="checkbox"
+            id="age-confirm"
+            checked={formData.age_confirmed || false}
+            onChange={(e) => updateField('age_confirmed', e.target.checked)}
+            className="mt-1 h-4 w-4 rounded border-gray-300 accent-purple-600"
+          />
+          <label htmlFor="age-confirm" className="text-sm text-muted-foreground leading-tight">
+            I confirm that I am 18 years or older and agree to the{' '}
+            <a href="/terms" className="text-primary underline">Terms of Service</a>.
+          </label>
         </div>
 
         <div>
