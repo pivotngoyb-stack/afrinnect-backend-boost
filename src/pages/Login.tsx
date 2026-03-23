@@ -21,6 +21,9 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
 
   useEffect(() => {
     // Listen for auth state changes (handles OAuth redirect callback)
