@@ -100,17 +100,17 @@ export default function AdminDashboard() {
   };
 
   const navItems = [
-    { label: 'Overview', icon: BarChart3, page: '/admin', active: true },
-    { label: 'Users', icon: Users, page: '/admin/users' },
-    { label: 'Moderation', icon: Shield, page: '/admin/moderation', badge: stats?.pendingReports },
-    { label: 'Analytics', icon: TrendingUp, page: '/admin/analytics' },
-    { label: 'Subscriptions', icon: DollarSign, page: '/admin/subscriptions' },
-    { label: 'VIP Events', icon: Heart, page: '/admin/vip-events' },
-    { label: 'Ambassadors', icon: Users, page: '/admin/ambassadors' },
-    { label: 'Broadcast', icon: MessageSquare, page: '/admin/broadcast' },
-    { label: 'Content', icon: MessageSquare, page: '/admin/content' },
-    { label: 'Feature Flags', icon: Activity, page: '/admin/feature-flags' },
-    { label: 'Settings', icon: Settings, page: '/admin/settings' },
+    { label: 'Overview', icon: BarChart3, page: '/admindashboard', active: true },
+    { label: 'Users', icon: Users, page: '/adminusers' },
+    { label: 'Moderation', icon: Shield, page: '/adminmoderation', badge: stats?.pendingReports },
+    { label: 'Analytics', icon: TrendingUp, page: '/adminanalytics' },
+    { label: 'Subscriptions', icon: DollarSign, page: '/adminsubscriptions' },
+    { label: 'VIP Events', icon: Heart, page: '/adminvipevents' },
+    { label: 'Ambassadors', icon: Users, page: '/adminambassadors' },
+    { label: 'Broadcast', icon: MessageSquare, page: '/adminbroadcast' },
+    { label: 'Content', icon: MessageSquare, page: '/admincontent' },
+    { label: 'Feature Flags', icon: Activity, page: '/adminfeatureflags' },
+    { label: 'Settings', icon: Settings, page: '/adminsettings' },
   ];
 
   if (loading) {
@@ -340,11 +340,11 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent className="space-y-2">
                 {[
-                  { label: 'Review Reports', icon: Flag, page: '/admin/moderation', badge: stats?.pendingReports, color: 'red' },
-                  { label: 'Manage Users', icon: Users, page: '/admin/users', color: 'blue' },
-                  { label: 'View Analytics', icon: TrendingUp, page: '/admin/analytics', color: 'green' },
-                  { label: 'System Settings', icon: Settings, page: '/admin/settings', color: 'slate' },
-                  { label: 'Send Broadcast', icon: Bell, page: '/admin/broadcast', color: 'purple' },
+                  { label: 'Review Reports', icon: Flag, page: '/adminmoderation', badge: stats?.pendingReports, color: 'red' },
+                  { label: 'Manage Users', icon: Users, page: '/adminusers', color: 'blue' },
+                  { label: 'View Analytics', icon: TrendingUp, page: '/adminanalytics', color: 'green' },
+                  { label: 'System Settings', icon: Settings, page: '/adminsettings', color: 'slate' },
+                  { label: 'Send Broadcast', icon: Bell, page: '/adminbroadcast', color: 'purple' },
                 ].map((action, i) => (
                   <button
                     key={i}
