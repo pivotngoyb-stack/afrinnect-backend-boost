@@ -113,7 +113,7 @@ export default function Explore() {
                   className="shrink-0 text-xs h-8 gap-1"
                   onClick={() => setSelectedCountry(selectedCountry === c ? null : c)}
                 >
-                  <CountryFlag country={c} size={14} />
+                  <CountryFlag country={c} showName={false} size="small" />
                   {c} ({grouped[c]?.length || profiles.filter(p => p.country_of_origin === c).length})
                 </Button>
               ))}
