@@ -340,11 +340,11 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent className="space-y-2">
                 {[
-                  { label: 'Review Reports', icon: Flag, page: '/admin/moderation', badge: stats?.pendingReports, color: 'red' },
-                  { label: 'Manage Users', icon: Users, page: '/admin/users', color: 'blue' },
-                  { label: 'View Analytics', icon: TrendingUp, page: '/admin/analytics', color: 'green' },
-                  { label: 'System Settings', icon: Settings, page: '/admin/settings', color: 'slate' },
-                  { label: 'Send Broadcast', icon: Bell, page: '/admin/broadcast', color: 'purple' },
+                  { label: 'Review Reports', icon: Flag, page: '/adminmoderation', badge: stats?.pendingReports, color: 'red' },
+                  { label: 'Manage Users', icon: Users, page: '/adminusers', color: 'blue' },
+                  { label: 'View Analytics', icon: TrendingUp, page: '/adminanalytics', color: 'green' },
+                  { label: 'System Settings', icon: Settings, page: '/adminsettings', color: 'slate' },
+                  { label: 'Send Broadcast', icon: Bell, page: '/adminbroadcast', color: 'purple' },
                 ].map((action, i) => (
                   <button
                     key={i}
