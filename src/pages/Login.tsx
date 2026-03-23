@@ -43,7 +43,6 @@ export default function Login() {
 
   const handlePostLogin = async (user: any) => {
     try {
-      // Check if user has a profile (returning user vs first-time)
       const { data: profiles } = await supabase
         .from('user_profiles')
         .select('id')
@@ -51,20 +50,19 @@ export default function Login() {
         .limit(1);
 
       if (!profiles || profiles.length === 0) {
-        // First-time user → onboarding
         navigate('/onboarding');
       } else if (nextUrl) {
         try {
           const url = new URL(nextUrl);
           navigate(url.pathname);
         } catch {
-          navigate('/home');
+          navigate('/communities');
         }
       } else {
-        navigate('/home');
+        navigate('/communities');
       }
     } catch {
-      navigate('/home');
+      navigate('/communities');
     }
   };
 
