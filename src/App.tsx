@@ -44,6 +44,7 @@ const EventChat = lazy(() => import("./pages/EventChat"));
 const CreateEvent = lazy(() => import("./pages/CreateEvent"));
 const Communities = lazy(() => import("./pages/Communities"));
 const CommunityChat = lazy(() => import("./pages/CommunityChat"));
+const Explore = lazy(() => import("./pages/Explore"));
 const CommunityGuidelines = lazy(() => import("./pages/CommunityGuidelines"));
 const Stories = lazy(() => import("./pages/Stories"));
 const CompatibilityQuiz = lazy(() => import("./pages/CompatibilityQuiz"));
@@ -147,6 +148,7 @@ const App = () => (
             <Route path="/deleteaccount" element={<DeleteAccount />} />
 
             {/* Discovery & Social */}
+            <Route path="/explore" element={<Explore />} />
             <Route path="/events" element={<Events />} />
             <Route path="/eventdetails" element={<EventDetails />} />
             <Route path="/eventchat" element={<EventChat />} />
