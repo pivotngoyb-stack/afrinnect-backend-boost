@@ -8,7 +8,7 @@ export default function AuthGuard({
   children, 
   requireAuth = true,
   requireProfile = false,
-  redirectTo = '/'
+  redirectTo = '/communities'
 }) {
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
