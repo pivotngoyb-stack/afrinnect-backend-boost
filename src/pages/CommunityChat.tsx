@@ -60,14 +60,13 @@ export default function CommunityChat() {
     enabled: !!communityId,
   });
 
-  // Messages (using messages table with match_id = community_{id})
   const { data: messages = [], isLoading: loadingMessages } = useQuery({
     queryKey: ['community-messages', communityId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('messages')
+        .from('community_messages')
         .select('*')
-        .eq('match_id', `community_${communityId}`)
+        .eq('community_id', communityId!)
         .order('created_at', { ascending: true })
         .limit(100);
       if (error) throw error;
