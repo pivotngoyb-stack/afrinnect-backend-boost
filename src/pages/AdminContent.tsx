@@ -135,6 +135,9 @@ export default function AdminContent() {
         <div className="p-6">
           <Tabs defaultValue="icebreakers" className="space-y-6">
             <TabsList className="bg-slate-800">
+              <TabsTrigger value="communities" className="data-[state=active]:bg-orange-500">
+                <Globe className="w-4 h-4 mr-2" /> Communities
+              </TabsTrigger>
               <TabsTrigger value="icebreakers" className="data-[state=active]:bg-orange-500">
                 <Zap className="w-4 h-4 mr-2" /> Ice Breakers
               </TabsTrigger>
@@ -142,6 +145,11 @@ export default function AdminContent() {
                 <MessageSquare className="w-4 h-4 mr-2" /> Profile Prompts
               </TabsTrigger>
             </TabsList>
+
+            {/* Communities */}
+            <TabsContent value="communities">
+              <CommunityManagement />
+            </TabsContent>
 
             {/* Ice Breakers */}
             <TabsContent value="icebreakers" className="space-y-4">
