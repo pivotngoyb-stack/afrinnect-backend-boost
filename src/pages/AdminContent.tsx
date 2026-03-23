@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { 
   MessageSquare, Image, Zap, RefreshCw, Plus, Edit, Trash2,
-  Check, X, Eye, Search
+  Check, X, Eye, Search, Globe
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import CommunityManagement from "@/components/admin/CommunityManagement";
 
 export default function AdminContent() {
   const navigate = useNavigate();
@@ -132,8 +133,11 @@ export default function AdminContent() {
         </header>
 
         <div className="p-6">
-          <Tabs defaultValue="icebreakers" className="space-y-6">
+          <Tabs defaultValue="communities" className="space-y-6">
             <TabsList className="bg-slate-800">
+              <TabsTrigger value="communities" className="data-[state=active]:bg-orange-500">
+                <Globe className="w-4 h-4 mr-2" /> Communities
+              </TabsTrigger>
               <TabsTrigger value="icebreakers" className="data-[state=active]:bg-orange-500">
                 <Zap className="w-4 h-4 mr-2" /> Ice Breakers
               </TabsTrigger>
@@ -141,6 +145,11 @@ export default function AdminContent() {
                 <MessageSquare className="w-4 h-4 mr-2" /> Profile Prompts
               </TabsTrigger>
             </TabsList>
+
+            {/* Communities */}
+            <TabsContent value="communities">
+              <CommunityManagement />
+            </TabsContent>
 
             {/* Ice Breakers */}
             <TabsContent value="icebreakers" className="space-y-4">
