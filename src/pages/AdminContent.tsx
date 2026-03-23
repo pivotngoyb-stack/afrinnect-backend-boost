@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { 
   MessageSquare, Image, Zap, RefreshCw, Plus, Edit, Trash2,
-  Check, X, Eye, Search
+  Check, X, Eye, Search, Globe
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import CommunityManagement from "@/components/admin/CommunityManagement";
 
 export default function AdminContent() {
   const navigate = useNavigate();
