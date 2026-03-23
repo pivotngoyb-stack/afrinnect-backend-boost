@@ -144,6 +144,10 @@ export default function Login() {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!ageConfirmed) {
+      toast.error('You must confirm that you are 18 years or older.');
+      return;
+    }
     setLoading(true);
     try {
       const { error } = await supabase.auth.signUp({
