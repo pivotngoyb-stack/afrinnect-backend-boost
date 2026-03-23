@@ -348,11 +348,12 @@ export default function Onboarding() {
     switch (step) {
       case 0: return true; // Welcome
       case 1: 
-        // Combined: Name + DOB + Gender + Looking For
+        // Combined: Name + DOB + Gender + Looking For + Age confirmation
         const nameValid = formData.display_name && formData.display_name.trim().length >= 2;
         const ageValid = formData.birth_date && calculateAge(formData.birth_date) >= 18;
         const genderValid = formData.gender && formData.looking_for.length > 0;
-        return nameValid && ageValid && genderValid;
+        const ageConfirmed = formData.age_confirmed === true;
+        return nameValid && ageValid && genderValid && ageConfirmed;
       case 2: 
         // Combined: Location + Heritage + Goal
         const locationValid = formData.country_of_origin && formData.current_country && formData.current_city;
