@@ -133,7 +133,7 @@ export default function AdminContent() {
         </header>
 
         <div className="p-6">
-          <Tabs defaultValue="icebreakers" className="space-y-6">
+          <Tabs defaultValue="communities" className="space-y-6">
             <TabsList className="bg-slate-800">
               <TabsTrigger value="communities" className="data-[state=active]:bg-orange-500">
                 <Globe className="w-4 h-4 mr-2" /> Communities
