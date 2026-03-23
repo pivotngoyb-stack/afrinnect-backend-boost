@@ -140,7 +140,7 @@ export default function Explore() {
             {sortedCountries.map(country => (
               <div key={country}>
                 <div className="flex items-center gap-2 mb-3">
-                  <CountryFlag country={country} size={18} />
+                  <CountryFlag country={country} showName={false} size="small" />
                   <h2 className="font-semibold text-foreground">{country}</h2>
                   <span className="text-xs text-muted-foreground">({grouped[country].length})</span>
                 </div>
