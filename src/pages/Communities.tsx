@@ -252,10 +252,12 @@ export default function Communities() {
 
             <TabsContent value="my-communities">
               {myCommunities.length === 0 ? (
-                <EmptyState
+              <EmptyState
                   icon={Users}
                   title="No communities yet"
                   description="Join communities to connect with like-minded people"
+                  actionLabel="Discover"
+                  onAction={() => {}}
                 />
               ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">

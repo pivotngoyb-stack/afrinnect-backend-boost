@@ -100,8 +100,8 @@ export default function CommunityChat() {
 
   const sendMutation = useMutation({
     mutationFn: async (content: string) => {
-      const { error } = await supabase.from('messages').insert({
-        match_id: `community_${communityId}`,
+      const { error } = await supabase.from('community_messages').insert({
+        community_id: communityId!,
         sender_id: currentUser!.id,
         sender_user_id: currentUser!.auth_id,
         content: content.trim(),
