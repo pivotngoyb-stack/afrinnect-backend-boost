@@ -84,18 +84,40 @@ const createEntityHelper = (tableName: string) => ({
     if (column === 'created_date') column = 'created_at';
     const mappedFilters = mapFilterKeys(filters);
     let query = client.from(tableName).select('*');
-    Object.entries(mappedFilters).forEach(([key, value]) => {
-      if (Array.isArray(value)) { query = query.in(key, value); }
-      else if (typeof value === 'object' && value !== null) {
-        Object.entries(value as Record<string, any>).forEach(([op, val]) => {
-          if (op === '$gte') query = query.gte(key, val);
-          if (op === '$lte') query = query.lte(key, val);
-          if (op === '$gt') query = query.gt(key, val);
-          if (op === '$lt') query = query.lt(key, val);
-          if (op === '$ne') query = query.neq(key, val);
-        });
-      } else { query = query.eq(key, value); }
-    });
+    // Handle $or filter specially
+    if (mappedFilters.$or && Array.isArray(mappedFilters.$or)) {
+      const orConditions = mappedFilters.$or.map((cond: Record<string, any>) =>
+        Object.entries(cond).map(([k, v]) => `${k}.eq.${v}`).join(',')
+      );
+      query = query.or(orConditions.join(','));
+      // Apply remaining non-$or filters
+      Object.entries(mappedFilters).forEach(([key, value]) => {
+        if (key === '$or') return;
+        if (Array.isArray(value)) { query = query.in(key, value); }
+        else if (typeof value === 'object' && value !== null) {
+          Object.entries(value as Record<string, any>).forEach(([op, val]) => {
+            if (op === '$gte') query = query.gte(key, val);
+            if (op === '$lte') query = query.lte(key, val);
+            if (op === '$gt') query = query.gt(key, val);
+            if (op === '$lt') query = query.lt(key, val);
+            if (op === '$ne') query = query.neq(key, val);
+          });
+        } else { query = query.eq(key, value); }
+      });
+    } else {
+      Object.entries(mappedFilters).forEach(([key, value]) => {
+        if (Array.isArray(value)) { query = query.in(key, value); }
+        else if (typeof value === 'object' && value !== null) {
+          Object.entries(value as Record<string, any>).forEach(([op, val]) => {
+            if (op === '$gte') query = query.gte(key, val);
+            if (op === '$lte') query = query.lte(key, val);
+            if (op === '$gt') query = query.gt(key, val);
+            if (op === '$lt') query = query.lt(key, val);
+            if (op === '$ne') query = query.neq(key, val);
+          });
+        } else { query = query.eq(key, value); }
+      });
+    }
     const { data, error } = await query.order(column, { ascending }).limit(limit);
     if (error) throw error;
     return addLegacyAliases(data || []);
