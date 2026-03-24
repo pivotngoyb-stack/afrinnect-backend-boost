@@ -20,7 +20,7 @@ export default function VideoCallButton({ matchId, isPremium, userTier }) {
   }
 
   return (
-    <Link to={createPageUrl(`VideoChat?matchId=${matchId}`)}>
+    <Link to={createPageUrl(`Chat?matchId=${matchId}`)}>
       <Button variant="outline" size="sm" className="gap-1 border-purple-200 text-purple-600 hover:bg-purple-50">
         <Video size={16} />
         <span className="hidden sm:inline">Video Call</span>
