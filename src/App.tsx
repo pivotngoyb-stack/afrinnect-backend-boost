@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -132,6 +132,14 @@ const App = () => (
             <Route path="/password-reset" element={<PasswordReset />} />
             <Route path="/error" element={<ErrorPage />} />
             <Route path="/auth-flow-test" element={<AuthFlowTest />} />
+
+            {/* Legacy URL aliases (MVP 404 prevention) */}
+            <Route path="/discover" element={<Navigate to="/explore" replace />} />
+            <Route path="/pricing" element={<Navigate to="/pricingplans" replace />} />
+            <Route path="/support-chat" element={<Navigate to="/supportchat" replace />} />
+            <Route path="/edit-profile" element={<Navigate to="/editprofile" replace />} />
+            <Route path="/videochat" element={<Navigate to="/chat" replace />} />
+            <Route path="/admin" element={<Navigate to="/admindashboard" replace />} />
 
             {/* Core App */}
             <Route path="/home" element={<Home />} />

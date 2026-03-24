@@ -4,10 +4,18 @@
 
 // Create page URL helper (replaces Base44 routing)
 export const createPageUrl = (pageName: string, params?: Record<string, string>): string => {
-  const basePath = `/${pageName.toLowerCase().replace(/\s+/g, '-')}`;
-  if (!params) return basePath;
-  const searchParams = new URLSearchParams(params);
-  return `${basePath}?${searchParams.toString()}`;
+  const [rawPage, rawQuery = ''] = pageName.split('?');
+  const basePath = `/${rawPage.toLowerCase().replace(/\s+/g, '-')}`;
+
+  const searchParams = new URLSearchParams(rawQuery);
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      searchParams.set(key, value);
+    });
+  }
+
+  const queryString = searchParams.toString();
+  return queryString ? `${basePath}?${queryString}` : basePath;
 };
 
 // Format date to relative time

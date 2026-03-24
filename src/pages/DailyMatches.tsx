@@ -153,7 +153,7 @@ export default function DailyMatches() {
               <p className="text-sm text-foreground/70">
                 Premium users get 10 curated matches daily!
               </p>
-              <Link to="/pricing">
+              <Link to="/pricingplans">
                 <Button size="sm" className="mt-3">Upgrade</Button>
               </Link>
             </CardContent>

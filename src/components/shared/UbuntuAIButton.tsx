@@ -12,7 +12,7 @@ export default function UbuntuAIButton() {
       animate={{ scale: 1 }}
       className="fixed bottom-24 right-6 z-40"
     >
-      <Link to="/support-chat">
+      <Link to="/supportchat">
         <Button
           size="lg"
           className="rounded-full w-14 h-14 shadow-2xl bg-gradient-to-br from-primary to-amber-600 hover:from-primary/90 hover:to-amber-700"
