@@ -158,7 +158,7 @@ export default function AdminSidebar({ activePage, pendingReports = 0 }) {
               <Eye className="w-4 h-4 mr-2" /> View App
             </DropdownMenuItem>
             <DropdownMenuItem 
-              onClick={() => navigate(createPageUrl('Discover'))} 
+              onClick={() => navigate(createPageUrl('Explore'))} 
               className="text-slate-300 hover:text-white hover:bg-slate-800"
             >
               <Globe className="w-4 h-4 mr-2" /> User Experience
