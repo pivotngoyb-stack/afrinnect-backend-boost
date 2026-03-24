@@ -69,7 +69,7 @@ export default function Chat() {
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [showMessageLimitPaywall, setShowMessageLimitPaywall] = useState(false);
   const [upgradeFeature, setUpgradeFeature] = useState('');
-  const [showVideoCall, setShowVideoCall] = useState(false);
+  const [showVideoCall, setShowVideoCall] = useState(false); // kept for state compat
   const [isGeneratingReply, setIsGeneratingReply] = useState(false);
   const [translatingId, setTranslatingId] = useState(null);
   const [showBlockConfirm, setShowBlockConfirm] = useState(false);
@@ -319,10 +319,6 @@ export default function Chat() {
     }
   });
 
-  const handleVideoCall = () => {
-    // Video calls coming soon - show placeholder
-    setShowVideoCall(true);
-  };
 
   const handleVirtualGifts = () => {
     const tier = myProfile?.subscription_tier;
@@ -443,15 +439,6 @@ export default function Chat() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleVideoCall}
-            className="text-purple-600 hover:bg-purple-50"
-            title="Video Call (Elite/VIP)"
-          >
-            <Video size={20} />
-          </Button>
           <Link to={createPageUrl(`VirtualGifts?profileId=${otherProfile.id}`)}>
             <Button
               variant="ghost"
