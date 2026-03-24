@@ -139,7 +139,7 @@ export default function Chat() {
     hasMore: hasMoreMessages,
     isLoadingMore: isLoadingMoreMessages,
     isLoading: messagesLoading 
-  } = useInfinitePagination('Message', { match_id: matchId }, {
+  } = useInfinitePagination('messages', { match_id: matchId }, {
     pageSize: 30,
     sortBy: '-created_date',
     enabled: !!matchId,

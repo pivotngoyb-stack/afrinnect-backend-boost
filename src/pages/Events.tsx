@@ -76,9 +76,10 @@ export default function Events() {
     isLoadingMore, 
     isLoading,
     refetch 
-  } = useInfinitePagination('Event', buildFilters(), {
+  } = useInfinitePagination('events', buildFilters(), {
     pageSize: 20,
-    sortBy: timeFilter === 'past' ? '-start_date' : 'start_date',
+    sortBy: 'start_date',
+    sortAsc: timeFilter !== 'past',
     enabled: !!myProfile,
     refetchInterval: 180000,
     retry: 1,

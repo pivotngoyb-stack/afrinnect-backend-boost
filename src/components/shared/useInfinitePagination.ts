@@ -12,6 +12,11 @@ export function useInfinitePagination(tableName: string, filters: Record<string,
     refetchInterval = 60000
   } = options;
 
+  // Handle '-column' prefix for descending sort
+  const resolvedSortAsc = sortBy.startsWith('-') ? false : sortAsc;
+  let resolvedSortBy = sortBy.startsWith('-') ? sortBy.slice(1) : sortBy;
+  if (resolvedSortBy === 'created_date') resolvedSortBy = 'created_at';
+
   const {
     data,
     fetchNextPage,
@@ -30,13 +35,25 @@ export function useInfinitePagination(tableName: string, filters: Record<string,
         let query = supabase
           .from(tableName)
           .select('*')
-          .order(sortBy, { ascending: sortAsc })
+          .order(resolvedSortBy, { ascending: resolvedSortAsc })
           .range(from, to);
 
         // Apply filters
         Object.entries(filters).forEach(([key, value]) => {
           if (value !== undefined && value !== null) {
-            query = query.eq(key, value);
+            if (typeof value === 'object' && !Array.isArray(value)) {
+              Object.entries(value).forEach(([op, val]) => {
+                if (op === '$gte') query = query.gte(key, val);
+                else if (op === '$lte') query = query.lte(key, val);
+                else if (op === '$gt') query = query.gt(key, val);
+                else if (op === '$lt') query = query.lt(key, val);
+                else if (op === '$ne') query = query.neq(key, val);
+              });
+            } else if (Array.isArray(value)) {
+              query = query.in(key, value);
+            } else {
+              query = query.eq(key, value);
+            }
           }
         });
 
