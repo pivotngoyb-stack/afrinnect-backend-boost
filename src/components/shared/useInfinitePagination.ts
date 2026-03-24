@@ -36,7 +36,19 @@ export function useInfinitePagination(tableName: string, filters: Record<string,
         // Apply filters
         Object.entries(filters).forEach(([key, value]) => {
           if (value !== undefined && value !== null) {
-            query = query.eq(key, value);
+            if (typeof value === 'object' && !Array.isArray(value)) {
+              Object.entries(value).forEach(([op, val]) => {
+                if (op === '$gte') query = query.gte(key, val);
+                else if (op === '$lte') query = query.lte(key, val);
+                else if (op === '$gt') query = query.gt(key, val);
+                else if (op === '$lt') query = query.lt(key, val);
+                else if (op === '$ne') query = query.neq(key, val);
+              });
+            } else if (Array.isArray(value)) {
+              query = query.in(key, value);
+            } else {
+              query = query.eq(key, value);
+            }
           }
         });
 
