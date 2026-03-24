@@ -238,7 +238,7 @@ export default function VerifyPhoto() {
 
             <div className="space-y-3">
               <Button onClick={reset} className="w-full"><Camera className="mr-2" size={18} />Retake Photos</Button>
-              <Button variant="outline" className="w-full" onClick={() => navigate('/edit-profile')}>
+              <Button variant="outline" className="w-full" onClick={() => navigate('/editprofile')}>
                 Update Profile Photo First
               </Button>
             </div>
