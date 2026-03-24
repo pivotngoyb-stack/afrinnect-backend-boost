@@ -12,6 +12,11 @@ export function useInfinitePagination(tableName: string, filters: Record<string,
     refetchInterval = 60000
   } = options;
 
+  // Handle '-column' prefix for descending sort
+  const resolvedSortAsc = sortBy.startsWith('-') ? false : sortAsc;
+  let resolvedSortBy = sortBy.startsWith('-') ? sortBy.slice(1) : sortBy;
+  if (resolvedSortBy === 'created_date') resolvedSortBy = 'created_at';
+
   const {
     data,
     fetchNextPage,
@@ -30,7 +35,7 @@ export function useInfinitePagination(tableName: string, filters: Record<string,
         let query = supabase
           .from(tableName)
           .select('*')
-          .order(sortBy, { ascending: sortAsc })
+          .order(resolvedSortBy, { ascending: resolvedSortAsc })
           .range(from, to);
 
         // Apply filters
