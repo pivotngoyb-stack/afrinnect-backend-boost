@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
     // Get user profile
     const { data: profile, error: profileError } = await supabase
       .from('user_profiles')
-      .select('id, subscription_tier, profile_boost_active, boost_expires_at, verification_status')
+      .select('id, subscription_tier, profile_boost_active, boost_expires_at, is_photo_verified, is_id_verified')
       .eq('user_id', user.id)
       .single()
 
@@ -51,9 +51,8 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Check verification
-    const verStatus = profile.verification_status as any
-    const isVerified = verStatus?.photo_verified || verStatus?.id_verified
+    // Check verification - either photo or ID verified
+    const isVerified = profile.is_photo_verified || profile.is_id_verified
     if (!isVerified) {
       return new Response(JSON.stringify({ error: 'Verification required. Complete photo or ID verification first.', verification_required: true }), {
         status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
