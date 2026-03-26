@@ -24,7 +24,7 @@ export default function AdminSettings() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [settings, setSettings] = useState({});
+  const [settings, setSettings] = useState<Record<string, any>>({});
   const [featureFlags, setFeatureFlags] = useState([]);
 
   useEffect(() => {
