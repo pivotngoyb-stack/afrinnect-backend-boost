@@ -5,6 +5,9 @@
  */
 import { supabase } from "@/integrations/supabase/client";
 
+// Use untyped client for dynamic table access
+const db = supabase as any;
+
 // ─── AUTH HELPERS ───────────────────────────────────────────────
 
 export async function getCurrentUser() {
