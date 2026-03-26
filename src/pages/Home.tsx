@@ -170,7 +170,7 @@ export default function Home() {
         const likedIds = new Set(myLikes.map(l => l.liked_id));
         const myBlockedUsers = new Set(myProfile?.blocked_users || []);
 
-        return allProfiles.filter(p => {
+        let filtered = allProfiles.filter(p => {
           if (p.user_id === myProfile.user_id) return false;
           if (myBlockedUsers.has(p.id) || passedIds.has(p.id) || likedIds.has(p.id)) return false;
           if (myProfile.looking_for?.length && !myProfile.looking_for.includes(p.gender)) return false;
@@ -185,6 +185,18 @@ export default function Home() {
           if (discoveryMode === 'local' && myProfile.current_country && p.current_country !== myProfile.current_country) return false;
           return true;
         });
+
+        // Auto-fallback: if local mode returns 0 results, expand to global
+        if (filtered.length === 0 && discoveryMode === 'local') {
+          filtered = allProfiles.filter(p => {
+            if (p.user_id === myProfile.user_id) return false;
+            if (myBlockedUsers.has(p.id) || passedIds.has(p.id) || likedIds.has(p.id)) return false;
+            if (myProfile.looking_for?.length && !myProfile.looking_for.includes(p.gender)) return false;
+            return true;
+          });
+        }
+
+        return filtered;
       } catch { return []; }
     },
     enabled: !!myProfile?.id,

@@ -25,7 +25,7 @@ export default function AuthGuard({
         const { data: { user } } = await supabase.auth.getUser();
         
         if (!user) {
-          navigate(redirectTo);
+          navigate(redirectTo + '?next=' + encodeURIComponent(window.location.pathname));
           return;
         }
 

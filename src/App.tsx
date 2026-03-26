@@ -35,6 +35,7 @@ const Protected = ({ children, requireProfile = false }: { children: React.React
 
 // Lazy-load all pages
 const Landing = lazy(() => import("./pages/Landing"));
+const Index = lazy(() => import("./pages/Index"));
 const Home = lazy(() => import("./pages/Home"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const EditProfile = lazy(() => import("./pages/EditProfile"));
@@ -126,7 +127,7 @@ const App = () => (
         <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Public */}
-            <Route path="/" element={<Landing />} />
+            <Route path="/" element={<Suspense fallback={<PageLoader />}><Index /></Suspense>} />
             <Route path="/landing" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/waitlist" element={<Waitlist />} />

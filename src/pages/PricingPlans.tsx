@@ -123,8 +123,11 @@ export default function PricingPlans() {
       navigate('/login?next=/pricingplans');
       return;
     }
-    // In-app purchase flow (iOS/Android native)
-    toast.info('Subscriptions are managed through the App Store.');
+    if (myProfile?.subscription_tier === tierKey) {
+      toast.info('You are already on this plan.');
+      return;
+    }
+    toast.info('Subscriptions will be available soon. Join our waitlist to be notified!');
   };
 
   const handleRestorePurchases = () => {
@@ -256,9 +259,10 @@ export default function PricingPlans() {
                 <div className="p-6 pt-0 mt-auto">
                   <Button 
                     onClick={() => handleSubscribe(key)}
+                    disabled={myProfile?.subscription_tier === key}
                     className={`w-full py-5 text-base font-semibold rounded-xl shadow-lg transition-all active:scale-95 ${tier.buttonColor}`}
                   >
-                    {myProfile?.subscription_tier === key ? 'Current Plan' : 'Subscribe'}
+                    {myProfile?.subscription_tier === key ? 'Current Plan' : 'Coming Soon'}
                   </Button>
 
                   {/* Billing details with auto-renewal disclosure */}
