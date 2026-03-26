@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -101,7 +102,7 @@ export default function Matches() {
 
   // Fetch profiles for matches
   const { data: matchedProfiles = [] } = useQuery({
-    queryKey: ['matched-profiles', matchesData],
+    queryKey: ['matched-profiles', matchesData.map(m => m.id).join(',')],
     queryFn: async () => {
       try {
         if (!matchesData.length || !myProfile) return [];
@@ -121,10 +122,18 @@ export default function Matches() {
           })
         );
         
-        return profiles.flat().map((profile, idx) => ({
-          ...profile,
-          match: matchesData[idx]
-        }));
+        // Build a map of profile ID -> profile for safe lookup
+        const profileMap = new Map();
+        profiles.flat().forEach(p => { if (p) profileMap.set(p.id, p); });
+        
+        // Associate each match with its profile by partner ID
+        return matchesData
+          .map(m => {
+            const partnerId = m.user1_id === myProfile.id ? m.user2_id : m.user1_id;
+            const profile = profileMap.get(partnerId);
+            return profile ? { ...profile, match: m } : null;
+          })
+          .filter(Boolean);
       } catch (error) {
         console.error('Failed to fetch matched profiles:', error);
         return [];
@@ -147,12 +156,15 @@ export default function Matches() {
         // Get all likes and matches in parallel (only 2 API calls)
         const [allLikes, allMatches] = await Promise.all([
           base44.entities.Like.filter({ liked_id: myProfile.id }, '-created_date', 50),
-          base44.entities.Match.filter({
-            $or: [
-              { user1_id: myProfile.id, is_match: true },
-              { user2_id: myProfile.id, is_match: true }
-            ]
-          })
+          (async () => {
+            // Use direct Supabase query with proper OR grouping
+            const { data } = await supabase
+              .from('matches')
+              .select('user1_id, user2_id')
+              .eq('is_match', true)
+              .or(`user1_id.eq.${myProfile.id},user2_id.eq.${myProfile.id}`);
+            return data || [];
+          })()
         ]);
         
         // Create a Set of matched user IDs for fast lookup
