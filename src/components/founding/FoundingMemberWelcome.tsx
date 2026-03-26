@@ -66,7 +66,7 @@ export default function FoundingMemberWelcome({ isOpen, onClose, profile }) {
       
       <p className="text-gray-600 mb-6">
         You're one of the <strong className="text-amber-600">first 1,000</strong> people to join Afrinnect. 
-        As a thank you, you get <strong className="text-amber-600">6 months of Premium FREE</strong>!
+        As a thank you, you get <strong className="text-amber-600">{trialLabel} of Premium FREE</strong>!
       </p>
 
       <div className="bg-gradient-to-r from-amber-50 to-amber-100 border-2 border-amber-200 rounded-2xl p-6 mb-6">
@@ -175,7 +175,7 @@ export default function FoundingMemberWelcome({ isOpen, onClose, profile }) {
 
       <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 mb-6">
         <p className="text-green-800 font-medium text-sm">
-          🔒 Your Premium status is locked in for <strong>6 months</strong> — no action needed!
+          🔒 Your Premium status is locked in for <strong>{trialLabel}</strong> — no action needed!
         </p>
       </div>
 
