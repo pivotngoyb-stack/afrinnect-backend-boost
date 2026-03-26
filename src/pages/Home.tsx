@@ -26,6 +26,11 @@ import HomeHeader from '@/components/home/HomeHeader';
 import SwipeView from '@/components/home/SwipeView';
 import GridView from '@/components/home/GridView';
 import HomeModals from '@/components/home/HomeModals';
+import ProfileCompletionBar from '@/components/engagement/ProfileCompletionBar';
+import LiveActivityFeed from '@/components/engagement/LiveActivityFeed';
+import DailyReturnBanner from '@/components/engagement/DailyReturnBanner';
+import PeopleLikeYouTeaser from '@/components/engagement/PeopleLikeYouTeaser';
+import NewMatchToast from '@/components/engagement/NewMatchToast';
 import { Loader2 } from 'lucide-react';
 
 export default function Home() {
@@ -52,6 +57,8 @@ export default function Home() {
   const [profileViewStartTime, setProfileViewStartTime] = useState(Date.now());
   const [photosViewedCount, setPhotosViewedCount] = useState(0);
   const [matchCount, setMatchCount] = useState(0);
+  const [showNewMatchToast, setShowNewMatchToast] = useState(false);
+  const [lastMatchedProfile, setLastMatchedProfile] = useState(null);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { prompt: upgradePrompt, dismissPrompt } = useUpgradePrompts(myProfile);
