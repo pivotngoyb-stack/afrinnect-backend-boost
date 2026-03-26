@@ -1,4 +1,5 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,15 +12,35 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, jsonSchema, addContext, fileUrls } = await req.json();
+    // Auth check
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: 'Not authenticated' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
-    // Use Lovable AI gateway instead of direct OpenAI
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const anonClient = createClient(supabaseUrl, anonKey);
+    const { data: { user }, error: authError } = await anonClient.auth.getUser(
+      authHeader.replace('Bearer ', '')
+    );
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       return new Response(JSON.stringify({ error: 'AI not configured' }), {
         status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+
+    const { prompt, jsonSchema, addContext, fileUrls } = await req.json();
+
     const messages: any[] = [];
 
     messages.push({

@@ -1,16 +1,16 @@
-// @ts-nocheck
-import React, { useEffect } from 'react';
-import { createPageUrl } from '@/utils';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function IDVerification() {
+  const navigate = useNavigate();
+
   useEffect(() => {
-    // ID Verification is deprecated, redirecting to Photo Verification
-    window.location.href = createPageUrl('VerifyPhoto');
-  }, []);
+    navigate('/verifyphoto', { replace: true });
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      Redirecting...
+      <p className="text-muted-foreground">Redirecting...</p>
     </div>
   );
 }
