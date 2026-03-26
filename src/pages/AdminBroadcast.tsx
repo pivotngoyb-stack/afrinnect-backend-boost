@@ -257,17 +257,17 @@ export default function AdminBroadcast() {
                 <div>
                   <Label className="text-slate-300 mb-2 block">Filter by Country (optional)</Label>
                   <Select
-                    value={broadcast.targetCountries[0] || ''}
+                    value={broadcast.targetCountries[0] || 'all_countries'}
                     onValueChange={(v) => setBroadcast({ 
                       ...broadcast, 
-                      targetCountries: v ? [v] : [] 
+                      targetCountries: v && v !== 'all_countries' ? [v] : [] 
                     })}
                   >
                     <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
                       <SelectValue placeholder="All countries" />
                     </SelectTrigger>
                     <SelectContent className="bg-slate-800 border-slate-700 max-h-60">
-                      <SelectItem value={null}>All Countries</SelectItem>
+                      <SelectItem value="all_countries">All Countries</SelectItem>
                       {countries.map((country) => (
                         <SelectItem key={country} value={country}>{country}</SelectItem>
                       ))}
