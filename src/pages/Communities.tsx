@@ -36,6 +36,17 @@ export default function Communities() {
     }
   });
 
+  // Show welcome overlay for brand new users (first visit)
+  useEffect(() => {
+    if (currentUser) {
+      const welcomed = localStorage.getItem('afrinnect_welcomed');
+      if (!welcomed) {
+        setShowWelcome(true);
+        localStorage.setItem('afrinnect_welcomed', 'true');
+      }
+    }
+  }, [currentUser]);
+
   const { data: communities = [], isLoading } = useQuery({
     queryKey: ['communities'],
     queryFn: async () => {
