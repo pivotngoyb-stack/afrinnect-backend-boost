@@ -28,6 +28,17 @@ export default function Landing() {
     trackEvent(CONVERSION_EVENTS.LANDING_VIEW);
     base44.auth.isAuthenticated().then(setIsLoggedIn).catch(() => {});
     
+    // Fetch founder program settings
+    base44.entities.SystemSettings.filter({ key: 'founder_program' })
+      .then(records => {
+        const config = records?.[0]?.value;
+        if (config) {
+          setFounderTrialDays(config.trial_days || 183);
+          setFounderEnabled(config.founders_mode_enabled !== false);
+        }
+      })
+      .catch(() => {});
+    
     // Simulate live activity (realistic numbers)
     const liveInterval = setInterval(() => {
       setLiveCount(prev => prev + Math.floor(Math.random() * 3) - 1);
