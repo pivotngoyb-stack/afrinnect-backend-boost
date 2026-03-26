@@ -46,7 +46,7 @@ import ActivitySummaryBanner from '@/components/monetization/ActivitySummaryBann
 import WeeklyTopPicks from '@/components/monetization/WeeklyTopPicks';
 import PremiumBadgeOnProfile from '@/components/monetization/PremiumBadgeOnProfile';
 import MatchMilestones from '@/components/monetization/MatchMilestones';
-import VIPEventsPromo from '@/components/monetization/VIPEventsPromo.jsx';
+import VIPEventsPromo from '@/components/monetization/VIPEventsPromo';
 import FoundingMemberBanner from '@/components/founding/FoundingMemberBanner';
 import { useVerificationGate } from '@/hooks/useVerificationGate';
 import VerificationGateBanner from '@/components/shared/VerificationGateBanner';
