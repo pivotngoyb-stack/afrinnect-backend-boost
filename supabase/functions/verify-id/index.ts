@@ -93,7 +93,7 @@ Deno.serve(async (req) => {
           imageContent.push({ type: "image_url", image_url: { url: id_back_url } });
         }
 
-        const aiResponse = await fetch("https://ai-gateway.lovable.dev/v1/chat/completions", {
+        const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

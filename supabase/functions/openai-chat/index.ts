@@ -15,7 +15,11 @@ serve(async (req) => {
 
     // Use Lovable AI gateway instead of direct OpenAI
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    
+    if (!LOVABLE_API_KEY) {
+      return new Response(JSON.stringify({ error: 'AI not configured' }), {
+        status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
     const messages: any[] = [];
 
     messages.push({
@@ -57,7 +61,7 @@ serve(async (req) => {
       };
     }
 
-    const response = await fetch('https://ai-gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -65,6 +69,20 @@ serve(async (req) => {
       },
       body: JSON.stringify(body),
     });
+
+    if (!response.ok) {
+      if (response.status === 429) {
+        return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }), {
+          status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      if (response.status === 402) {
+        return new Response(JSON.stringify({ error: 'AI credits exhausted.' }), {
+          status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      throw new Error(`AI gateway error: ${response.status}`);
+    }
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content;
