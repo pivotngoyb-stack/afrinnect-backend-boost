@@ -77,11 +77,13 @@ export default function EventDetails() {
         if (updatedAttendees.includes(myProfile.id)) return;
         updatedAttendees = [...updatedAttendees, myProfile.id];
         
+        // Create RSVP notification
         await createRecord('notifications', {
           user_profile_id: myProfile.id,
+          user_id: myProfile.user_id,
           type: 'admin_message',
           title: 'Event RSVP Confirmed! 🎉',
-          message: `You're registered for ${event.title}.`,
+          message: `You're registered for "${event.title}" on ${format(new Date(event.start_date), 'MMM d, yyyy h:mm a')}. ${event.is_virtual && event.virtual_link ? 'Join link will be available on the event page.' : event.location_name ? `Location: ${event.location_name}` : ''}`,
           link_to: createPageUrl(`EventDetails?id=${eventId}`)
         });
       } else {
@@ -92,9 +94,19 @@ export default function EventDetails() {
         attendees: updatedAttendees,
         current_attendees: updatedAttendees.length
       });
+
+      return attending;
     },
-    onSuccess: () => {
+    onSuccess: (attending) => {
       queryClient.invalidateQueries({ queryKey: ['event', eventId] });
+      if (attending) {
+        toast({ title: '🎉 RSVP Confirmed!', description: `You're registered for ${event.title}. Check your notifications for details.` });
+      } else {
+        toast({ title: 'RSVP Cancelled', description: 'You have been removed from this event.' });
+      }
+    },
+    onError: () => {
+      toast({ title: 'Error', description: 'Something went wrong. Please try again.', variant: 'destructive' });
     }
   });
 

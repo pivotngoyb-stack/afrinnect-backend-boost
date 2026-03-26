@@ -51,13 +51,7 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Check verification - either photo or ID verified
-    const isVerified = profile.is_photo_verified || profile.is_id_verified
-    if (!isVerified) {
-      return new Response(JSON.stringify({ error: 'Verification required. Complete photo or ID verification first.', verification_required: true }), {
-        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
-    }
+    // Verification no longer required for boosts
 
     // Check active boost
     if (profile.profile_boost_active && profile.boost_expires_at) {

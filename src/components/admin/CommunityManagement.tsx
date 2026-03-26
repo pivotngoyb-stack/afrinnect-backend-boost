@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Users, Star, Trash2, Plus, Globe, Loader2 } from 'lucide-react';
+import { Users, Trash2, Plus, Globe, Loader2, MessageSquare } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const CATEGORIES = [
@@ -29,6 +29,8 @@ const COUNTRY_ICONS: Record<string, string> = {
 export default function CommunityManagement() {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [broadcastOpen, setBroadcastOpen] = useState(false);
+  const [broadcastMessage, setBroadcastMessage] = useState('');
   const [form, setForm] = useState({ name: '', description: '', category: '', image_url: '' });
 
   const { data: communities = [], isLoading } = useQuery({
@@ -40,7 +42,6 @@ export default function CommunityManagement() {
         .order('created_at', { ascending: false });
       if (error) throw error;
 
-      // Get member counts
       const ids = (data || []).map(c => c.id);
       if (ids.length === 0) return data || [];
 
@@ -97,6 +98,46 @@ export default function CommunityManagement() {
     },
   });
 
+  const broadcastMutation = useMutation({
+    mutationFn: async (message: string) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      // Get admin profile
+      const { data: adminProfiles } = await supabase
+        .from('user_profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .limit(1);
+      const adminProfileId = adminProfiles?.[0]?.id;
+      if (!adminProfileId) throw new Error('Admin profile not found');
+
+      // Get all active communities
+      const activeCommunities = communities.filter(c => c.is_active);
+      if (activeCommunities.length === 0) throw new Error('No active communities');
+
+      // Send message to each community
+      const messages = activeCommunities.map(c => ({
+        community_id: c.id,
+        sender_id: adminProfileId,
+        sender_user_id: user.id,
+        content: message,
+        message_type: 'text',
+      }));
+
+      const { error } = await supabase.from('community_messages').insert(messages);
+      if (error) throw error;
+
+      return activeCommunities.length;
+    },
+    onSuccess: (count) => {
+      setBroadcastOpen(false);
+      setBroadcastMessage('');
+      toast({ title: `Message sent to ${count} communities` });
+    },
+    onError: (e: any) => toast({ title: 'Error', description: e.message, variant: 'destructive' }),
+  });
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
@@ -104,61 +145,97 @@ export default function CommunityManagement() {
           <Globe className="h-5 w-5" />
           Communities ({communities.length})
         </CardTitle>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button size="sm" className="gap-2">
-              <Plus size={16} /> Create Community
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create New Community</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 pt-2">
-              <div>
-                <Label>Name</Label>
-                <Input
-                  placeholder="e.g. Nigerians in Tech"
-                  value={form.name}
-                  onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                />
-              </div>
-              <div>
-                <Label>Description</Label>
-                <Textarea
-                  placeholder="Describe this community..."
-                  value={form.description}
-                  onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                />
-              </div>
-              <div>
-                <Label>Category</Label>
-                <Select value={form.category} onValueChange={v => setForm(f => ({ ...f, category: v }))}>
-                  <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
-                  <SelectContent>
-                    {CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>Image URL (optional)</Label>
-                <Input
-                  placeholder="https://..."
-                  value={form.image_url}
-                  onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))}
-                />
-              </div>
-              <Button
-                onClick={() => createMutation.mutate()}
-                disabled={!form.name.trim() || createMutation.isPending}
-                className="w-full"
-              >
-                {createMutation.isPending ? <Loader2 className="animate-spin mr-2" size={16} /> : null}
-                Create Community
+        <div className="flex gap-2">
+          <Dialog open={broadcastOpen} onOpenChange={setBroadcastOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm" variant="outline" className="gap-2">
+                <MessageSquare size={16} /> Broadcast to All
               </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Broadcast Message to All Communities</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 pt-2">
+                <p className="text-sm text-muted-foreground">
+                  This message will be posted to all {communities.filter(c => c.is_active).length} active communities.
+                </p>
+                <div>
+                  <Label>Message</Label>
+                  <Textarea
+                    placeholder="Type your announcement..."
+                    value={broadcastMessage}
+                    onChange={e => setBroadcastMessage(e.target.value)}
+                    rows={4}
+                  />
+                </div>
+                <Button
+                  onClick={() => broadcastMutation.mutate(broadcastMessage)}
+                  disabled={!broadcastMessage.trim() || broadcastMutation.isPending}
+                  className="w-full"
+                >
+                  {broadcastMutation.isPending ? <Loader2 className="animate-spin mr-2" size={16} /> : null}
+                  Send to All Communities
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm" className="gap-2">
+                <Plus size={16} /> Create Community
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create New Community</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 pt-2">
+                <div>
+                  <Label>Name</Label>
+                  <Input
+                    placeholder="e.g. Nigerians in Tech"
+                    value={form.name}
+                    onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <Label>Description</Label>
+                  <Textarea
+                    placeholder="Describe this community..."
+                    value={form.description}
+                    onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <Label>Category</Label>
+                  <Select value={form.category} onValueChange={v => setForm(f => ({ ...f, category: v }))}>
+                    <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
+                    <SelectContent>
+                      {CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Image URL (optional)</Label>
+                  <Input
+                    placeholder="https://..."
+                    value={form.image_url}
+                    onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))}
+                  />
+                </div>
+                <Button
+                  onClick={() => createMutation.mutate()}
+                  disabled={!form.name.trim() || createMutation.isPending}
+                  className="w-full"
+                >
+                  {createMutation.isPending ? <Loader2 className="animate-spin mr-2" size={16} /> : null}
+                  Create Community
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
       </CardHeader>
       <CardContent>
         {isLoading ? (

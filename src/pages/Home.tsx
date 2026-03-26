@@ -34,7 +34,7 @@ export default function Home() {
   const { t } = useLanguage();
 
   const [viewMode, setViewMode] = useState('swipe');
-  const [discoveryMode, setDiscoveryMode] = useState('global');
+  const [discoveryMode, setDiscoveryMode] = useState('local');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [filters, setFilters] = useState({});
   const [selectedProfile, setSelectedProfile] = useState(null);

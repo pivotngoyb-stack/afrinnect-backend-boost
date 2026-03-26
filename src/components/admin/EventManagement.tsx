@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { createRecord, deleteRecord, filterRecords, updateRecord, uploadFile } from '@/lib/supabase-helpers';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -42,7 +43,23 @@ export default function EventManagement({ events }) {
   const [editingEvent, setEditingEvent] = useState(null);
   const [formData, setFormData] = useState({ ...DEFAULT_FORM });
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [rsvpEvent, setRsvpEvent] = useState(null);
   const queryClient = useQueryClient();
+
+  const handleViewRSVPs = (event) => setRsvpEvent(event);
+
+  const { data: rsvpProfiles = [] } = useQuery({
+    queryKey: ['event-rsvp-profiles', rsvpEvent?.id],
+    queryFn: async () => {
+      if (!rsvpEvent?.attendees?.length) return [];
+      const { data } = await supabase
+        .from('user_profiles')
+        .select('id, display_name, primary_photo, photos, current_city, current_country, email')
+        .in('id', rsvpEvent.attendees);
+      return data || [];
+    },
+    enabled: !!rsvpEvent?.attendees?.length
+  });
 
   const createEventMutation = useMutation({
     mutationFn: async () => {
@@ -194,42 +211,47 @@ export default function EventManagement({ events }) {
         <CardContent>
           <div className="space-y-3">
             {(events || []).map(event => (
-              <div key={event.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-semibold">{event.title}</h3>
-                    {event.is_featured && <Badge className="bg-amber-500">Featured</Badge>}
-                    {event.is_virtual && <Badge variant="outline">Virtual</Badge>}
-                    {new Date(event.start_date) < new Date() && (
-                      <Badge variant="secondary">Past</Badge>
-                    )}
+              <div key={event.id} className="p-4 border rounded-lg hover:bg-gray-50">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-semibold">{event.title}</h3>
+                      {event.is_featured && <Badge className="bg-amber-500">Featured</Badge>}
+                      {event.is_virtual && <Badge variant="outline">Virtual</Badge>}
+                      {new Date(event.start_date) < new Date() && (
+                        <Badge variant="secondary">Past</Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <span className="flex items-center gap-1">
+                        <Calendar size={14} />
+                        {event.start_date && format(new Date(event.start_date), 'MMM d, yyyy')}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <MapPin size={14} />
+                        {event.is_virtual ? 'Virtual' : `${event.city || ''}${event.country ? `, ${event.country}` : ''}`}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Users size={14} />
+                        {event.attendees?.length || event.current_attendees || 0}{event.max_attendees ? `/${event.max_attendees}` : ''}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
-                    <span className="flex items-center gap-1">
-                      <Calendar size={14} />
-                      {event.start_date && format(new Date(event.start_date), 'MMM d, yyyy')}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MapPin size={14} />
-                      {event.is_virtual ? 'Virtual' : `${event.city || ''}${event.country ? `, ${event.country}` : ''}`}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Users size={14} />
-                      {event.attendees?.length || event.current_attendees || 0}{event.max_attendees ? `/${event.max_attendees}` : ''}
-                    </span>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" onClick={() => handleViewRSVPs(event)}>
+                      <Users size={16} className="mr-1" /> RSVPs
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(event)}>
+                      <Edit2 size={16} />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => deleteEventMutation.mutate(event.id)}
+                    >
+                      <Trash2 size={16} className="text-red-600" />
+                    </Button>
                   </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm" onClick={() => handleEdit(event)}>
-                    <Edit2 size={16} />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => deleteEventMutation.mutate(event.id)}
-                  >
-                    <Trash2 size={16} className="text-red-600" />
-                  </Button>
                 </div>
               </div>
             ))}
@@ -437,6 +459,39 @@ export default function EventManagement({ events }) {
               {createEventMutation.isPending ? 'Saving...' : editingEvent ? 'Update Event' : 'Create Event'}
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+      {/* RSVP Attendee List Dialog */}
+      <Dialog open={!!rsvpEvent} onOpenChange={(open) => { if (!open) setRsvpEvent(null); }}>
+        <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>RSVPs — {rsvpEvent?.title}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground mb-4">
+            {rsvpEvent?.attendees?.length || 0} registered attendees
+            {rsvpEvent?.max_attendees ? ` / ${rsvpEvent.max_attendees} max` : ''}
+          </p>
+          {rsvpProfiles.length === 0 ? (
+            <p className="text-center text-muted-foreground py-8">No RSVPs yet</p>
+          ) : (
+            <div className="space-y-3">
+              {rsvpProfiles.map(p => (
+                <div key={p.id} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                  <img
+                    src={p.primary_photo || p.photos?.[0] || '/placeholder.svg'}
+                    alt=""
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                  <div className="flex-1">
+                    <p className="font-medium text-foreground">{p.display_name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {p.current_city}{p.current_country ? `, ${p.current_country}` : ''}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
