@@ -131,7 +131,7 @@ export default function CommunityChat() {
   });
 
   const handleSend = () => {
-    if (!message.trim() || !currentUser) return;
+    if (!message.trim() || !currentUser || !isMember) return;
     sendMutation.mutate(message);
   };
 
