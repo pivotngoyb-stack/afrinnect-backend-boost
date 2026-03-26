@@ -18,6 +18,7 @@ import GuidedActions from '@/components/shared/GuidedActions';
 
 export default function Communities() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [showWelcome, setShowWelcome] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
