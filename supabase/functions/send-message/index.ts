@@ -241,7 +241,7 @@ Allow: flirting, compliments, date planning, personal questions, humor.`,
       type: "new_message",
       title: "New Message",
       message: `${senderProfile.display_name} sent you a message`,
-      data: { match_id: matchId, sender_id: senderProfile.id },
+      link_to: `/chat?match=${matchId}`,
       is_read: false,
     }).catch(() => {}); // Don't fail if notification insert fails
 

@@ -125,7 +125,7 @@ Be generous with matching - different angles, lighting, and expressions are expe
           imageContent.push({ type: "image_url", image_url: { url: profilePhotoUrl } });
         }
 
-        const aiResponse = await fetch("https://ai-gateway.lovable.dev/v1/chat/completions", {
+        const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
