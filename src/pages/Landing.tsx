@@ -271,11 +271,13 @@ export default function Landing() {
             </div>
             
             {/* Urgency Message */}
+            {founderEnabled && (
             <div className="bg-amber-500/20 border border-amber-400/30 rounded-xl p-4 mb-6">
               <p className="text-amber-200 text-sm font-medium">
-                🎉 <strong>Founding Member Bonus:</strong> Sign up this week and get Premium features FREE for 30 days
+                🎉 <strong>Founding Member Bonus:</strong> Sign up now and get Premium features FREE for {founderTrialDays >= 60 ? `${Math.round(founderTrialDays / 30)} months` : `${founderTrialDays} days`}!
               </p>
             </div>
+            )}
             
             {/* CTA */}
             <div className="flex flex-col sm:flex-row gap-4 mb-6">

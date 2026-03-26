@@ -9,6 +9,13 @@ import confetti from 'canvas-confetti';
 export default function FoundingMemberWelcome({ isOpen, onClose, profile }) {
   const [step, setStep] = useState(0);
 
+  const trialEndsAt = profile?.founding_member_trial_ends_at ? new Date(profile.founding_member_trial_ends_at) : null;
+  const grantedAt = profile?.founding_member_granted_at ? new Date(profile.founding_member_granted_at) : null;
+  const totalTrialDays = grantedAt && trialEndsAt 
+    ? Math.round((trialEndsAt - grantedAt) / (1000 * 60 * 60 * 24))
+    : 183;
+  const trialMonths = Math.round(totalTrialDays / 30);
+  const trialLabel = totalTrialDays >= 60 ? `${trialMonths} months` : `${totalTrialDays} days`;
   useEffect(() => {
     if (isOpen && step === 0) {
       // Trigger confetti on open
