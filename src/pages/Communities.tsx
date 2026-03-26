@@ -85,6 +85,40 @@ export default function Communities() {
     enabled: !!currentUser,
   });
 
+  // Fetch recent community posts for the activity feed
+  const { data: recentPosts = [] } = useQuery({
+    queryKey: ['recent-community-posts'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('community_messages')
+        .select('id, content, created_at, community_id, sender_id')
+        .eq('message_type', 'text')
+        .order('created_at', { ascending: false })
+        .limit(8);
+      if (error) throw error;
+      // Resolve sender names and community names
+      const senderIds = [...new Set((data || []).map(p => p.sender_id))];
+      const communityIds = [...new Set((data || []).map(p => p.community_id))];
+      const [sendersRes, communitiesRes] = await Promise.all([
+        senderIds.length > 0
+          ? supabase.from('user_profiles').select('id, display_name, primary_photo').in('id', senderIds)
+          : { data: [] },
+        communityIds.length > 0
+          ? supabase.from('communities').select('id, name').in('id', communityIds)
+          : { data: [] },
+      ]);
+      const senderMap: Record<string, any> = {};
+      (sendersRes.data || []).forEach(s => { senderMap[s.id] = s; });
+      const communityMap: Record<string, any> = {};
+      (communitiesRes.data || []).forEach(c => { communityMap[c.id] = c; });
+      return (data || []).map(p => ({
+        ...p,
+        sender: senderMap[p.sender_id],
+        community: communityMap[p.community_id],
+      }));
+    },
+    enabled: !!currentUser,
+
   const joinMutation = useMutation({
     mutationFn: async (communityId: string) => {
       const { error } = await supabase.from('community_members').insert({
