@@ -283,6 +283,7 @@ const functionNameMap: Record<string, string> = {
   submitReport: 'submit-report',
   mlMatchingEngine: 'ml-matching-engine',
   sendOTP: 'send-otp',
+  verifyOTP: 'send-otp',
   cancelSubscription: 'cancel-subscription',
   sendNewsletterEmail: 'send-newsletter-email',
   sendPushNotification: 'send-push-notification',
