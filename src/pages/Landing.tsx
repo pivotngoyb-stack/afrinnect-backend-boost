@@ -242,13 +242,13 @@ export default function Landing() {
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-              Your Future Partner<br />
+              Your Community<br />
               <span className="bg-gradient-to-r from-amber-400 to-amber-200 bg-clip-text text-transparent">
                 Is Already Here
               </span>
             </h1>
             <p className="text-lg md:text-xl text-white/90 mb-4 max-w-xl">
-              The only dating app built for the African diaspora in North America. Find someone who truly gets your culture, values, and dreams.
+              The community platform built for the African diaspora. Connect with people who truly share your culture, values, and heritage.
             </p>
             
             {/* Geographic notice */}
@@ -278,12 +278,12 @@ export default function Landing() {
                 </Link>
               ) : (
                 <>
-                  <Button 
+                   <Button 
                     onClick={handleGetStarted}
                     size="lg" 
                     className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-10 py-7 text-lg rounded-full shadow-2xl transform hover:scale-105 transition-all"
                   >
-                    Find Your Match — It's Free
+                    Join the Community — It's Free
                     <ArrowRight size={20} className="ml-2" />
                   </Button>
                 </>
@@ -335,7 +335,7 @@ export default function Landing() {
                   </div>
                   <span className="text-sm font-medium">+10,000 members</span>
                 </div>
-                <p className="text-lg font-semibold">Find your perfect match today</p>
+                <p className="text-lg font-semibold">Connect with your community and culture</p>
               </div>
             </div>
 
@@ -529,7 +529,7 @@ export default function Landing() {
                 size="lg" 
                 className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-8 py-6 rounded-full shadow-xl"
               >
-                Start Your Story — Free
+                Join the Community — Free
                 <ArrowRight size={18} className="ml-2" />
               </Button>
             </div>
@@ -657,10 +657,10 @@ export default function Landing() {
               Somewhere out there, someone is waiting to meet you
             </p>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Don't Let Another Day Pass
+              Your People Are Waiting
             </h2>
             <p className="text-xl text-white/90 mb-4 max-w-2xl mx-auto">
-              Every hour you wait is an hour you could be connecting with someone who shares your culture, values, and dreams for the future.
+              Every day you wait is a day you could be connecting with people who share your culture, heritage, and vision for the future.
             </p>
             
             {/* Scarcity/Urgency */}
@@ -669,7 +669,7 @@ export default function Landing() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
               </span>
-              <span className="text-white/90 text-sm">{liveCount} singles online now in your area</span>
+              <span className="text-white/90 text-sm">{liveCount} members active now</span>
             </div>
             
             <div className="flex flex-col items-center gap-4">
@@ -678,7 +678,7 @@ export default function Landing() {
                 size="lg" 
                 className="bg-white text-purple-900 hover:bg-gray-100 px-12 py-7 text-xl rounded-full shadow-2xl transform hover:scale-105 transition-all font-bold"
               >
-                Find Your Person — Free
+                Join Afrinnect — Free
                 <ArrowRight size={24} className="ml-2" />
               </Button>
               <div className="flex items-center gap-4 text-white/70 text-sm mt-2">
@@ -705,11 +705,11 @@ export default function Landing() {
               onClick={handleGetStarted}
               className="w-full bg-gradient-to-r from-purple-600 to-amber-600 text-white rounded-full py-6 text-base font-bold shadow-lg"
             >
-              Find Your Match — Free
+              Join the Community — Free
               <ArrowRight size={18} className="ml-2" />
             </Button>
             <p className="text-center text-xs text-gray-500">
-              Join {liveCount}+ people online now • Takes 2 minutes
+              Join {liveCount}+ members • Takes 2 minutes
             </p>
           </div>
         )}
