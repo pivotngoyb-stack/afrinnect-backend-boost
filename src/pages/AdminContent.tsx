@@ -75,11 +75,16 @@ export default function AdminContent() {
 
   const handleSave = async () => {
     try {
+      const saveData = {
+        question: formData.text,
+        category: formData.category,
+        is_active: formData.is_active
+      };
       if (editDialog.type === 'icebreaker') {
         if (editDialog.item) {
-          await base44.entities.IceBreaker.update(editDialog.item.id, formData);
+          await base44.entities.IceBreaker.update(editDialog.item.id, saveData);
         } else {
-          await base44.entities.IceBreaker.create(formData);
+          await base44.entities.IceBreaker.create(saveData);
         }
       }
       await loadContent();
@@ -102,7 +107,7 @@ export default function AdminContent() {
   };
 
   const openEdit = (type, item = null) => {
-    setFormData(item || { text: "", category: "", is_active: true });
+    setFormData(item ? { text: item.question || item.text || '', category: item.category || '', is_active: item.is_active !== false } : { text: "", category: "", is_active: true });
     setEditDialog({ open: true, type, item });
   };
 
@@ -187,7 +192,7 @@ export default function AdminContent() {
                           </Button>
                         </div>
                       </div>
-                      <p className="text-white">{breaker.text}</p>
+                      <p className="text-white">{breaker.question || breaker.text}</p>
                       {breaker.category && (
                         <Badge className="mt-2 bg-slate-700">{breaker.category}</Badge>
                       )}

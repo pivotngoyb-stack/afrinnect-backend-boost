@@ -110,7 +110,7 @@ export default function AdminBroadcast() {
         type: broadcast.type,
         title: broadcast.title,
         message: broadcast.message,
-        link_to: broadcast.linkTo || null,
+        link_to: broadcast.linkTo && broadcast.linkTo !== 'none' ? broadcast.linkTo : null,
         is_admin: true,
         is_read: false
       }));
@@ -219,7 +219,7 @@ export default function AdminBroadcast() {
                       <SelectValue placeholder="Select destination page" />
                     </SelectTrigger>
                     <SelectContent className="bg-slate-800 border-slate-700">
-                      <SelectItem value={null}>None</SelectItem>
+                      <SelectItem value="none">None</SelectItem>
                       <SelectItem value="Discover">Discover</SelectItem>
                       <SelectItem value="Matches">Matches</SelectItem>
                       <SelectItem value="Premium">Premium</SelectItem>
@@ -257,17 +257,17 @@ export default function AdminBroadcast() {
                 <div>
                   <Label className="text-slate-300 mb-2 block">Filter by Country (optional)</Label>
                   <Select
-                    value={broadcast.targetCountries[0] || ''}
+                    value={broadcast.targetCountries[0] || 'all_countries'}
                     onValueChange={(v) => setBroadcast({ 
                       ...broadcast, 
-                      targetCountries: v ? [v] : [] 
+                      targetCountries: v && v !== 'all_countries' ? [v] : [] 
                     })}
                   >
                     <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
                       <SelectValue placeholder="All countries" />
                     </SelectTrigger>
                     <SelectContent className="bg-slate-800 border-slate-700 max-h-60">
-                      <SelectItem value={null}>All Countries</SelectItem>
+                      <SelectItem value="all_countries">All Countries</SelectItem>
                       {countries.map((country) => (
                         <SelectItem key={country} value={country}>{country}</SelectItem>
                       ))}

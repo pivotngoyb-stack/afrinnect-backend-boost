@@ -131,12 +131,12 @@ export default function AdminModeration() {
 
         // Create moderation action
         await base44.entities.ModerationAction.create({
-          user_profile_id: reportedUser.id,
-          moderator_id: user.id,
+          target_profile_id: reportedUser.id,
+          target_user_id: reportedUser.user_id,
+          performed_by: user.id,
           action_type: action,
           reason: moderatorNotes || `Action from report: ${selectedReport.report_type}`,
-          related_report_id: selectedReport.id,
-          is_active: true
+          details: { related_report_id: selectedReport.id },
         });
       }
 

@@ -164,12 +164,12 @@ export default function AdminUsers() {
       // Create moderation action record
       if (['ban', 'suspend'].includes(actionDialog.type)) {
         await base44.entities.ModerationAction.create({
-          user_profile_id: actionDialog.user.id,
-          moderator_id: user.id,
+          target_profile_id: actionDialog.user.id,
+          target_user_id: actionDialog.user.user_id,
+          performed_by: user.id,
           action_type: actionDialog.type === 'ban' ? 'permanent_ban' : 'temporary_ban',
           reason: actionReason,
-          duration_hours: actionDialog.type === 'suspend' ? parseInt(actionDuration) : null,
-          is_active: true
+          expires_at: actionDialog.type === 'suspend' ? new Date(Date.now() + parseInt(actionDuration) * 60 * 60 * 1000).toISOString() : null,
         });
       }
 
