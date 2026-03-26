@@ -118,6 +118,7 @@ export default function Communities() {
       }));
     },
     enabled: !!currentUser,
+  });
 
   const joinMutation = useMutation({
     mutationFn: async (communityId: string) => {
