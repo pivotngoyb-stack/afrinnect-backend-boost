@@ -330,10 +330,16 @@ export default function Home() {
     },
     onSuccess: (data) => {
       if (data?.isMatch) {
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 }, colors: ['#ff6b9d', '#c084fc', '#f59e0b', '#ef4444'] });
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
         setShowMatchCelebration(true);
         setMatchCount(prev => prev + 1);
-        setTimeout(() => setShowMatchCelebration(false), 3000);
+        setLastMatchedProfile(pendingLikeProfile);
+        setTimeout(() => {
+          setShowMatchCelebration(false);
+          setShowNewMatchToast(true);
+          setTimeout(() => setShowNewMatchToast(false), 8000);
+        }, 3000);
       }
       setCurrentIndex(prev => prev + 1);
     },
