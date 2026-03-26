@@ -66,29 +66,33 @@ export default function BoostButton({ userProfile, onBoostActivated, onBoostSucc
     try {
       const { data, error: fnError } = await supabase.functions.invoke('boost-profile');
 
-      if (fnError) {
-        setError('Failed to activate boost. Please try again.');
-        return;
-      }
+      // Edge function returns error body even on non-2xx — check data first
+      const response = data || {};
 
-      if (data?.success) {
-        toast({ title: '🚀 Profile Boosted!', description: `Your profile will be shown to more people for ${data.duration_minutes} minutes.` });
+      if (response.success) {
+        toast({ title: '🚀 Profile Boosted!', description: `Your profile will be shown to more people for ${response.duration_minutes} minutes.` });
         setIsBoostActive(true);
         setShowModal(false);
         onBoostActivated?.();
         onBoostSuccess?.();
+        return;
+      }
+
+      // Handle specific error types from the edge function
+      if (response.upgrade_required) {
+        setError('Boosts are available on Premium and above. Upgrade your plan!');
+      } else if (response.limit_reached) {
+        setError(response.error || 'Monthly boost limit reached.');
+      } else if (response.verification_required) {
+        setError('Complete photo or ID verification to unlock boosts.');
+      } else if (response.already_active) {
+        setError('You already have an active boost.');
+      } else if (response.error) {
+        setError(response.error);
+      } else if (fnError) {
+        setError('Failed to activate boost. Please try again.');
       } else {
-        if (data?.upgrade_required) {
-          setError('Boosts are available on Premium and above. Upgrade your plan!');
-        } else if (data?.limit_reached) {
-          setError(data.error || 'Monthly boost limit reached.');
-        } else if (data?.verification_required) {
-          setError('Complete photo or ID verification to unlock boosts.');
-        } else if (data?.already_active) {
-          setError('You already have an active boost.');
-        } else {
-          setError(data?.error || 'Something went wrong.');
-        }
+        setError('Something went wrong.');
       }
     } catch {
       setError('Network error. Please try again.');
