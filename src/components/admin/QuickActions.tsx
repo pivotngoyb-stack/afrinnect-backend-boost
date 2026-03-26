@@ -12,7 +12,7 @@ export default function QuickActions() {
 
   const actionMutations = {
     sendWinback: useMutation({
-      mutationFn: () => base44.functions.invoke('sendWinbackEmail', {}),
+      mutationFn: () => base44.functions.invoke('send-winback-email', {}),
       onSuccess: (response) => {
         const count = response?.data?.emailsSent || 0;
         toast.success(`Sent ${count} win-back emails`);
@@ -21,7 +21,7 @@ export default function QuickActions() {
     }),
 
     verifyPhotos: useMutation({
-      mutationFn: () => base44.functions.invoke('autoVerifyPhotos', {}),
+      mutationFn: () => base44.functions.invoke('auto-verify-photos', {}),
       onSuccess: (response) => {
         const count = response?.data?.processed || 0;
         toast.success(`Processed ${count} verifications`);
@@ -31,7 +31,7 @@ export default function QuickActions() {
     }),
 
     analyzePatterns: useMutation({
-      mutationFn: () => base44.functions.invoke('analyzeConversationPatterns', {}),
+      mutationFn: () => base44.functions.invoke('analyze-conversation-patterns', {}),
       onSuccess: (response) => {
         const count = response?.data?.analyzed || 0;
         toast.success(`Analyzed ${count} conversations`);
@@ -40,7 +40,7 @@ export default function QuickActions() {
     }),
 
     checkExpired: useMutation({
-      mutationFn: () => base44.functions.invoke('checkExpiredSubscriptions', {}),
+      mutationFn: () => base44.functions.invoke('check-expired-subscriptions', {}),
       onSuccess: (response) => {
         const count = response?.data?.checked || 0;
         toast.success(`Checked ${count} subscriptions`);
