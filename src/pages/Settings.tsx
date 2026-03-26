@@ -29,6 +29,7 @@ import {
 
 export default function Settings() {
   const [myProfile, setMyProfile] = useState(null);
+  const [userEmail, setUserEmail] = useState('');
   
   // Load settings from localStorage
   const loadSettings = () => {
@@ -67,6 +68,7 @@ export default function Settings() {
       try {
         const user = await base44.auth.me();
         if (user) {
+          setUserEmail(user.email || '');
           const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
           if (profiles.length > 0) {
             setMyProfile(profiles[0]);
@@ -267,7 +269,7 @@ export default function Settings() {
               setIsSendingCode(true);
               
               try {
-                const res = await base44.functions.invoke('sendOTP', { email: myProfile?.created_by });
+                const res = await base44.functions.invoke('sendOTP', { email: userEmail });
                 if (res.data.success) {
                   setShowEmailVerifyDialog(true);
                 } else {
@@ -620,7 +622,7 @@ export default function Settings() {
           <AlertDialogHeader>
             <AlertDialogTitle>Verify Email</AlertDialogTitle>
             <AlertDialogDescription>
-              We sent a 6-digit code to {myProfile?.created_by}. Please enter it below.
+              We sent a 6-digit code to {userEmail}. Please enter it below.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="py-4">
