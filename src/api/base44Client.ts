@@ -306,8 +306,23 @@ export const functions = {
   async invoke(functionName: string, payload?: any) {
     const resolvedName = functionNameMap[functionName] || functionName;
     const { data, error } = await supabase.functions.invoke(resolvedName, { body: payload });
-    if (error) throw error;
-    return data;
+    if (error) {
+      // Extract meaningful error message from edge function response
+      let errorMessage = 'Unknown error';
+      if (data && typeof data === 'object' && data.error) {
+        errorMessage = data.error;
+      } else if (error.message) {
+        // Try to parse JSON error from FunctionsHttpError message
+        try {
+          const parsed = JSON.parse(error.message);
+          errorMessage = parsed.error || error.message;
+        } catch {
+          errorMessage = error.message;
+        }
+      }
+      throw new Error(errorMessage);
+    }
+    return { data };
   }
 };
 
