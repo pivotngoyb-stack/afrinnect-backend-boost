@@ -458,9 +458,11 @@ export default function Home() {
         {isVerificationGated && <VerificationGateBanner matchCount={gateMatchCount} />}
 
         <main className="flex-1 flex flex-col overflow-hidden px-4" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+          <DailyReturnBanner userProfile={myProfile} />
+          <LiveActivityFeed />
+          <ProfileCompletionBar userProfile={myProfile} />
+          <PeopleLikeYouTeaser userProfile={myProfile} />
           <ActivitySummaryBanner userProfile={myProfile} />
-          <WeeklyTopPicks userProfile={myProfile} />
-          <VIPEventsPromo userProfile={myProfile} />
           <div className="mb-3">
             <BoostButton userProfile={myProfile} onBoostActivated={() => refetch()} />
           </div>
@@ -503,6 +505,11 @@ export default function Home() {
             showFeedbackModal={showFeedbackModal} setShowFeedbackModal={setShowFeedbackModal}
             feedbackProfile={feedbackProfile} setFeedbackProfile={setFeedbackProfile}
             upgradePrompt={upgradePrompt} dismissPrompt={dismissPrompt}
+          />
+          <NewMatchToast
+            show={showNewMatchToast}
+            matchedProfile={lastMatchedProfile}
+            onDismiss={() => setShowNewMatchToast(false)}
           />
           <div className="h-20" />
         </main>
