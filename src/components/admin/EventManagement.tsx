@@ -461,6 +461,39 @@ export default function EventManagement({ events }) {
           </div>
         </DialogContent>
       </Dialog>
+      {/* RSVP Attendee List Dialog */}
+      <Dialog open={!!rsvpEvent} onOpenChange={(open) => { if (!open) setRsvpEvent(null); }}>
+        <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>RSVPs — {rsvpEvent?.title}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground mb-4">
+            {rsvpEvent?.attendees?.length || 0} registered attendees
+            {rsvpEvent?.max_attendees ? ` / ${rsvpEvent.max_attendees} max` : ''}
+          </p>
+          {rsvpProfiles.length === 0 ? (
+            <p className="text-center text-muted-foreground py-8">No RSVPs yet</p>
+          ) : (
+            <div className="space-y-3">
+              {rsvpProfiles.map(p => (
+                <div key={p.id} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                  <img
+                    src={p.primary_photo || p.photos?.[0] || '/placeholder.svg'}
+                    alt=""
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                  <div className="flex-1">
+                    <p className="font-medium text-foreground">{p.display_name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {p.current_city}{p.current_country ? `, ${p.current_country}` : ''}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
