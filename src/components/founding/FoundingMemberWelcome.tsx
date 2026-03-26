@@ -73,7 +73,7 @@ export default function FoundingMemberWelcome({ isOpen, onClose, profile }) {
         <div className="flex items-center justify-center gap-3 mb-4">
           <Gift className="text-amber-600" size={24} />
           <span className="text-2xl font-bold text-amber-700">$0.00</span>
-          <span className="text-gray-500 line-through">$149.94</span>
+          <span className="text-gray-500 line-through">${(trialMonths * 14.99).toFixed(2)}</span>
         </div>
         <p className="text-sm text-amber-800 font-medium">
           No credit card needed • No charges ever • Full Premium access
