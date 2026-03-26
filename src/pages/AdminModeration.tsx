@@ -285,7 +285,7 @@ export default function AdminModeration() {
 
   return (
     <div className="min-h-screen bg-background flex">
-      <AdminSidebar activePage="AdminModeration" pendingReports={statusCounts?.pending || 0} />
+      <AdminSidebar pendingReports={statusCounts?.pending || 0} />
 
       <main className="flex-1 overflow-auto">
         {/* Header */}
