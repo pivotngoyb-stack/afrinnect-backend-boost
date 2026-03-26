@@ -21,6 +21,8 @@ export default function Landing() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [liveCount, setLiveCount] = useState(47);
   const [recentSignup, setRecentSignup] = useState(null);
+  const [founderTrialDays, setFounderTrialDays] = useState(183);
+  const [founderEnabled, setFounderEnabled] = useState(true);
 
   useEffect(() => {
     trackEvent(CONVERSION_EVENTS.LANDING_VIEW);
