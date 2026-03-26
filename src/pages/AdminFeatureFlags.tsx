@@ -58,7 +58,6 @@ export default function AdminFeatureFlags() {
         navigate(createPageUrl('Home'));
         return;
       }
-      setUser(currentUser);
       await loadFlags();
     } catch (e) {
       navigate(createPageUrl('Home'));
