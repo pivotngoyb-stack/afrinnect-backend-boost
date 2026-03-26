@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -40,7 +40,7 @@ export default function AIInsightsDashboard() {
     mutationFn: async ({ items, action }) => {
       const results = await Promise.all(
         items.map(item => 
-          base44.entities[item.entityType].update(item.id, { action_taken: action })
+          updateRecord(item.entityType, item.id, { action_taken: action })
         )
       );
       return results;
