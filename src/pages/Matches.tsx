@@ -155,12 +155,15 @@ export default function Matches() {
         // Get all likes and matches in parallel (only 2 API calls)
         const [allLikes, allMatches] = await Promise.all([
           base44.entities.Like.filter({ liked_id: myProfile.id }, '-created_date', 50),
-          base44.entities.Match.filter({
-            $or: [
-              { user1_id: myProfile.id, is_match: true },
-              { user2_id: myProfile.id, is_match: true }
-            ]
-          })
+          (async () => {
+            // Use direct Supabase query with proper OR grouping
+            const { data } = await supabase
+              .from('matches')
+              .select('user1_id, user2_id')
+              .eq('is_match', true)
+              .or(`user1_id.eq.${myProfile.id},user2_id.eq.${myProfile.id}`);
+            return data || [];
+          })()
         ]);
         
         // Create a Set of matched user IDs for fast lookup
