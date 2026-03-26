@@ -1,12 +1,10 @@
-// @ts-nocheck
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { createPageUrl } from "@/utils";
-import { base44 } from "@/api/base44Client";
+import { useNavigate, useLocation } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   BarChart3, Users, Shield, TrendingUp, DollarSign, MessageSquare,
-  Settings, Bell, Eye, LogOut, ChevronLeft, ChevronRight, Menu,
-  Flag, Megaphone, Gift, Star, Zap, Globe, Book, Store
+  Settings, ChevronLeft, ChevronRight, Flag, Book, Store,
+  Eye, LogOut, Megaphone, Gift, Star, Zap, ClipboardList
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,43 +13,56 @@ import {
   DropdownMenuTrigger, DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
 
-export default function AdminSidebar({ activePage, pendingReports = 0 }) {
+interface NavItem {
+  label: string;
+  icon: React.ElementType;
+  path: string;
+  badge?: number;
+}
+
+interface AdminSidebarProps {
+  pendingReports?: number;
+}
+
+export default function AdminSidebar({ pendingReports = 0 }: AdminSidebarProps) {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const location = useLocation();
+  const [user, setUser] = useState<{ full_name?: string; email?: string } | null>(null);
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
-    loadUser();
+    supabase.auth.getUser().then(({ data: { user: authUser } }) => {
+      if (authUser) {
+        setUser({
+          full_name: authUser.user_metadata?.full_name || authUser.email?.split('@')[0],
+          email: authUser.email,
+        });
+      }
+    });
   }, []);
 
-  const loadUser = async () => {
-    try {
-      const currentUser = await base44.auth.me();
-      setUser(currentUser);
-    } catch (error) {
-      console.error('Error loading user:', error);
-    }
-  };
-
-  const navItems = [
-    { label: 'Overview', icon: BarChart3, page: 'AdminDashboard' },
-    { label: 'Users', icon: Users, page: 'AdminUsers' },
-    { label: 'Moderation', icon: Shield, page: 'AdminModeration', badge: pendingReports },
-    { label: 'Analytics', icon: TrendingUp, page: 'AdminAnalytics' },
-    { label: 'Subscriptions', icon: DollarSign, page: 'AdminSubscriptions' },
-    { label: 'VIP Events', icon: Gift, page: 'AdminVIPEvents' },
-    { label: 'Ambassadors', icon: Star, page: 'AdminAmbassadors' },
-    { label: 'Broadcast', icon: Megaphone, page: 'AdminBroadcast' },
-    { label: 'Content', icon: MessageSquare, page: 'AdminContent' },
-    { label: 'Feature Flags', icon: Zap, page: 'AdminFeatureFlags' },
-    { label: 'Marketplace', icon: Store, page: 'AdminMarketplace' },
-    { label: 'Settings', icon: Settings, page: 'AdminSettings' },
+  const navItems: NavItem[] = [
+    { label: 'Overview', icon: BarChart3, path: '/admindashboard' },
+    { label: 'Users', icon: Users, path: '/adminusers' },
+    { label: 'Moderation', icon: Shield, path: '/adminmoderation', badge: pendingReports },
+    { label: 'Analytics', icon: TrendingUp, path: '/adminanalytics' },
+    { label: 'Audit Logs', icon: ClipboardList, path: '/adminauditlogs' },
+    { label: 'Subscriptions', icon: DollarSign, path: '/adminsubscriptions' },
+    { label: 'VIP Events', icon: Gift, path: '/adminvipevents' },
+    { label: 'Ambassadors', icon: Star, path: '/adminambassadors' },
+    { label: 'Broadcast', icon: Megaphone, path: '/adminbroadcast' },
+    { label: 'Content', icon: MessageSquare, path: '/admincontent' },
+    { label: 'Feature Flags', icon: Zap, path: '/adminfeatureflags' },
+    { label: 'Marketplace', icon: Store, path: '/adminmarketplace' },
+    { label: 'Settings', icon: Settings, path: '/adminsettings' },
   ];
 
-  const utilityItems = [
-    { label: 'Launch Checklist', icon: Flag, page: 'AdminLaunchChecklist' },
-    { label: 'Admin Manual', icon: Book, page: 'AdminManual' },
+  const utilityItems: NavItem[] = [
+    { label: 'Launch Checklist', icon: Flag, path: '/adminlaunchchecklist' },
+    { label: 'Admin Manual', icon: Book, path: '/adminmanual' },
   ];
+
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <aside className={`${collapsed ? 'w-20' : 'w-64'} bg-slate-900 border-r border-slate-800 transition-all duration-300 flex flex-col h-screen sticky top-0`}>
@@ -82,11 +93,11 @@ export default function AdminSidebar({ activePage, pendingReports = 0 }) {
       <nav className="flex-1 p-4 overflow-y-auto">
         <ul className="space-y-1">
           {navItems.map((item) => (
-            <li key={item.page}>
+            <li key={item.path}>
               <button
-                onClick={() => navigate(createPageUrl(item.page))}
+                onClick={() => navigate(item.path)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
-                  activePage === item.page 
+                  isActive(item.path)
                     ? 'bg-orange-500/20 text-orange-400' 
                     : 'text-slate-400 hover:bg-slate-800 hover:text-white'
                 }`}
@@ -96,13 +107,10 @@ export default function AdminSidebar({ activePage, pendingReports = 0 }) {
                 {!collapsed && (
                   <>
                     <span className="flex-1 text-left text-sm">{item.label}</span>
-                    {item.badge > 0 && (
+                    {(item.badge ?? 0) > 0 && (
                       <Badge className="bg-red-500 text-white text-xs">{item.badge}</Badge>
                     )}
                   </>
-                )}
-                {collapsed && item.badge > 0 && (
-                  <span className="absolute right-2 w-2 h-2 bg-red-500 rounded-full" />
                 )}
               </button>
             </li>
@@ -110,16 +118,18 @@ export default function AdminSidebar({ activePage, pendingReports = 0 }) {
         </ul>
 
         {/* Utility Links */}
-        {!collapsed && <div className="mt-4 pt-4 border-t border-slate-800">
-          <p className="px-3 text-xs font-medium text-slate-500 uppercase mb-2">Resources</p>
-        </div>}
+        {!collapsed && (
+          <div className="mt-4 pt-4 border-t border-slate-800">
+            <p className="px-3 text-xs font-medium text-slate-500 uppercase mb-2">Resources</p>
+          </div>
+        )}
         <ul className="space-y-1 mt-1">
           {utilityItems.map((item) => (
-            <li key={item.page}>
+            <li key={item.path}>
               <button
-                onClick={() => navigate(createPageUrl(item.page))}
+                onClick={() => navigate(item.path)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
-                  activePage === item.page 
+                  isActive(item.path) 
                     ? 'bg-purple-500/20 text-purple-400' 
                     : 'text-slate-400 hover:bg-slate-800 hover:text-white'
                 }`}
@@ -153,20 +163,14 @@ export default function AdminSidebar({ activePage, pendingReports = 0 }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56 bg-slate-900 border-slate-800">
             <DropdownMenuItem 
-              onClick={() => navigate(createPageUrl('Home'))} 
+              onClick={() => navigate('/home')} 
               className="text-slate-300 hover:text-white hover:bg-slate-800"
             >
               <Eye className="w-4 h-4 mr-2" /> View App
             </DropdownMenuItem>
-            <DropdownMenuItem 
-              onClick={() => navigate(createPageUrl('Explore'))} 
-              className="text-slate-300 hover:text-white hover:bg-slate-800"
-            >
-              <Globe className="w-4 h-4 mr-2" /> User Experience
-            </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-slate-800" />
             <DropdownMenuItem 
-              onClick={() => base44.auth.logout()} 
+              onClick={async () => { await supabase.auth.signOut(); navigate('/'); }} 
               className="text-red-400 hover:text-red-300 hover:bg-slate-800"
             >
               <LogOut className="w-4 h-4 mr-2" /> Logout

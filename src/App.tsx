@@ -108,6 +108,7 @@ const AdminFeatureFlags = lazy(() => import("./pages/AdminFeatureFlags"));
 const AdminManual = lazy(() => import("./pages/AdminManual"));
 const AdminLaunchChecklist = lazy(() => import("./pages/AdminLaunchChecklist"));
 const AdminMarketplace = lazy(() => import("./pages/AdminMarketplace"));
+const AdminAuditLogs = lazy(() => import("./pages/AdminAuditLogs"));
 const Login = lazy(() => import("./pages/Login"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -225,6 +226,7 @@ const App = () => (
             <Route path="/adminmanual" element={<AdminManual />} />
             <Route path="/adminlaunchchecklist" element={<AdminLaunchChecklist />} />
             <Route path="/adminmarketplace" element={<AdminMarketplace />} />
+            <Route path="/adminauditlogs" element={<AdminAuditLogs />} />
 
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
