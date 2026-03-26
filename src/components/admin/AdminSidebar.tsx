@@ -6,7 +6,7 @@ import { base44 } from "@/api/base44Client";
 import { 
   BarChart3, Users, Shield, TrendingUp, DollarSign, MessageSquare,
   Settings, Bell, Eye, LogOut, ChevronLeft, ChevronRight, Menu,
-  Flag, Megaphone, Gift, Star, Zap, Globe, Book
+  Flag, Megaphone, Gift, Star, Zap, Globe, Book, Store
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -44,6 +44,7 @@ export default function AdminSidebar({ activePage, pendingReports = 0 }) {
     { label: 'Broadcast', icon: Megaphone, page: 'AdminBroadcast' },
     { label: 'Content', icon: MessageSquare, page: 'AdminContent' },
     { label: 'Feature Flags', icon: Zap, page: 'AdminFeatureFlags' },
+    { label: 'Marketplace', icon: Store, page: 'AdminMarketplace' },
     { label: 'Settings', icon: Settings, page: 'AdminSettings' },
   ];
 
