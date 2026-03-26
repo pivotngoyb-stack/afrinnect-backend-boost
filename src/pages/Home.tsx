@@ -577,8 +577,10 @@ export default function Home() {
             });
           }
 
-          // Mark both likes as seen
-          await base44.entities.Like.update(mutualLikes[0].id, { is_seen: true });
+          // Mark both likes as seen (skip for seed auto-likes)
+          if (mutualLikes[0].id !== 'seed-auto') {
+            await base44.entities.Like.update(mutualLikes[0].id, { is_seen: true });
+          }
           const myNewLike = await base44.entities.Like.filter({
             liker_id: myProfile.id,
             liked_id: likedId
