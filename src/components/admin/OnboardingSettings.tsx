@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, forwardRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Users, Save, Loader2 } from "lucide-react";
 
-export default function OnboardingSettings() {
+const OnboardingSettings = forwardRef<HTMLDivElement, any>((props, ref) => {
   const [settings, setSettings] = useState({
     min_photos: 2,
     min_interests: 3,
