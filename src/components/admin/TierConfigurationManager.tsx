@@ -13,7 +13,6 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { invalidateTierCache, DEFAULT_TIERS } from '@/components/shared/useTierConfig';
 
@@ -45,6 +44,41 @@ const FEATURE_OPTIONS = [
   { key: 'virtual_speed_dating', label: 'Virtual Speed Dating', tooltip: 'Access to live video events' },
   { key: 'exclusive_events', label: 'Exclusive Events', tooltip: 'VIP-only gatherings' }
 ];
+
+// Helper to normalize DB row to internal format
+function dbToInternal(row) {
+  return {
+    id: row.id,
+    tier_id: row.tier,
+    display_name: row.name,
+    description: row.description,
+    limits: row.limits || {},
+    features: row.features || [],
+    pricing: {
+      monthly: row.price_monthly || 0,
+      quarterly: row.price_quarterly || 0,
+      yearly: row.price_yearly || 0
+    },
+    sort_order: row.sort_order,
+    is_active: row.is_active
+  };
+}
+
+// Helper to convert internal format to DB columns
+function internalToDb(data) {
+  return {
+    tier: data.tier_id,
+    name: data.display_name,
+    description: data.description,
+    limits: data.limits,
+    features: data.features,
+    price_monthly: data.pricing?.monthly || 0,
+    price_quarterly: data.pricing?.quarterly || 0,
+    price_yearly: data.pricing?.yearly || 0,
+    sort_order: data.sort_order,
+    is_active: data.is_active !== false
+  };
+}
 
 function LimitInput({ label, value, onChange, isUnlimited, onUnlimitedChange }) {
   return (
@@ -127,12 +161,6 @@ function TierCard({ tier, onSave, isSaving }) {
 
   return (
     <Card className={`relative overflow-hidden transition-all duration-300 ${isEditing ? 'ring-2 ring-purple-500' : ''}`}>
-      {tier.is_popular && (
-        <div className="absolute top-0 right-0 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
-          POPULAR
-        </div>
-      )}
-      
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -321,14 +349,6 @@ function TierCard({ tier, onSave, isSaving }) {
               <div className="flex items-center gap-6 pt-4 border-t">
                 <div className="flex items-center gap-2">
                   <Switch
-                    checked={editData.is_popular}
-                    onCheckedChange={(checked) => setEditData(prev => ({ ...prev, is_popular: checked }))}
-                    disabled={!isEditing}
-                  />
-                  <Label className="text-sm">Show "Most Popular" Badge</Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Switch
                     checked={editData.is_active !== false}
                     onCheckedChange={(checked) => setEditData(prev => ({ ...prev, is_active: checked }))}
                     disabled={!isEditing}
@@ -348,25 +368,29 @@ export default function TierConfigurationManager() {
   const queryClient = useQueryClient();
   const [savingTier, setSavingTier] = useState(null);
 
-  // Fetch existing configurations
+  // Fetch existing configurations - map DB schema to internal format
   const { data: tierConfigs, isLoading, refetch } = useQuery({
     queryKey: ['admin-tier-configs'],
     queryFn: async () => {
       const configs = await base44.entities.TierConfiguration.filter({}, 'sort_order');
       
-      // Merge with defaults
+      // Merge with defaults, normalizing DB rows
       const merged = {};
       ['free', 'premium', 'elite', 'vip'].forEach((tierId, index) => {
-        const existing = configs.find(c => c.tier_id === tierId);
-        merged[tierId] = existing || {
-          tier_id: tierId,
-          display_name: DEFAULT_TIERS[tierId].display_name,
-          limits: DEFAULT_TIERS[tierId].limits,
-          features: DEFAULT_TIERS[tierId].features,
-          pricing: { monthly: 0, quarterly: 0, yearly: 0 },
-          sort_order: index,
-          is_active: true
-        };
+        const existing = configs.find(c => c.tier === tierId);
+        if (existing) {
+          merged[tierId] = dbToInternal(existing);
+        } else {
+          merged[tierId] = {
+            tier_id: tierId,
+            display_name: DEFAULT_TIERS[tierId].display_name,
+            limits: DEFAULT_TIERS[tierId].limits,
+            features: DEFAULT_TIERS[tierId].features,
+            pricing: { monthly: 0, quarterly: 0, yearly: 0 },
+            sort_order: index,
+            is_active: true
+          };
+        }
       });
       
       return merged;
@@ -374,21 +398,22 @@ export default function TierConfigurationManager() {
     staleTime: 30000
   });
 
-  // Save mutation
+  // Save mutation - convert internal format to DB columns
   const saveMutation = useMutation({
     mutationFn: async (tierData) => {
       setSavingTier(tierData.tier_id);
       
+      const dbData = internalToDb(tierData);
+      
       // Check if config exists
-      const existing = await base44.entities.TierConfiguration.filter({ tier_id: tierData.tier_id });
+      const existing = await base44.entities.TierConfiguration.filter({ tier: tierData.tier_id });
       
       if (existing.length > 0) {
-        await base44.entities.TierConfiguration.update(existing[0].id, tierData);
+        await base44.entities.TierConfiguration.update(existing[0].id, dbData);
       } else {
-        await base44.entities.TierConfiguration.create(tierData);
+        await base44.entities.TierConfiguration.create(dbData);
       }
       
-      // Invalidate cache
       invalidateTierCache();
     },
     onSuccess: () => {
@@ -408,26 +433,32 @@ export default function TierConfigurationManager() {
     mutationFn: async () => {
       const existing = await base44.entities.TierConfiguration.filter({});
       if (existing.length === 0) {
-        // Create all default tiers
         const tiers = ['free', 'premium', 'elite', 'vip'];
+        const defaultPricing = {
+          free: { monthly: 0, quarterly: 0, yearly: 0 },
+          premium: { monthly: 14.99, quarterly: 34.99, yearly: 119.99 },
+          elite: { monthly: 24.99, quarterly: 59.99, yearly: 179.99 },
+          vip: { monthly: 99.99, quarterly: 499.99, yearly: 900.00 }
+        };
+        const defaultDescriptions = {
+          free: 'Basic access',
+          premium: 'Level up your dating',
+          elite: 'For those serious about love',
+          vip: 'The ultimate experience'
+        };
         for (let i = 0; i < tiers.length; i++) {
           const tierId = tiers[i];
           await base44.entities.TierConfiguration.create({
-            tier_id: tierId,
-            display_name: DEFAULT_TIERS[tierId].display_name,
-            description: tierId === 'free' ? 'Basic access' : 
-                        tierId === 'premium' ? 'Level up your dating' :
-                        tierId === 'elite' ? 'For those serious about love' :
-                        'The ultimate experience',
+            tier: tierId,
+            name: DEFAULT_TIERS[tierId].display_name,
+            description: defaultDescriptions[tierId],
             limits: DEFAULT_TIERS[tierId].limits,
             features: DEFAULT_TIERS[tierId].features,
-            pricing: tierId === 'free' ? { monthly: 0, quarterly: 0, yearly: 0 } :
-                    tierId === 'premium' ? { monthly: 14.99, quarterly: 34.99, yearly: 119.99 } :
-                    tierId === 'elite' ? { monthly: 24.99, quarterly: 59.99, yearly: 179.99 } :
-                    { monthly: 99.99, quarterly: 499.99, yearly: 900.00 },
+            price_monthly: defaultPricing[tierId].monthly,
+            price_quarterly: defaultPricing[tierId].quarterly,
+            price_yearly: defaultPricing[tierId].yearly,
             sort_order: i,
-            is_active: true,
-            is_popular: tierId === 'elite'
+            is_active: true
           });
         }
         invalidateTierCache();
@@ -451,7 +482,6 @@ export default function TierConfigurationManager() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Subscription Tiers</h2>
@@ -479,7 +509,6 @@ export default function TierConfigurationManager() {
         </div>
       </div>
 
-      {/* Info Banner */}
       <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
         <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
         <div>
@@ -491,7 +520,6 @@ export default function TierConfigurationManager() {
         </div>
       </div>
 
-      {/* Tier Cards */}
       <div className="space-y-4">
         {['free', 'premium', 'elite', 'vip'].map(tierId => (
           <TierCard

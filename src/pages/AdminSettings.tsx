@@ -98,7 +98,7 @@ export default function AdminSettings() {
         is_enabled: !flag.is_enabled
       });
       await loadSettings();
-      toast.success(`${flag.display_name} ${!flag.is_enabled ? 'enabled' : 'disabled'}`);
+      toast.success(`${flag.name} ${!flag.is_enabled ? 'enabled' : 'disabled'}`);
     } catch (error) {
       console.error('Error toggling flag:', error);
     }
