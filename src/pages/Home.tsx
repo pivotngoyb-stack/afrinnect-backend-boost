@@ -452,6 +452,7 @@ export default function Home() {
               handleSuperLike={handleSuperLike}
               handleRewind={handleRewind}
               setFilters={setFilters}
+              setDiscoveryMode={setDiscoveryMode}
             />
           ) : (
             <GridView
