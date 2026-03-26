@@ -1085,7 +1085,11 @@ export type Database = {
       }
       events: {
         Row: {
+          attendees: string[] | null
+          city: string | null
+          country: string | null
           created_at: string | null
+          currency: string | null
           current_attendees: number | null
           description: string | null
           end_date: string | null
@@ -1094,16 +1098,26 @@ export type Database = {
           id: string
           image_url: string | null
           is_active: boolean | null
+          is_featured: boolean | null
+          is_virtual: boolean | null
           location: Json | null
+          location_address: string | null
+          location_name: string | null
           max_attendees: number | null
+          price: number | null
           start_date: string
           status: string | null
+          tags: string[] | null
           title: string
           updated_at: string | null
           virtual_link: string | null
         }
         Insert: {
+          attendees?: string[] | null
+          city?: string | null
+          country?: string | null
           created_at?: string | null
+          currency?: string | null
           current_attendees?: number | null
           description?: string | null
           end_date?: string | null
@@ -1112,16 +1126,26 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          is_featured?: boolean | null
+          is_virtual?: boolean | null
           location?: Json | null
+          location_address?: string | null
+          location_name?: string | null
           max_attendees?: number | null
+          price?: number | null
           start_date: string
           status?: string | null
+          tags?: string[] | null
           title: string
           updated_at?: string | null
           virtual_link?: string | null
         }
         Update: {
+          attendees?: string[] | null
+          city?: string | null
+          country?: string | null
           created_at?: string | null
+          currency?: string | null
           current_attendees?: number | null
           description?: string | null
           end_date?: string | null
@@ -1130,10 +1154,16 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          is_featured?: boolean | null
+          is_virtual?: boolean | null
           location?: Json | null
+          location_address?: string | null
+          location_name?: string | null
           max_attendees?: number | null
+          price?: number | null
           start_date?: string
           status?: string | null
+          tags?: string[] | null
           title?: string
           updated_at?: string | null
           virtual_link?: string | null

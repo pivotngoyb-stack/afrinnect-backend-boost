@@ -7,95 +7,83 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Calendar, MapPin, Users, Plus, Edit2, Trash2, DollarSign, Bell } from 'lucide-react';
+import { Calendar, MapPin, Users, Plus, Edit2, Trash2, DollarSign, Globe } from 'lucide-react';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
+
+const DEFAULT_FORM = {
+  title: '',
+  description: '',
+  event_type: 'cultural_festival',
+  image_url: '',
+  start_date: '',
+  end_date: '',
+  location_name: '',
+  location_address: '',
+  city: '',
+  country: '',
+  is_virtual: false,
+  virtual_link: '',
+  max_attendees: 100,
+  is_featured: false,
+  price: 0,
+  currency: 'USD',
+  tags: [],
+  is_active: true,
+  status: 'upcoming'
+};
 
 export default function EventManagement({ events }) {
   const [showDialog, setShowDialog] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    event_type: 'cultural_festival',
-    image_url: '',
-    start_date: '',
-    end_date: '',
-    location_name: '',
-    location_address: '',
-    city: '',
-    state: '',
-    country: '',
-    is_virtual: false,
-    virtual_link: '',
-    max_attendees: 100,
-    is_featured: false,
-    price: 0,
-    currency: 'USD'
-  });
+  const [formData, setFormData] = useState({ ...DEFAULT_FORM });
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const queryClient = useQueryClient();
 
   const createEventMutation = useMutation({
     mutationFn: async () => {
+      const saveData = {
+        ...formData,
+        max_attendees: parseInt(formData.max_attendees) || null,
+        price: parseFloat(formData.price) || 0,
+      };
+
       if (editingEvent) {
-        await base44.entities.Event.update(editingEvent.id, formData);
+        await base44.entities.Event.update(editingEvent.id, saveData);
       } else {
         await base44.entities.Event.create({
-          ...formData,
-          attendees: []
+          ...saveData,
+          attendees: [],
+          current_attendees: 0
         });
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['admin-events']);
+      queryClient.invalidateQueries({ queryKey: ['admin-events'] });
       setShowDialog(false);
       setEditingEvent(null);
-      resetForm();
+      setFormData({ ...DEFAULT_FORM });
+      toast.success(editingEvent ? 'Event updated' : 'Event created');
+    },
+    onError: (err) => {
+      toast.error(err.message);
     }
   });
 
   const deleteEventMutation = useMutation({
     mutationFn: async (eventId) => {
+      if (!confirm('Delete this event? This cannot be undone.')) return;
       await base44.entities.Event.delete(eventId);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['admin-events']);
+      queryClient.invalidateQueries({ queryKey: ['admin-events'] });
+      toast.success('Event deleted');
     }
   });
-
-  const sendRemindersMutation = useMutation({
-    mutationFn: async () => {
-      const response = await base44.functions.invoke('sendEventReminders', {});
-      return response.data;
-    },
-    onSuccess: (data) => {
-      alert(`Event reminders sent successfully!\n${data.remindersSent} reminders sent for ${data.eventsChecked} upcoming events.`);
-    }
-  });
-
-  const resetForm = () => {
-    setFormData({
-      title: '',
-      description: '',
-      event_type: 'cultural_festival',
-      image_url: '',
-      start_date: '',
-      end_date: '',
-      location_name: '',
-      location_address: '',
-      city: '',
-      state: '',
-      country: '',
-      is_virtual: false,
-      virtual_link: '',
-      max_attendees: 100,
-      is_featured: false,
-      price: 0,
-      currency: 'USD'
-    });
-  };
 
   const handlePhotoUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -103,18 +91,45 @@ export default function EventManagement({ events }) {
     setUploadingPhoto(true);
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      setFormData({...formData, image_url: file_url});
+      setFormData({ ...formData, image_url: file_url });
     } catch (error) {
-      alert('Photo upload failed');
+      toast.error('Photo upload failed');
     }
     setUploadingPhoto(false);
   };
 
   const handleEdit = (event) => {
     setEditingEvent(event);
-    setFormData(event);
+    setFormData({
+      title: event.title || '',
+      description: event.description || '',
+      event_type: event.event_type || 'cultural_festival',
+      image_url: event.image_url || '',
+      start_date: event.start_date ? event.start_date.slice(0, 16) : '',
+      end_date: event.end_date ? event.end_date.slice(0, 16) : '',
+      location_name: event.location_name || '',
+      location_address: event.location_address || '',
+      city: event.city || '',
+      country: event.country || '',
+      is_virtual: event.is_virtual || false,
+      virtual_link: event.virtual_link || '',
+      max_attendees: event.max_attendees || 100,
+      is_featured: event.is_featured || false,
+      price: event.price || 0,
+      currency: event.currency || 'USD',
+      tags: event.tags || [],
+      is_active: event.is_active !== false,
+      status: event.status || 'upcoming'
+    });
     setShowDialog(true);
   };
+
+  const upcomingEvents = (events || []).filter(e => new Date(e.start_date) >= new Date());
+  const pastEvents = (events || []).filter(e => new Date(e.start_date) < new Date());
+  const totalAttendees = (events || []).reduce((sum, e) => sum + (e.attendees?.length || e.current_attendees || 0), 0);
+  const totalRevenue = (events || []).reduce((sum, e) => sum + ((e.price || 0) * (e.attendees?.length || e.current_attendees || 0)), 0);
+
+  const formatEventType = (type) => (type || '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
   return (
     <div className="space-y-6">
@@ -125,8 +140,19 @@ export default function EventManagement({ events }) {
             <div className="flex items-center gap-3">
               <Calendar size={24} className="text-purple-600" />
               <div>
-                <p className="text-2xl font-bold">{events.length}</p>
+                <p className="text-2xl font-bold">{(events || []).length}</p>
                 <p className="text-sm text-gray-600">Total Events</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <Calendar size={24} className="text-green-600" />
+              <div>
+                <p className="text-2xl font-bold">{upcomingEvents.length}</p>
+                <p className="text-sm text-gray-600">Upcoming</p>
               </div>
             </div>
           </CardContent>
@@ -136,9 +162,7 @@ export default function EventManagement({ events }) {
             <div className="flex items-center gap-3">
               <Users size={24} className="text-blue-600" />
               <div>
-                <p className="text-2xl font-bold">
-                  {events.reduce((sum, e) => sum + (e.attendees?.length || 0), 0)}
-                </p>
+                <p className="text-2xl font-bold">{totalAttendees}</p>
                 <p className="text-sm text-gray-600">Total Attendees</p>
               </div>
             </div>
@@ -149,33 +173,18 @@ export default function EventManagement({ events }) {
             <div className="flex items-center gap-3">
               <DollarSign size={24} className="text-green-600" />
               <div>
-                <p className="text-2xl font-bold">
-                  ${events.reduce((sum, e) => sum + ((e.price || 0) * (e.attendees?.length || 0)), 0).toFixed(0)}
-                </p>
+                <p className="text-2xl font-bold">${totalRevenue.toFixed(0)}</p>
                 <p className="text-sm text-gray-600">Revenue</p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="space-y-2">
-              <Button className="w-full" onClick={() => setShowDialog(true)}>
-                <Plus size={18} className="mr-2" />
-                Create Event
-              </Button>
-              <Button 
-                className="w-full bg-blue-600 hover:bg-blue-700" 
-                onClick={() => sendRemindersMutation.mutate()}
-                disabled={sendRemindersMutation.isPending}
-              >
-                <Bell size={18} className="mr-2" />
-                {sendRemindersMutation.isPending ? 'Sending...' : 'Send Event Reminders'}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
       </div>
+
+      <Button onClick={() => { setEditingEvent(null); setFormData({ ...DEFAULT_FORM }); setShowDialog(true); }}>
+        <Plus size={18} className="mr-2" />
+        Create Event
+      </Button>
 
       {/* Events List */}
       <Card>
@@ -184,13 +193,16 @@ export default function EventManagement({ events }) {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {events.map(event => (
+            {(events || []).map(event => (
               <div key={event.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="font-semibold">{event.title}</h3>
                     {event.is_featured && <Badge className="bg-amber-500">Featured</Badge>}
                     {event.is_virtual && <Badge variant="outline">Virtual</Badge>}
+                    {new Date(event.start_date) < new Date() && (
+                      <Badge variant="secondary">Past</Badge>
+                    )}
                   </div>
                   <div className="flex items-center gap-4 text-sm text-gray-600">
                     <span className="flex items-center gap-1">
@@ -199,11 +211,11 @@ export default function EventManagement({ events }) {
                     </span>
                     <span className="flex items-center gap-1">
                       <MapPin size={14} />
-                      {event.city}, {event.country}
+                      {event.is_virtual ? 'Virtual' : `${event.city || ''}${event.country ? `, ${event.country}` : ''}`}
                     </span>
                     <span className="flex items-center gap-1">
                       <Users size={14} />
-                      {event.attendees?.length || 0}/{event.max_attendees}
+                      {event.attendees?.length || event.current_attendees || 0}{event.max_attendees ? `/${event.max_attendees}` : ''}
                     </span>
                   </div>
                 </div>
@@ -221,7 +233,7 @@ export default function EventManagement({ events }) {
                 </div>
               </div>
             ))}
-            {events.length === 0 && (
+            {(!events || events.length === 0) && (
               <p className="text-center text-gray-500 py-8">No events created yet</p>
             )}
           </div>
@@ -233,7 +245,7 @@ export default function EventManagement({ events }) {
         setShowDialog(open);
         if (!open) {
           setEditingEvent(null);
-          resetForm();
+          setFormData({ ...DEFAULT_FORM });
         }
       }}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
@@ -242,26 +254,26 @@ export default function EventManagement({ events }) {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Event Title</label>
+              <Label className="text-sm font-medium">Event Title *</Label>
               <Input
                 value={formData.title}
-                onChange={(e) => setFormData({...formData, title: e.target.value})}
-                className="mt-2"
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                className="mt-1"
               />
             </div>
 
             <div>
-              <label className="text-sm font-medium">Description</label>
+              <Label className="text-sm font-medium">Description</Label>
               <Textarea
                 value={formData.description}
-                onChange={(e) => setFormData({...formData, description: e.target.value})}
-                className="mt-2"
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                className="mt-1"
                 rows={3}
               />
             </div>
 
             <div>
-              <label className="text-sm font-medium">Event Photo</label>
+              <Label className="text-sm font-medium">Event Photo</Label>
               {formData.image_url && (
                 <img src={formData.image_url} alt="Event" className="w-full h-40 object-cover rounded-lg mb-2" />
               )}
@@ -269,42 +281,17 @@ export default function EventManagement({ events }) {
                 type="file"
                 accept="image/*"
                 onChange={handlePhotoUpload}
-                className="mt-2 block w-full text-sm text-gray-500
-                  file:mr-4 file:py-2 file:px-4
-                  file:rounded-full file:border-0
-                  file:text-sm file:font-semibold
-                  file:bg-purple-50 file:text-purple-700
-                  hover:file:bg-purple-100"
+                className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
                 disabled={uploadingPhoto}
               />
               {uploadingPhoto && <p className="text-sm text-gray-500 mt-1">Uploading...</p>}
             </div>
 
-            <div>
-              <label className="text-sm font-medium">Location Name / Venue</label>
-              <Input
-                value={formData.location_name}
-                onChange={(e) => setFormData({...formData, location_name: e.target.value})}
-                className="mt-2"
-                placeholder="e.g., The Rhythm Lounge"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium">Address</label>
-              <Input
-                value={formData.location_address}
-                onChange={(e) => setFormData({...formData, location_address: e.target.value})}
-                className="mt-2"
-                placeholder="Full street address"
-              />
-            </div>
-
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium">Event Type</label>
-                <Select value={formData.event_type} onValueChange={(v) => setFormData({...formData, event_type: v})}>
-                  <SelectTrigger className="mt-2">
+                <Label className="text-sm font-medium">Event Type</Label>
+                <Select value={formData.event_type} onValueChange={(v) => setFormData({ ...formData, event_type: v })}>
+                  <SelectTrigger className="mt-1">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -314,95 +301,140 @@ export default function EventManagement({ events }) {
                     <SelectItem value="networking">Networking</SelectItem>
                     <SelectItem value="concert">Concert</SelectItem>
                     <SelectItem value="food_festival">Food Festival</SelectItem>
-                    <SelectItem value="afrobeat_party">Afrobeat Party</SelectItem>
-                    <SelectItem value="dance_party">Dance Party</SelectItem>
-                    <SelectItem value="cultural_night">Cultural Night</SelectItem>
-                    <SelectItem value="music_festival">Music Festival</SelectItem>
+                    <SelectItem value="community_gathering">Community Gathering</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-
               <div>
-                <label className="text-sm font-medium">Max Attendees</label>
+                <Label className="text-sm font-medium">Max Attendees</Label>
                 <Input
                   type="number"
                   value={formData.max_attendees}
-                  onChange={(e) => setFormData({...formData, max_attendees: parseInt(e.target.value)})}
-                  className="mt-2"
+                  onChange={(e) => setFormData({ ...formData, max_attendees: e.target.value })}
+                  className="mt-1"
                 />
               </div>
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium">Start Date</label>
+                <Label className="text-sm font-medium">Start Date *</Label>
                 <Input
                   type="datetime-local"
                   value={formData.start_date}
-                  onChange={(e) => setFormData({...formData, start_date: e.target.value})}
-                  className="mt-2"
+                  onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+                  className="mt-1"
                 />
               </div>
-
               <div>
-                <label className="text-sm font-medium">End Date</label>
+                <Label className="text-sm font-medium">End Date</Label>
                 <Input
                   type="datetime-local"
                   value={formData.end_date}
-                  onChange={(e) => setFormData({...formData, end_date: e.target.value})}
-                  className="mt-2"
+                  onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
+                  className="mt-1"
                 />
               </div>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-4">
-              <div>
-                <label className="text-sm font-medium">City</label>
-                <Input
-                  value={formData.city}
-                  onChange={(e) => setFormData({...formData, city: e.target.value})}
-                  className="mt-2"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium">State/Province</label>
-                <Input
-                  value={formData.state}
-                  onChange={(e) => setFormData({...formData, state: e.target.value})}
-                  className="mt-2"
-                  placeholder="Optional"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium">Country</label>
-                <Input
-                  value={formData.country}
-                  onChange={(e) => setFormData({...formData, country: e.target.value})}
-                  className="mt-2"
-                />
-              </div>
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={formData.is_virtual}
+                onCheckedChange={(checked) => setFormData({ ...formData, is_virtual: checked })}
+              />
+              <Label>Virtual Event</Label>
             </div>
+
+            {formData.is_virtual ? (
+              <div>
+                <Label className="text-sm font-medium">Virtual Event Link</Label>
+                <Input
+                  value={formData.virtual_link}
+                  onChange={(e) => setFormData({ ...formData, virtual_link: e.target.value })}
+                  className="mt-1"
+                  placeholder="Zoom / Google Meet link"
+                />
+              </div>
+            ) : (
+              <>
+                <div>
+                  <Label className="text-sm font-medium">Venue Name</Label>
+                  <Input
+                    value={formData.location_name}
+                    onChange={(e) => setFormData({ ...formData, location_name: e.target.value })}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Address</Label>
+                  <Input
+                    value={formData.location_address}
+                    onChange={(e) => setFormData({ ...formData, location_address: e.target.value })}
+                    className="mt-1"
+                  />
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium">City *</Label>
+                    <Input
+                      value={formData.city}
+                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium">Country *</Label>
+                    <Input
+                      value={formData.country}
+                      onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
 
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium">Price (USD)</label>
+                <Label className="text-sm font-medium">Price</Label>
                 <Input
                   type="number"
                   value={formData.price}
-                  onChange={(e) => setFormData({...formData, price: parseFloat(e.target.value)})}
-                  className="mt-2"
+                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                  className="mt-1"
+                  min="0"
+                  step="0.01"
                 />
               </div>
+              <div>
+                <Label className="text-sm font-medium">Currency</Label>
+                <Select value={formData.currency} onValueChange={(v) => setFormData({ ...formData, currency: v })}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="USD">USD</SelectItem>
+                    <SelectItem value="EUR">EUR</SelectItem>
+                    <SelectItem value="GBP">GBP</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={formData.is_featured}
+                onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
+              />
+              <Label>Featured Event</Label>
             </div>
 
             <Button
               onClick={() => createEventMutation.mutate()}
-              disabled={!formData.title || !formData.city || createEventMutation.isPending}
+              disabled={!formData.title || !formData.start_date || createEventMutation.isPending}
               className="w-full"
             >
-              {editingEvent ? 'Update Event' : 'Create Event'}
+              {createEventMutation.isPending ? 'Saving...' : editingEvent ? 'Update Event' : 'Create Event'}
             </Button>
           </div>
         </DialogContent>

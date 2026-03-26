@@ -4,10 +4,9 @@ import { base44 } from '@/api/base44Client';
 import { useMutation } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { motion } from 'framer-motion';
 import {
   ArrowLeft, Calendar, MapPin, Globe, Upload, Loader2, Save,
-  Users, DollarSign, Tag, Clock, Video
+  Clock, Video
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +18,6 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import AfricanPattern from '@/components/shared/AfricanPattern';
-import GoogleMapsLocation from '@/components/shared/GoogleMapsLocation';
 import { compressImage, validateImageFile } from '@/components/shared/ImageCompressor';
 
 export default function CreateEvent() {
@@ -56,20 +54,10 @@ export default function CreateEvent() {
         if (profiles.length > 0) {
           const profile = profiles[0];
           setMyProfile(profile);
-
-          // Check if user can create events (Elite+ only)
-          const canCreate = ['elite', 'vip'].includes(profile.subscription_tier);
-
-          if (!canCreate) {
-            toast.error('Event creation is exclusive to Elite and VIP members.');
-            window.location.href = createPageUrl('Events');
-          }
-
-          // Auto-fill location
           setFormData(prev => ({
             ...prev,
-            city: profile.current_city,
-            country: profile.current_country
+            city: profile.current_city || '',
+            country: profile.current_country || ''
           }));
         }
       } catch (e) {
@@ -81,7 +69,6 @@ export default function CreateEvent() {
 
   const createEventMutation = useMutation({
     mutationFn: async () => {
-      // Validate required fields
       if (!formData.title || !formData.description || !formData.start_date || !formData.start_time) {
         throw new Error('Please fill in all required fields');
       }
@@ -94,42 +81,45 @@ export default function CreateEvent() {
         throw new Error('Please provide a virtual event link');
       }
 
-      // Combine date and time
       const startDateTime = new Date(`${formData.start_date}T${formData.start_time}`);
       const endDateTime = formData.end_date && formData.end_time 
         ? new Date(`${formData.end_date}T${formData.end_time}`)
         : null;
 
-      const response = await base44.functions.invoke('createEvent', {
+      const eventData = {
         title: formData.title,
         description: formData.description,
         event_type: formData.event_type,
-        image_url: formData.image_url,
+        image_url: formData.image_url || null,
         start_date: startDateTime.toISOString(),
-        end_date: endDateTime?.toISOString(),
+        end_date: endDateTime?.toISOString() || null,
         is_virtual: formData.is_virtual,
-        virtual_link: formData.virtual_link,
-        location_name: formData.location_name,
-        location_address: formData.location_address,
-        city: formData.city,
-        country: formData.country,
-        max_attendees: formData.max_attendees,
-        price: formData.price,
+        virtual_link: formData.virtual_link || null,
+        location_name: formData.location_name || null,
+        location_address: formData.location_address || null,
+        city: formData.city || null,
+        country: formData.country || null,
+        max_attendees: formData.max_attendees ? parseInt(formData.max_attendees) : null,
+        price: parseFloat(formData.price) || 0,
         currency: formData.currency,
         tags: formData.tags,
-        is_featured: formData.is_featured
-      });
+        is_featured: false,
+        host_profile_id: myProfile?.id,
+        attendees: [myProfile?.id],
+        current_attendees: 1,
+        status: 'upcoming',
+        is_active: true
+      };
 
-      if (response.data.error) throw new Error(response.data.error);
-      return { id: response.data.event_id };
+      const created = await base44.entities.Event.create(eventData);
+      return created;
     },
     onSuccess: (event) => {
       toast.success('Event created successfully!');
       window.location.href = createPageUrl(`EventDetails?id=${event.id}`);
     },
     onError: (error) => {
-      const msg = error.message.replace(/base44/gi, 'Server');
-      toast.error(msg);
+      toast.error(error.message);
     }
   });
 
@@ -205,14 +195,14 @@ export default function CreateEvent() {
         {/* Cover Image */}
         <Card>
           <CardContent className="p-6">
-            <Label className="text-sm font-semibold mb-2 block">Event Cover Image *</Label>
+            <Label className="text-sm font-semibold mb-2 block">Event Cover Image</Label>
             <div className="relative">
               {formData.image_url ? (
                 <div className="relative h-64 rounded-lg overflow-hidden">
                   <img src={formData.image_url} alt="Cover" className="w-full h-full object-cover" />
                   <button
                     onClick={() => setFormData({ ...formData, image_url: '' })}
-                    className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full"
+                    className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full text-sm"
                   >
                     Remove
                   </button>
@@ -393,21 +383,6 @@ export default function CreateEvent() {
                     />
                   </div>
                 </div>
-                <div>
-                  <Label className="text-sm font-semibold mb-2">Pin Location on Map</Label>
-                  <div className="mt-2 border rounded-lg overflow-hidden">
-                    <GoogleMapsLocation
-                      onLocationSelect={(location) => {
-                        setFormData(prev => ({
-                          ...prev,
-                          location_address: location.address || prev.location_address,
-                          location: { lat: location.lat, lng: location.lng }
-                        }));
-                      }}
-                      height="300px"
-                    />
-                  </div>
-                </div>
               </div>
             )}
           </CardContent>
@@ -458,33 +433,45 @@ export default function CreateEvent() {
                 <Input
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
-                  placeholder="Add tags (press Enter)"
+                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
+                  placeholder="Add a tag..."
                 />
-                <Button onClick={addTag} variant="outline">
-                  <Tag size={16} />
-                </Button>
+                <Button variant="outline" onClick={addTag}>Add</Button>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {formData.tags.map((tag, idx) => (
-                  <Badge key={idx} variant="secondary" className="cursor-pointer" onClick={() => removeTag(tag)}>
-                    {tag} ×
-                  </Badge>
-                ))}
-              </div>
+              {formData.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {formData.tags.map(tag => (
+                    <Badge key={tag} variant="secondary" className="cursor-pointer" onClick={() => removeTag(tag)}>
+                      {tag} ×
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
-
-            {myProfile?.subscription_tier === 'vip' && (
-              <div className="flex items-center gap-2 p-4 bg-amber-50 rounded-lg">
-                <Switch
-                  checked={formData.is_featured}
-                  onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
-                />
-                <Label className="text-sm">Feature this event (VIP only)</Label>
-              </div>
-            )}
           </CardContent>
         </Card>
+
+        {/* Save Button */}
+        <div className="flex justify-center pt-4 pb-8">
+          <Button
+            onClick={() => createEventMutation.mutate()}
+            disabled={createEventMutation.isPending}
+            size="lg"
+            className="bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-700 hover:to-amber-700 text-white px-12 py-6 text-lg rounded-full shadow-2xl"
+          >
+            {createEventMutation.isPending ? (
+              <>
+                <Loader2 className="animate-spin mr-2" size={24} />
+                Creating Event...
+              </>
+            ) : (
+              <>
+                <Calendar className="mr-2" size={24} />
+                Publish Event
+              </>
+            )}
+          </Button>
+        </div>
       </main>
     </div>
   );
