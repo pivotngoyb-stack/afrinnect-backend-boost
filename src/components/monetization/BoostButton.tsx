@@ -1,238 +1,237 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/integrations/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, Crown, Users, Loader2, X } from 'lucide-react';
+import { Zap, Crown, Users, Loader2, X, CheckCircle, AlertCircle, ShieldCheck } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
+import { toast } from '@/hooks/use-toast';
 
-export default function BoostButton({ userProfile, onBoostActivated }) {
+interface BoostButtonProps {
+  userProfile: any;
+  onBoostActivated?: () => void;
+  onBoostSuccess?: () => void;
+  variant?: 'full' | 'compact';
+}
+
+const TIER_LABELS: Record<string, string> = {
+  free: '0 boosts/month',
+  premium: '1 boost/month (30 min)',
+  elite: '5 boosts/month (60 min)',
+  vip: 'Unlimited boosts (120 min)',
+};
+
+export default function BoostButton({ userProfile, onBoostActivated, onBoostSuccess, variant = 'full' }: BoostButtonProps) {
   const [isBoostActive, setIsBoostActive] = useState(false);
-  const [boostTimeLeft, setBoostTimeLeft] = useState(0);
-  const [liveViewers, setLiveViewers] = useState(0);
-  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
-  const [isPurchasing, setIsPurchasing] = useState(false);
+  const [boostTimeLeft, setBoostTimeLeft] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [isBoosting, setIsBoosting] = useState(false);
+  const [error, setError] = useState('');
+
+  const tier = userProfile?.subscription_tier || 'free';
 
   useEffect(() => {
     if (!userProfile) return;
-    
     if (userProfile.profile_boost_active && userProfile.boost_expires_at) {
       const expiresAt = new Date(userProfile.boost_expires_at).getTime();
-      const now = Date.now();
-      
-      if (expiresAt > now) {
+      if (expiresAt > Date.now()) {
         setIsBoostActive(true);
-        setBoostTimeLeft(Math.floor((expiresAt - now) / 1000 / 60));
-        setLiveViewers(Math.floor(Math.random() * 15) + 8);
       }
     }
   }, [userProfile]);
 
   useEffect(() => {
-    if (!isBoostActive) return;
-    
-    const interval = setInterval(() => {
-      if (userProfile?.boost_expires_at) {
-        const expiresAt = new Date(userProfile.boost_expires_at).getTime();
-        const now = Date.now();
-        const minutesLeft = Math.floor((expiresAt - now) / 1000 / 60);
-        
-        if (minutesLeft <= 0) {
-          setIsBoostActive(false);
-          setBoostTimeLeft(0);
-          setLiveViewers(0);
-        } else {
-          setBoostTimeLeft(minutesLeft);
-          setLiveViewers(prev => Math.max(5, prev + Math.floor(Math.random() * 5) - 2));
-        }
+    if (!isBoostActive || !userProfile?.boost_expires_at) return;
+    const update = () => {
+      const diff = new Date(userProfile.boost_expires_at).getTime() - Date.now();
+      if (diff <= 0) {
+        setIsBoostActive(false);
+        setBoostTimeLeft('');
+        return false;
       }
-    }, 60000);
-    
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      setBoostTimeLeft(h > 0 ? `${h}h ${m}m` : `${m}m`);
+      return true;
+    };
+    if (!update()) return;
+    const interval = setInterval(() => { if (!update()) clearInterval(interval); }, 30000);
     return () => clearInterval(interval);
   }, [isBoostActive, userProfile]);
 
-  const activateBoost = async () => {
-    setIsPurchasing(true);
+  const handleBoost = async () => {
+    setIsBoosting(true);
+    setError('');
     try {
-      const tier = userProfile?.subscription_tier || 'free';
-      
-      if (tier === 'free') {
-        setShowPurchaseModal(true);
-        setIsPurchasing(false);
+      const { data, error: fnError } = await supabase.functions.invoke('boost-profile');
+
+      if (fnError) {
+        setError('Failed to activate boost. Please try again.');
         return;
       }
-      
-      if (tier === 'premium') {
-        const monthStart = new Date();
-        monthStart.setDate(1);
-        monthStart.setHours(0, 0, 0, 0);
-        
-        const boostsThisMonth = await base44.entities.ProfileBoost.filter({
-          user_profile_id: userProfile.id,
-          created_date: { $gte: monthStart.toISOString() }
-        });
-        
-        if (boostsThisMonth.length >= 1) {
-          alert('You\'ve used your monthly boost. Upgrade to Elite for unlimited boosts!');
-          setIsPurchasing(false);
-          return;
+
+      if (data?.success) {
+        toast({ title: '🚀 Profile Boosted!', description: `Your profile will be shown to more people for ${data.duration_minutes} minutes.` });
+        setIsBoostActive(true);
+        setShowModal(false);
+        onBoostActivated?.();
+        onBoostSuccess?.();
+      } else {
+        if (data?.upgrade_required) {
+          setError('Boosts are available on Premium and above. Upgrade your plan!');
+        } else if (data?.limit_reached) {
+          setError(data.error || 'Monthly boost limit reached.');
+        } else if (data?.verification_required) {
+          setError('Complete photo or ID verification to unlock boosts.');
+        } else if (data?.already_active) {
+          setError('You already have an active boost.');
+        } else {
+          setError(data?.error || 'Something went wrong.');
         }
       }
-
-      const boostDuration = 30 * 60 * 1000;
-      const expiresAt = new Date(Date.now() + boostDuration).toISOString();
-      
-      await base44.entities.ProfileBoost.create({
-        user_profile_id: userProfile.id,
-        boost_type: 'standard',
-        started_at: new Date().toISOString(),
-        expires_at: expiresAt,
-        is_active: true
-      });
-      
-      await base44.entities.UserProfile.update(userProfile.id, {
-        profile_boost_active: true,
-        boost_expires_at: expiresAt
-      });
-      
-      setIsBoostActive(true);
-      setBoostTimeLeft(30);
-      setLiveViewers(Math.floor(Math.random() * 12) + 10);
-      
-      onBoostActivated?.();
-    } catch (e) {
-      console.error('Boost failed:', e);
-      alert('Failed to activate boost');
+    } catch {
+      setError('Network error. Please try again.');
+    } finally {
+      setIsBoosting(false);
     }
-    setIsPurchasing(false);
   };
 
-  const purchaseBoost = async () => {
-    window.location.href = createPageUrl('PricingPlans') + '?boost=true';
-  };
+  // Compact variant (for Profile page)
+  if (variant === 'compact') {
+    return (
+      <Button
+        onClick={() => setShowModal(true)}
+        variant={isBoostActive ? "outline" : "default"}
+        className={isBoostActive ? "border-primary text-primary" : ""}
+        size="lg"
+      >
+        <Zap size={20} className={isBoostActive ? "fill-primary" : "fill-primary-foreground"} />
+        <span className="ml-2">
+          {isBoostActive ? `Boosted (${boostTimeLeft})` : 'Boost Profile'}
+        </span>
+      </Button>
+    );
+  }
 
   return (
     <>
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="relative"
-      >
+      <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative">
         {isBoostActive ? (
           <motion.div
-            animate={{ 
-              boxShadow: ['0 0 20px rgba(168, 85, 247, 0.4)', '0 0 40px rgba(168, 85, 247, 0.6)', '0 0 20px rgba(168, 85, 247, 0.4)']
-            }}
+            animate={{ boxShadow: ['0 0 20px hsl(var(--primary) / 0.4)', '0 0 40px hsl(var(--primary) / 0.6)', '0 0 20px hsl(var(--primary) / 0.4)'] }}
             transition={{ repeat: Infinity, duration: 1.5 }}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-4 text-white"
+            className="bg-gradient-to-r from-primary to-accent rounded-2xl p-4 text-primary-foreground"
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-                >
+                <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 2, ease: "linear" }}>
                   <Zap size={24} className="text-yellow-300" />
                 </motion.div>
                 <span className="font-bold text-lg">BOOST ACTIVE!</span>
               </div>
-              <Badge className="bg-white/20 text-white border-0">
-                {boostTimeLeft} min left
-              </Badge>
+              <Badge className="bg-background/20 text-primary-foreground border-0">{boostTimeLeft} left</Badge>
             </div>
-            
-            <div className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2">
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ repeat: Infinity, duration: 1 }}
-                className="w-2 h-2 bg-green-400 rounded-full"
-              />
+            <div className="flex items-center gap-2 bg-background/10 rounded-lg px-3 py-2">
+              <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-2 h-2 bg-green-400 rounded-full" />
               <Users size={16} />
-              <span className="text-sm font-medium">{liveViewers} people viewing your profile now</span>
+              <span className="text-sm font-medium">Your profile is getting extra visibility</span>
             </div>
           </motion.div>
         ) : (
           <Button
-            onClick={activateBoost}
-            disabled={isPurchasing}
-            className="w-full h-14 bg-gradient-to-r from-purple-600 via-pink-500 to-amber-500 hover:from-purple-700 hover:via-pink-600 hover:to-amber-600 text-white font-bold text-lg shadow-lg"
+            onClick={() => setShowModal(true)}
+            className="w-full h-14 bg-gradient-to-r from-primary via-accent to-primary hover:opacity-90 text-primary-foreground font-bold text-lg shadow-lg"
           >
-            {isPurchasing ? (
-              <Loader2 size={24} className="animate-spin" />
-            ) : (
-              <>
-                <Zap size={22} className="mr-2" />
-                Boost Your Profile
-                <Badge className="ml-2 bg-white/20 border-0">10x visibility</Badge>
-              </>
-            )}
+            <Zap size={22} className="mr-2" />
+            Boost Your Profile
+            <Badge className="ml-2 bg-background/20 border-0 text-primary-foreground">10x visibility</Badge>
           </Button>
         )}
       </motion.div>
 
+      {/* Unified Modal */}
       <AnimatePresence>
-        {showPurchaseModal && (
+        {showModal && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-            onClick={() => setShowPurchaseModal(false)}
+            onClick={() => setShowModal(false)}
           >
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
               onClick={e => e.stopPropagation()}
-              className="bg-background rounded-2xl p-6 max-w-sm w-full shadow-2xl"
+              className="bg-background rounded-2xl p-6 max-w-sm w-full shadow-2xl relative"
             >
-              <button 
-                onClick={() => setShowPurchaseModal(false)}
-                className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
-              >
-                <X size={24} />
+              <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground">
+                <X size={20} />
               </button>
-              
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Zap size={32} className="text-white" />
+
+              <div className="text-center mb-5">
+                <div className="w-14 h-14 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Zap size={28} className="text-primary-foreground" />
                 </div>
-                <h3 className="text-2xl font-bold">Boost Your Profile</h3>
-                <p className="text-muted-foreground mt-2">Be seen by 10x more people for 30 minutes!</p>
+                <h3 className="text-xl font-bold text-foreground">Boost Your Profile</h3>
+                <p className="text-sm text-muted-foreground mt-1">Get up to 10x more views</p>
               </div>
 
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center gap-3 text-sm">
-                  <span className="text-green-500">✓</span>
-                  <span>Appear at the top of discovery</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <span className="text-green-500">✓</span>
-                  <span>Get up to 10x more profile views</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <span className="text-green-500">✓</span>
-                  <span>See live viewer count</span>
-                </div>
+              {error && (
+                <Alert variant="destructive" className="mb-4">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription className="text-sm">{error}</AlertDescription>
+                </Alert>
+              )}
+
+              {isBoostActive && (
+                <Alert className="mb-4">
+                  <Zap className="h-4 w-4 text-primary" />
+                  <AlertDescription>Boost active — {boostTimeLeft} remaining</AlertDescription>
+                </Alert>
+              )}
+
+              <div className="space-y-2 mb-4">
+                {['Appear first in discovery', 'Up to 10x more profile views', 'Prioritized in your area'].map((text, i) => (
+                  <div key={i} className="flex items-center gap-2 text-sm">
+                    <CheckCircle size={16} className="text-green-500 shrink-0" />
+                    <span className="text-muted-foreground">{text}</span>
+                  </div>
+                ))}
               </div>
 
-              <div className="space-y-3">
+              <div className="bg-muted rounded-lg p-3 mb-4">
+                <p className="text-sm text-muted-foreground">
+                  <strong>Your Plan:</strong> <Badge variant="secondary">{tier.toUpperCase()}</Badge>
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">{TIER_LABELS[tier] || TIER_LABELS.free}</p>
+              </div>
+
+              <div className="space-y-2">
                 <Button
-                  onClick={purchaseBoost}
-                  className="w-full h-12 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                  onClick={handleBoost}
+                  disabled={isBoosting || isBoostActive}
+                  className="w-full h-11"
                 >
-                  <Zap size={18} className="mr-2" />
-                  Get Boost - $2.99
+                  {isBoosting ? (
+                    <><Loader2 size={18} className="mr-2 animate-spin" /> Boosting...</>
+                  ) : isBoostActive ? (
+                    'Already Boosted'
+                  ) : (
+                    <><Zap size={18} className="mr-2" /> Boost Now</>
+                  )}
                 </Button>
-                
-                <Link to={createPageUrl('PricingPlans')}>
-                  <Button variant="outline" className="w-full h-12">
-                    <Crown size={18} className="mr-2 text-amber-500" />
-                    Get Unlimited with Premium
-                  </Button>
-                </Link>
+
+                {tier === 'free' && (
+                  <Link to="/pricing">
+                    <Button variant="outline" className="w-full h-11">
+                      <Crown size={18} className="mr-2 text-amber-500" />
+                      Upgrade for Boosts
+                    </Button>
+                  </Link>
+                )}
               </div>
             </motion.div>
           </motion.div>
