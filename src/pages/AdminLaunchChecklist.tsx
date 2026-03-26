@@ -120,8 +120,4 @@ export default function AdminLaunchChecklist() {
       </div>
     </div>
   );
-});
-
-AdminLaunchChecklist.displayName = "AdminLaunchChecklist";
-
-export default AdminLaunchChecklist;
+}
