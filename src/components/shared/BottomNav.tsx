@@ -4,9 +4,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { icon: Users, label: 'Community', path: '/communities' },
   { icon: Compass, label: 'Discover', path: '/home' },
   { icon: Heart, label: 'Matches', path: '/matches' },
+  { icon: Users, label: 'Community', path: '/communities' },
   { icon: CalendarDays, label: 'Events', path: '/events' },
   { icon: UserRound, label: 'Profile', path: '/profile' },
 ];

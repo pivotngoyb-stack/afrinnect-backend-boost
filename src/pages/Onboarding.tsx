@@ -560,24 +560,48 @@ export default function Onboarding() {
         </Select>
       </div>
 
-      <div className={`p-4 rounded-xl border-2 ${formData.location.lat ? 'border-green-500 bg-green-50' : 'border-amber-300 bg-amber-50'}`}>
-        <div className="flex items-center justify-between">
+      {/* Location: auto-detect or manual */}
+      <div className={`p-4 rounded-xl border-2 ${formData.current_country ? 'border-green-500 bg-green-50' : 'border-amber-300 bg-amber-50'}`}>
+        {formData.location.lat && formData.current_city ? (
           <div className="flex items-center gap-3">
-            <MapPin size={20} className={formData.location.lat ? 'text-green-600' : 'text-amber-600'} />
+            <MapPin size={20} className="text-green-600" />
             <div>
-              {formData.location.lat ? (
-                <p className="font-semibold text-sm text-green-800">{formData.current_city}, {formData.current_country}</p>
-              ) : (
-                <p className="font-semibold text-sm text-amber-800">Enable location to continue</p>
-              )}
+              <p className="font-semibold text-sm text-green-800">{formData.current_city}, {formData.current_country}</p>
+              <button onClick={() => { updateField('location', {}); updateField('current_country', ''); updateField('current_city', ''); updateField('current_state', ''); }} className="text-xs text-green-600 underline mt-0.5">Change</button>
             </div>
           </div>
-          {!formData.location.lat && (
-            <Button onClick={getLocation} disabled={gettingLocation} size="sm" className="bg-amber-600 hover:bg-amber-700">
-              {gettingLocation ? <Loader2 size={16} className="animate-spin" /> : 'Enable'}
-            </Button>
-          )}
-        </div>
+        ) : (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <MapPin size={20} className="text-amber-600" />
+                <p className="font-semibold text-sm text-amber-800">Set your location</p>
+              </div>
+              <Button onClick={getLocation} disabled={gettingLocation} size="sm" className="bg-amber-600 hover:bg-amber-700">
+                {gettingLocation ? <Loader2 size={16} className="animate-spin" /> : 'Auto-detect'}
+              </Button>
+            </div>
+            
+            {/* Manual fallback */}
+            <div className="space-y-2 pt-2 border-t border-amber-200">
+              <p className="text-xs text-amber-700">Or select manually:</p>
+              <Select value={formData.current_country} onValueChange={(v) => updateField('current_country', v)}>
+                <SelectTrigger className="h-10 bg-white"><SelectValue placeholder="Country of residence" /></SelectTrigger>
+                <SelectContent>
+                  {ALLOWED_RESIDENCE_COUNTRIES.map(c => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Input
+                value={formData.current_city || ''}
+                onChange={(e) => updateField('current_city', e.target.value)}
+                placeholder="City (e.g. Houston, Toronto)"
+                className="h-10 bg-white"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       <div>
