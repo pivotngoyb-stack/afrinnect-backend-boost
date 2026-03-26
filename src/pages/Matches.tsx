@@ -101,7 +101,7 @@ export default function Matches() {
 
   // Fetch profiles for matches
   const { data: matchedProfiles = [] } = useQuery({
-    queryKey: ['matched-profiles', matchesData],
+    queryKey: ['matched-profiles', matchesData.map(m => m.id).join(',')],
     queryFn: async () => {
       try {
         if (!matchesData.length || !myProfile) return [];
@@ -121,10 +121,18 @@ export default function Matches() {
           })
         );
         
-        return profiles.flat().map((profile, idx) => ({
-          ...profile,
-          match: matchesData[idx]
-        }));
+        // Build a map of profile ID -> profile for safe lookup
+        const profileMap = new Map();
+        profiles.flat().forEach(p => { if (p) profileMap.set(p.id, p); });
+        
+        // Associate each match with its profile by partner ID
+        return matchesData
+          .map(m => {
+            const partnerId = m.user1_id === myProfile.id ? m.user2_id : m.user1_id;
+            const profile = profileMap.get(partnerId);
+            return profile ? { ...profile, match: m } : null;
+          })
+          .filter(Boolean);
       } catch (error) {
         console.error('Failed to fetch matched profiles:', error);
         return [];
