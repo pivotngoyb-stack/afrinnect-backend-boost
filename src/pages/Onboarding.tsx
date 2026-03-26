@@ -296,14 +296,7 @@ export default function Onboarding() {
             const city = addr.city || addr.town || addr.village || addr.hamlet || addr.suburb || '';
             const state = addr.state || addr.province || '';
             
-            // Only allow USA and Canada (Bypass for Admin)
-            const isAdmin = user?.role === 'admin' || user?.email === 'pivotngoyb@gmail.com';
-            if (!isAdmin && (!country || !['United States', 'Canada', 'Pakistan', 'United States of America'].includes(country))) {
-              alert('Afrinnect is currently only available in the United States, Canada, and Pakistan. You will be redirected to join our waitlist.');
-              // Log them out and redirect to waitlist
-              await base44.auth.logout(createPageUrl('Waitlist'));
-              return;
-            }
+            // Location detected - no geographic restrictions (app is now live globally)
 
             // Auto-fill location data
             setFormData(prev => ({
