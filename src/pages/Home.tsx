@@ -26,6 +26,11 @@ import HomeHeader from '@/components/home/HomeHeader';
 import SwipeView from '@/components/home/SwipeView';
 import GridView from '@/components/home/GridView';
 import HomeModals from '@/components/home/HomeModals';
+import ProfileCompletionBar from '@/components/engagement/ProfileCompletionBar';
+import LiveActivityFeed from '@/components/engagement/LiveActivityFeed';
+import DailyReturnBanner from '@/components/engagement/DailyReturnBanner';
+import PeopleLikeYouTeaser from '@/components/engagement/PeopleLikeYouTeaser';
+import NewMatchToast from '@/components/engagement/NewMatchToast';
 import { Loader2 } from 'lucide-react';
 
 export default function Home() {
@@ -52,6 +57,8 @@ export default function Home() {
   const [profileViewStartTime, setProfileViewStartTime] = useState(Date.now());
   const [photosViewedCount, setPhotosViewedCount] = useState(0);
   const [matchCount, setMatchCount] = useState(0);
+  const [showNewMatchToast, setShowNewMatchToast] = useState(false);
+  const [lastMatchedProfile, setLastMatchedProfile] = useState(null);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { prompt: upgradePrompt, dismissPrompt } = useUpgradePrompts(myProfile);
@@ -323,10 +330,16 @@ export default function Home() {
     },
     onSuccess: (data) => {
       if (data?.isMatch) {
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 }, colors: ['#ff6b9d', '#c084fc', '#f59e0b', '#ef4444'] });
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
         setShowMatchCelebration(true);
         setMatchCount(prev => prev + 1);
-        setTimeout(() => setShowMatchCelebration(false), 3000);
+        setLastMatchedProfile(pendingLikeProfile);
+        setTimeout(() => {
+          setShowMatchCelebration(false);
+          setShowNewMatchToast(true);
+          setTimeout(() => setShowNewMatchToast(false), 8000);
+        }, 3000);
       }
       setCurrentIndex(prev => prev + 1);
     },
@@ -445,9 +458,11 @@ export default function Home() {
         {isVerificationGated && <VerificationGateBanner matchCount={gateMatchCount} />}
 
         <main className="flex-1 flex flex-col overflow-hidden px-4" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+          <DailyReturnBanner userProfile={myProfile} />
+          <LiveActivityFeed />
+          <ProfileCompletionBar userProfile={myProfile} />
+          <PeopleLikeYouTeaser userProfile={myProfile} />
           <ActivitySummaryBanner userProfile={myProfile} />
-          <WeeklyTopPicks userProfile={myProfile} />
-          <VIPEventsPromo userProfile={myProfile} />
           <div className="mb-3">
             <BoostButton userProfile={myProfile} onBoostActivated={() => refetch()} />
           </div>
@@ -490,6 +505,11 @@ export default function Home() {
             showFeedbackModal={showFeedbackModal} setShowFeedbackModal={setShowFeedbackModal}
             feedbackProfile={feedbackProfile} setFeedbackProfile={setFeedbackProfile}
             upgradePrompt={upgradePrompt} dismissPrompt={dismissPrompt}
+          />
+          <NewMatchToast
+            show={showNewMatchToast}
+            matchedProfile={lastMatchedProfile}
+            onDismiss={() => setShowNewMatchToast(false)}
           />
           <div className="h-20" />
         </main>
