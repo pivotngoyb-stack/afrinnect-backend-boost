@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
@@ -518,15 +519,13 @@ export default function Home() {
 
       // If there's a note, create initial message
       if (likeNote) {
-        // Check if match exists first
-        const existingMatch = await base44.entities.Match.filter({
-          $or: [
-            { user1_id: myProfile.id, user2_id: likedId },
-            { user1_id: likedId, user2_id: myProfile.id }
-          ]
-        });
+        // Check if match exists first using direct Supabase query for proper grouped OR
+        const { data: existingMatch } = await supabase
+          .from('matches')
+          .select('id')
+          .or(`and(user1_id.eq.${myProfile.id},user2_id.eq.${likedId}),and(user1_id.eq.${likedId},user2_id.eq.${myProfile.id})`);
 
-        if (existingMatch.length > 0) {
+        if (existingMatch && existingMatch.length > 0) {
           await base44.entities.Message.create({
             match_id: existingMatch[0].id,
             sender_id: myProfile.id,
@@ -547,16 +546,14 @@ export default function Home() {
       });
 
       if (mutualLikes.length > 0) {
-        // CRITICAL FIX: Check if match already exists to prevent duplicates
-        const existingMatches = await base44.entities.Match.filter({
-          $or: [
-            { user1_id: myProfile.id, user2_id: likedId },
-            { user1_id: likedId, user2_id: myProfile.id }
-          ]
-        });
+        // CRITICAL FIX: Check if match already exists using grouped OR to prevent duplicates
+        const { data: existingMatches } = await supabase
+          .from('matches')
+          .select('id')
+          .or(`and(user1_id.eq.${myProfile.id},user2_id.eq.${likedId}),and(user1_id.eq.${likedId},user2_id.eq.${myProfile.id})`);
 
-        // Only create match if it doesn't exist
-        if (existingMatches.length === 0) {
+
+        if (!existingMatches || existingMatches.length === 0) {
           // Track first match
           if (!myProfile.has_matched_before) {
             trackEvent(CONVERSION_EVENTS.FIRST_MATCH);
