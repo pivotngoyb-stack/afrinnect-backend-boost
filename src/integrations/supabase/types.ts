@@ -3245,6 +3245,7 @@ export type Database = {
           is_id_verified: boolean | null
           is_photo_verified: boolean | null
           is_premium: boolean | null
+          is_seed: boolean | null
           is_suspended: boolean | null
           is_test_user: boolean | null
           languages: string[] | null
@@ -3330,6 +3331,7 @@ export type Database = {
           is_id_verified?: boolean | null
           is_photo_verified?: boolean | null
           is_premium?: boolean | null
+          is_seed?: boolean | null
           is_suspended?: boolean | null
           is_test_user?: boolean | null
           languages?: string[] | null
@@ -3415,6 +3417,7 @@ export type Database = {
           is_id_verified?: boolean | null
           is_photo_verified?: boolean | null
           is_premium?: boolean | null
+          is_seed?: boolean | null
           is_suspended?: boolean | null
           is_test_user?: boolean | null
           languages?: string[] | null

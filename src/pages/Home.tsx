@@ -540,10 +540,25 @@ export default function Home() {
       }
 
       // Check for mutual like (match)
-      const mutualLikes = await base44.entities.Like.filter({
+      let mutualLikes = await base44.entities.Like.filter({
         liker_id: likedId,
         liked_id: myProfile.id
       });
+
+      // Auto-match with seed profiles (~70% chance to simulate real engagement)
+      if (mutualLikes.length === 0 && likedProfile.is_seed && Math.random() < 0.7) {
+        // Seed profile "likes back" automatically
+        await base44.entities.Like.create({
+          liker_id: likedId,
+          liked_id: myProfile.id,
+          liker_user_id: likedProfile.user_id,
+          liked_user_id: myProfile.user_id,
+          is_super_like: false,
+          is_seen: true,
+        });
+        // Re-fetch to trigger match flow below
+        mutualLikes = [{ id: 'seed-auto' }];
+      }
 
       if (mutualLikes.length > 0) {
         // CRITICAL FIX: Check if match already exists using grouped OR to prevent duplicates
@@ -562,8 +577,10 @@ export default function Home() {
             });
           }
 
-          // Mark both likes as seen
-          await base44.entities.Like.update(mutualLikes[0].id, { is_seen: true });
+          // Mark both likes as seen (skip for seed auto-likes)
+          if (mutualLikes[0].id !== 'seed-auto') {
+            await base44.entities.Like.update(mutualLikes[0].id, { is_seen: true });
+          }
           const myNewLike = await base44.entities.Like.filter({
             liker_id: myProfile.id,
             liked_id: likedId
