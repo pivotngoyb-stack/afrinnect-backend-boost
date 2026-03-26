@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
@@ -25,7 +24,7 @@ export default function AdminSettings() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [settings, setSettings] = useState({});
+  const [settings, setSettings] = useState<Record<string, any>>({});
   const [featureFlags, setFeatureFlags] = useState([]);
 
   useEffect(() => {
