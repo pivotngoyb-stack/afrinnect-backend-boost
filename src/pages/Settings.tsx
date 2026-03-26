@@ -459,7 +459,7 @@ export default function Settings() {
                     try {
                       const res = await base44.functions.invoke('cancelSubscription', { immediate: false });
                       if (res.data.success) {
-                        toast({ title: `Subscription cancelled. You'll have access until ${new Date(res.data.end_date }).toLocaleDateString()}.`);
+                        toast({ title: `Subscription cancelled. Access until ${new Date(res.data.end_date).toLocaleDateString()}.`);
                       } else {
                         toast({ title: res.data.error || 'Failed to cancel subscription', variant: 'destructive' });
                       }
