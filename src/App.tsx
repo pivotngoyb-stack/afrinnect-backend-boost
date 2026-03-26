@@ -8,6 +8,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/components/i18n/LanguageContext";
 import InstallPrompt from "@/components/mobile/InstallPrompt";
 import AppBottomNav from "@/components/shared/AppBottomNav";
+import AuthGuard from "@/components/shared/AuthGuard";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,11 +21,17 @@ const queryClient = new QueryClient({
   },
 });
 
-// Loading fallback
 const PageLoader = () => (
   <div className="flex min-h-screen items-center justify-center bg-background">
     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
   </div>
+);
+
+// Auth wrapper for protected routes
+const Protected = ({ children, requireProfile = false }: { children: React.ReactNode; requireProfile?: boolean }) => (
+  <AuthGuard requireAuth requireProfile={requireProfile} redirectTo="/login">
+    {children}
+  </AuthGuard>
 );
 
 // Lazy-load all pages
@@ -92,8 +99,6 @@ const MigrationCalculator = lazy(() => import("./pages/MigrationCalculator"));
 const MigrationDocument = lazy(() => import("./pages/MigrationDocument"));
 const AuthFlowTest = lazy(() => import("./pages/AuthFlowTest"));
 const ErrorPage = lazy(() => import("./pages/Error"));
-
-// Admin pages
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const AdminUsers = lazy(() => import("./pages/AdminUsers"));
 const AdminModeration = lazy(() => import("./pages/AdminModeration"));
@@ -135,7 +140,7 @@ const App = () => (
             <Route path="/error" element={<ErrorPage />} />
             <Route path="/auth-flow-test" element={<AuthFlowTest />} />
 
-            {/* Legacy URL aliases (MVP 404 prevention) */}
+            {/* Legacy aliases */}
             <Route path="/discover" element={<Navigate to="/explore" replace />} />
             <Route path="/pricing" element={<Navigate to="/pricingplans" replace />} />
             <Route path="/support-chat" element={<Navigate to="/supportchat" replace />} />
@@ -143,90 +148,90 @@ const App = () => (
             <Route path="/videochat" element={<Navigate to="/chat" replace />} />
             <Route path="/admin" element={<Navigate to="/admindashboard" replace />} />
 
-            {/* Core App */}
-            <Route path="/home" element={<Home />} />
-            <Route path="/onboarding" element={<Onboarding />} />
-            <Route path="/editprofile" element={<EditProfile />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/chat" element={<Chat />} />
-            <Route path="/matches" element={<Matches />} />
-            <Route path="/dailymatches" element={<DailyMatches />} />
-            <Route path="/wholikesyou" element={<WhoLikesYou />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/blockedusers" element={<BlockedUsers />} />
-            <Route path="/deleteaccount" element={<DeleteAccount />} />
+            {/* Protected Core App */}
+            <Route path="/home" element={<Protected><Home /></Protected>} />
+            <Route path="/onboarding" element={<Protected><Onboarding /></Protected>} />
+            <Route path="/editprofile" element={<Protected requireProfile><EditProfile /></Protected>} />
+            <Route path="/profile" element={<Protected requireProfile><Profile /></Protected>} />
+            <Route path="/settings" element={<Protected><Settings /></Protected>} />
+            <Route path="/chat" element={<Protected requireProfile><Chat /></Protected>} />
+            <Route path="/matches" element={<Protected requireProfile><Matches /></Protected>} />
+            <Route path="/dailymatches" element={<Protected requireProfile><DailyMatches /></Protected>} />
+            <Route path="/wholikesyou" element={<Protected requireProfile><WhoLikesYou /></Protected>} />
+            <Route path="/notifications" element={<Protected><Notifications /></Protected>} />
+            <Route path="/blockedusers" element={<Protected><BlockedUsers /></Protected>} />
+            <Route path="/deleteaccount" element={<Protected><DeleteAccount /></Protected>} />
 
-            {/* Discovery & Social */}
-            <Route path="/explore" element={<Explore />} />
-            <Route path="/events" element={<Events />} />
-            <Route path="/eventdetails" element={<EventDetails />} />
-            <Route path="/eventchat" element={<EventChat />} />
-            <Route path="/createevent" element={<CreateEvent />} />
-            <Route path="/communities" element={<Communities />} />
-            <Route path="/communitychat" element={<CommunityChat />} />
-            <Route path="/stories" element={<Stories />} />
-            <Route path="/compatibilityquiz" element={<CompatibilityQuiz />} />
-            <Route path="/compatibilityquizzes" element={<CompatibilityQuizzes />} />
-            <Route path="/dateplanner" element={<DatePlanner />} />
-            <Route path="/virtualgifts" element={<VirtualGifts />} />
-            <Route path="/speeddatinglobby" element={<SpeedDatingLobby />} />
-            <Route path="/languageexchangehub" element={<LanguageExchangeHub />} />
+            {/* Protected Discovery & Social */}
+            <Route path="/explore" element={<Protected><Explore /></Protected>} />
+            <Route path="/events" element={<Protected><Events /></Protected>} />
+            <Route path="/eventdetails" element={<Protected><EventDetails /></Protected>} />
+            <Route path="/eventchat" element={<Protected><EventChat /></Protected>} />
+            <Route path="/createevent" element={<Protected><CreateEvent /></Protected>} />
+            <Route path="/communities" element={<Protected><Communities /></Protected>} />
+            <Route path="/communitychat" element={<Protected><CommunityChat /></Protected>} />
+            <Route path="/stories" element={<Protected><Stories /></Protected>} />
+            <Route path="/compatibilityquiz" element={<Protected><CompatibilityQuiz /></Protected>} />
+            <Route path="/compatibilityquizzes" element={<Protected><CompatibilityQuizzes /></Protected>} />
+            <Route path="/dateplanner" element={<Protected><DatePlanner /></Protected>} />
+            <Route path="/virtualgifts" element={<Protected><VirtualGifts /></Protected>} />
+            <Route path="/speeddatinglobby" element={<Protected><SpeedDatingLobby /></Protected>} />
+            <Route path="/languageexchangehub" element={<Protected><LanguageExchangeHub /></Protected>} />
 
-            {/* Monetization & Premium */}
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/marketplace" element={<Marketplace />} />
-            <Route path="/pricingplans" element={<PricingPlans />} />
-            <Route path="/vipeventshub" element={<VIPEventsHub />} />
-            <Route path="/submitstory" element={<SubmitStory />} />
-            <Route path="/successstorycontest" element={<SuccessStoryContest />} />
-            <Route path="/referralprogram" element={<ReferralProgram />} />
-            <Route path="/ambassadorapply" element={<AmbassadorApply />} />
-            <Route path="/ambassadorportal" element={<AmbassadorPortal />} />
+            {/* Protected Monetization & Premium */}
+            <Route path="/shop" element={<Protected><Shop /></Protected>} />
+            <Route path="/marketplace" element={<Protected><Marketplace /></Protected>} />
+            <Route path="/pricingplans" element={<Protected><PricingPlans /></Protected>} />
+            <Route path="/vipeventshub" element={<Protected><VIPEventsHub /></Protected>} />
+            <Route path="/submitstory" element={<Protected><SubmitStory /></Protected>} />
+            <Route path="/successstorycontest" element={<Protected><SuccessStoryContest /></Protected>} />
+            <Route path="/referralprogram" element={<Protected><ReferralProgram /></Protected>} />
+            <Route path="/ambassadorapply" element={<Protected><AmbassadorApply /></Protected>} />
+            <Route path="/ambassadorportal" element={<Protected><AmbassadorPortal /></Protected>} />
 
-            {/* Safety & Verification */}
-            <Route path="/report" element={<Report />} />
-            <Route path="/safetychecksetup" element={<SafetyCheckSetup />} />
-            <Route path="/safetycheckmonitor" element={<SafetyCheckMonitor />} />
-            <Route path="/idverification" element={<IDVerification />} />
-            <Route path="/verifyphoto" element={<VerifyPhoto />} />
-            <Route path="/phoneverification" element={<PhoneVerification />} />
-            <Route path="/backgroundcheckrequest" element={<BackgroundCheckRequest />} />
+            {/* Protected Safety & Verification */}
+            <Route path="/report" element={<Protected><Report /></Protected>} />
+            <Route path="/safetychecksetup" element={<Protected><SafetyCheckSetup /></Protected>} />
+            <Route path="/safetycheckmonitor" element={<Protected><SafetyCheckMonitor /></Protected>} />
+            <Route path="/idverification" element={<Protected><IDVerification /></Protected>} />
+            <Route path="/verifyphoto" element={<Protected><VerifyPhoto /></Protected>} />
+            <Route path="/phoneverification" element={<Protected><PhoneVerification /></Protected>} />
+            <Route path="/backgroundcheckrequest" element={<Protected><BackgroundCheckRequest /></Protected>} />
 
-            {/* Profile & Analytics */}
-            <Route path="/photoperformance" element={<PhotoPerformance />} />
-            <Route path="/profileoptimization" element={<ProfileOptimization />} />
-            <Route path="/customerview" element={<CustomerView />} />
-            <Route path="/analytics" element={<Analytics />} />
+            {/* Protected Profile & Analytics */}
+            <Route path="/photoperformance" element={<Protected><PhotoPerformance /></Protected>} />
+            <Route path="/profileoptimization" element={<Protected><ProfileOptimization /></Protected>} />
+            <Route path="/customerview" element={<Protected><CustomerView /></Protected>} />
+            <Route path="/analytics" element={<Protected><Analytics /></Protected>} />
 
-            {/* Support & Legal */}
-            <Route path="/support" element={<Support />} />
-            <Route path="/supportchat" element={<SupportChat />} />
-            <Route path="/legalacceptance" element={<LegalAcceptance />} />
+            {/* Protected Support & Legal */}
+            <Route path="/support" element={<Protected><Support /></Protected>} />
+            <Route path="/supportchat" element={<Protected><SupportChat /></Protected>} />
+            <Route path="/legalacceptance" element={<Protected><LegalAcceptance /></Protected>} />
 
-            {/* Internal */}
-            <Route path="/investorreport" element={<InvestorReport />} />
-            <Route path="/appstorecompliance" element={<AppStoreCompliance />} />
-            <Route path="/vendormanagement" element={<VendorManagement />} />
-            <Route path="/migrationcalculator" element={<MigrationCalculator />} />
-            <Route path="/migrationdocument" element={<MigrationDocument />} />
+            {/* Protected Internal */}
+            <Route path="/investorreport" element={<Protected><InvestorReport /></Protected>} />
+            <Route path="/appstorecompliance" element={<Protected><AppStoreCompliance /></Protected>} />
+            <Route path="/vendormanagement" element={<Protected><VendorManagement /></Protected>} />
+            <Route path="/migrationcalculator" element={<Protected><MigrationCalculator /></Protected>} />
+            <Route path="/migrationdocument" element={<Protected><MigrationDocument /></Protected>} />
 
-            {/* Admin */}
-            <Route path="/admindashboard" element={<AdminDashboard />} />
-            <Route path="/adminusers" element={<AdminUsers />} />
-            <Route path="/adminmoderation" element={<AdminModeration />} />
-            <Route path="/adminanalytics" element={<AdminAnalytics />} />
-            <Route path="/adminsubscriptions" element={<AdminSubscriptions />} />
-            <Route path="/adminsettings" element={<AdminSettings />} />
-            <Route path="/adminbroadcast" element={<AdminBroadcast />} />
-            <Route path="/adminambassadors" element={<AdminAmbassadors />} />
-            <Route path="/admincontent" element={<AdminContent />} />
-            <Route path="/adminvipevents" element={<AdminVIPEvents />} />
-            <Route path="/adminfeatureflags" element={<AdminFeatureFlags />} />
-            <Route path="/adminmanual" element={<AdminManual />} />
-            <Route path="/adminlaunchchecklist" element={<AdminLaunchChecklist />} />
-            <Route path="/adminmarketplace" element={<AdminMarketplace />} />
-            <Route path="/adminauditlogs" element={<AdminAuditLogs />} />
+            {/* Protected Admin */}
+            <Route path="/admindashboard" element={<Protected><AdminDashboard /></Protected>} />
+            <Route path="/adminusers" element={<Protected><AdminUsers /></Protected>} />
+            <Route path="/adminmoderation" element={<Protected><AdminModeration /></Protected>} />
+            <Route path="/adminanalytics" element={<Protected><AdminAnalytics /></Protected>} />
+            <Route path="/adminsubscriptions" element={<Protected><AdminSubscriptions /></Protected>} />
+            <Route path="/adminsettings" element={<Protected><AdminSettings /></Protected>} />
+            <Route path="/adminbroadcast" element={<Protected><AdminBroadcast /></Protected>} />
+            <Route path="/adminambassadors" element={<Protected><AdminAmbassadors /></Protected>} />
+            <Route path="/admincontent" element={<Protected><AdminContent /></Protected>} />
+            <Route path="/adminvipevents" element={<Protected><AdminVIPEvents /></Protected>} />
+            <Route path="/adminfeatureflags" element={<Protected><AdminFeatureFlags /></Protected>} />
+            <Route path="/adminmanual" element={<Protected><AdminManual /></Protected>} />
+            <Route path="/adminlaunchchecklist" element={<Protected><AdminLaunchChecklist /></Protected>} />
+            <Route path="/adminmarketplace" element={<Protected><AdminMarketplace /></Protected>} />
+            <Route path="/adminauditlogs" element={<Protected><AdminAuditLogs /></Protected>} />
 
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
