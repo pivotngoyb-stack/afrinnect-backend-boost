@@ -485,7 +485,7 @@ export default function EditProfile() {
                       <SelectValue placeholder={t('onboarding.location.whereDoYouLive')} />
                     </SelectTrigger>
                     <SelectContent>
-                      {['United States', 'Canada'].map(c => (
+                      {ALL_COUNTRIES.map(c => (
                         <SelectItem key={c} value={c}>{c}</SelectItem>
                       ))}
                     </SelectContent>
