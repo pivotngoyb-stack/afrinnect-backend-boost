@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, Search, Globe, Loader2, CalendarDays, Sparkles, MapPin, Music, BookOpen, Heart } from 'lucide-react';
+import { Users, Search, Globe, Loader2, CalendarDays, Sparkles, MapPin, Music, BookOpen, Heart, Store } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import EmptyState from '@/components/shared/EmptyState';
 import { toast } from '@/hooks/use-toast';
 import CountryFlag from '@/components/shared/CountryFlag';
+import MarketplaceTab from '@/components/marketplace/MarketplaceTab';
 
 export default function Communities() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -241,9 +242,12 @@ export default function Communities() {
           </div>
         ) : (
           <Tabs defaultValue={myCommunities.length > 0 ? 'my-communities' : 'discover'}>
-            <TabsList className="mb-5 w-full grid grid-cols-2">
-              <TabsTrigger value="my-communities">My Communities ({myCommunities.length})</TabsTrigger>
+            <TabsList className="mb-5 w-full grid grid-cols-3">
+              <TabsTrigger value="my-communities">My Groups</TabsTrigger>
               <TabsTrigger value="discover">Discover</TabsTrigger>
+              <TabsTrigger value="marketplace" className="gap-1">
+                <Store size={14} /> Market
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="my-communities">
@@ -286,6 +290,10 @@ export default function Communities() {
                   {discoverCommunities.map(c => <CommunityCard key={c.id} community={c} />)}
                 </div>
               )}
+            </TabsContent>
+
+            <TabsContent value="marketplace">
+              <MarketplaceTab currentUser={currentUser} />
             </TabsContent>
           </Tabs>
         )}
