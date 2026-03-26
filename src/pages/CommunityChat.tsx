@@ -60,6 +60,20 @@ export default function CommunityChat() {
     enabled: !!communityId,
   });
 
+  // Check if current user is a member
+  const { data: isMember = false } = useQuery({
+    queryKey: ['community-membership-check', communityId, currentUser?.id],
+    queryFn: async () => {
+      const { count } = await supabase
+        .from('community_members')
+        .select('*', { count: 'exact', head: true })
+        .eq('community_id', communityId!)
+        .eq('user_profile_id', currentUser!.id);
+      return (count || 0) > 0;
+    },
+    enabled: !!communityId && !!currentUser?.id,
+  });
+
   const { data: messages = [], isLoading: loadingMessages } = useQuery({
     queryKey: ['community-messages', communityId],
     queryFn: async () => {
