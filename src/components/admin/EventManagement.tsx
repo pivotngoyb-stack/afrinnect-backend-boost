@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { createRecord, deleteRecord, filterRecords, updateRecord, uploadFile } from '@/lib/supabase-helpers';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -42,7 +43,23 @@ export default function EventManagement({ events }) {
   const [editingEvent, setEditingEvent] = useState(null);
   const [formData, setFormData] = useState({ ...DEFAULT_FORM });
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [rsvpEvent, setRsvpEvent] = useState(null);
   const queryClient = useQueryClient();
+
+  const handleViewRSVPs = (event) => setRsvpEvent(event);
+
+  const { data: rsvpProfiles = [] } = useQuery({
+    queryKey: ['event-rsvp-profiles', rsvpEvent?.id],
+    queryFn: async () => {
+      if (!rsvpEvent?.attendees?.length) return [];
+      const { data } = await supabase
+        .from('user_profiles')
+        .select('id, display_name, primary_photo, photos, current_city, current_country, email')
+        .in('id', rsvpEvent.attendees);
+      return data || [];
+    },
+    enabled: !!rsvpEvent?.attendees?.length
+  });
 
   const createEventMutation = useMutation({
     mutationFn: async () => {
