@@ -3264,6 +3264,7 @@ export type Database = {
           primary_photo: string | null
           profession: string | null
           profile_boost_active: boolean | null
+          profile_prompts: Json | null
           prompts: Json | null
           push_token: string | null
           relationship_goal:
@@ -3350,6 +3351,7 @@ export type Database = {
           primary_photo?: string | null
           profession?: string | null
           profile_boost_active?: boolean | null
+          profile_prompts?: Json | null
           prompts?: Json | null
           push_token?: string | null
           relationship_goal?:
@@ -3436,6 +3438,7 @@ export type Database = {
           primary_photo?: string | null
           profession?: string | null
           profile_boost_active?: boolean | null
+          profile_prompts?: Json | null
           prompts?: Json | null
           push_token?: string | null
           relationship_goal?:

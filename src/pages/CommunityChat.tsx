@@ -87,8 +87,23 @@ export default function CommunityChat() {
       return data || [];
     },
     enabled: !!communityId,
-    refetchInterval: 3000,
   });
+
+  // Real-time subscription for new messages
+  useEffect(() => {
+    if (!communityId) return;
+    const channel = supabase
+      .channel(`community-${communityId}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'community_messages', filter: `community_id=eq.${communityId}` },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['community-messages', communityId] });
+        }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [communityId, queryClient]);
 
   // Fetch sender profiles for messages
   const senderIds = [...new Set(messages.map((m: any) => m.sender_id).filter(Boolean))];
