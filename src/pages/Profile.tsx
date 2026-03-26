@@ -83,16 +83,20 @@ export default function Profile() {
   useEffect(() => {
     const checkMatch = async () => {
       if (!myProfile || !profile || isOwnProfile) return;
-      
-      const matches = await base44.entities.Match.filter({
-        $or: [
-          { user1_id: myProfile.id, user2_id: profile.id, is_match: true },
-          { user1_id: profile.id, user2_id: myProfile.id, is_match: true }
-        ]
-      });
-      
-      if (matches.length > 0) {
-        setActiveMatch(matches[0]);
+      try {
+        const { data } = await supabase
+          .from('matches')
+          .select('*')
+          .eq('is_match', true)
+          .or(
+            `and(user1_id.eq.${myProfile.id},user2_id.eq.${profile.id}),and(user1_id.eq.${profile.id},user2_id.eq.${myProfile.id})`
+          )
+          .limit(1);
+        if (data && data.length > 0) {
+          setActiveMatch(data[0]);
+        }
+      } catch (e) {
+        console.log('Match check failed', e);
       }
     };
     checkMatch();
@@ -105,10 +109,9 @@ export default function Profile() {
   });
 
   const isFeatureEnabled = (featureName) => {
-    const flag = featureFlags.find(f => f.feature_name === featureName);
+    const flag = featureFlags.find(f => f.name === featureName);
     if (!flag) return false;
     if (flag.is_enabled) return true;
-    if (flag.enabled_for_premium && profile?.is_premium) return true;
     return false;
   };
 
@@ -119,20 +122,18 @@ export default function Profile() {
       const today = new Date().toISOString().split('T')[0];
       const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
 
-      const [views, likes] = await Promise.all([
-        base44.entities.ProfileView.filter({
-          viewed_profile_id: profile.id,
-          created_date: { $gte: today }
-        }),
-        base44.entities.Like.filter({
-          liked_id: profile.id,
-          created_date: { $gte: weekAgo }
-        })
+      const [viewsResult, likesResult] = await Promise.all([
+        supabase.from('profile_views').select('id', { count: 'exact', head: true })
+          .eq('viewed_profile_id', profile.id)
+          .gte('created_at', today),
+        supabase.from('likes').select('id', { count: 'exact', head: true })
+          .eq('liked_id', profile.id)
+          .gte('created_at', weekAgo)
       ]);
 
       return {
-        views: views.length,
-        likes: likes.length,
+        views: viewsResult.count || 0,
+        likes: likesResult.count || 0,
         percentile: profile.profile_performance_percentile || 50
       };
     },
