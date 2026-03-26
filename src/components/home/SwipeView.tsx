@@ -21,12 +21,14 @@ interface SwipeViewProps {
   handleSuperLike: (profile: any) => void;
   handleRewind: () => void;
   setFilters: (f: any) => void;
+  setDiscoveryMode?: (mode: string) => void;
 }
 
 export default function SwipeView({
   isLoading, currentProfile, hasMoreProfiles, myProfile,
   swipeHistory, likeMutation, passMutation,
   handleLike, handlePass, handleSuperLike, handleRewind, setFilters,
+  setDiscoveryMode,
 }: SwipeViewProps) {
   const navigate = useNavigate();
   const { t } = useLanguage();
@@ -88,7 +90,7 @@ export default function SwipeView({
               You've checked out everyone with your current filters. Expand your search to discover amazing people.
             </p>
             <div className="space-y-3 w-full">
-              <Button onClick={() => navigate('/explore')} className="w-full h-12 text-base gradient-hero text-primary-foreground">
+              <Button onClick={() => { setDiscoveryMode?.('global'); setFilters({}); }} className="w-full h-12 text-base gradient-hero text-primary-foreground">
                 <Globe size={18} className="mr-2" />
                 Explore Globally
               </Button>
