@@ -21,10 +21,23 @@ export default function Landing() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [liveCount, setLiveCount] = useState(47);
   const [recentSignup, setRecentSignup] = useState(null);
+  const [founderTrialDays, setFounderTrialDays] = useState(183);
+  const [founderEnabled, setFounderEnabled] = useState(true);
 
   useEffect(() => {
     trackEvent(CONVERSION_EVENTS.LANDING_VIEW);
     base44.auth.isAuthenticated().then(setIsLoggedIn).catch(() => {});
+    
+    // Fetch founder program settings
+    base44.entities.SystemSettings.filter({ key: 'founder_program' })
+      .then(records => {
+        const config = records?.[0]?.value;
+        if (config) {
+          setFounderTrialDays(config.trial_days || 183);
+          setFounderEnabled(config.founders_mode_enabled !== false);
+        }
+      })
+      .catch(() => {});
     
     // Simulate live activity (realistic numbers)
     const liveInterval = setInterval(() => {
@@ -258,11 +271,13 @@ export default function Landing() {
             </div>
             
             {/* Urgency Message */}
+            {founderEnabled && (
             <div className="bg-amber-500/20 border border-amber-400/30 rounded-xl p-4 mb-6">
               <p className="text-amber-200 text-sm font-medium">
-                🎉 <strong>Founding Member Bonus:</strong> Sign up this week and get Premium features FREE for 30 days
+                🎉 <strong>Founding Member Bonus:</strong> Sign up now and get Premium features FREE for {founderTrialDays >= 60 ? `${Math.round(founderTrialDays / 30)} months` : `${founderTrialDays} days`}!
               </p>
             </div>
+            )}
             
             {/* CTA */}
             <div className="flex flex-col sm:flex-row gap-4 mb-6">

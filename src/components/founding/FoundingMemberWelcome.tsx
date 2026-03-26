@@ -9,6 +9,13 @@ import confetti from 'canvas-confetti';
 export default function FoundingMemberWelcome({ isOpen, onClose, profile }) {
   const [step, setStep] = useState(0);
 
+  const trialEndsAt = profile?.founding_member_trial_ends_at ? new Date(profile.founding_member_trial_ends_at) : null;
+  const grantedAt = profile?.founding_member_granted_at ? new Date(profile.founding_member_granted_at) : null;
+  const totalTrialDays = grantedAt && trialEndsAt 
+    ? Math.round((trialEndsAt.getTime() - grantedAt.getTime()) / (1000 * 60 * 60 * 24))
+    : 183;
+  const trialMonths = Math.round(totalTrialDays / 30);
+  const trialLabel = totalTrialDays >= 60 ? `${trialMonths} months` : `${totalTrialDays} days`;
   useEffect(() => {
     if (isOpen && step === 0) {
       // Trigger confetti on open
@@ -59,14 +66,14 @@ export default function FoundingMemberWelcome({ isOpen, onClose, profile }) {
       
       <p className="text-gray-600 mb-6">
         You're one of the <strong className="text-amber-600">first 1,000</strong> people to join Afrinnect. 
-        As a thank you, you get <strong className="text-amber-600">6 months of Premium FREE</strong>!
+        As a thank you, you get <strong className="text-amber-600">{trialLabel} of Premium FREE</strong>!
       </p>
 
       <div className="bg-gradient-to-r from-amber-50 to-amber-100 border-2 border-amber-200 rounded-2xl p-6 mb-6">
         <div className="flex items-center justify-center gap-3 mb-4">
           <Gift className="text-amber-600" size={24} />
           <span className="text-2xl font-bold text-amber-700">$0.00</span>
-          <span className="text-gray-500 line-through">$149.94</span>
+          <span className="text-gray-500 line-through">${(trialMonths * 14.99).toFixed(2)}</span>
         </div>
         <p className="text-sm text-amber-800 font-medium">
           No credit card needed • No charges ever • Full Premium access
@@ -168,7 +175,7 @@ export default function FoundingMemberWelcome({ isOpen, onClose, profile }) {
 
       <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 mb-6">
         <p className="text-green-800 font-medium text-sm">
-          🔒 Your Premium status is locked in for <strong>6 months</strong> — no action needed!
+          🔒 Your Premium status is locked in for <strong>{trialLabel}</strong> — no action needed!
         </p>
       </div>
 
