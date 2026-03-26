@@ -1,8 +1,8 @@
 // @ts-nocheck
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, Search, Globe, Loader2, CalendarDays, Sparkles, MapPin, Music, BookOpen, Heart, Store } from 'lucide-react';
+import { Users, Search, Globe, Loader2, CalendarDays, Sparkles, MapPin, Music, BookOpen, Heart, Store, MessageCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,6 +13,8 @@ import EmptyState from '@/components/shared/EmptyState';
 import { toast } from '@/hooks/use-toast';
 import CountryFlag from '@/components/shared/CountryFlag';
 import MarketplaceTab from '@/components/marketplace/MarketplaceTab';
+import WelcomeOverlay from '@/components/shared/WelcomeOverlay';
+import GuidedActions from '@/components/shared/GuidedActions';
 
 export default function Communities() {
   const [searchQuery, setSearchQuery] = useState('');
