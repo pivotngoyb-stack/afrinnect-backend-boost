@@ -1,8 +1,8 @@
 // @ts-nocheck
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Users, Search, Globe, Loader2, CalendarDays, Sparkles, MapPin, Music, BookOpen, Heart, Store } from 'lucide-react';
+import { Users, Search, Globe, Loader2, CalendarDays, Sparkles, MapPin, Music, BookOpen, Heart, Store, MessageCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,9 +13,12 @@ import EmptyState from '@/components/shared/EmptyState';
 import { toast } from '@/hooks/use-toast';
 import CountryFlag from '@/components/shared/CountryFlag';
 import MarketplaceTab from '@/components/marketplace/MarketplaceTab';
+import WelcomeOverlay from '@/components/shared/WelcomeOverlay';
+import GuidedActions from '@/components/shared/GuidedActions';
 
 export default function Communities() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [showWelcome, setShowWelcome] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -32,6 +35,17 @@ export default function Communities() {
       return profiles?.[0] ? { ...profiles[0], auth_id: user.id } : null;
     }
   });
+
+  // Show welcome overlay for brand new users (first visit)
+  useEffect(() => {
+    if (currentUser) {
+      const welcomed = localStorage.getItem('afrinnect_welcomed');
+      if (!welcomed) {
+        setShowWelcome(true);
+        localStorage.setItem('afrinnect_welcomed', 'true');
+      }
+    }
+  }, [currentUser]);
 
   const { data: communities = [], isLoading } = useQuery({
     queryKey: ['communities'],
@@ -67,6 +81,41 @@ export default function Communities() {
       const counts: Record<string, number> = {};
       (data || []).forEach(m => { counts[m.community_id] = (counts[m.community_id] || 0) + 1; });
       return counts;
+    },
+    enabled: !!currentUser,
+  });
+
+  // Fetch recent community posts for the activity feed
+  const { data: recentPosts = [] } = useQuery({
+    queryKey: ['recent-community-posts'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('community_messages')
+        .select('id, content, created_at, community_id, sender_id')
+        .eq('message_type', 'text')
+        .order('created_at', { ascending: false })
+        .limit(8);
+      if (error) throw error;
+      // Resolve sender names and community names
+      const senderIds = [...new Set((data || []).map(p => p.sender_id))];
+      const communityIds = [...new Set((data || []).map(p => p.community_id))];
+      const [sendersRes, communitiesRes] = await Promise.all([
+        senderIds.length > 0
+          ? supabase.from('user_profiles').select('id, display_name, primary_photo').in('id', senderIds)
+          : { data: [] },
+        communityIds.length > 0
+          ? supabase.from('communities').select('id, name').in('id', communityIds)
+          : { data: [] },
+      ]);
+      const senderMap: Record<string, any> = {};
+      (sendersRes.data || []).forEach(s => { senderMap[s.id] = s; });
+      const communityMap: Record<string, any> = {};
+      (communitiesRes.data || []).forEach(c => { communityMap[c.id] = c; });
+      return (data || []).map(p => ({
+        ...p,
+        sender: senderMap[p.sender_id],
+        community: communityMap[p.community_id],
+      }));
     },
     enabled: !!currentUser,
   });
@@ -188,6 +237,14 @@ export default function Communities() {
 
   return (
     <div className="min-h-screen bg-background pb-24">
+      {/* Welcome Overlay for new users */}
+      {showWelcome && (
+        <WelcomeOverlay
+          displayName={currentUser?.display_name}
+          onDismiss={() => setShowWelcome(false)}
+        />
+      )}
+
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-primary/15 via-primary/5 to-background border-b border-border" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         <div className="max-w-2xl mx-auto px-4 pt-6 pb-6">
@@ -226,25 +283,74 @@ export default function Communities() {
               variant="outline"
               size="sm"
               className="shrink-0 gap-1.5 rounded-full h-9 text-xs"
-              onClick={() => navigate('/stories')}
+              onClick={() => navigate('/home')}
             >
-              <Sparkles size={14} />
-              Stories
+              <Heart size={14} />
+              Find Matches
             </Button>
           </div>
         </div>
       </div>
 
       <main className="max-w-2xl mx-auto px-4 py-5">
+        {/* Guided Actions for new users */}
+        {myMemberships.length === 0 && !isLoading && (
+          <div className="mb-6">
+            <GuidedActions
+              hasCompletedProfile={!!(currentUser as any)?.bio}
+              hasJoinedCommunity={myMemberships.length > 0}
+            />
+          </div>
+        )}
+
+        {/* Recent Activity Feed */}
+        {recentPosts.length > 0 && myMemberships.length === 0 && (
+          <div className="mb-6">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-1 mb-3">
+              Recent Activity
+            </p>
+            <div className="space-y-3">
+              {recentPosts.slice(0, 4).map(post => (
+                <div
+                  key={post.id}
+                  className="p-3 rounded-xl border border-border bg-card cursor-pointer hover:bg-accent/30 transition-colors"
+                  onClick={() => {
+                    const comm = communities.find(c => c.id === post.community_id);
+                    if (comm) {
+                      if (myMemberships.includes(comm.id)) {
+                        navigate(`/communitychat?id=${comm.id}`);
+                      } else {
+                        joinMutation.mutate(comm.id);
+                      }
+                    }
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
+                      {post.sender?.display_name?.[0] || '?'}
+                    </div>
+                    <span className="text-sm font-medium text-foreground">{post.sender?.display_name || 'Member'}</span>
+                    <span className="text-xs text-muted-foreground">in</span>
+                    <span className="text-xs font-medium text-primary">{post.community?.name || 'Community'}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground line-clamp-2 pl-8">{post.content}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {isLoading ? (
           <div className="flex justify-center py-12">
             <Loader2 className="animate-spin text-primary" size={32} />
           </div>
         ) : (
-          <Tabs defaultValue={myCommunities.length > 0 ? 'my-communities' : 'discover'}>
+          <Tabs defaultValue="discover">
             <TabsList className="mb-5 w-full grid grid-cols-3">
-              <TabsTrigger value="my-communities">My Groups</TabsTrigger>
               <TabsTrigger value="discover">Discover</TabsTrigger>
+              <TabsTrigger value="my-communities">
+                My Groups {myMemberships.length > 0 && `(${myMemberships.length})`}
+              </TabsTrigger>
               <TabsTrigger value="marketplace" className="gap-1">
                 <Store size={14} /> Market
               </TabsTrigger>
@@ -252,13 +358,16 @@ export default function Communities() {
 
             <TabsContent value="my-communities">
               {myCommunities.length === 0 ? (
-                <EmptyState
-                  icon={Users}
-                  title="No communities yet"
-                  description="Join communities to connect with like-minded people from your culture"
-                  actionLabel="Discover Communities"
-                  onAction={() => {}}
-                />
+                <div className="text-center py-12">
+                  <Users size={48} className="mx-auto text-muted-foreground/40 mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">No communities yet</h3>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    Join communities to connect with people who share your culture and interests
+                  </p>
+                  <Button onClick={() => {}} variant="outline">
+                    Browse Communities Below ↓
+                  </Button>
+                </div>
               ) : (
                 <div className="grid gap-4">
                   {myCommunities.map(c => <CommunityCard key={c.id} community={c} />)}
@@ -278,13 +387,18 @@ export default function Communities() {
               </div>
 
               {discoverCommunities.length === 0 ? (
-                <EmptyState
-                  icon={Globe}
-                  title={searchQuery ? 'No communities found' : 'All caught up!'}
-                  description={searchQuery ? `No communities match "${searchQuery}"` : "You've joined all available communities."}
-                  actionLabel={searchQuery ? 'Clear Search' : undefined}
-                  onAction={searchQuery ? () => setSearchQuery('') : undefined}
-                />
+                <div className="text-center py-12">
+                  <Globe size={48} className="mx-auto text-muted-foreground/40 mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    {searchQuery ? 'No communities found' : 'You\'ve joined them all! 🎉'}
+                  </h3>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    {searchQuery ? `No communities match "${searchQuery}"` : 'Check your groups tab to see your communities.'}
+                  </p>
+                  {searchQuery && (
+                    <Button variant="outline" onClick={() => setSearchQuery('')}>Clear Search</Button>
+                  )}
+                </div>
               ) : (
                 <div className="grid gap-4">
                   {discoverCommunities.map(c => <CommunityCard key={c.id} community={c} />)}

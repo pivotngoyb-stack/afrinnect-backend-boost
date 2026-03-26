@@ -34,7 +34,7 @@ export default function Explore() {
 
       const { data, error } = await supabase
         .from('user_profiles')
-        .select('id, user_id, display_name, primary_photo, country_of_origin, city, age, bio, is_verified, birth_date')
+        .select('id, user_id, display_name, primary_photo, country_of_origin, current_city, bio, birth_date')
         .eq('is_active', true)
         .eq('is_banned', false)
         .neq('user_id', currentUser?.id || '')
@@ -59,7 +59,7 @@ export default function Explore() {
       return (
         p.display_name?.toLowerCase().includes(q) ||
         p.country_of_origin?.toLowerCase().includes(q) ||
-        p.city?.toLowerCase().includes(q)
+        p.current_city?.toLowerCase().includes(q)
       );
     }
     return true;
@@ -138,8 +138,19 @@ export default function Explore() {
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <Users size={48} className="text-muted-foreground/40 mb-4" />
-            <p className="text-lg font-medium text-foreground mb-1">No users available yet.</p>
-            <p className="text-muted-foreground">Check back soon.</p>
+            <p className="text-lg font-medium text-foreground mb-1">
+              {search || selectedCountry ? 'No matching profiles found' : 'Profiles are loading...'}
+            </p>
+            <p className="text-muted-foreground mb-4">
+              {search || selectedCountry 
+                ? 'Try adjusting your search or filters to find more people'
+                : 'New members join every day — check back soon!'}
+            </p>
+            {(search || selectedCountry) && (
+              <Button variant="outline" onClick={() => { setSearch(''); setSelectedCountry(null); }}>
+                Clear Filters
+              </Button>
+            )}
           </div>
         ) : (
           <div className="space-y-6">
@@ -166,11 +177,8 @@ export default function Explore() {
                       <p className="font-medium text-sm text-foreground text-center truncate">
                         {profile.display_name || 'User'}
                       </p>
-                      {profile.city && (
-                        <p className="text-xs text-muted-foreground text-center truncate">{profile.city}</p>
-                      )}
-                      {profile.age && (
-                        <p className="text-xs text-muted-foreground text-center">{profile.age}</p>
+                      {profile.current_city && (
+                        <p className="text-xs text-muted-foreground text-center truncate">{profile.current_city}</p>
                       )}
                     </button>
                   ))}
