@@ -11,7 +11,7 @@ const db = supabase as any;
 // ─── AUTH HELPERS ───────────────────────────────────────────────
 
 export async function getCurrentUser() {
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user } } = await db.auth.getUser();
   if (!user) return null;
 
   const [profileResult, roleResult] = await Promise.all([
@@ -38,12 +38,12 @@ export async function getCurrentUser() {
 }
 
 export async function isAuthenticated() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await db.auth.getSession();
   return !!session;
 }
 
 export async function logout(redirectUrl?: string) {
-  await supabase.auth.signOut();
+  await db.auth.signOut();
   if (redirectUrl) window.location.href = redirectUrl;
   else window.location.reload();
 }
@@ -51,7 +51,7 @@ export async function logout(redirectUrl?: string) {
 export async function updateCurrentUser(data: any) {
   const user = await getCurrentUser();
   if (!user) throw new Error('Not authenticated');
-  const { data: updated, error } = await supabase
+  const { data: updated, error } = await db
     .from('user_profiles')
     .update(data)
     .eq('user_id', user.id)
@@ -80,7 +80,7 @@ const addLegacyAliases = (rows: any[]): any[] =>
  */
 export async function listRecords(table: string, sort = '-created_at', limit = 50) {
   const { column, ascending } = parseSort(sort);
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from(table)
     .select('*')
     .order(column, { ascending })
@@ -149,7 +149,7 @@ function applyFilter(query: any, key: string, value: any) {
  * Create a record in a table.
  */
 export async function createRecord(table: string, data: any) {
-  const { data: created, error } = await supabase
+  const { data: created, error } = await db
     .from(table)
     .insert(data)
     .select()
@@ -171,7 +171,7 @@ export async function bulkCreateRecords(table: string, items: any[]) {
  * Update a record by ID.
  */
 export async function updateRecord(table: string, id: string, data: any) {
-  const { data: updated, error } = await supabase
+  const { data: updated, error } = await db
     .from(table)
     .update(data)
     .eq('id', id)
@@ -263,7 +263,7 @@ const functionNameMap: Record<string, string> = {
  */
 export async function invokeFunction(functionName: string, payload?: any) {
   const resolvedName = functionNameMap[functionName] || functionName;
-  const { data, error } = await supabase.functions.invoke(resolvedName, { body: payload });
+  const { data, error } = await db.functions.invoke(resolvedName, { body: payload });
   if (error) {
     let errorMessage = 'Unknown error';
     if (data && typeof data === 'object' && data.error) {
@@ -289,7 +289,7 @@ export async function invokeLLM({ prompt, add_context_from_internet, response_js
   response_json_schema?: any;
   file_urls?: string[];
 }) {
-  const { data, error } = await supabase.functions.invoke('openai-chat', {
+  const { data, error } = await db.functions.invoke('openai-chat', {
     body: { prompt, addContext: add_context_from_internet, jsonSchema: response_json_schema, fileUrls: file_urls }
   });
   if (error) throw error;
@@ -298,7 +298,7 @@ export async function invokeLLM({ prompt, add_context_from_internet, response_js
 
 export async function uploadFile(file: File) {
   const fileName = `${Date.now()}_${file.name}`;
-  const { error } = await supabase.storage.from('photos').upload(fileName, file);
+  const { error } = await db.storage.from('photos').upload(fileName, file);
   if (error) throw error;
   const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(fileName);
   return { file_url: publicUrl };
@@ -310,7 +310,7 @@ export async function sendEmail({ to, subject, body, from_name }: {
   body: string;
   from_name?: string;
 }) {
-  const { data, error } = await supabase.functions.invoke('send-email', {
+  const { data, error } = await db.functions.invoke('send-email', {
     body: { to, subject, body, fromName: from_name }
   });
   if (error) throw error;
