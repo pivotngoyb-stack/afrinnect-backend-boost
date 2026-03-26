@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ShieldX, MessageSquare, AlertCircle, CheckCircle } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, logout } from '@/lib/supabase-helpers';
 import Logo from '@/components/shared/Logo';
 import AfricanPattern from '@/components/shared/AfricanPattern';
 import { toast } from '@/hooks/use-toast';
@@ -29,7 +29,7 @@ export default function BannedScreen({ userProfile, banReason, userEmail }: Bann
 
     setIsSubmitting(true);
     try {
-      await base44.entities.Dispute.create({
+      await createRecord('disputes', {
         user_email: userEmail,
         user_profile_id: userProfile?.id || null,
         dispute_type: 'ban_appeal',
@@ -141,14 +141,14 @@ export default function BannedScreen({ userProfile, banReason, userEmail }: Bann
                   <MessageSquare size={18} />
                   File an Appeal
                 </Button>
-                <Button variant="outline" onClick={() => base44.auth.logout()} className="w-full">
+                <Button variant="outline" onClick={() => logout()} className="w-full">
                   Logout
                 </Button>
               </div>
             )}
 
             {submitted && (
-              <Button variant="outline" onClick={() => base44.auth.logout()} className="w-full">
+              <Button variant="outline" onClick={() => logout()} className="w-full">
                 Logout
               </Button>
             )}

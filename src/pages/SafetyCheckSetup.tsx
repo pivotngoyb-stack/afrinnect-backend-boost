@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, getCurrentUser, sendEmail } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
@@ -28,18 +28,18 @@ export default function SafetyCheckSetup() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const user = await base44.auth.me();
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const user = await getCurrentUser();
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) {
           setMyProfile(profiles[0]);
         }
 
         if (matchId) {
-          const matches = await base44.entities.Match.filter({ id: matchId });
+          const matches = await filterRecords('matches', { id: matchId });
           if (matches.length > 0) {
             const m = matches[0];
             const otherId = m.user1_id === profiles[0].id ? m.user2_id : m.user1_id;
-            const otherProfiles = await base44.entities.UserProfile.filter({ id: otherId });
+            const otherProfiles = await filterRecords('user_profiles', { id: otherId });
             if (otherProfiles.length > 0) {
               setOtherProfile(otherProfiles[0]);
             }
@@ -54,7 +54,7 @@ export default function SafetyCheckSetup() {
 
   const createSafetyCheckMutation = useMutation({
     mutationFn: async () => {
-      await base44.entities.SafetyCheck.create({
+      await createRecord('safety_checks', {
         user_profile_id: myProfile.id,
         date_location: formData.date_location,
         meeting_with_profile_id: otherProfile.id,
@@ -65,7 +65,7 @@ export default function SafetyCheckSetup() {
       });
 
       // Send notification to emergency contact
-      await base44.integrations.Core.SendEmail({
+      await sendEmail({
         to: formData.emergency_contact_phone + '@sms.gateway.com', // SMS gateway
         subject: 'Afrinnect Safety Check Active',
         body: `${myProfile.display_name} has activated a safety check for a meetup. Location: ${formData.date_location}. Check-in time: ${formData.check_in_time}`

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, deleteRecord, filterRecords, getCurrentUser, listRecords, updateRecord } from '@/lib/supabase-helpers';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Zap, Plus, RefreshCw, Search, ToggleLeft, ToggleRight, Trash2, Edit, Save } from 'lucide-react';
@@ -53,7 +53,7 @@ export default function AdminFeatureFlags() {
 
   const checkAuth = async () => {
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await getCurrentUser();
       if (!currentUser || currentUser.role !== 'admin') {
         navigate(createPageUrl('Home'));
         return;
@@ -67,7 +67,7 @@ export default function AdminFeatureFlags() {
   const loadFlags = async () => {
     setLoading(true);
     try {
-      const data = await base44.entities.FeatureFlag.list('-created_at', 200);
+      const data = await listRecords('feature_flags', '-created_at', 200);
       setFlags(data);
     } catch (e) {
       console.error('Error loading flags:', e);
@@ -78,10 +78,10 @@ export default function AdminFeatureFlags() {
   const handleSave = async () => {
     try {
       if (editingFlag) {
-        await base44.entities.FeatureFlag.update(editingFlag.id, formData);
+        await updateRecord('feature_flags', editingFlag.id, formData);
         toast.success('Feature flag updated');
       } else {
-        await base44.entities.FeatureFlag.create(formData);
+        await createRecord('feature_flags', formData);
         toast.success('Feature flag created');
       }
       setShowDialog(false);
@@ -95,7 +95,7 @@ export default function AdminFeatureFlags() {
 
   const toggleFlag = async (flag) => {
     try {
-      await base44.entities.FeatureFlag.update(flag.id, { is_enabled: !flag.is_enabled });
+      await updateRecord('feature_flags', flag.id, { is_enabled: !flag.is_enabled });
       setFlags(flags.map(f => f.id === flag.id ? { ...f, is_enabled: !f.is_enabled } : f));
       toast.success(`${flag.name} ${!flag.is_enabled ? 'enabled' : 'disabled'}`);
     } catch (e) {
@@ -105,7 +105,7 @@ export default function AdminFeatureFlags() {
 
   const deleteFlag = async (id) => {
     try {
-      await base44.entities.FeatureFlag.delete(id);
+      await deleteRecord('feature_flags', id);
       setFlags(flags.filter(f => f.id !== id));
       toast.success('Flag deleted');
     } catch (e) {

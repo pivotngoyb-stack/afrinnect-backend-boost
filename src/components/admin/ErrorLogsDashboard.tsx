@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, invokeFunction, updateRecord } from '@/lib/supabase-helpers';
 import { 
   AlertOctagon, CheckCircle, Clock, Search, Filter, 
   ChevronRight, Activity, Smartphone, Globe, User, Sparkles, Brain
@@ -40,14 +40,14 @@ export default function ErrorLogsDashboard() {
     queryFn: async () => {
       let query = {};
       if (filterStatus !== 'all') query.status = filterStatus;
-      return base44.entities.ErrorLog.filter(query, '-created_date', 100);
+      return filterRecords('error_logs', query, '-created_date', 100);
     }
   });
 
   // Resolve Mutation
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }) => {
-      await base44.entities.ErrorLog.update(id, { 
+      await updateRecord('error_logs', id, { 
         status,
         resolved_at: status === 'resolved' ? new Date().toISOString() : null
       });
@@ -63,7 +63,7 @@ export default function ErrorLogsDashboard() {
   // AI Analysis Mutation
   const analyzeErrorMutation = useMutation({
     mutationFn: async (error) => {
-      const response = await base44.functions.invoke('analyzeError', { error });
+      const response = await invokeFunction('analyzeError', { error });
       return response.data;
     },
     onSuccess: (data) => {

@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, invokeFunction } from '@/lib/supabase-helpers';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,11 +23,11 @@ export default function RefundsManager() {
   // Search for user by email
   const searchMutation = useMutation({
     mutationFn: async (email) => {
-      const profiles = await base44.entities.UserProfile.filter({ created_by: email });
+      const profiles = await filterRecords('user_profiles', { created_by: email });
       if (profiles.length === 0) throw new Error('User not found');
       
       const profile = profiles[0];
-      const subscriptions = await base44.entities.Subscription.filter({
+      const subscriptions = await filterRecords('subscriptions', {
         user_profile_id: profile.id
       }, '-created_date', 5);
       
@@ -41,7 +41,7 @@ export default function RefundsManager() {
   // Process refund
   const refundMutation = useMutation({
     mutationFn: async ({ profile_id, subscription_id, reason }) => {
-      const response = await base44.functions.invoke('handleRefund', {
+      const response = await invokeFunction('handleRefund', {
         profile_id,
         subscription_id,
         reason

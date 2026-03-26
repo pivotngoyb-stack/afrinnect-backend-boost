@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
@@ -30,8 +30,8 @@ export default function EventDetails() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const user = await base44.auth.me();
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const user = await getCurrentUser();
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) {
           setMyProfile(profiles[0]);
         }
@@ -45,7 +45,7 @@ export default function EventDetails() {
   const { data: event, isLoading } = useQuery({
     queryKey: ['event', eventId],
     queryFn: async () => {
-      const events = await base44.entities.Event.filter({ id: eventId });
+      const events = await filterRecords('events', { id: eventId });
       return events[0];
     },
     enabled: !!eventId
@@ -77,7 +77,7 @@ export default function EventDetails() {
         if (updatedAttendees.includes(myProfile.id)) return;
         updatedAttendees = [...updatedAttendees, myProfile.id];
         
-        await base44.entities.Notification.create({
+        await createRecord('notifications', {
           user_profile_id: myProfile.id,
           type: 'admin_message',
           title: 'Event RSVP Confirmed! 🎉',
@@ -88,7 +88,7 @@ export default function EventDetails() {
         updatedAttendees = updatedAttendees.filter(id => id !== myProfile.id);
       }
       
-      await base44.entities.Event.update(eventId, {
+      await updateRecord('events', eventId, {
         attendees: updatedAttendees,
         current_attendees: updatedAttendees.length
       });

@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords } from '@/lib/supabase-helpers';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -44,13 +44,13 @@ export default function AnalyticsDashboard() {
         likes,
         reports
       ] = await Promise.all([
-        base44.entities.UserProfile.filter({ is_active: true }),
-        base44.entities.UserProfile.filter({ created_date: { $gte: start } }),
-        base44.entities.Match.filter({ is_match: true, matched_at: { $gte: start } }),
-        base44.entities.Message.filter({ created_date: { $gte: start } }),
-        base44.entities.Subscription.filter({ status: 'active' }),
-        base44.entities.Like.filter({ created_date: { $gte: start } }),
-        base44.entities.Report.filter({ status: 'pending' })
+        filterRecords('user_profiles', { is_active: true }),
+        filterRecords('user_profiles', { created_date: { $gte: start } }),
+        filterRecords('matches', { is_match: true, matched_at: { $gte: start } }),
+        filterRecords('messages', { created_date: { $gte: start } }),
+        filterRecords('subscriptions', { status: 'active' }),
+        filterRecords('likes', { created_date: { $gte: start } }),
+        filterRecords('reports', { status: 'pending' })
       ]);
 
       // Calculate metrics

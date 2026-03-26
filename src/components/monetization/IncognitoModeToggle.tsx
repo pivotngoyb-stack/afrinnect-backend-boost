@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { updateRecord } from '@/lib/supabase-helpers';
 import { motion, AnimatePresence } from 'framer-motion';
 import { EyeOff, Eye, Crown, Lock } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
@@ -24,7 +24,7 @@ export default function IncognitoModeToggle({ userProfile, onUpdate }) {
 
     setIsUpdating(true);
     try {
-      await base44.entities.UserProfile.update(userProfile.id, {
+      await updateRecord('user_profiles', userProfile.id, {
         incognito_mode: !isIncognito
       });
       onUpdate?.({ ...userProfile, incognito_mode: !isIncognito });

@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, listRecords } from '@/lib/supabase-helpers';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingDown } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
@@ -12,11 +12,11 @@ export default function ConversionFunnel() {
     queryFn: async () => {
       // Fetch from multiple sources for accurate data
       const [analytics, profiles, likes, matches, subscriptions] = await Promise.all([
-        base44.entities.ProfileAnalytics.filter({}, '-created_date', 5000),
-        base44.entities.UserProfile.list('-created_date', 1000),
-        base44.entities.Like.list('-created_date', 1000),
-        base44.entities.Match.filter({ is_match: true }),
-        base44.entities.Subscription.filter({ status: 'active' })
+        filterRecords('profile_analytics', {}, '-created_date', 5000),
+        listRecords('user_profiles', '-created_date', 1000),
+        listRecords('likes', '-created_date', 1000),
+        filterRecords('matches', { is_match: true }),
+        filterRecords('subscriptions', { status: 'active' })
       ]);
       
       const events = analytics.reduce((acc, a) => {

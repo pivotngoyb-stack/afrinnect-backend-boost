@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { createRecord, deleteRecord, listRecords, updateRecord, uploadFile } from '@/lib/supabase-helpers';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,11 +35,11 @@ export default function VendorManagement() {
 
   const { data: vendors = [] } = useQuery({
     queryKey: ['admin-vendors'],
-    queryFn: () => base44.entities.Vendor.list('-created_date', 200)
+    queryFn: () => listRecords('vendors', '-created_date', 200)
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.Vendor.create(data),
+    mutationFn: (data) => createRecord('vendors', data),
     onSuccess: () => {
       queryClient.invalidateQueries(['admin-vendors']);
       resetForm();
@@ -47,7 +47,7 @@ export default function VendorManagement() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Vendor.update(id, data),
+    mutationFn: ({ id, data }) => updateRecord('vendors', id, data),
     onSuccess: () => {
       queryClient.invalidateQueries(['admin-vendors']);
       resetForm();
@@ -55,7 +55,7 @@ export default function VendorManagement() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.Vendor.delete(id),
+    mutationFn: (id) => deleteRecord('vendors', id),
     onSuccess: () => queryClient.invalidateQueries(['admin-vendors'])
   });
 
@@ -98,7 +98,7 @@ export default function VendorManagement() {
     if (!file) return;
     setUploadingPhoto(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await uploadFile({ file });
       setFormData({...formData, image_url: file_url});
     } catch (error) {
       toast({ title: 'Photo upload failed', variant: 'destructive' });

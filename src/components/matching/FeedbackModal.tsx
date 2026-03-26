@@ -3,8 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ThumbsDown, AlertCircle, MapPin, Heart, UserX, Camera, MessageSquare } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { base44 } from '@/api/base44Client';
-
+import { invokeFunction } from '@/lib/supabase-helpers';
 const PASS_REASONS = [
   { id: 'not_my_type', label: 'Not my type', icon: ThumbsDown },
   { id: 'no_common_interests', label: 'No common interests', icon: Heart },
@@ -55,7 +54,7 @@ export default function FeedbackModal({
     setIsSubmitting(true);
     try {
       // Record feedback via ML engine
-      await base44.functions.invoke('mlMatchingEngine', {
+      await invokeFunction('mlMatchingEngine', {
         action: 'record_interaction',
         payload: {
           userId: myProfileId,

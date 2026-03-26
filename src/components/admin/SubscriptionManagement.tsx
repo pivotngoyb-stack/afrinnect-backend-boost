@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, listRecords, updateRecord } from '@/lib/supabase-helpers';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -18,10 +18,10 @@ export default function SubscriptionManagement() {
   const { data: subscriptions = [] } = useQuery({
     queryKey: ['admin-subscriptions-full'],
     queryFn: async () => {
-      const subs = await base44.entities.Subscription.list('-created_date', 500);
+      const subs = await listRecords('subscriptions', '-created_date', 500);
       const profileIds = [...new Set(subs.map(s => s.user_profile_id))];
       const profiles = await Promise.all(
-        profileIds.map(id => base44.entities.UserProfile.filter({ id }))
+        profileIds.map(id => filterRecords('user_profiles', { id }))
       );
       return subs.map(sub => ({
         ...sub,
@@ -31,7 +31,7 @@ export default function SubscriptionManagement() {
   });
 
   const updateSubMutation = useMutation({
-    mutationFn: ({ subId, data }) => base44.entities.Subscription.update(subId, data),
+    mutationFn: ({ subId, data }) => updateRecord('subscriptions', subId, data),
     onSuccess: () => {
       queryClient.invalidateQueries(['admin-subscriptions-full']);
       queryClient.invalidateQueries(['admin-profiles']);
@@ -41,14 +41,14 @@ export default function SubscriptionManagement() {
   const changeTierMutation = useMutation({
     mutationFn: async ({ profileId, subId, newTier }) => {
       // Update profile tier
-      await base44.entities.UserProfile.update(profileId, {
+      await updateRecord('user_profiles', profileId, {
         subscription_tier: newTier,
         is_premium: newTier !== 'free'
       });
       
       // Update subscription
       if (subId) {
-        await base44.entities.Subscription.update(subId, {
+        await updateRecord('subscriptions', subId, {
           plan_type: `${newTier}_monthly`,
           status: newTier === 'free' ? 'cancelled' : 'active'
         });

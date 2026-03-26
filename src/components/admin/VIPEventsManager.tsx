@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, deleteRecord, filterRecords, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,11 +32,11 @@ export default function VIPEventsManager() {
 
   const { data: events = [] } = useQuery({
     queryKey: ['admin-vip-events'],
-    queryFn: () => base44.entities.VIPEvent.filter({}, '-scheduled_at', 50)
+    queryFn: () => filterRecords('vip_events', {}, '-scheduled_at', 50)
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.VIPEvent.create(data),
+    mutationFn: (data) => createRecord('vip_events', data),
     onSuccess: () => {
       queryClient.invalidateQueries(['admin-vip-events']);
       setIsCreating(false);
@@ -45,7 +45,7 @@ export default function VIPEventsManager() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.VIPEvent.update(id, data),
+    mutationFn: ({ id, data }) => updateRecord('vip_events', id, data),
     onSuccess: () => {
       queryClient.invalidateQueries(['admin-vip-events']);
       setEditingEvent(null);
@@ -54,7 +54,7 @@ export default function VIPEventsManager() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.VIPEvent.delete(id),
+    mutationFn: (id) => deleteRecord('vip_events', id),
     onSuccess: () => queryClient.invalidateQueries(['admin-vip-events'])
   });
 

@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords } from '@/lib/supabase-helpers';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +9,7 @@ import { Star, AlertTriangle } from 'lucide-react';
 export default function DateFeedbackReview() {
   const { data: feedbacks = [] } = useQuery({
     queryKey: ['admin-date-feedback'],
-    queryFn: () => base44.entities.DateFeedback.filter({ safety_concerns: true }, '-created_date', 50)
+    queryFn: () => filterRecords('date_feedbacks', { safety_concerns: true }, '-created_date', 50)
   });
 
   return (

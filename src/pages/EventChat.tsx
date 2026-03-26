@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, getCurrentUser, invokeFunction } from '@/lib/supabase-helpers';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
@@ -23,8 +23,8 @@ export default function EventChat() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const user = await base44.auth.me();
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const user = await getCurrentUser();
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) setMyProfile(profiles[0]);
       } catch (e) {
         window.location.href = createPageUrl('Landing');
@@ -36,7 +36,7 @@ export default function EventChat() {
   const { data: event } = useQuery({
     queryKey: ['event', eventId],
     queryFn: async () => {
-      const events = await base44.entities.Event.filter({ id: eventId });
+      const events = await filterRecords('events', { id: eventId });
       return events[0];
     },
     enabled: !!eventId
@@ -82,7 +82,7 @@ export default function EventChat() {
 
       // Try content moderation (non-blocking)
       try {
-        const moderationResponse = await base44.functions.invoke('moderateContent', {
+        const moderationResponse = await invokeFunction('moderateContent', {
           text_content: message.trim(),
           content_type: 'message',
           user_profile_id: myProfile.id,

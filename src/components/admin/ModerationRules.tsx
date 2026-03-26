@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { createRecord, deleteRecord, filterRecords, updateRecord } from '@/lib/supabase-helpers';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,7 +24,7 @@ export default function ModerationRules({ rules, currentUser }) {
 
   const createRuleMutation = useMutation({
     mutationFn: async () => {
-      await base44.entities.ModerationRule.create({
+      await createRecord('moderation_rules', {
         ...newRule,
         created_by: currentUser.email
       });
@@ -44,7 +44,7 @@ export default function ModerationRules({ rules, currentUser }) {
 
   const toggleRuleMutation = useMutation({
     mutationFn: async ({ ruleId, isActive }) => {
-      await base44.entities.ModerationRule.update(ruleId, { is_active: isActive });
+      await updateRecord('moderation_rules', ruleId, { is_active: isActive });
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['admin-moderation-rules']);
@@ -53,7 +53,7 @@ export default function ModerationRules({ rules, currentUser }) {
 
   const deleteRuleMutation = useMutation({
     mutationFn: async (ruleId) => {
-      await base44.entities.ModerationRule.delete(ruleId);
+      await deleteRecord('moderation_rules', ruleId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['admin-moderation-rules']);

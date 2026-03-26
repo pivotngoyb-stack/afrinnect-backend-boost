@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -26,8 +26,8 @@ export default function WhoLikesYou() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const user = await base44.auth.me();
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const user = await getCurrentUser();
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) {
           setMyProfile(profiles[0]);
         }
@@ -42,7 +42,7 @@ export default function WhoLikesYou() {
     queryKey: ['who-likes-me', myProfile?.id],
     queryFn: async () => {
       // Only get likes that haven't been seen/matched yet
-      const allLikes = await base44.entities.Like.filter({ 
+      const allLikes = await filterRecords('likes', { 
         liked_id: myProfile.id, 
         is_seen: false 
       }, '-created_date', 100);
@@ -62,7 +62,7 @@ export default function WhoLikesYou() {
       // Get profiles of people who liked me
       const profileIds = sortedLikes.map(like => like.liker_id);
       const profiles = await Promise.all(
-        profileIds.map(id => base44.entities.UserProfile.filter({ id }).then(p => p[0]))
+        profileIds.map(id => filterRecords('user_profiles', { id }).then(p => p[0]))
       );
 
       return sortedLikes.map((like, idx) => ({
@@ -78,14 +78,14 @@ export default function WhoLikesYou() {
   const { data: views = [], isLoading: isLoadingViews } = useQuery({
     queryKey: ['who-viewed-me', myProfile?.id],
     queryFn: async () => {
-      const allViews = await base44.entities.ProfileView.filter({ 
+      const allViews = await filterRecords('profile_views', { 
         viewed_profile_id: myProfile.id
       }, '-created_date', 50);
       
       // Get profiles of people who viewed me (deduplicated)
       const uniqueViewerIds = [...new Set(allViews.map(view => view.viewer_profile_id))];
       const profiles = await Promise.all(
-        uniqueViewerIds.map(id => base44.entities.UserProfile.filter({ id }).then(p => p[0]))
+        uniqueViewerIds.map(id => filterRecords('user_profiles', { id }).then(p => p[0]))
       );
 
       return profiles.filter(p => p && p.id !== myProfile.id);
@@ -98,7 +98,7 @@ export default function WhoLikesYou() {
   const likeMutation = useMutation({
     mutationFn: async (likerId) => {
       // Create like back
-      await base44.entities.Like.create({
+      await createRecord('likes', {
         liker_id: myProfile.id,
         liked_id: likerId,
         is_super_like: false,
@@ -106,14 +106,14 @@ export default function WhoLikesYou() {
       });
 
       // Check for match
-      const mutualLikes = await base44.entities.Like.filter({
+      const mutualLikes = await filterRecords('likes', {
         liker_id: likerId,
         liked_id: myProfile.id
       });
 
       if (mutualLikes.length > 0) {
         // Create match
-        await base44.entities.Match.create({
+        await createRecord('matches', {
           user1_id: myProfile.id,
           user2_id: likerId,
           user1_liked: true,
@@ -124,18 +124,18 @@ export default function WhoLikesYou() {
         });
 
         // Mark both likes as seen (matched)
-        await base44.entities.Like.update(mutualLikes[0].id, { is_seen: true });
-        const myLikeToThem = await base44.entities.Like.filter({
+        await updateRecord('likes', mutualLikes[0].id, { is_seen: true });
+        const myLikeToThem = await filterRecords('likes', {
           liker_id: myProfile.id,
           liked_id: likerId
         });
         if (myLikeToThem.length > 0) {
-          await base44.entities.Like.update(myLikeToThem[0].id, { is_seen: true });
+          await updateRecord('likes', myLikeToThem[0].id, { is_seen: true });
         }
 
-        const likerProfiles = await base44.entities.UserProfile.filter({ id: likerId });
+        const likerProfiles = await filterRecords('user_profiles', { id: likerId });
         if (likerProfiles.length > 0) {
-          await base44.entities.Notification.create({
+          await createRecord('notifications', {
             user_profile_id: likerId,
             type: 'match',
             title: "It's a Match! 💕",
@@ -147,7 +147,7 @@ export default function WhoLikesYou() {
         
         // Update first match tracking
         if (!myProfile.has_matched_before) {
-          await base44.entities.UserProfile.update(myProfile.id, {
+          await updateRecord('user_profiles', myProfile.id, {
             has_matched_before: true
           });
         }

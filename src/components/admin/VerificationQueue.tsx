@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, invokeFunction, updateRecord } from '@/lib/supabase-helpers';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +19,7 @@ export default function VerificationQueue({ requests, profiles, currentUser }) {
   const approveVerificationMutation = useMutation({
     mutationFn: async (request) => {
       // Update verification request
-      await base44.entities.VerificationRequest.update(request.id, {
+      await updateRecord('verification_requests', request.id, {
         status: 'approved',
         reviewed_by: currentUser.email
       });
@@ -31,12 +31,12 @@ export default function VerificationQueue({ requests, profiles, currentUser }) {
         if (request.verification_type === 'photo') updates.photo_verified = true;
         if (request.verification_type === 'id') updates.id_verified = true;
         
-        await base44.entities.UserProfile.update(profile.id, {
+        await updateRecord('user_profiles', profile.id, {
           verification_status: updates
         });
         
         // Send Notification
-        await base44.entities.Notification.create({
+        await createRecord('notifications', {
           user_profile_id: profile.id,
           type: 'admin_message',
           title: 'Verification Approved! 🎉',
@@ -46,7 +46,7 @@ export default function VerificationQueue({ requests, profiles, currentUser }) {
 
         // Send Push Notification
         try {
-          await base44.functions.invoke('sendPushNotification', {
+          await invokeFunction('sendPushNotification', {
             user_profile_id: profile.id,
             title: 'Verification Approved! 🎉',
             body: `Your ${request.verification_type} verification request has been approved.`,
@@ -58,7 +58,7 @@ export default function VerificationQueue({ requests, profiles, currentUser }) {
       }
 
       // Log action
-      await base44.entities.AdminAuditLog.create({
+      await createRecord('admin_audit_logs', {
         admin_user_id: currentUser.id,
         admin_email: currentUser.email,
         action_type: 'verification_approved',
@@ -76,7 +76,7 @@ export default function VerificationQueue({ requests, profiles, currentUser }) {
 
   const rejectVerificationMutation = useMutation({
     mutationFn: async (request) => {
-      await base44.entities.VerificationRequest.update(request.id, {
+      await updateRecord('verification_requests', request.id, {
         status: 'rejected',
         reviewed_by: currentUser.email,
         rejection_reason: rejectionReason
@@ -85,7 +85,7 @@ export default function VerificationQueue({ requests, profiles, currentUser }) {
       // Send Notification
       const profile = profiles.find(p => p.id === request.user_profile_id);
       if (profile) {
-        await base44.entities.Notification.create({
+        await createRecord('notifications', {
           user_profile_id: profile.id,
           type: 'admin_message',
           title: 'Verification Update',
@@ -95,7 +95,7 @@ export default function VerificationQueue({ requests, profiles, currentUser }) {
 
         // Send Push Notification
         try {
-          await base44.functions.invoke('sendPushNotification', {
+          await invokeFunction('sendPushNotification', {
             user_profile_id: profile.id,
             title: 'Verification Update',
             body: `Your verification request was rejected. Check app for details.`,
@@ -107,7 +107,7 @@ export default function VerificationQueue({ requests, profiles, currentUser }) {
       }
 
       // Log action
-      await base44.entities.AdminAuditLog.create({
+      await createRecord('admin_audit_logs', {
         admin_user_id: currentUser.id,
         admin_email: currentUser.email,
         action_type: 'verification_rejected',

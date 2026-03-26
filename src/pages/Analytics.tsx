@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -25,9 +25,9 @@ export default function Analytics() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const user = await base44.auth.me();
+        const user = await getCurrentUser();
         if (user) {
-          const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+          const profiles = await filterRecords('user_profiles', { user_id: user.id });
           if (profiles.length > 0) setMyProfile(profiles[0]);
         }
       } catch (e) {
@@ -42,7 +42,7 @@ export default function Analytics() {
   // Fetch profile views
   const { data: profileViews = [] } = useQuery({
     queryKey: ['profile-views', myProfile?.id],
-    queryFn: () => base44.entities.ProfileView.filter({ viewed_profile_id: myProfile.id }, '-created_date', 100),
+    queryFn: () => filterRecords('profile_views', { viewed_profile_id: myProfile.id }, '-created_date', 100),
     enabled: !!myProfile
   });
 
@@ -50,7 +50,7 @@ export default function Analytics() {
   const { data: matches = [] } = useQuery({
     queryKey: ['my-matches', myProfile?.id],
     queryFn: async () => {
-      const allMatches = await base44.entities.Match.filter({
+      const allMatches = await filterRecords('matches', {
         $or: [{ user1_id: myProfile.id }, { user2_id: myProfile.id }],
         is_match: true
       });
@@ -63,7 +63,7 @@ export default function Analytics() {
   const { data: messages = [] } = useQuery({
     queryKey: ['my-messages', myProfile?.id],
     queryFn: async () => {
-      return base44.entities.Message.filter({
+      return filterRecords('messages', {
         $or: [{ sender_id: myProfile.id }, { receiver_id: myProfile.id }]
       }, '-created_date', 200);
     },
@@ -73,7 +73,7 @@ export default function Analytics() {
   // Fetch likes received
   const { data: likesReceived = [] } = useQuery({
     queryKey: ['likes-received', myProfile?.id],
-    queryFn: () => base44.entities.Like.filter({ liked_id: myProfile.id }, '-created_date', 100),
+    queryFn: () => filterRecords('likes', { liked_id: myProfile.id }, '-created_date', 100),
     enabled: !!myProfile
   });
 
@@ -81,12 +81,12 @@ export default function Analytics() {
   const { data: whoLikedMe = [] } = useQuery({
     queryKey: ['who-liked-me', myProfile?.id],
     queryFn: async () => {
-      const likes = await base44.entities.Like.filter({ liked_id: myProfile.id }, '-created_date', 20);
+      const likes = await filterRecords('likes', { liked_id: myProfile.id }, '-created_date', 20);
       const profileIds = likes.map(l => l.liker_id);
       if (profileIds.length === 0) return [];
       
       const profiles = await Promise.all(
-        profileIds.map(id => base44.entities.UserProfile.filter({ id }))
+        profileIds.map(id => filterRecords('user_profiles', { id }))
       );
       
       return likes.map((like, idx) => ({
@@ -187,7 +187,7 @@ export default function Analytics() {
     const matchProfiles = await Promise.all(
       matches.map(async (match) => {
         const otherId = match.user1_id === myProfile.id ? match.user2_id : match.user1_id;
-        const profiles = await base44.entities.UserProfile.filter({ id: otherId });
+        const profiles = await filterRecords('user_profiles', { id: otherId });
         return profiles[0];
       })
     );

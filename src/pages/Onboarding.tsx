@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, getCurrentUser, invokeFunction, logout, uploadFile } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
 import { createPageUrl } from '@/utils';
 import { useNavigate } from 'react-router-dom';
@@ -117,18 +117,18 @@ export default function Onboarding() {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const currentUser = await base44.auth.me();
+        const currentUser = await getCurrentUser();
         setUser(currentUser);
         
         // Check if user already has profile
-        const profiles = await base44.entities.UserProfile.filter({ user_id: currentUser.id });
+        const profiles = await filterRecords('user_profiles', { user_id: currentUser.id });
         if (profiles.length > 0) {
           navigate(createPageUrl('Home'));
         }
         } catch (e) {
         // Not logged in - redirect to login
         console.log('User not authenticated');
-        base44.auth.redirectToLogin(window.location.href);
+        window.location.href = '/login'; // redirectToLogin(window.location.href);
       }
     };
     checkUser();
@@ -168,7 +168,7 @@ export default function Onboarding() {
 
     setIsUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await uploadFile({ file });
       updateField('photos', [...formData.photos, file_url]);
       if (!formData.primary_photo) {
         updateField('primary_photo', file_url);
@@ -189,13 +189,13 @@ export default function Onboarding() {
       // Check phone number uniqueness if provided
       const phoneNumber = formData.phone_number;
       if (phoneNumber) {
-        const phoneCheck = await base44.entities.UserProfile.filter({ phone_number: phoneNumber });
+        const phoneCheck = await filterRecords('user_profiles', { phone_number: phoneNumber });
         if (phoneCheck.length >= 2) {
           throw new Error(t('errors.phoneRegistered'));
         }
       }
 
-      const response = await base44.functions.invoke('createProfile', {
+      const response = await invokeFunction('createProfile', {
         ...formData,
         device_id: deviceId,
         device_name: navigator.userAgent.substring(0, 50)
@@ -223,11 +223,11 @@ export default function Onboarding() {
               const { getToken } = await import('firebase/messaging');
               
               try {
-                const vapidKey = await base44.functions.invoke('getVapidKey');
+                const vapidKey = await invokeFunction('getVapidKey');
                 const token = await getToken(messaging, { vapidKey: vapidKey.vapid_key });
                 
                 // Save token to profile
-                await base44.functions.invoke('updateUserProfile', { push_token: token });
+                await invokeFunction('updateUserProfile', { push_token: token });
               } catch (tokenError) {
                 console.error('Failed to get FCM token:', tokenError);
               }
@@ -271,7 +271,7 @@ export default function Onboarding() {
         friendlyMessage = "Please enter your date of birth to continue.";
       } else if (msg.includes('Unauthorized')) {
         friendlyMessage = "Your session has expired. Please log in again.";
-        setTimeout(() => base44.auth.redirectToLogin(window.location.href), 2000);
+        setTimeout(() => window.location.href = '/login'; // redirectToLogin(window.location.href), 2000);
       } else if (msg && msg !== 'null' && msg !== 'undefined') {
         friendlyMessage = msg;
       }
@@ -301,7 +301,7 @@ export default function Onboarding() {
             const isAdmin = user?.role === 'admin' || user?.email === 'pivotngoyb@gmail.com';
             if (!isAdmin && (!country || !['United States', 'Canada', 'United States of America'].includes(country))) {
               toast({ title: 'Afrinnect is currently only available in the United States and Canada. You will be redirected to join our waitlist.' });
-              await base44.auth.logout(createPageUrl('Waitlist'));
+              await logout(createPageUrl('Waitlist'));
               return;
             }
 

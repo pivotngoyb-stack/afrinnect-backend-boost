@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, getCurrentUser, uploadFile } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -24,8 +24,8 @@ export default function SubmitStory() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const user = await base44.auth.me();
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const user = await getCurrentUser();
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) setMyProfile(profiles[0]);
       } catch (e) {
         window.location.href = createPageUrl('Landing');
@@ -48,11 +48,11 @@ export default function SubmitStory() {
     mutationFn: async () => {
       let photoUrl = null;
       if (photo) {
-        const { file_url } = await base44.integrations.Core.UploadFile({ file: photo });
+        const { file_url } = await uploadFile({ file: photo });
         photoUrl = file_url;
       }
 
-      await base44.entities.SuccessStory.create({
+      await createRecord('success_stories', {
         user1_profile_id: myProfile.id,
         story_text: storyText,
         relationship_status: relationshipStatus,

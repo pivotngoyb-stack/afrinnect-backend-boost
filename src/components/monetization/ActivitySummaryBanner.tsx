@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords } from '@/lib/supabase-helpers';
 import { motion } from 'framer-motion';
 import { Heart, Crown, Lock, Sparkles } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ export default function ActivitySummaryBanner({ userProfile }) {
     
     const fetchStats = async () => {
       try {
-        const likes = await base44.entities.Like.filter({
+        const likes = await filterRecords('likes', {
           liked_id: userProfile.id,
           is_seen: false
         });

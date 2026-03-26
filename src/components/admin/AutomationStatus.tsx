@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ export default function AutomationStatus() {
   const runAutomationMutation = useMutation({
     mutationFn: async (functionName) => {
       setRunningJobs(prev => ({ ...prev, [functionName]: true }));
-      const response = await base44.functions.invoke(functionName, {});
+      const response = await invokeFunction(functionName, {});
       return response.data;
     },
     onSuccess: (data, functionName) => {

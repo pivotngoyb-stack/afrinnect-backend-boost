@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/lib/supabase-helpers';
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Zap, Shield, Crown, CheckCircle, AlertCircle, Clock } from 'lucide-react';
@@ -29,7 +29,7 @@ export default function BoostProfileButton({ userProfile, onBoostSuccess }: { us
     setIsBoosting(true);
     setError('');
     try {
-      const response = await base44.functions.invoke('boostProfile');
+      const response = await invokeFunction('boostProfile');
       if (response.data.success) {
         toast({ title: '🚀 Profile Boosted! Your profile will be shown to more people for 24 hours.' });
         setShowDialog(false);

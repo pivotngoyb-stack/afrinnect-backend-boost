@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { MapPin, Briefcase, GraduationCap, Heart, ChevronLeft, ChevronRight, Languages, Book, Sparkles, Mic, Loader2, Crown } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
@@ -33,11 +33,11 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
     if (viewLogged || !profile?.id) return;
     const timer = setTimeout(async () => {
       try {
-        const user = await base44.auth.me();
+        const user = await getCurrentUser();
         if (!user) return;
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0 && profiles[0].id !== profile.id) {
-          await base44.entities.ProfileView.create({
+          await createRecord('profile_views', {
             viewer_profile_id: profiles[0].id,
             viewed_profile_id: profile.id,
             view_date: new Date().toISOString(),

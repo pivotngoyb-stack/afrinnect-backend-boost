@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { createRecord, filterRecords, getCurrentUser, listRecords, updateRecord } from '@/lib/supabase-helpers';
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { 
@@ -33,7 +33,7 @@ export default function AdminSettings() {
 
   const checkAuth = async () => {
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await getCurrentUser();
       if (!currentUser || currentUser.role !== 'admin') {
         navigate(createPageUrl('Home'));
         return;
@@ -49,8 +49,8 @@ export default function AdminSettings() {
     setLoading(true);
     try {
       const [systemSettings, flags] = await Promise.all([
-        base44.entities.SystemSettings.list('-created_date', 50),
-        base44.entities.FeatureFlag.list('-created_date', 50)
+        listRecords('system_settings', '-created_date', 50),
+        listRecords('feature_flags', '-created_date', 50)
       ]);
 
       // Convert array to object by key
@@ -69,14 +69,14 @@ export default function AdminSettings() {
   const updateSetting = async (key, value) => {
     setSaving(true);
     try {
-      const existing = await base44.entities.SystemSettings.filter({ key });
+      const existing = await filterRecords('system_settings', { key });
       if (existing.length > 0) {
-        await base44.entities.SystemSettings.update(existing[0].id, { 
+        await updateRecord('system_settings', existing[0].id, { 
           value,
           updated_by: user.email 
         });
       } else {
-        await base44.entities.SystemSettings.create({ 
+        await createRecord('system_settings', { 
           key, 
           value,
           updated_by: user.email 
@@ -93,7 +93,7 @@ export default function AdminSettings() {
 
   const toggleFeatureFlag = async (flag) => {
     try {
-      await base44.entities.FeatureFlag.update(flag.id, {
+      await updateRecord('feature_flags', flag.id, {
         is_enabled: !flag.is_enabled
       });
       await loadSettings();

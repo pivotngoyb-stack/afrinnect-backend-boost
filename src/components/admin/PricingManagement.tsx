@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, listRecords, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { DollarSign, Plus, Edit, Trash, Tag, Gift, TestTube, TrendingUp, Check, X } from 'lucide-react';
@@ -22,28 +22,28 @@ export default function PricingManagement({ plans: initialPlans }) {
 
   const { data: plans = initialPlans || [] } = useQuery({
     queryKey: ['pricing-plans'],
-    queryFn: () => base44.entities.PricingPlan.list('-created_date', 100),
+    queryFn: () => listRecords('pricing_plans', '-created_date', 100),
     initialData: initialPlans
   });
 
   const { data: promotions = [] } = useQuery({
     queryKey: ['promotions'],
-    queryFn: () => base44.entities.Promotion.list('-created_date', 100)
+    queryFn: () => listRecords('promotions', '-created_date', 100)
   });
 
   const { data: abTests = [] } = useQuery({
     queryKey: ['ab-tests'],
-    queryFn: () => base44.entities.ABTest.list('-created_date', 50)
+    queryFn: () => listRecords('ab_tests', '-created_date', 50)
   });
 
   const { data: referrals = [] } = useQuery({
     queryKey: ['referrals'],
-    queryFn: () => base44.entities.Referral.list('-created_date', 200)
+    queryFn: () => listRecords('referrals', '-created_date', 200)
   });
 
   const updatePlanMutation = useMutation({
     mutationFn: async ({ id, data }) => {
-      await base44.entities.PricingPlan.update(id, data);
+      await updateRecord('pricing_plans', id, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['pricing-plans']);
@@ -55,7 +55,7 @@ export default function PricingManagement({ plans: initialPlans }) {
 
   const createPlanMutation = useMutation({
     mutationFn: async (data) => {
-      await base44.entities.PricingPlan.create({
+      await createRecord('pricing_plans', {
         ...data,
         plan_id: `${data.tier}_${data.billing_period}_${Date.now()}`,
         features: data.features || [],
@@ -72,7 +72,7 @@ export default function PricingManagement({ plans: initialPlans }) {
 
   const createPromotionMutation = useMutation({
     mutationFn: async (data) => {
-      await base44.entities.Promotion.create({
+      await createRecord('promotions', {
         ...data,
         is_active: true,
         current_uses: 0,
@@ -89,7 +89,7 @@ export default function PricingManagement({ plans: initialPlans }) {
 
   const createABTestMutation = useMutation({
     mutationFn: async (data) => {
-      await base44.entities.ABTest.create({
+      await createRecord('ab_tests', {
         ...data,
         is_active: true,
         winner: 'no_winner',
@@ -250,7 +250,7 @@ export default function PricingManagement({ plans: initialPlans }) {
                         checked={promo.is_active}
                         onCheckedChange={async (checked) => {
                           try {
-                            await base44.entities.Promotion.update(promo.id, { is_active: checked });
+                            await updateRecord('promotions', promo.id, { is_active: checked });
                             queryClient.invalidateQueries(['promotions']);
                           } catch (e) {
                             toast({ title: 'Failed to update promotion', variant: 'destructive' });

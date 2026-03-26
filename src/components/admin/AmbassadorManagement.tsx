@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction, listRecords } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,7 +39,7 @@ export default function AmbassadorManagement() {
   const { data: stats, isLoading: loadingStats } = useQuery({
     queryKey: ['ambassador-admin-stats'],
     queryFn: async () => {
-      const response = await base44.functions.invoke('ambassadorAdmin', { action: 'get_stats' });
+      const response = await invokeFunction('ambassadorAdmin', { action: 'get_stats' });
       return response.data;
     }
   });
@@ -47,26 +47,26 @@ export default function AmbassadorManagement() {
   // Fetch ambassadors
   const { data: ambassadors = [], isLoading: loadingAmbassadors } = useQuery({
     queryKey: ['ambassadors-list'],
-    queryFn: () => base44.entities.Ambassador.list('-created_date', 200)
+    queryFn: () => listRecords('ambassadors', '-created_date', 200)
   });
 
   // Fetch commission plans
   const { data: plans = [] } = useQuery({
     queryKey: ['commission-plans'],
-    queryFn: () => base44.entities.AmbassadorCommissionPlan.list('-created_date', 50)
+    queryFn: () => listRecords('ambassador_commission_plans', '-created_date', 50)
   });
 
   // Fetch campaigns
   const { data: campaigns = [] } = useQuery({
     queryKey: ['ambassador-campaigns'],
-    queryFn: () => base44.entities.AmbassadorCampaign.list('-created_date', 50)
+    queryFn: () => listRecords('ambassador_campaigns', '-created_date', 50)
   });
 
   // Fetch suspicious referrals
   const { data: suspiciousData } = useQuery({
     queryKey: ['suspicious-referrals'],
     queryFn: async () => {
-      const response = await base44.functions.invoke('ambassadorAdmin', { action: 'get_suspicious_referrals' });
+      const response = await invokeFunction('ambassadorAdmin', { action: 'get_suspicious_referrals' });
       return response.data;
     }
   });
@@ -74,7 +74,7 @@ export default function AmbassadorManagement() {
   // Mutations
   const createAmbassadorMutation = useMutation({
     mutationFn: async (data) => {
-      const response = await base44.functions.invoke('ambassadorAdmin', { action: 'create_ambassador', ...data });
+      const response = await invokeFunction('ambassadorAdmin', { action: 'create_ambassador', ...data });
       if (response.data.error) throw new Error(response.data.error);
       return response.data;
     },
@@ -89,7 +89,7 @@ export default function AmbassadorManagement() {
 
   const updateAmbassadorMutation = useMutation({
     mutationFn: async ({ ambassador_id, updates }) => {
-      const response = await base44.functions.invoke('ambassadorAdmin', { action: 'update_ambassador', ambassador_id, updates });
+      const response = await invokeFunction('ambassadorAdmin', { action: 'update_ambassador', ambassador_id, updates });
       if (response.data.error) throw new Error(response.data.error);
     },
     onSuccess: () => {
@@ -100,7 +100,7 @@ export default function AmbassadorManagement() {
 
   const suspendAmbassadorMutation = useMutation({
     mutationFn: async ({ ambassador_id, reason }) => {
-      const response = await base44.functions.invoke('ambassadorAdmin', { action: 'suspend_ambassador', ambassador_id, reason });
+      const response = await invokeFunction('ambassadorAdmin', { action: 'suspend_ambassador', ambassador_id, reason });
       if (response.data.error) throw new Error(response.data.error);
     },
     onSuccess: () => {
@@ -111,7 +111,7 @@ export default function AmbassadorManagement() {
 
   const activateAmbassadorMutation = useMutation({
     mutationFn: async (ambassador_id) => {
-      const response = await base44.functions.invoke('ambassadorAdmin', { action: 'activate_ambassador', ambassador_id });
+      const response = await invokeFunction('ambassadorAdmin', { action: 'activate_ambassador', ambassador_id });
       if (response.data.error) throw new Error(response.data.error);
     },
     onSuccess: () => {
@@ -122,7 +122,7 @@ export default function AmbassadorManagement() {
 
   const approveCommissionsMutation = useMutation({
     mutationFn: async () => {
-      const response = await base44.functions.invoke('ambassadorAdmin', { action: 'approve_commissions' });
+      const response = await invokeFunction('ambassadorAdmin', { action: 'approve_commissions' });
       return response.data;
     },
     onSuccess: (data) => {
@@ -137,7 +137,7 @@ export default function AmbassadorManagement() {
 
   const createPayoutMutation = useMutation({
     mutationFn: async (ambassador_id) => {
-      const response = await base44.functions.invoke('ambassadorAdmin', { action: 'process_payout', ambassador_id });
+      const response = await invokeFunction('ambassadorAdmin', { action: 'process_payout', ambassador_id });
       if (response.data.error) throw new Error(response.data.error);
       return response.data;
     },
@@ -151,7 +151,7 @@ export default function AmbassadorManagement() {
 
   const processStripePayoutMutation = useMutation({
     mutationFn: async (payout_id) => {
-      const response = await base44.functions.invoke('processAmbassadorPayout', { 
+      const response = await invokeFunction('processAmbassadorPayout', { 
         payout_id, 
         action: 'process_stripe' 
       });
@@ -169,7 +169,7 @@ export default function AmbassadorManagement() {
 
   const markManualPaidMutation = useMutation({
     mutationFn: async ({ payout_id, transaction_id }) => {
-      const response = await base44.functions.invoke('processAmbassadorPayout', { 
+      const response = await invokeFunction('processAmbassadorPayout', { 
         payout_id, 
         action: 'mark_manual_paid',
         transaction_id
@@ -213,7 +213,7 @@ export default function AmbassadorManagement() {
 
   const createPlanMutation = useMutation({
     mutationFn: async (plan) => {
-      const response = await base44.functions.invoke('ambassadorAdmin', { action: 'create_commission_plan', plan });
+      const response = await invokeFunction('ambassadorAdmin', { action: 'create_commission_plan', plan });
       if (response.data.error) throw new Error(response.data.error);
     },
     onSuccess: () => {
@@ -225,7 +225,7 @@ export default function AmbassadorManagement() {
 
   const createCampaignMutation = useMutation({
     mutationFn: async (campaign) => {
-      const response = await base44.functions.invoke('ambassadorAdmin', { action: 'create_campaign', campaign });
+      const response = await invokeFunction('ambassadorAdmin', { action: 'create_campaign', campaign });
       if (response.data.error) throw new Error(response.data.error);
     },
     onSuccess: () => {

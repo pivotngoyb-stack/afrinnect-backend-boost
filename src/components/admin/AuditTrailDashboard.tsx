@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { countRecords, filterRecords } from '@/lib/supabase-helpers';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,7 +41,7 @@ export default function AuditTrailDashboard() {
       const dateQuery = dateFilter ? { created_date: { $gte: dateFilter } } : {};
 
       // Fetch from ProfileAnalytics
-      const analytics = await base44.entities.ProfileAnalytics.filter(
+      const analytics = await filterRecords('profile_analytics', 
         { ...dateQuery },
         '-timestamp',
         pageSize
@@ -59,7 +59,7 @@ export default function AuditTrailDashboard() {
       })));
 
       // Fetch from AdminAuditLog
-      const auditLogs = await base44.entities.AdminAuditLog.filter(
+      const auditLogs = await filterRecords('admin_audit_logs', 
         { ...dateQuery },
         '-created_date',
         pageSize
@@ -78,7 +78,7 @@ export default function AuditTrailDashboard() {
       })));
 
       // Fetch from ErrorLog
-      const errorLogs = await base44.entities.ErrorLog.filter(
+      const errorLogs = await filterRecords('error_logs', 
         { ...dateQuery },
         '-created_date',
         pageSize
@@ -96,7 +96,7 @@ export default function AuditTrailDashboard() {
       })));
 
       // Fetch from ModerationAction
-      const modActions = await base44.entities.ModerationAction.filter(
+      const modActions = await filterRecords('moderation_actions', 
         { ...dateQuery },
         '-created_date',
         pageSize
@@ -150,9 +150,9 @@ export default function AuditTrailDashboard() {
       const last24h = new Date(Date.now() - 86400000).toISOString();
       
       const [errorCount, modCount, analyticsCount] = await Promise.all([
-        base44.entities.ErrorLog.count({ created_date: { $gte: last24h } }),
-        base44.entities.ModerationAction.count({ created_date: { $gte: last24h } }),
-        base44.entities.ProfileAnalytics.count({ date: new Date().toISOString().split('T')[0] })
+        countRecords('error_logs', { created_date: { $gte: last24h } }),
+        countRecords('moderation_actions', { created_date: { $gte: last24h } }),
+        countRecords('profile_analytics', { date: new Date().toISOString().split('T')[0] })
       ]);
 
       return { errors: errorCount, moderation: modCount, analytics: analyticsCount };

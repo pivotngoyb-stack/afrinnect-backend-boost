@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -92,7 +92,7 @@ export default function BackendOrchestrator() {
       setJobStatuses(prev => ({ ...prev, [jobName]: 'running' }));
       
       const startTime = Date.now();
-      const response = await base44.functions.invoke(jobName, {});
+      const response = await invokeFunction(jobName, {});
       const duration = Date.now() - startTime;
       
       // Store detailed logs

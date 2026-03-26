@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { CheckCircle, XCircle, AlertTriangle, Eye, Loader2, Shield } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ export default function PhotoModeration() {
     queryKey: ['photo-moderation', filter],
     queryFn: async () => {
       const filterQuery = filter === 'all' ? {} : { status: filter };
-      return await base44.entities.PhotoModeration.filter(filterQuery, '-created_date', 100);
+      return await filterRecords('photo_moderations', filterQuery, '-created_date', 100);
     },
     refetchInterval: 30000
   });
@@ -35,7 +35,7 @@ export default function PhotoModeration() {
       const uniqueProfileIds = [...new Set(photos.map(p => p.user_profile_id))];
       const profileData = await Promise.all(
         uniqueProfileIds.map(id => 
-          base44.entities.UserProfile.filter({ id }).then(p => p[0])
+          filterRecords('user_profiles', { id }).then(p => p[0])
         )
       );
       return profileData.filter(Boolean);
@@ -46,9 +46,9 @@ export default function PhotoModeration() {
   const approveMutation = useMutation({
     mutationFn: async (photo) => {
       // Update photo moderation status
-      await base44.entities.PhotoModeration.update(photo.id, {
+      await updateRecord('photo_moderations', photo.id, {
         status: 'approved',
-        reviewed_by: (await base44.auth.me()).id,
+        reviewed_by: (await getCurrentUser()).id,
         reviewed_at: new Date().toISOString()
       });
 
@@ -56,14 +56,14 @@ export default function PhotoModeration() {
       const profile = profiles.find(p => p.id === photo.user_profile_id);
       if (profile) {
         const updatedPhotos = [...(profile.photos || []), photo.photo_url];
-        await base44.entities.UserProfile.update(profile.id, {
+        await updateRecord('user_profiles', profile.id, {
           photos: updatedPhotos,
           primary_photo: profile.primary_photo || photo.photo_url
         });
       }
 
       // Notify user
-      await base44.entities.Notification.create({
+      await createRecord('notifications', {
         user_profile_id: photo.user_profile_id,
         type: 'admin_message',
         title: 'Photo Approved! ✅',
@@ -80,15 +80,15 @@ export default function PhotoModeration() {
   const rejectMutation = useMutation({
     mutationFn: async ({ photo, reason }) => {
       // Update photo moderation status
-      await base44.entities.PhotoModeration.update(photo.id, {
+      await updateRecord('photo_moderations', photo.id, {
         status: 'rejected',
-        reviewed_by: (await base44.auth.me()).id,
+        reviewed_by: (await getCurrentUser()).id,
         reviewed_at: new Date().toISOString(),
         rejection_reason: reason
       });
 
       // Notify user
-      await base44.entities.Notification.create({
+      await createRecord('notifications', {
         user_profile_id: photo.user_profile_id,
         type: 'admin_message',
         title: 'Photo Rejected',

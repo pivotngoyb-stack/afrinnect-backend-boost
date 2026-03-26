@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useInfinitePagination } from '@/components/shared/useInfinitePagination';
 import PullToRefresh from '@/components/shared/PullToRefresh';
@@ -31,8 +31,8 @@ export default function Events() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const user = await base44.auth.me();
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const user = await getCurrentUser();
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) {
           setMyProfile(profiles[0]);
         }
@@ -100,12 +100,12 @@ export default function Events() {
       if (!event) return;
 
       const updatedAttendees = [...(event.attendees || []), myProfile.id];
-      await base44.entities.Event.update(eventId, {
+      await updateRecord('events', eventId, {
         attendees: updatedAttendees,
         current_attendees: updatedAttendees.length
       });
 
-      await base44.entities.Notification.create({
+      await createRecord('notifications', {
         user_profile_id: myProfile.id,
         type: 'admin_message',
         title: 'Event Registered!',

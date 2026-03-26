@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { getCurrentUser } from '@/lib/supabase-helpers';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { RefreshCw } from 'lucide-react';
@@ -14,7 +14,7 @@ export default function AdminVIPEvents() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const user = await base44.auth.me();
+        const user = await getCurrentUser();
         if (!user || user.role !== 'admin') {
           navigate(createPageUrl('Home'));
           return;

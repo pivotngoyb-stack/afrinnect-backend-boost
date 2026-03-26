@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { useEffect, useState, useCallback } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/lib/supabase-helpers';
 import { getMessaging, getToken, onMessage, isSupported } from 'firebase/messaging';
 import { app } from '@/components/firebase/firebaseConfig';
 
@@ -30,7 +30,7 @@ export default function PushNotificationSetup({ userProfile }: { userProfile: an
 
       let vapidKey: string | undefined;
       try {
-        const { data } = await base44.functions.invoke('getVapidKey');
+        const data = await invokeFunction('getVapidKey');
         vapidKey = data?.vapid_key;
         if (!vapidKey) {
           console.warn('VAPID key not configured');
@@ -66,7 +66,7 @@ export default function PushNotificationSetup({ userProfile }: { userProfile: an
         if (token) {
           if (userProfile.push_token !== token) {
             try {
-              await base44.functions.invoke('updateUserProfile', {
+              await invokeFunction('updateUserProfile', {
                 push_token: token
               });
               console.log('Push token saved successfully');

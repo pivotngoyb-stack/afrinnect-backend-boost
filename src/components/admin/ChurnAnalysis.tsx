@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, listRecords } from '@/lib/supabase-helpers';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -9,12 +9,12 @@ import { TrendingDown, AlertCircle, Users } from 'lucide-react';
 export default function ChurnAnalysis() {
   const { data: subscriptions = [], isLoading } = useQuery({
     queryKey: ['churn-subscriptions'],
-    queryFn: () => base44.entities.Subscription.list('-end_date', 500)
+    queryFn: () => listRecords('subscriptions', '-end_date', 500)
   });
 
   const { data: profiles = [] } = useQuery({
     queryKey: ['churn-profiles'],
-    queryFn: () => base44.entities.UserProfile.list('-last_active', 1000)
+    queryFn: () => listRecords('user_profiles', '-last_active', 1000)
   });
 
   if (isLoading) {
