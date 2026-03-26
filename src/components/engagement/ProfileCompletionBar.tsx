@@ -43,16 +43,19 @@ export default function ProfileCompletionBar({ userProfile, className = '' }: Pr
         </span>
       </div>
       <Progress value={completion} className="h-2 mb-2" />
-      {incomplete.length > 0 && (
-        <button
-          onClick={() => navigate('/edit-profile')}
-          className="flex items-center gap-2 text-xs text-amber-700 dark:text-amber-300 hover:underline mt-1"
-        >
-          <incomplete[0].icon size={14} />
-          <span>{incomplete[0].label}</span>
-          <ChevronRight size={12} />
-        </button>
-      )}
+      {incomplete.length > 0 && (() => {
+        const TaskIcon = incomplete[0].icon;
+        return (
+          <button
+            onClick={() => navigate('/edit-profile')}
+            className="flex items-center gap-2 text-xs text-amber-700 dark:text-amber-300 hover:underline mt-1"
+          >
+            <TaskIcon size={14} />
+            <span>{incomplete[0].label}</span>
+            <ChevronRight size={12} />
+          </button>
+        );
+      })()}
     </motion.div>
   );
 }
