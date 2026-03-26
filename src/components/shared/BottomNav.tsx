@@ -7,7 +7,7 @@ const navItems = [
   { type: 'discover' as const, label: 'Discover', path: '/home' },
   { type: 'icon' as const, icon: Heart, label: 'Matches', path: '/matches' },
   { type: 'icon' as const, icon: CalendarDays, label: 'Events', path: '/events' },
-  { type: 'icon' as const, icon: UserRoundPen, label: 'Profile', path: '/editprofile' },
+  { type: 'icon' as const, icon: UserRoundPen, label: 'Profile', path: '/profile' },
 ];
 
 export default function BottomNav() {

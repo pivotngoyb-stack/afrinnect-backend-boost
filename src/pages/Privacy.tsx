@@ -78,7 +78,7 @@ export default function Privacy() {
             <p className="text-gray-700">We share your information with:</p>
             <ul className="list-disc pl-6 space-y-2 text-gray-700">
               <li><strong>Other Users:</strong> Profile information visible to potential matches (you control visibility via Incognito Mode if subscribed)</li>
-              <li><strong>Service Providers:</strong> Cloud hosting (Base44), payment processors (Stripe), email services, push notification providers (Firebase)</li>
+              <li><strong>Service Providers:</strong> Cloud hosting, payment processors (Stripe), email services, push notification providers (Firebase)</li>
               <li><strong>Analytics Partners:</strong> Google Analytics for app usage insights (anonymized)</li>
               <li><strong>Legal Requirements:</strong> When required by law, court order, or to protect safety</li>
               <li><strong>Business Transfers:</strong> In case of merger, acquisition, or sale of assets</li>
