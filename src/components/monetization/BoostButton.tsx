@@ -66,11 +66,9 @@ export default function BoostButton({ userProfile, onBoostActivated, onBoostSucc
     try {
       const { data, error: fnError } = await supabase.functions.invoke('boost-profile');
 
-      // Edge function returns error body even on non-2xx — check data first
-      const response = data || {};
-
-      if (response.success) {
-        toast({ title: '🚀 Profile Boosted!', description: `Your profile will be shown to more people for ${response.duration_minutes} minutes.` });
+      // On success (2xx), data contains the response body
+      if (data?.success) {
+        toast({ title: '🚀 Profile Boosted!', description: `Your profile will be shown to more people for ${data.duration_minutes} minutes.` });
         setIsBoostActive(true);
         setShowModal(false);
         onBoostActivated?.();
@@ -78,19 +76,34 @@ export default function BoostButton({ userProfile, onBoostActivated, onBoostSucc
         return;
       }
 
-      // Handle specific error types from the edge function
-      if (response.upgrade_required) {
+      // On non-2xx, fnError is a FunctionsHttpError — parse the JSON body from it
+      let errorBody: any = data || {};
+      if (fnError && typeof fnError === 'object' && 'context' in fnError) {
+        try {
+          const ctx = (fnError as any).context;
+          if (ctx?.json) {
+            errorBody = await ctx.json();
+          } else if (ctx?.text) {
+            const text = await ctx.text();
+            try { errorBody = JSON.parse(text); } catch { errorBody = { error: text }; }
+          }
+        } catch {
+          // fallback
+        }
+      }
+
+      if (errorBody.upgrade_required) {
         setError('Boosts are available on Premium and above. Upgrade your plan!');
-      } else if (response.limit_reached) {
-        setError(response.error || 'Monthly boost limit reached.');
-      } else if (response.verification_required) {
+      } else if (errorBody.limit_reached) {
+        setError(errorBody.error || 'Monthly boost limit reached.');
+      } else if (errorBody.verification_required) {
         setError('Complete photo or ID verification to unlock boosts.');
-      } else if (response.already_active) {
+      } else if (errorBody.already_active) {
         setError('You already have an active boost.');
-      } else if (response.error) {
-        setError(response.error);
+      } else if (errorBody.error) {
+        setError(errorBody.error);
       } else if (fnError) {
-        setError('Failed to activate boost. Please try again.');
+        setError(fnError.message || 'Failed to activate boost. Please try again.');
       } else {
         setError('Something went wrong.');
       }
