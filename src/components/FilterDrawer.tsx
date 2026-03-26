@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { SlidersHorizontal, RotateCcw } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { toast } from '@/hooks/use-toast';
 
 const ALL_COUNTRIES = [
   "Nigeria", "Ghana", "Kenya", "South Africa", "Ethiopia", "Egypt", "Morocco",
@@ -189,7 +190,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
           } ${premium && !isPremium ? "opacity-50" : ""}`}
           onClick={() => {
             if (premium && !isPremium) {
-              alert("Upgrade to Premium for this filter");
+              toast({ title: "Upgrade to Premium for this filter" });
               return;
             }
             toggleArrayItem(filterKey, item);
@@ -426,7 +427,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
                     } ${!isPremium ? "opacity-50" : ""}`}
                     onClick={() => {
                       if (!isPremium) {
-                        alert("Upgrade to Premium for this filter");
+                        toast({ title: "Upgrade to Premium for this filter" });
                         return;
                       }
                       updateFilter("preferred_language", localFilters.preferred_language === lang.value ? "" : lang.value);

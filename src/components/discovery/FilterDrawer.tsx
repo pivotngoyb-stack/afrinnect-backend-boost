@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { SlidersHorizontal, X, RotateCcw } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { base44 } from '@/api/base44Client';
+import { toast } from '@/hooks/use-toast';
 
 const ALL_COUNTRIES = [
   // Africa
@@ -252,7 +253,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
                     } ${!isPremium ? 'opacity-50' : ''}`}
                     onClick={() => {
                       if (!isPremium) {
-                        alert('Upgrade to Premium to filter by heritage country');
+                        toast({ title: 'Upgrade to Premium to filter by heritage country' });
                         return;
                       }
                       toggleArrayItem('countries_of_origin', country);
@@ -282,7 +283,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
                     } ${!isPremium ? 'opacity-50' : ''}`}
                     onClick={() => {
                       if (!isPremium) {
-                        alert('Upgrade to Premium to filter by US state');
+                        toast({ title: 'Upgrade to Premium to filter by US state' });
                         return;
                       }
                       toggleArrayItem('states', state);
@@ -472,7 +473,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
                     } ${!isPremium ? 'opacity-50' : ''}`}
                     onClick={() => {
                       if (!isPremium) {
-                        alert('Upgrade to Premium to filter by cultural values');
+                        toast({ title: 'Upgrade to Premium to filter by cultural values' });
                         return;
                       }
                       toggleArrayItem('cultural_values', value);
@@ -502,7 +503,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
                     } ${!isPremium ? 'opacity-50' : ''}`}
                     onClick={() => {
                       if (!isPremium) {
-                        alert('Upgrade to Premium to filter by interests');
+                        toast({ title: 'Upgrade to Premium to filter by interests' });
                         return;
                       }
                       toggleArrayItem('interests', interest);
@@ -532,7 +533,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
                     } ${!isPremium ? 'opacity-50' : ''}`}
                     onClick={() => {
                       if (!isPremium) {
-                        alert('Upgrade to Premium to filter by preferred language');
+                        toast({ title: 'Upgrade to Premium to filter by preferred language' });
                         return;
                       }
                       updateFilter('preferred_language', localFilters.preferred_language === lang.value ? '' : lang.value);

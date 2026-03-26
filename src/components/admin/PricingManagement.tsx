@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from '@/hooks/use-toast';
 
 export default function PricingManagement({ plans: initialPlans }) {
   const [activeTab, setActiveTab] = useState('plans');
@@ -48,7 +49,7 @@ export default function PricingManagement({ plans: initialPlans }) {
       queryClient.invalidateQueries(['pricing-plans']);
       queryClient.invalidateQueries(['admin-pricing-plans']);
       setEditDialog({ open: false, type: null, item: null });
-      alert('Plan updated successfully!');
+      toast({ title: 'Plan updated successfully!' });
     }
   });
 
@@ -65,7 +66,7 @@ export default function PricingManagement({ plans: initialPlans }) {
       queryClient.invalidateQueries(['pricing-plans']);
       queryClient.invalidateQueries(['admin-pricing-plans']);
       setEditDialog({ open: false, type: null, item: null });
-      alert('Plan created successfully!');
+      toast({ title: 'Plan created successfully!' });
     }
   });
 
@@ -82,7 +83,7 @@ export default function PricingManagement({ plans: initialPlans }) {
     onSuccess: () => {
       queryClient.invalidateQueries(['promotions']);
       setEditDialog({ open: false, type: null, item: null });
-      alert('Promotion created successfully!');
+      toast({ title: 'Promotion created successfully!' });
     }
   });
 
@@ -104,7 +105,7 @@ export default function PricingManagement({ plans: initialPlans }) {
     onSuccess: () => {
       queryClient.invalidateQueries(['ab-tests']);
       setEditDialog({ open: false, type: null, item: null });
-      alert('A/B Test created successfully!');
+      toast({ title: 'A/B Test created successfully!' });
     }
   });
 
@@ -252,7 +253,7 @@ export default function PricingManagement({ plans: initialPlans }) {
                             await base44.entities.Promotion.update(promo.id, { is_active: checked });
                             queryClient.invalidateQueries(['promotions']);
                           } catch (e) {
-                            alert('Failed to update promotion');
+                            toast({ title: 'Failed to update promotion', variant: 'destructive' });
                           }
                         }}
                       />

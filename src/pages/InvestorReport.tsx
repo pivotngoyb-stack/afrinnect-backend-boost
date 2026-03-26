@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import Logo from '@/components/shared/Logo';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { toast } from '@/hooks/use-toast';
 
 export default function InvestorReport() {
   const [date] = useState(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
@@ -69,7 +70,7 @@ export default function InvestorReport() {
       pdf.save(`Afrinnect_Investor_Report_${new Date().toISOString().split('T')[0]}.pdf`);
     } catch (err) {
       console.error("PDF generation failed", err);
-      alert("Failed to generate PDF. Please try printing instead.");
+      toast({ title: "Failed to generate PDF. Please try printing instead.", variant: 'destructive' });
     } finally {
       setIsGeneratingPdf(false);
     }

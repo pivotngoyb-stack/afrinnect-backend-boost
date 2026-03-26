@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { format } from 'date-fns';
 import { Plus, Calendar, Users, Trash2, Edit, Video, Eye } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 export default function VIPEventsManager() {
   const queryClient = useQueryClient();
@@ -73,7 +74,7 @@ export default function VIPEventsManager() {
 
   const handleSubmit = () => {
     if (!formData.title || !formData.scheduled_at) {
-      alert('Please fill in required fields');
+      toast({ title: 'Please fill in required fields', variant: 'destructive' });
       return;
     }
     

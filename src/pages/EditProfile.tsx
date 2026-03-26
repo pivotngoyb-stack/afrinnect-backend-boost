@@ -26,6 +26,7 @@ import { compressImage, validateImageFile } from '@/components/shared/ImageCompr
 import ImageCropper from '@/components/shared/ImageCropper';
 
 import { useLanguage } from '@/components/i18n/LanguageContext';
+import { toast } from '@/hooks/use-toast';
 
 const AFRICAN_COUNTRIES = [
   'Nigeria', 'Ghana', 'Kenya', 'South Africa', 'Ethiopia', 'Egypt', 'Morocco',
@@ -213,7 +214,7 @@ export default function EditProfile() {
       window.location.href = createPageUrl('Profile');
     } catch (error) {
       console.error('Save error:', error);
-      alert(t('errors.saveFailed') + error.message);
+      toast({ title: t('errors.saveFailed') + error.message, variant: 'destructive' });
       setSaving(false);
     }
   };
@@ -228,7 +229,7 @@ export default function EditProfile() {
       setShowCropper(true);
     } catch (error) {
       console.error('Validation error:', error);
-      alert(error.message);
+      toast({ title: error.message, variant: 'destructive' });
     }
   };
 
@@ -245,7 +246,7 @@ export default function EditProfile() {
       });
     } catch (error) {
       console.error('Upload error:', error);
-      alert(t('errors.genericUploadFailed'));
+      toast({ title: t('errors.genericUploadFailed'), variant: 'destructive' });
     } finally {
       setUploading(false);
       setImageToCrop(null);

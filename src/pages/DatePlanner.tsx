@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import SafetyCheckSetup from '@/components/safety/SafetyCheckSetup';
+import { toast } from '@/hooks/use-toast';
 
 export default function DatePlanner() {
   const [myProfile, setMyProfile] = useState(null);
@@ -70,7 +71,7 @@ export default function DatePlanner() {
         });
     },
     onSuccess: () => {
-        alert("Response sent!");
+        toast({ title: "Response sent!" });
         window.location.reload();
     }
   });
@@ -126,7 +127,7 @@ Return JSON array:
       return response.data;
     },
     onSuccess: () => {
-      alert('Date suggestion sent!');
+      toast({ title: 'Date suggestion sent!' });
       window.location.reload();
     }
   });

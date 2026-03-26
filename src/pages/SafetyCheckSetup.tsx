@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { toast } from '@/hooks/use-toast';
 
 export default function SafetyCheckSetup() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -71,7 +72,7 @@ export default function SafetyCheckSetup() {
       });
     },
     onSuccess: () => {
-      alert('Safety check activated! Stay safe.');
+      toast({ title: 'Safety check activated! Stay safe.' });
       window.location.href = createPageUrl('Matches');
     }
   });

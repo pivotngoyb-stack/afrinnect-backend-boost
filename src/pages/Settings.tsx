@@ -16,6 +16,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { toast } from '@/hooks/use-toast';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -273,10 +274,10 @@ export default function Settings() {
                 if (res.data.success) {
                   setShowEmailVerifyDialog(true);
                 } else {
-                  alert(res.data.error || "Failed to send code");
+                  toast({ title: res.data.error || "Failed to send code", variant: 'destructive' });
                 }
               } catch (e) {
-                alert("Failed to send email. Please try again.");
+                toast({ title: "Failed to send email. Please try again.", variant: 'destructive' });
               } finally {
                 setIsSendingCode(false);
               }
@@ -458,12 +459,12 @@ export default function Settings() {
                     try {
                       const res = await base44.functions.invoke('cancelSubscription', { immediate: false });
                       if (res.data.success) {
-                        alert(`Subscription cancelled. You'll have access until ${new Date(res.data.end_date).toLocaleDateString()}.`);
+                        toast({ title: 'Subscription cancelled successfully.' });
                       } else {
-                        alert(res.data.error || 'Failed to cancel subscription');
+                        toast({ title: res.data.error || 'Failed to cancel subscription', variant: 'destructive' });
                       }
                     } catch (e) {
-                      alert('Failed to cancel subscription. Please contact support.');
+                      toast({ title: 'Failed to cancel subscription. Please contact support.', variant: 'destructive' });
                     }
                   }}
                   className="flex items-center justify-between py-2 w-full text-left text-red-600"
@@ -653,14 +654,14 @@ export default function Settings() {
                       email_verified: true
                     }
                   });
-                  alert("Email verified successfully!");
+                  toast({ title: "Email verified successfully!" });
                   setShowEmailVerifyDialog(false);
                   setInputCode("");
                 } else {
-                  alert(res.data.error || "Invalid code");
+                  toast({ title: res.data.error || "Invalid code", variant: 'destructive' });
                 }
               } catch (err) {
-                alert("Verification failed. Please try again.");
+                toast({ title: "Verification failed. Please try again.", variant: 'destructive' });
               }
             }}>
               Verify

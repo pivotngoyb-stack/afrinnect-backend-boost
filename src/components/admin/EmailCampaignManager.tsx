@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { toast } from '@/hooks/use-toast';
 
 const EMAIL_TEMPLATES = [
   {
@@ -119,11 +120,11 @@ export default function EmailCampaignManager() {
   const sendCampaignMutation = useMutation({
     mutationFn: (data) => base44.functions.invoke('sendNewsletterEmail', data),
     onSuccess: (result) => {
-      alert(`Campaign sent! ${result.data.sent} emails delivered to ${result.data.targeted} users.`);
+      toast({ title: `Campaign sent! ${result.data.sent} emails delivered to ${result.data.targeted} users.` });
       setCampaign({ campaign_title: '', subject: '', body: '', target_audience: 'all' });
     },
     onError: (error) => {
-      alert('Failed to send campaign: ' + error.message);
+      toast({ title: 'Failed to send campaign: ' + error.message, variant: 'destructive' });
     }
   });
 

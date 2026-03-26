@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Settings, Globe, Bell, Shield, DollarSign } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { toast } from '@/hooks/use-toast';
 
 export default function SystemSettings() {
   const [settings, setSettings] = useState({
@@ -79,10 +80,10 @@ export default function SystemSettings() {
           description: 'Launch configuration'
         });
       }
-      alert('Settings saved successfully!');
+      toast({ title: 'Settings saved successfully!' });
     } catch (error) {
       console.error('Failed to save settings:', error);
-      alert('Failed to save settings');
+      toast({ title: 'Failed to save settings', variant: 'destructive' });
     }
   };
 

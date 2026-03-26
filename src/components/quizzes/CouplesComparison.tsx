@@ -7,6 +7,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Loader2, Lock, Star, Check, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from '@/hooks/use-toast';
 
 
 export default function CouplesComparison({ isOpen, onClose }) {
@@ -115,7 +116,7 @@ export default function CouplesComparison({ isOpen, onClose }) {
              <Button 
                 className="w-full mb-2"
                 onClick={() => {
-                  alert('Payment will be available via in-app purchases.');
+                  toast({ title: 'Payment will be available via in-app purchases.' });
                 }}
              >
                 Proceed to Payment ($2.00)
