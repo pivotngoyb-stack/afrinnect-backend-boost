@@ -270,7 +270,7 @@ export default function Onboarding() {
         friendlyMessage = "Please enter your date of birth to continue.";
       } else if (msg.includes('Unauthorized')) {
         friendlyMessage = "Your session has expired. Please log in again.";
-        setTimeout(() => window.location.href = '/login'; // redirectToLogin(window.location.href), 2000);
+        setTimeout(() => { window.location.href = '/login'; }, 2000);
       } else if (msg && msg !== 'null' && msg !== 'undefined') {
         friendlyMessage = msg;
       }
