@@ -8,7 +8,7 @@ export default function AuthGuard({
   children, 
   requireAuth = true,
   requireProfile = false,
-  redirectTo = '/communities'
+  redirectTo = '/login'
 }) {
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
@@ -58,8 +58,8 @@ export default function AuthGuard({
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <Loader2 className="animate-spin mx-auto mb-4 text-primary" size={48} />
-          <p className="text-muted-foreground">Authenticating...</p>
+          <Loader2 className="animate-spin mx-auto mb-4 text-primary" size={40} />
+          <p className="text-muted-foreground text-sm">Loading...</p>
         </div>
       </div>
     );
