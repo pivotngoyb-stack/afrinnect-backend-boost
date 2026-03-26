@@ -323,19 +323,93 @@ export default function Home() {
     queryKey: ['discovery-profiles', filters, discoveryMode, myProfile?.id],
     queryFn: async () => {
       try {
-        // Fetch profiles directly - much faster than calling a non-existent edge function
-        const allProfiles = await base44.entities.UserProfile.filter(
-          { is_active: true, is_banned: false },
-          '-created_at',
-          50
-        );
+        // Fetch profiles, passes, and likes in parallel
+        const [allProfiles, myPasses, myLikes] = await Promise.all([
+          base44.entities.UserProfile.filter(
+            { is_active: true, is_banned: false },
+            '-created_at',
+            200
+          ),
+          base44.entities.Pass.filter({ passer_id: myProfile.id }, '-created_at', 500).catch(() => []),
+          base44.entities.Like.filter({ liker_id: myProfile.id }, '-created_at', 500).catch(() => []),
+        ]);
+
+        // Build exclusion sets
+        const passedIds = new Set(myPasses.map(p => p.passed_id));
+        const likedIds = new Set(myLikes.map(l => l.liked_id));
+        const myBlockedUsers = new Set(myProfile?.blocked_users || []);
         
-        // Filter out own profile, blocked users, and apply basic filters
-        const myBlockedUsers = myProfile?.blocked_users || [];
+        // Apply all filters
         const filtered = allProfiles.filter(p => {
+          // Exclude self
           if (p.user_id === myProfile.user_id) return false;
-          if (myBlockedUsers.includes(p.id)) return false;
+          // Exclude blocked, passed, already liked
+          if (myBlockedUsers.has(p.id)) return false;
+          if (passedIds.has(p.id)) return false;
+          if (likedIds.has(p.id)) return false;
+          // Gender preference
           if (myProfile.looking_for?.length && !myProfile.looking_for.includes(p.gender)) return false;
+          
+          // Age filter
+          if (filters.age_min || filters.age_max) {
+            const age = p.age || calculateAge(p.birth_date);
+            if (age) {
+              if (filters.age_min && age < filters.age_min) return false;
+              if (filters.age_max && age > filters.age_max) return false;
+            }
+          }
+          
+          // Country of origin filter
+          if (filters.countries_of_origin?.length > 0) {
+            if (!filters.countries_of_origin.includes(p.country_of_origin)) return false;
+          }
+          
+          // Religion filter
+          if (filters.religions?.length > 0) {
+            if (!filters.religions.includes(p.religion)) return false;
+          }
+          
+          // Relationship goals filter
+          if (filters.relationship_goals?.length > 0) {
+            if (!filters.relationship_goals.includes(p.relationship_goal)) return false;
+          }
+          
+          // Education filter
+          if (filters.education_levels?.length > 0) {
+            if (!filters.education_levels.includes(p.education)) return false;
+          }
+          
+          // Languages filter
+          if (filters.languages?.length > 0) {
+            if (!p.languages?.some(l => filters.languages.includes(l))) return false;
+          }
+          
+          // Interests filter
+          if (filters.interests?.length > 0) {
+            if (!p.interests?.some(i => filters.interests.includes(i))) return false;
+          }
+          
+          // Cultural values filter
+          if (filters.cultural_values?.length > 0) {
+            if (!p.cultural_values?.some(v => filters.cultural_values.includes(v))) return false;
+          }
+          
+          // Verified only filter
+          if (filters.verified_only && !p.is_verified) return false;
+          
+          // Local/Global mode
+          if (discoveryMode === 'local') {
+            if (myProfile.current_country && p.current_country !== myProfile.current_country) return false;
+          }
+          
+          // Lifestyle filters
+          if (filters.smoking?.length > 0) {
+            if (!filters.smoking.includes(p.lifestyle?.smoking)) return false;
+          }
+          if (filters.drinking?.length > 0) {
+            if (!filters.drinking.includes(p.lifestyle?.drinking)) return false;
+          }
+          
           return true;
         });
         
