@@ -53,9 +53,8 @@ export default function SystemSettings() {
         try {
           await base44.entities.SystemSettings.create({
             key: 'launch_configuration',
-            type: 'general',
             value: { is_live: false },
-            is_enabled: true
+            description: 'Launch configuration'
           });
         } catch (e) {
           console.error("Failed to init settings", e);
@@ -76,9 +75,8 @@ export default function SystemSettings() {
       } else {
         await base44.entities.SystemSettings.create({
           key: 'launch_configuration',
-          type: 'general',
           value: { is_live: settings.isLive },
-          is_enabled: true
+          description: 'Launch configuration'
         });
       }
       alert('Settings saved successfully!');
