@@ -552,8 +552,8 @@ export default function Home() {
           .select('id')
           .or(`and(user1_id.eq.${myProfile.id},user2_id.eq.${likedId}),and(user1_id.eq.${likedId},user2_id.eq.${myProfile.id})`);
 
-        const matchesExist = existingMatches && existingMatches.length > 0;
-        if (existingMatches.length === 0) {
+
+        if (!existingMatches || existingMatches.length === 0) {
           // Track first match
           if (!myProfile.has_matched_before) {
             trackEvent(CONVERSION_EVENTS.FIRST_MATCH);
