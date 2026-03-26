@@ -288,7 +288,6 @@ export default function Onboarding() {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
           
-          // CRITICAL: Check if user is in USA or Canada
           try {
             const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
             const data = await response.json();
@@ -297,39 +296,35 @@ export default function Onboarding() {
             const city = addr.city || addr.town || addr.village || addr.hamlet || addr.suburb || '';
             const state = addr.state || addr.province || '';
             
-            // Only allow USA and Canada for now
-            const isAdmin = user?.role === 'admin' || user?.email === 'pivotngoyb@gmail.com';
-            if (!isAdmin && (!country || !['United States', 'Canada', 'United States of America'].includes(country))) {
-              toast({ title: 'Afrinnect is currently only available in the United States and Canada. You will be redirected to join our waitlist.' });
-              await logout(createPageUrl('Waitlist'));
-              return;
-            }
-
-            // Auto-fill location data
+            const normalizedCountry = country === 'United States of America' ? 'United States' : country;
+            
             setFormData(prev => ({
               ...prev,
               location: { lat, lng },
-              current_country: country === 'United States of America' ? 'United States' : country,
+              current_country: normalizedCountry || 'United States',
               current_city: city,
               current_state: state
             }));
-
           } catch (e) {
-            console.error('Location validation failed:', e);
-            // On error, don't allow - require location verification
-            toast({ title: 'We could not verify your location. Please ensure location services are enabled and try again.', variant: 'destructive' });
-            setGettingLocation(false);
-            return;
+            console.error('Reverse geocoding failed, allowing manual entry:', e);
+            // Allow manual selection instead of blocking
+            setFormData(prev => ({
+              ...prev,
+              location: { lat, lng },
+            }));
+            toast({ title: 'Could not auto-detect your city. Please select your location manually below.' });
           }
           setGettingLocation(false);
         },
         (error) => {
-          toast({ title: t('location.enableAccess') });
+          // Location denied — allow manual entry instead of blocking
+          console.log('Location permission denied, allowing manual entry');
+          toast({ title: 'Location access denied. Please select your country and city manually below.' });
           setGettingLocation(false);
         }
       );
     } else {
-      toast({ title: t('location.geoNotSupported') });
+      toast({ title: 'Please select your country and city manually below.' });
       setGettingLocation(false);
     }
   };
@@ -348,20 +343,17 @@ export default function Onboarding() {
     switch (step) {
       case 0: return true; // Welcome
       case 1: 
-        // Combined: Name + DOB + Gender + Looking For + Age confirmation
         const nameValid = formData.display_name && formData.display_name.trim().length >= 2;
         const ageValid = formData.birth_date && calculateAge(formData.birth_date) >= 18;
         const genderValid = formData.gender && formData.looking_for.length > 0;
         const ageConfirmed = formData.age_confirmed === true;
         return nameValid && ageValid && genderValid && ageConfirmed;
       case 2: 
-        // Combined: Location + Heritage + Goal
+        // Location: require heritage + country + city + goal. Geo coords optional (manual fallback).
         const locationValid = formData.country_of_origin && formData.current_country && formData.current_city;
-        const geoValid = formData.location.lat && formData.location.lng;
         const goalValid = formData.relationship_goal;
-        return locationValid && geoValid && goalValid;
+        return locationValid && goalValid;
       case 3: 
-        // Combined: Photos + Interests
         return formData.photos.length >= 2 && formData.interests.length >= 3;
       default: return false;
     }
@@ -828,11 +820,11 @@ export default function Onboarding() {
         open={showSafetyEducation}
         onClose={() => {
           setShowSafetyEducation(false);
-          navigate('/communities');
+          navigate('/home');
         }}
         onComplete={() => {
           setShowSafetyEducation(false);
-          navigate('/communities');
+          navigate('/home');
         }}
       />
     </div>
