@@ -828,11 +828,11 @@ export default function Onboarding() {
         open={showSafetyEducation}
         onClose={() => {
           setShowSafetyEducation(false);
-          navigate(createPageUrl('Home'));
+          navigate('/communities');
         }}
         onComplete={() => {
           setShowSafetyEducation(false);
-          navigate(createPageUrl('Home'));
+          navigate('/communities');
         }}
       />
     </div>
