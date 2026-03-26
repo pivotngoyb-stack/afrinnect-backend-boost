@@ -100,7 +100,7 @@ export async function filterRecords(
 ) {
   const { column, ascending } = parseSort(sort);
   const mapped = mapFilterKeys(filters);
-  let query = supabase.from(table).select('*');
+  let query = db.from(table).select('*');
 
   if (mapped.$or && Array.isArray(mapped.$or)) {
     const orConditions = mapped.$or.map((cond: Record<string, any>) =>
@@ -162,7 +162,7 @@ export async function createRecord(table: string, data: any) {
  * Bulk create records in a table.
  */
 export async function bulkCreateRecords(table: string, items: any[]) {
-  const { data, error } = await supabase.from(table).insert(items).select();
+  const { data, error } = await db.from(table).insert(items).select();
   if (error) throw error;
   return addLegacyAliases(data || []);
 }
@@ -185,7 +185,7 @@ export async function updateRecord(table: string, id: string, data: any) {
  * Delete a record by ID.
  */
 export async function deleteRecord(table: string, id: string) {
-  const { error } = await supabase.from(table).delete().eq('id', id);
+  const { error } = await db.from(table).delete().eq('id', id);
   if (error) throw error;
   return true;
 }
@@ -194,7 +194,7 @@ export async function deleteRecord(table: string, id: string) {
  * Count records with optional filters.
  */
 export async function countRecords(table: string, filters?: Record<string, any>) {
-  let query = supabase.from(table).select('*', { count: 'exact', head: true });
+  let query = db.from(table).select('*', { count: 'exact', head: true });
   if (filters) {
     Object.entries(filters).forEach(([key, value]) => {
       query = query.eq(key, value);
