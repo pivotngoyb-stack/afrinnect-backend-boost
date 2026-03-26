@@ -8,6 +8,7 @@ import { Heart, Shield, Globe, Sparkles, Users, CheckCircle, Crown, ArrowRight, 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Logo from '@/components/shared/Logo';
+import heroImage from '@/assets/landing-hero.png';
 import AfricanPattern from '@/components/shared/AfricanPattern';
 import { useLanguage } from '@/components/i18n/LanguageContext';
 import LanguageSelector from '@/components/i18n/LanguageSelector';
