@@ -194,42 +194,47 @@ export default function EventManagement({ events }) {
         <CardContent>
           <div className="space-y-3">
             {(events || []).map(event => (
-              <div key={event.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-semibold">{event.title}</h3>
-                    {event.is_featured && <Badge className="bg-amber-500">Featured</Badge>}
-                    {event.is_virtual && <Badge variant="outline">Virtual</Badge>}
-                    {new Date(event.start_date) < new Date() && (
-                      <Badge variant="secondary">Past</Badge>
-                    )}
+              <div key={event.id} className="p-4 border rounded-lg hover:bg-gray-50">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-semibold">{event.title}</h3>
+                      {event.is_featured && <Badge className="bg-amber-500">Featured</Badge>}
+                      {event.is_virtual && <Badge variant="outline">Virtual</Badge>}
+                      {new Date(event.start_date) < new Date() && (
+                        <Badge variant="secondary">Past</Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <span className="flex items-center gap-1">
+                        <Calendar size={14} />
+                        {event.start_date && format(new Date(event.start_date), 'MMM d, yyyy')}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <MapPin size={14} />
+                        {event.is_virtual ? 'Virtual' : `${event.city || ''}${event.country ? `, ${event.country}` : ''}`}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Users size={14} />
+                        {event.attendees?.length || event.current_attendees || 0}{event.max_attendees ? `/${event.max_attendees}` : ''}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
-                    <span className="flex items-center gap-1">
-                      <Calendar size={14} />
-                      {event.start_date && format(new Date(event.start_date), 'MMM d, yyyy')}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MapPin size={14} />
-                      {event.is_virtual ? 'Virtual' : `${event.city || ''}${event.country ? `, ${event.country}` : ''}`}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Users size={14} />
-                      {event.attendees?.length || event.current_attendees || 0}{event.max_attendees ? `/${event.max_attendees}` : ''}
-                    </span>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" onClick={() => handleViewRSVPs(event)}>
+                      <Users size={16} className="mr-1" /> RSVPs
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(event)}>
+                      <Edit2 size={16} />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => deleteEventMutation.mutate(event.id)}
+                    >
+                      <Trash2 size={16} className="text-red-600" />
+                    </Button>
                   </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm" onClick={() => handleEdit(event)}>
-                    <Edit2 size={16} />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => deleteEventMutation.mutate(event.id)}
-                  >
-                    <Trash2 size={16} className="text-red-600" />
-                  </Button>
                 </div>
               </div>
             ))}
