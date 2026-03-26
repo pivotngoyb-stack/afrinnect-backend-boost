@@ -105,12 +105,12 @@ export default function AdminDashboard() {
       
       const [recentSignups, recentReports] = await Promise.all([
         supabase.from('user_profiles').select('display_name, created_at').order('created_at', { ascending: false }).limit(5),
-        supabase.from('reports').select('report_type, created_at').order('created_at', { ascending: false }).limit(5),
+        supabase.from('reports').select('reason, created_at').order('created_at', { ascending: false }).limit(5),
       ]);
 
       const activities: ActivityItem[] = [
-        ...(recentSignups.data || []).map(u => ({ type: 'signup' as const, user: u.display_name, time: u.created_at })),
-        ...(recentReports.data || []).map(r => ({ type: 'report' as const, reportType: r.report_type, time: r.created_at })),
+        ...(recentSignups.data || []).map(u => ({ type: 'signup' as const, user: u.display_name, time: u.created_at! })),
+        ...(recentReports.data || []).map(r => ({ type: 'report' as const, reportType: r.reason, time: r.created_at! })),
       ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 10);
       setRecentActivity(activities);
     } catch (error) {
