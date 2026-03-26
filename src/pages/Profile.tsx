@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import BoostProfileButton from '@/components/profile/BoostProfileButton';
+import BoostButton from '@/components/monetization/BoostButton';
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -637,9 +637,10 @@ export default function Profile() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <BoostProfileButton 
+            <BoostButton 
               userProfile={profile} 
               onBoostSuccess={() => window.location.reload()}
+              variant="compact"
             />
 
             <Link to={createPageUrl('PricingPlans')}>
