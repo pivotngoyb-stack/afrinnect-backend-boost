@@ -35,6 +35,7 @@ const Protected = ({ children, requireProfile = false }: { children: React.React
 
 // Lazy-load all pages
 const Landing = lazy(() => import("./pages/Landing"));
+const Index = lazy(() => import("./pages/Index"));
 const Home = lazy(() => import("./pages/Home"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const EditProfile = lazy(() => import("./pages/EditProfile"));
