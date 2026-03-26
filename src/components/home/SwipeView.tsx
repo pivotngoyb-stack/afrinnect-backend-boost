@@ -82,12 +82,19 @@ export default function SwipeView({
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col items-center justify-center h-full max-w-md mx-auto text-center px-4"
           >
-            <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-              <span className="text-5xl">🌍</span>
-            </div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">More people to discover!</h2>
-            <p className="text-muted-foreground mb-6">
-              You've checked out everyone with your current filters. Expand your search to discover amazing people.
+            <motion.div
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6"
+            >
+              <span className="text-5xl">💫</span>
+            </motion.div>
+            <h2 className="text-2xl font-bold text-foreground mb-2">You're getting noticed!</h2>
+            <p className="text-muted-foreground mb-2">
+              You've seen everyone here — but new people are joining every day.
+            </p>
+            <p className="text-sm text-primary font-medium mb-6">
+              Your next match could be one swipe away ✨
             </p>
             <div className="space-y-3 w-full">
               <Button onClick={() => { setDiscoveryMode?.('global'); setFilters({}); }} className="w-full h-12 text-base gradient-hero text-primary-foreground">
@@ -96,10 +103,6 @@ export default function SwipeView({
               </Button>
               <Button onClick={() => setFilters({})} variant="outline" className="w-full h-11">
                 Reset Filters
-              </Button>
-              <Button onClick={() => navigate('/communities')} variant="ghost" className="w-full h-10 text-sm text-muted-foreground">
-                <Users size={16} className="mr-2" />
-                Browse Communities
               </Button>
             </div>
           </motion.div>
