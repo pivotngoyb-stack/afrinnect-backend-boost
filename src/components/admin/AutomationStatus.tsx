@@ -33,7 +33,7 @@ export default function AutomationStatus() {
 
   const automations = [
     {
-      name: 'autoVerifyPhotos',
+      name: 'auto-verify-photos',
       title: 'AI Photo Verification',
       description: 'Automatically verify user photos and IDs',
       icon: CheckCircle,
@@ -41,7 +41,7 @@ export default function AutomationStatus() {
       color: 'green'
     },
     {
-      name: 'analyzeConversationPatterns',
+      name: 'analyze-conversation-patterns',
       title: 'Pattern Analysis',
       description: 'Detect concerning behavior patterns in conversations',
       icon: Zap,
@@ -49,7 +49,7 @@ export default function AutomationStatus() {
       color: 'purple'
     },
     {
-      name: 'autoEscalateSafetyAlerts',
+      name: 'auto-escalate-safety-alerts',
       title: 'Safety Alert Escalation',
       description: 'Automatically escalate unresolved safety alerts',
       icon: Zap,

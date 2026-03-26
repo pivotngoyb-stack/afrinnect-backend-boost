@@ -15,7 +15,7 @@ export default function BackendOrchestrator() {
   const [scheduledJobs, setScheduledJobs] = useState([
     {
       id: 'auto-verify',
-      name: 'autoVerifyPhotos',
+      name: 'auto-verify-photos',
       title: 'Auto Photo/ID Verification',
       schedule: 'Every 15 minutes',
       automationId: '6990ab84c117ca4f4369c752',
@@ -27,7 +27,7 @@ export default function BackendOrchestrator() {
     },
     {
       id: 'analyze-patterns',
-      name: 'analyzeConversationPatterns',
+      name: 'analyze-conversation-patterns',
       title: 'Conversation Pattern Analysis',
       schedule: 'Every 30 minutes',
       automationId: '6990ab84c117ca4f4369c753',
@@ -39,7 +39,7 @@ export default function BackendOrchestrator() {
     },
     {
       id: 'escalate-alerts',
-      name: 'autoEscalateSafetyAlerts',
+      name: 'auto-escalate-safety-alerts',
       title: 'Safety Alert Escalation',
       schedule: 'Every 5 minutes',
       automationId: '6990ab84c117ca4f4369c754',
@@ -51,7 +51,7 @@ export default function BackendOrchestrator() {
     },
     {
       id: 'expire-subscriptions',
-      name: 'checkExpiredSubscriptions',
+      name: 'check-expired-subscriptions',
       title: 'Subscription Expiry Check',
       schedule: 'Daily at midnight',
       automationId: '6990ab84c117ca4f4369c755',
@@ -63,7 +63,7 @@ export default function BackendOrchestrator() {
     },
     {
       id: 'winback-email',
-      name: 'sendWinbackEmail',
+      name: 'send-winback-email',
       title: 'Win-back Email Campaign',
       schedule: 'Daily at 10am',
       automationId: '6990ab84c117ca4f4369c756',
@@ -75,7 +75,7 @@ export default function BackendOrchestrator() {
     },
     {
       id: 'detect-scammers',
-      name: 'autoDetectScammers',
+      name: 'auto-detect-scammers',
       title: 'AI Scam Detection',
       schedule: 'Every hour',
       automationId: '6990ab84c117ca4f4369c757',
@@ -154,23 +154,7 @@ export default function BackendOrchestrator() {
     }
   });
 
-  // Run jobs with dependency checking
-  const runWithDependencies = async (job) => {
-    if (job.dependencies.length > 0) {
-      // Check if dependencies completed successfully
-      const depStatuses = job.dependencies.map(depId => {
-        const depJob = scheduledJobs.find(j => j.id === depId);
-        return depJob?.status === 'success';
-      });
-
-      if (!depStatuses.every(Boolean)) {
-        toast.error('Dependencies not met', {
-          description: 'Required jobs must complete successfully first'
-        });
-        return;
-      }
-    }
-
+  const runJob = (job) => {
     runJobMutation.mutate(job.name);
   };
 
@@ -275,7 +259,7 @@ export default function BackendOrchestrator() {
                 {/* Controls */}
                 <div className="flex items-center gap-3">
                   <Button
-                    onClick={() => runWithDependencies(job)}
+                    onClick={() => runJob(job)}
                     disabled={currentStatus === 'running' || !job.enabled}
                     size="sm"
                     className="flex-1"

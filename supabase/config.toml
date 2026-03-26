@@ -62,3 +62,21 @@ verify_jwt = false
 
 [functions.boost-profile]
 verify_jwt = false
+
+[functions.auto-verify-photos]
+verify_jwt = false
+
+[functions.analyze-conversation-patterns]
+verify_jwt = false
+
+[functions.auto-escalate-safety-alerts]
+verify_jwt = false
+
+[functions.check-expired-subscriptions]
+verify_jwt = false
+
+[functions.send-winback-email]
+verify_jwt = false
+
+[functions.auto-detect-scammers]
+verify_jwt = false
