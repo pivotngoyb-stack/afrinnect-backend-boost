@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useEffect } from 'react';
 
 export function usePerformanceMonitor(pageName: string) {

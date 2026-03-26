@@ -1,4 +1,3 @@
-// @ts-nocheck
 // TODO: Migrate MigrationCostCalculator component
 export default function MigrationCostCalculator() {
   return (

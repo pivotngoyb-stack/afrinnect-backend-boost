@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, memo } from 'react';
 import { cn } from '@/lib/utils';
 

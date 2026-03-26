@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useEffect, useState, useCallback } from 'react';
 import { invokeFunction } from '@/lib/supabase-helpers';
 import { getMessaging, getToken, onMessage, isSupported } from 'firebase/messaging';

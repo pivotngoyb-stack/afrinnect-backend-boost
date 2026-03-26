@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser, invokeFunction, logout, uploadFile } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';

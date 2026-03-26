@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 export default function AfricanPattern({ className = "", opacity = 0.05 }) {

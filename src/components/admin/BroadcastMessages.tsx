@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createRecord, filterRecords, updateRecord } from '@/lib/supabase-helpers';

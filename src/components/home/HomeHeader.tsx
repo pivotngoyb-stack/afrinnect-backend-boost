@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Grid3X3, Layers, Globe, MapPin, Crown, Heart as HeartIcon } from 'lucide-react';
