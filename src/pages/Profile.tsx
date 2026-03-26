@@ -193,7 +193,7 @@ export default function Profile() {
     } else {
       // Fallback: copy link
       navigator.clipboard.writeText(window.location.href);
-      toast({ title: t('admin.home.linkCopied' }));
+      toast({ title: t('admin.home.linkCopied') });
     }
   };
 

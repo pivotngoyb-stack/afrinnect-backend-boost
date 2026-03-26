@@ -138,7 +138,7 @@ export default function AuthFlowTest() {
         }));
       }
     } catch (e) {
-      toast({ title: '❌ Verification failed: ' + (e.response?.data?.error || e.message, variant: 'destructive' }));
+      toast({ title: '❌ Verification failed: ' + (e.response?.data?.error || e.message), variant: 'destructive' });
       setTestResults(prev => ({
         ...prev,
         verifyOTP: { pass: false, message: e.response?.data?.error || e.message }

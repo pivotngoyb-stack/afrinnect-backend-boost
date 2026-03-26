@@ -162,7 +162,7 @@ export default function Onboarding() {
 
     // Validate max size (10MB)
     if (file.size > 10 * 1024 * 1024) {
-      toast({ title: t('errors.photoSize', variant: 'destructive' }));
+      toast({ title: t('errors.photoSize'), variant: 'destructive' });
       return;
     }
 
@@ -175,7 +175,7 @@ export default function Onboarding() {
       }
     } catch (error) {
       console.error('Upload failed:', error);
-      toast({ title: t('errors.uploadFailed', variant: 'destructive' }));
+      toast({ title: t('errors.uploadFailed'), variant: 'destructive' });
     } finally {
       setIsUploading(false);
     }
@@ -324,12 +324,12 @@ export default function Onboarding() {
           setGettingLocation(false);
         },
         (error) => {
-          toast({ title: t('location.enableAccess' }));
+          toast({ title: t('location.enableAccess') });
           setGettingLocation(false);
         }
       );
     } else {
-      toast({ title: t('location.geoNotSupported' }));
+      toast({ title: t('location.geoNotSupported') });
       setGettingLocation(false);
     }
   };

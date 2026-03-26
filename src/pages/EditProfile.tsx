@@ -214,7 +214,7 @@ export default function EditProfile() {
       window.location.href = createPageUrl('Profile');
     } catch (error) {
       console.error('Save error:', error);
-      toast({ title: t('errors.saveFailed', variant: 'destructive' }) + error.message);
+      toast({ title: t('errors.saveFailed') + error.message, variant: 'destructive' });
       setSaving(false);
     }
   };
@@ -246,7 +246,7 @@ export default function EditProfile() {
       });
     } catch (error) {
       console.error('Upload error:', error);
-      toast({ title: t('errors.genericUploadFailed', variant: 'destructive' }));
+      toast({ title: t('errors.genericUploadFailed'), variant: 'destructive' });
     } finally {
       setUploading(false);
       setImageToCrop(null);
