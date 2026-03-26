@@ -138,8 +138,19 @@ export default function Explore() {
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <Users size={48} className="text-muted-foreground/40 mb-4" />
-            <p className="text-lg font-medium text-foreground mb-1">No users available yet.</p>
-            <p className="text-muted-foreground">Check back soon.</p>
+            <p className="text-lg font-medium text-foreground mb-1">
+              {search || selectedCountry ? 'No matching profiles found' : 'Profiles are loading...'}
+            </p>
+            <p className="text-muted-foreground mb-4">
+              {search || selectedCountry 
+                ? 'Try adjusting your search or filters to find more people'
+                : 'New members join every day — check back soon!'}
+            </p>
+            {(search || selectedCountry) && (
+              <Button variant="outline" onClick={() => { setSearch(''); setSelectedCountry(null); }}>
+                Clear Filters
+              </Button>
+            )}
           </div>
         ) : (
           <div className="space-y-6">

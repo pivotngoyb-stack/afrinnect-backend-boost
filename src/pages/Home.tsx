@@ -1066,17 +1066,17 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   className="flex flex-col items-center justify-center h-full max-w-md mx-auto text-center px-4"
                 >
-                  <div className="w-24 h-24 bg-gradient-to-br from-purple-100 to-amber-100 rounded-full flex items-center justify-center mb-6">
+                  <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center mb-6">
                     <span className="text-5xl">🌍</span>
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">You've seen everyone nearby!</h2>
-                  <p className="text-gray-600 mb-4">
-                    Great news — there are thousands more people waiting to meet you globally.
+                  <h2 className="text-2xl font-bold text-foreground mb-2">More people to discover!</h2>
+                  <p className="text-muted-foreground mb-4">
+                    You've checked out everyone with your current filters. Expand your search to discover amazing people from across the diaspora.
                   </p>
                   <div className="space-y-3 w-full">
                     <Button 
                       onClick={() => navigate('/explore')}
-                      className="w-full h-14 text-lg bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-700 hover:to-amber-700 shadow-lg"
+                      className="w-full h-14 text-lg"
                     >
                       <Globe size={20} className="mr-2" />
                       Explore Globally
@@ -1087,6 +1087,14 @@ export default function Home() {
                       className="w-full h-12 text-base"
                     >
                       Reset Filters
+                    </Button>
+                    <Button 
+                      onClick={() => navigate('/communities')} 
+                      variant="ghost" 
+                      className="w-full h-10 text-sm text-muted-foreground"
+                    >
+                      <Users size={16} className="mr-2" />
+                      Browse Communities Instead
                     </Button>
                   </div>
                 </motion.div>
