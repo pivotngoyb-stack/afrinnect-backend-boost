@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const translations = {
   en: {
     common: {

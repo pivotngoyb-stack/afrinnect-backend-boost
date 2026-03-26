@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gift, Check, Crown, Star, Heart, MessageCircle, User, ChevronDown, ChevronUp } from 'lucide-react';

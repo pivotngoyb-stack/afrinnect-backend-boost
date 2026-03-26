@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { MapPin, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';

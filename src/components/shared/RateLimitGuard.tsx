@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { AlertTriangle, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';

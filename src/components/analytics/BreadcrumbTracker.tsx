@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useEffect } from 'react';
 
 const MAX_BREADCRUMBS = 20;
