@@ -34,7 +34,7 @@ export default function Explore() {
 
       const { data, error } = await supabase
         .from('user_profiles')
-        .select('id, user_id, display_name, primary_photo, country_of_origin, city, age, bio, is_verified, birth_date')
+        .select('id, user_id, display_name, primary_photo, country_of_origin, current_city, bio, birth_date')
         .eq('is_active', true)
         .eq('is_banned', false)
         .neq('user_id', currentUser?.id || '')
@@ -59,7 +59,7 @@ export default function Explore() {
       return (
         p.display_name?.toLowerCase().includes(q) ||
         p.country_of_origin?.toLowerCase().includes(q) ||
-        p.city?.toLowerCase().includes(q)
+        p.current_city?.toLowerCase().includes(q)
       );
     }
     return true;
@@ -177,11 +177,8 @@ export default function Explore() {
                       <p className="font-medium text-sm text-foreground text-center truncate">
                         {profile.display_name || 'User'}
                       </p>
-                      {profile.city && (
-                        <p className="text-xs text-muted-foreground text-center truncate">{profile.city}</p>
-                      )}
-                      {profile.age && (
-                        <p className="text-xs text-muted-foreground text-center">{profile.age}</p>
+                      {profile.current_city && (
+                        <p className="text-xs text-muted-foreground text-center truncate">{profile.current_city}</p>
                       )}
                     </button>
                   ))}
