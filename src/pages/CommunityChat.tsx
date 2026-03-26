@@ -210,20 +210,31 @@ export default function CommunityChat() {
       </div>
 
       {/* Input */}
-      <div className="fixed bottom-20 left-0 right-0 bg-card border-t shadow-lg p-4 z-50">
-        <div className="max-w-4xl mx-auto flex gap-2">
-          <Input
-            value={message}
-            onChange={e => setMessage(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-            placeholder="Type a message..."
-            className="flex-1"
-          />
-          <Button onClick={handleSend} disabled={!message.trim() || sendMutation.isPending}>
-            {sendMutation.isPending ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
-          </Button>
+      {isMember ? (
+        <div className="fixed bottom-20 left-0 right-0 bg-card border-t shadow-lg p-4 z-50">
+          <div className="max-w-4xl mx-auto flex gap-2">
+            <Input
+              value={message}
+              onChange={e => setMessage(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+              placeholder="Type a message..."
+              className="flex-1"
+            />
+            <Button onClick={handleSend} disabled={!message.trim() || sendMutation.isPending}>
+              {sendMutation.isPending ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
+            </Button>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="fixed bottom-20 left-0 right-0 bg-card border-t shadow-lg p-4 z-50">
+          <div className="max-w-4xl mx-auto text-center">
+            <p className="text-sm text-muted-foreground mb-2">Join this community to participate in the chat</p>
+            <Link to="/communities">
+              <Button size="sm">Join Community</Button>
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
