@@ -110,7 +110,7 @@ export default function AdminBroadcast() {
         type: broadcast.type,
         title: broadcast.title,
         message: broadcast.message,
-        link_to: broadcast.linkTo || null,
+        link_to: broadcast.linkTo && broadcast.linkTo !== 'none' ? broadcast.linkTo : null,
         is_admin: true,
         is_read: false
       }));
@@ -219,7 +219,7 @@ export default function AdminBroadcast() {
                       <SelectValue placeholder="Select destination page" />
                     </SelectTrigger>
                     <SelectContent className="bg-slate-800 border-slate-700">
-                      <SelectItem value={null}>None</SelectItem>
+                      <SelectItem value="none">None</SelectItem>
                       <SelectItem value="Discover">Discover</SelectItem>
                       <SelectItem value="Matches">Matches</SelectItem>
                       <SelectItem value="Premium">Premium</SelectItem>
