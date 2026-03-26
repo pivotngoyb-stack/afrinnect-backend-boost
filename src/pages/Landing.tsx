@@ -331,7 +331,7 @@ export default function Landing() {
             {/* Main large image */}
             <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl border-4 border-white/20">
               <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/0129c1998_ai-generated-8702314_1280.jpg"
+                src={heroImage}
                 alt="African community"
                 className="w-full h-[500px] md:h-[600px] object-cover"
               />
