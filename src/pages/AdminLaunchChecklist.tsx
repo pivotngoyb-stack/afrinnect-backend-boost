@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Rocket, Mail, Shield, AlertTriangle, ArrowLeft } from 'lucide-react';
@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import Logo from '@/components/shared/Logo';
 
-export default function AdminLaunchChecklist() {
+const AdminLaunchChecklist = forwardRef<HTMLDivElement, any>((props, ref) => {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-3xl mx-auto space-y-8">
@@ -120,4 +120,8 @@ export default function AdminLaunchChecklist() {
       </div>
     </div>
   );
-}
+});
+
+AdminLaunchChecklist.displayName = "AdminLaunchChecklist";
+
+export default AdminLaunchChecklist;
