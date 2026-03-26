@@ -91,7 +91,7 @@ const PREFERRED_LANGUAGES = [
 ];
 
 export default function FilterDrawer({ filters, onFiltersChange, isPremium = false, userTier = 'free' }) {
-  const [localFilters, setLocalFilters] = useState(filters || {
+  const defaultFilters = {
     age_min: 18,
     age_max: 50,
     distance_km: 100,
@@ -102,9 +102,13 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
     education_levels: [],
     cultural_values: [],
     interests: [],
+    languages: [],
+    smoking: [],
+    drinking: [],
     preferred_language: '',
     verified_only: false
-  });
+  };
+  const [localFilters, setLocalFilters] = useState({ ...defaultFilters, ...(filters || {}) });
 
   const [isOpen, setIsOpen] = useState(false);
   const debouncedFilters = useDebounce(localFilters, 500);
@@ -149,22 +153,8 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
   };
 
   const resetFilters = () => {
-    const defaultFilters = {
-      age_min: 18,
-      age_max: 50,
-      distance_km: 100,
-      countries_of_origin: [],
-      states: [],
-      religions: [],
-      relationship_goals: [],
-      education_levels: [],
-      cultural_values: [],
-      interests: [],
-      preferred_language: '',
-      verified_only: false
-    };
-    setLocalFilters(defaultFilters);
-    onFiltersChange(defaultFilters);
+    setLocalFilters({ ...defaultFilters });
+    onFiltersChange({ ...defaultFilters });
   };
 
   const activeFiltersCount = [
