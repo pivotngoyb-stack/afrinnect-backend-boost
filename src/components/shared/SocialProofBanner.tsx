@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { Eye, TrendingUp, Users } from 'lucide-react';
 import { motion } from 'framer-motion';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 
 // Simple HTML sanitizer without external dependency

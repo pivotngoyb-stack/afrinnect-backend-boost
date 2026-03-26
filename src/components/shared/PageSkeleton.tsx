@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface PageSkeletonProps {

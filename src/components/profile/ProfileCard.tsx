@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';

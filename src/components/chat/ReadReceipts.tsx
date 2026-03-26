@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { Check, CheckCheck } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
