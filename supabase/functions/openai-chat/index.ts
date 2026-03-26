@@ -15,7 +15,11 @@ serve(async (req) => {
 
     // Use Lovable AI gateway instead of direct OpenAI
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    
+    if (!LOVABLE_API_KEY) {
+      return new Response(JSON.stringify({ error: 'AI not configured' }), {
+        status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
     const messages: any[] = [];
 
     messages.push({
