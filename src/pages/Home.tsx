@@ -266,7 +266,9 @@ export default function Home() {
 
       let mutualLikes = await filterRecords('likes', { liker_id: likedId, liked_id: myProfile.id });
 
-      if (mutualLikes.length === 0 && likedProfile.is_seed && Math.random() < 0.7) {
+      // Guaranteed first match: 100% chance if user has never matched before, 70% for subsequent seed likes
+      const isFirstMatch = !myProfile.has_matched_before;
+      if (mutualLikes.length === 0 && likedProfile.is_seed && (isFirstMatch || Math.random() < 0.7)) {
         await createRecord('likes', {
           liker_id: likedId, liked_id: myProfile.id,
           liker_user_id: likedProfile.user_id, liked_user_id: myProfile.user_id,
