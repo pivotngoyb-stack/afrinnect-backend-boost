@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
@@ -17,18 +16,38 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import { toast } from "sonner";
 
+interface FeatureFlag {
+  id: string;
+  name: string;
+  description?: string;
+  is_enabled: boolean;
+  percentage?: number;
+  target_audience?: string;
+  config?: Record<string, unknown>;
+}
+
+interface FlagFormData {
+  name: string;
+  description: string;
+  is_enabled: boolean;
+  percentage: number;
+  target_audience: string;
+  config: Record<string, unknown>;
+}
+
+const DEFAULT_FORM: FlagFormData = {
+  name: '', description: '', is_enabled: false,
+  percentage: 100, target_audience: 'all', config: {}
+};
+
 export default function AdminFeatureFlags() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [flags, setFlags] = useState([]);
+  const [flags, setFlags] = useState<FeatureFlag[]>([]);
   const [search, setSearch] = useState('');
   const [showDialog, setShowDialog] = useState(false);
-  const [editingFlag, setEditingFlag] = useState(null);
-  const [formData, setFormData] = useState({
-    name: '', description: '', is_enabled: false,
-    percentage: 100, target_audience: 'all', config: {}
-  });
+  const [editingFlag, setEditingFlag] = useState<FeatureFlag | null>(null);
+  const [formData, setFormData] = useState<FlagFormData>(DEFAULT_FORM);
 
   useEffect(() => { checkAuth(); }, []);
 
