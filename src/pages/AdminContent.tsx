@@ -192,7 +192,7 @@ export default function AdminContent() {
                           </Button>
                         </div>
                       </div>
-                      <p className="text-white">{breaker.text}</p>
+                      <p className="text-white">{breaker.question || breaker.text}</p>
                       {breaker.category && (
                         <Badge className="mt-2 bg-slate-700">{breaker.category}</Badge>
                       )}
