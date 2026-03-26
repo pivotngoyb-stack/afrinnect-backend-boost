@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -50,10 +49,10 @@ export default function Support() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userData = await base44.auth.me();
+        const userData = await getCurrentUser();
         setUser(userData);
         if (userData) {
-          const profiles = await base44.entities.UserProfile.filter({ user_id: userData.id });
+          const profiles = await filterRecords('user_profiles', { user_id: userData.id });
           if (profiles.length > 0) {
             setMyProfile(profiles[0]);
           }
@@ -67,7 +66,7 @@ export default function Support() {
 
   const { data: tickets = [], isLoading } = useQuery({
     queryKey: ['support-tickets', user?.id],
-    queryFn: () => base44.entities.SupportTicket.filter({ user_id: user.id }, '-created_at'),
+    queryFn: () => filterRecords('support_tickets', { user_id: user.id }, '-created_at'),
     enabled: !!user
   });
 
@@ -83,7 +82,7 @@ export default function Support() {
         free: data.category === 'billing' || data.category === 'safety' ? 'high' : 'medium'
       };
       
-      return base44.entities.SupportTicket.create({
+      return createRecord('support_tickets', {
         user_id: user.id,
         user_email: user.email,
         category: data.category,

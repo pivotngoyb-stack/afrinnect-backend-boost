@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -22,9 +21,9 @@ export default function CompatibilityQuiz() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const user = await base44.auth.me();
+      const user = await getCurrentUser();
       if (user) {
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) setMyProfile(profiles[0]);
       }
     };
@@ -33,7 +32,7 @@ export default function CompatibilityQuiz() {
 
   const { data: quizzes = [] } = useQuery({
     queryKey: ['compatibility-quizzes'],
-    queryFn: () => base44.entities.CompatibilityQuiz.filter({ is_active: true })
+    queryFn: () => filterRecords('compatibility_quizzes', { is_active: true })
   });
 
   const submitMutation = useMutation({
@@ -70,7 +69,7 @@ export default function CompatibilityQuiz() {
 
       const typeInfo = selectedQuiz.compatibility_types.find(t => t.type_name === primaryType);
 
-      await base44.entities.QuizResult.create({
+      await createRecord('quiz_results', {
         user_profile_id: myProfile.id,
         quiz_id: selectedQuiz.id,
         answers,

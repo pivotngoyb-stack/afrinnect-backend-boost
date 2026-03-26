@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/lib/supabase-helpers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,7 +11,7 @@ export default function QuickActions() {
 
   const actionMutations = {
     sendWinback: useMutation({
-      mutationFn: () => base44.functions.invoke('send-winback-email', {}),
+      mutationFn: () => invokeFunction('send-winback-email', {}),
       onSuccess: (response) => {
         const count = response?.data?.emailsSent || 0;
         toast.success(`Sent ${count} win-back emails`);
@@ -21,7 +20,7 @@ export default function QuickActions() {
     }),
 
     verifyPhotos: useMutation({
-      mutationFn: () => base44.functions.invoke('auto-verify-photos', {}),
+      mutationFn: () => invokeFunction('auto-verify-photos', {}),
       onSuccess: (response) => {
         const count = response?.data?.processed || 0;
         toast.success(`Processed ${count} verifications`);
@@ -31,7 +30,7 @@ export default function QuickActions() {
     }),
 
     analyzePatterns: useMutation({
-      mutationFn: () => base44.functions.invoke('analyze-conversation-patterns', {}),
+      mutationFn: () => invokeFunction('analyze-conversation-patterns', {}),
       onSuccess: (response) => {
         const count = response?.data?.analyzed || 0;
         toast.success(`Analyzed ${count} conversations`);
@@ -40,7 +39,7 @@ export default function QuickActions() {
     }),
 
     checkExpired: useMutation({
-      mutationFn: () => base44.functions.invoke('check-expired-subscriptions', {}),
+      mutationFn: () => invokeFunction('check-expired-subscriptions', {}),
       onSuccess: (response) => {
         const count = response?.data?.checked || 0;
         toast.success(`Checked ${count} subscriptions`);

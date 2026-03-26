@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -20,9 +19,9 @@ export default function SuccessStories() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const user = await base44.auth.me();
+        const user = await getCurrentUser();
         setIsAdmin(user.role === 'admin' || user.email === 'pivotngoyb@gmail.com');
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) setMyProfile(profiles[0]);
       } catch (e) {}
     };
@@ -33,13 +32,13 @@ export default function SuccessStories() {
     queryKey: ['success-stories', myProfile?.id],
     queryFn: async () => {
       // Fetch approved stories
-      const approved = await base44.entities.SuccessStory.filter({ is_approved: true }, '-created_date', 50);
+      const approved = await filterRecords('success_stories', { is_approved: true }, '-created_date', 50);
       
       // Fetch my stories (including pending ones)
       let myStories = [];
       if (myProfile?.id) {
         try {
-          myStories = await base44.entities.SuccessStory.filter({ user1_profile_id: myProfile.id }, '-created_date', 10);
+          myStories = await filterRecords('success_stories', { user1_profile_id: myProfile.id }, '-created_date', 10);
         } catch (e) {
           console.error('Error fetching my stories', e);
         }
@@ -57,7 +56,7 @@ export default function SuccessStories() {
   const likeMutation = useMutation({
     mutationFn: async (storyId) => {
       const story = stories.find(s => s.id === storyId);
-      await base44.entities.SuccessStory.update(storyId, {
+      await updateRecord('success_stories', storyId, {
         likes_count: (story.likes_count || 0) + 1
       });
     },

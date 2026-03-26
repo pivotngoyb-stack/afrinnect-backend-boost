@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, deleteRecord, filterRecords, getCurrentUser, listRecords, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -26,8 +25,8 @@ export default function VendorManagement() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const user = await base44.auth.me();
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const user = await getCurrentUser();
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) {
           setMyProfile(profiles[0]);
         }
@@ -40,14 +39,14 @@ export default function VendorManagement() {
 
   const { data: vendors = [], isLoading: loadingVendors } = useQuery({
     queryKey: ['vendors'],
-    queryFn: () => base44.entities.WeddingVendor.list('-created_date'),
+    queryFn: () => listRecords('wedding_vendors', '-created_date'),
     staleTime: 300000,
     retry: 1
   });
 
   const createVendorMutation = useMutation({
     mutationFn: async (newVendor) => {
-      await base44.entities.WeddingVendor.create(newVendor);
+      await createRecord('wedding_vendors', newVendor);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['vendors']);
@@ -62,7 +61,7 @@ export default function VendorManagement() {
 
   const updateVendorMutation = useMutation({
     mutationFn: async ({ id, updatedVendor }) => {
-      await base44.entities.WeddingVendor.update(id, updatedVendor);
+      await updateRecord('wedding_vendors', id, updatedVendor);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['vendors']);
@@ -77,7 +76,7 @@ export default function VendorManagement() {
 
   const deleteVendorMutation = useMutation({
     mutationFn: async (id) => {
-      await base44.entities.WeddingVendor.delete(id);
+      await deleteRecord('wedding_vendors', id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['vendors']);

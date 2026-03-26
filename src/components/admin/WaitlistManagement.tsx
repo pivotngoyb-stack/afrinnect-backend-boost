@@ -1,7 +1,6 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, listRecords } from '@/lib/supabase-helpers';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -14,7 +13,7 @@ export default function WaitlistManagement({ onSendEmail }) {
 
   const { data: entries = [], isLoading } = useQuery({
     queryKey: ['admin-waitlist'],
-    queryFn: () => base44.entities.WaitlistEntry.list('-created_date', 500)
+    queryFn: () => listRecords('waitlist_entries', '-created_date', 500)
   });
 
   const filteredEntries = entries.filter(entry => 

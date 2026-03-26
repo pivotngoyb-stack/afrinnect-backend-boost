@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, listRecords } from '@/lib/supabase-helpers';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
@@ -13,7 +12,7 @@ export default function PageVisitsAnalytics() {
   // Fetch page visit analytics
   const { data: analytics = [], isLoading } = useQuery({
     queryKey: ['page-visits-analytics'],
-    queryFn: () => base44.entities.ProfileAnalytics.list('-created_date', 5000),
+    queryFn: () => listRecords('profile_analytics', '-created_date', 5000),
     refetchInterval: 60000
   });
 

@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { SlidersHorizontal, X, RotateCcw } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { base44 } from '@/api/base44Client';
+import { filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { toast } from '@/hooks/use-toast';
 
 const ALL_COUNTRIES = [
@@ -139,10 +139,10 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
     
     // Save filters to user profile
     try {
-      const user = await base44.auth.me();
-      const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+      const user = await getCurrentUser();
+      const profiles = await filterRecords('user_profiles', { user_id: user.id });
       if (profiles.length > 0) {
-        await base44.entities.UserProfile.update(profiles[0].id, {
+        await updateRecord('user_profiles', profiles[0].id, {
           filters: localFilters
         });
       }

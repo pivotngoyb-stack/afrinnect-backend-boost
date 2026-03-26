@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, getCurrentUser, invokeFunction } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -44,18 +43,18 @@ export default function AmbassadorApply() {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const u = await base44.auth.me();
+        const u = await getCurrentUser();
         setUser(u);
         setFormData(prev => ({ ...prev, email: u.email, display_name: u.full_name }));
         
         // Check if already an ambassador
-        const ambassadors = await base44.entities.Ambassador.filter({ email: u.email });
+        const ambassadors = await filterRecords('ambassadors', { email: u.email });
         if (ambassadors.length > 0) {
           setExistingAmbassador(ambassadors[0]);
         }
       } catch (e) {
         // Not logged in - redirect to login
-        base44.auth.redirectToLogin(window.location.href);
+        window.location.href = '/login'; // redirectToLogin(window.location.href);
       }
     };
     checkUser();
@@ -63,7 +62,7 @@ export default function AmbassadorApply() {
 
   const applyMutation = useMutation({
     mutationFn: async () => {
-      const response = await base44.functions.invoke('ambassadorApply', formData);
+      const response = await invokeFunction('ambassadorApply', formData);
       if (response.data.error) throw new Error(response.data.error);
       return response.data;
     },

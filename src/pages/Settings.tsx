@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, getCurrentUser, invokeFunction, logout, updateRecord } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -67,17 +66,17 @@ export default function Settings() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const user = await base44.auth.me();
+        const user = await getCurrentUser();
         if (user) {
           setUserEmail(user.email || '');
-          const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+          const profiles = await filterRecords('user_profiles', { user_id: user.id });
           if (profiles.length > 0) {
             setMyProfile(profiles[0]);
           }
         }
       } catch (e) {
         console.log('Not logged in');
-        base44.auth.redirectToLogin(createPageUrl('Landing'));
+        window.location.href = '/login'; // redirectToLogin(createPageUrl('Landing'));
       }
     };
     fetchProfile();
@@ -108,32 +107,32 @@ export default function Settings() {
   }, [settings.darkMode]);
 
   const handleLogout = async () => {
-    await base44.auth.logout(createPageUrl('Landing'));
+    await logout(createPageUrl('Landing'));
   };
 
   const exportDataMutation = useMutation({
     mutationFn: async () => {
-      const user = await base44.auth.me();
+      const user = await getCurrentUser();
       
       // Collect all user data (GDPR compliant)
-      const profile = await base44.entities.UserProfile.filter({ user_id: user.id });
+      const profile = await filterRecords('user_profiles', { user_id: user.id });
       
       // Fetch matches using two queries (no $or support)
-      const matches1 = await base44.entities.Match.filter({ user1_user_id: user.id });
-      const matches2 = await base44.entities.Match.filter({ user2_user_id: user.id });
+      const matches1 = await filterRecords('matches', { user1_user_id: user.id });
+      const matches2 = await filterRecords('matches', { user2_user_id: user.id });
       const matches = [...matches1, ...matches2];
       
       // Fetch messages using two queries
-      const sentMessages = await base44.entities.Message.filter({ sender_user_id: user.id });
-      const receivedMessages = await base44.entities.Message.filter({ receiver_user_id: user.id });
+      const sentMessages = await filterRecords('messages', { sender_user_id: user.id });
+      const receivedMessages = await filterRecords('messages', { receiver_user_id: user.id });
       const messages = [...sentMessages, ...receivedMessages];
       
-      const likes = await base44.entities.Like.filter({ liker_user_id: user.id });
+      const likes = await filterRecords('likes', { liker_user_id: user.id });
       
       let subscriptions = [];
       if (myProfile?.id) {
         try {
-          subscriptions = await base44.entities.Subscription.filter({ user_profile_id: myProfile.id });
+          subscriptions = await filterRecords('subscriptions', { user_profile_id: myProfile.id });
         } catch (e) { /* may fail due to RLS */ }
       }
       
@@ -165,8 +164,8 @@ export default function Settings() {
 
   const deleteAccountMutation = useMutation({
     mutationFn: async () => {
-      await base44.functions.invoke('deleteAccount', { reason: 'Deleted from settings', confirmDelete: true });
-      await base44.auth.logout(createPageUrl('Landing'));
+      await invokeFunction('deleteAccount', { reason: 'Deleted from settings', confirmDelete: true });
+      await logout(createPageUrl('Landing'));
     }
   });
 
@@ -270,7 +269,7 @@ export default function Settings() {
               setIsSendingCode(true);
               
               try {
-                const res = await base44.functions.invoke('sendOTP', { email: userEmail });
+                const res = await invokeFunction('sendOTP', { email: userEmail });
                 if (res.data.success) {
                   setShowEmailVerifyDialog(true);
                 } else {
@@ -457,7 +456,7 @@ export default function Settings() {
                     if (!confirm('Are you sure you want to cancel your subscription? You will keep access until the end of your billing period.')) return;
                     
                     try {
-                      const res = await base44.functions.invoke('cancelSubscription', { immediate: false });
+                      const res = await invokeFunction('cancelSubscription', { immediate: false });
                       if (res.data.success) {
                         toast({ title: 'Subscription cancelled successfully.' });
                       } else {
@@ -644,7 +643,7 @@ export default function Settings() {
             <AlertDialogAction onClick={async (e) => {
               e.preventDefault(); // Prevent auto-close
               try {
-                const res = await base44.functions.invoke('verifyOTP', { code: inputCode, type: 'email' });
+                const res = await invokeFunction('verifyOTP', { code: inputCode, type: 'email' });
                 
                 if (res.data.success) {
                   setMyProfile({
@@ -727,13 +726,13 @@ export default function Settings() {
                 });
                 
                 try {
-                  await base44.entities.UserProfile.update(myProfile.id, {
+                  await updateRecord('user_profiles', myProfile.id, {
                     device_ids: newIds,
                     device_info: newInfo
                   });
 
                   if (isCurrentDevice) {
-                    await base44.auth.logout(createPageUrl('Landing'));
+                    await logout(createPageUrl('Landing'));
                   }
                   setDeviceToRemove(null);
                 } catch (e) {

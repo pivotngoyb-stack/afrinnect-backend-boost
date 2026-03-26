@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { createRecord, deleteRecord, getCurrentUser, listRecords, updateRecord } from '@/lib/supabase-helpers';
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { 
@@ -35,7 +35,7 @@ export default function AdminContent() {
 
   const checkAuth = async () => {
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await getCurrentUser();
       if (!currentUser || currentUser.role !== 'admin') {
         navigate(createPageUrl('Home'));
         return;
@@ -81,9 +81,9 @@ export default function AdminContent() {
       };
       if (editDialog.type === 'icebreaker') {
         if (editDialog.item) {
-          await base44.entities.IceBreaker.update(editDialog.item.id, saveData);
+          await updateRecord('ice_breakers', editDialog.item.id, saveData);
         } else {
-          await base44.entities.IceBreaker.create(saveData);
+          await createRecord('ice_breakers', saveData);
         }
       }
       await loadContent();
@@ -97,7 +97,7 @@ export default function AdminContent() {
   const handleDelete = async (type, id) => {
     try {
       if (type === 'icebreaker') {
-        await base44.entities.IceBreaker.delete(id);
+        await deleteRecord('ice_breakers', id);
       }
       await loadContent();
     } catch (error) {

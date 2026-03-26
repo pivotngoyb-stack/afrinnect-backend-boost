@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect, forwardRef } from "react";
-import { base44 } from "@/api/base44Client";
+import { createRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,7 +26,7 @@ const OnboardingSettings = forwardRef<HTMLDivElement, any>((props, ref) => {
 
   const loadSettings = async () => {
     try {
-      const data = await base44.entities.SystemSettings.filter({ key: 'onboarding_config' });
+      const data = await filterRecords('system_settings', { key: 'onboarding_config' });
       if (data.length > 0) {
         setSettings({ ...settings, ...data[0].value });
       }
@@ -39,16 +38,16 @@ const OnboardingSettings = forwardRef<HTMLDivElement, any>((props, ref) => {
   const saveSettings = async () => {
     setSaving(true);
     try {
-      const user = await base44.auth.me();
-      const existing = await base44.entities.SystemSettings.filter({ key: 'onboarding_config' });
+      const user = await getCurrentUser();
+      const existing = await filterRecords('system_settings', { key: 'onboarding_config' });
       
       if (existing.length > 0) {
-        await base44.entities.SystemSettings.update(existing[0].id, {
+        await updateRecord('system_settings', existing[0].id, {
           value: settings,
           updated_by: user.email
         });
       } else {
-        await base44.entities.SystemSettings.create({
+        await createRecord('system_settings', {
           key: 'onboarding_config',
           value: settings,
           updated_by: user.email,

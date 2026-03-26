@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
 import { Mail, Send, Users, Loader2, FileText, Sparkles, Copy } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -118,7 +117,7 @@ export default function EmailCampaignManager() {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   const sendCampaignMutation = useMutation({
-    mutationFn: (data) => base44.functions.invoke('sendNewsletterEmail', data),
+    mutationFn: (data) => invokeFunction('sendNewsletterEmail', data),
     onSuccess: (result) => {
       toast({ title: `Campaign sent! ${result.data.sent} emails delivered to ${result.data.targeted} users.` });
       setCampaign({ campaign_title: '', subject: '', body: '', target_audience: 'all' });

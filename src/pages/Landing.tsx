@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, isAuthenticated } from '@/lib/supabase-helpers';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -27,10 +26,10 @@ export default function Landing() {
 
   useEffect(() => {
     trackEvent(CONVERSION_EVENTS.LANDING_VIEW);
-    base44.auth.isAuthenticated().then(setIsLoggedIn).catch(() => {});
+    isAuthenticated().then(setIsLoggedIn).catch(() => {});
     
     // Fetch founder program settings
-    base44.entities.SystemSettings.filter({ key: 'founder_program' })
+    filterRecords('system_settings', { key: 'founder_program' })
       .then(records => {
         const config = records?.[0]?.value;
         if (config) {
@@ -147,7 +146,7 @@ export default function Landing() {
     const urlParams = new URLSearchParams(window.location.search);
     const ref = urlParams.get('ref');
     const nextUrl = ref ? createPageUrl('Onboarding') + `?ref=${ref}` : createPageUrl('Onboarding');
-    base44.auth.redirectToLogin(window.location.origin + nextUrl);
+    window.location.href = '/login'; // redirectToLogin(window.location.origin + nextUrl);
   };
 
   const handleLogin = async () => {
@@ -156,7 +155,7 @@ export default function Landing() {
     const urlParams = new URLSearchParams(window.location.search);
     const ref = urlParams.get('ref');
     const nextUrl = ref ? createPageUrl('Home') + `?ref=${ref}` : createPageUrl('Home');
-    base44.auth.redirectToLogin(window.location.origin + nextUrl);
+    window.location.href = '/login'; // redirectToLogin(window.location.origin + nextUrl);
   };
 
   return (

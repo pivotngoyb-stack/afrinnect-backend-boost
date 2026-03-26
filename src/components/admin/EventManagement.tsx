@@ -1,7 +1,6 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { createRecord, deleteRecord, filterRecords, updateRecord, uploadFile } from '@/lib/supabase-helpers';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,9 +52,9 @@ export default function EventManagement({ events }) {
       };
 
       if (editingEvent) {
-        await base44.entities.Event.update(editingEvent.id, saveData);
+        await updateRecord('events', editingEvent.id, saveData);
       } else {
-        await base44.entities.Event.create({
+        await createRecord('events', {
           ...saveData,
           attendees: [],
           current_attendees: 0
@@ -77,7 +76,7 @@ export default function EventManagement({ events }) {
   const deleteEventMutation = useMutation({
     mutationFn: async (eventId) => {
       if (!confirm('Delete this event? This cannot be undone.')) return;
-      await base44.entities.Event.delete(eventId);
+      await deleteRecord('events', eventId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-events'] });
@@ -90,7 +89,7 @@ export default function EventManagement({ events }) {
     if (!file) return;
     setUploadingPhoto(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await uploadFile({ file });
       setFormData({ ...formData, image_url: file_url });
     } catch (error) {
       toast.error('Photo upload failed');

@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, getCurrentUser, invokeFunction, updateCurrentUser, uploadFile } from '@/lib/supabase-helpers';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -108,9 +107,9 @@ export default function EditProfile() {
 
   const loadProfile = async () => {
     try {
-      const user = await base44.auth.me();
+      const user = await getCurrentUser();
       
-      const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+      const profiles = await filterRecords('user_profiles', { user_id: user.id });
       if (profiles.length > 0) {
         const p = profiles[0];
         setProfile(p);
@@ -204,10 +203,10 @@ export default function EditProfile() {
 
       if (profile) {
         // Update existing profile directly via Supabase
-        await base44.auth.updateMe(saveData);
+        await updateCurrentUser(saveData);
       } else {
         // Create via edge function
-        const response = await base44.functions.invoke('createProfile', saveData);
+        const response = await invokeFunction('createProfile', saveData);
         if (response.data.error) throw new Error(response.data.error);
         setProfile(response.data.profile);
       }
@@ -237,7 +236,7 @@ export default function EditProfile() {
     setUploading(true);
     setShowCropper(false);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file: croppedFile });
+      const { file_url } = await uploadFile({ file: croppedFile });
       const newPhotos = [...(formData.photos || []), file_url];
       setFormData({
         ...formData,

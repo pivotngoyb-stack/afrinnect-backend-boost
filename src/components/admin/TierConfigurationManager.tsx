@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -372,7 +371,7 @@ export default function TierConfigurationManager() {
   const { data: tierConfigs, isLoading, refetch } = useQuery({
     queryKey: ['admin-tier-configs'],
     queryFn: async () => {
-      const configs = await base44.entities.TierConfiguration.filter({}, 'sort_order');
+      const configs = await filterRecords('tier_configurations', {}, 'sort_order');
       
       // Merge with defaults, normalizing DB rows
       const merged = {};
@@ -406,12 +405,12 @@ export default function TierConfigurationManager() {
       const dbData = internalToDb(tierData);
       
       // Check if config exists
-      const existing = await base44.entities.TierConfiguration.filter({ tier: tierData.tier_id });
+      const existing = await filterRecords('tier_configurations', { tier: tierData.tier_id });
       
       if (existing.length > 0) {
-        await base44.entities.TierConfiguration.update(existing[0].id, dbData);
+        await updateRecord('tier_configurations', existing[0].id, dbData);
       } else {
-        await base44.entities.TierConfiguration.create(dbData);
+        await createRecord('tier_configurations', dbData);
       }
       
       invalidateTierCache();
@@ -431,7 +430,7 @@ export default function TierConfigurationManager() {
   // Initialize default configs if none exist
   const initializeMutation = useMutation({
     mutationFn: async () => {
-      const existing = await base44.entities.TierConfiguration.filter({});
+      const existing = await filterRecords('tier_configurations', {});
       if (existing.length === 0) {
         const tiers = ['free', 'premium', 'elite', 'vip'];
         const defaultPricing = {
@@ -448,7 +447,7 @@ export default function TierConfigurationManager() {
         };
         for (let i = 0; i < tiers.length; i++) {
           const tierId = tiers[i];
-          await base44.entities.TierConfiguration.create({
+          await createRecord('tier_configurations', {
             tier: tierId,
             name: DEFAULT_TIERS[tierId].display_name,
             description: defaultDescriptions[tierId],

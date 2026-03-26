@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, getCurrentUser, sendEmail, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -19,9 +18,9 @@ export default function SafetyCheckMonitor() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const user = await base44.auth.me();
+      const user = await getCurrentUser();
       if (user) {
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) setMyProfile(profiles[0]);
       }
     };
@@ -30,7 +29,7 @@ export default function SafetyCheckMonitor() {
 
   const { data: activeChecks = [] } = useQuery({
     queryKey: ['safety-checks', myProfile?.id],
-    queryFn: () => base44.entities.SafetyCheck.filter({
+    queryFn: () => filterRecords('safety_checks', {
       user_profile_id: myProfile.id,
       status: { $in: ['active', 'alert_triggered'] }
     }, '-created_date'),
@@ -55,14 +54,14 @@ export default function SafetyCheckMonitor() {
 
   const checkInMutation = useMutation({
     mutationFn: async (checkId) => {
-      await base44.entities.SafetyCheck.update(checkId, {
+      await updateRecord('safety_checks', checkId, {
         status: 'checked_in'
       });
 
       // Notify emergency contact
       const check = activeChecks.find(c => c.id === checkId);
       if (check) {
-        await base44.integrations.Core.SendEmail({
+        await sendEmail({
           to: check.emergency_contact_phone + '@sms.gateway.com',
           subject: 'Afrinnect Safety Check - All Clear',
           body: `${myProfile.display_name} has checked in safely from their meetup.`
@@ -88,21 +87,21 @@ export default function SafetyCheckMonitor() {
         location = { lat: pos.coords.latitude, lng: pos.coords.longitude };
       }
 
-      await base44.entities.SafetyCheck.update(checkId, {
+      await updateRecord('safety_checks', checkId, {
         status: 'alert_triggered',
         panic_triggered: true,
         panic_location: location
       });
 
       // Send emergency alerts
-      await base44.integrations.Core.SendEmail({
+      await sendEmail({
         to: check.emergency_contact_phone + '@sms.gateway.com',
         subject: '🚨 EMERGENCY: Safety Alert from Afrinnect',
         body: `${myProfile.display_name} has triggered a safety alert. Last known location: ${location ? `https://maps.google.com/?q=${location.lat},${location.lng}` : check.date_location}. Contact immediately!`
       });
 
       // Notify Afrinnect support
-      await base44.integrations.Core.SendEmail({
+      await sendEmail({
         to: 'support@afrinnect.com',
         subject: 'URGENT: Safety Alert Triggered',
         body: `User ${myProfile.display_name} (${myProfile.id}) has triggered a safety alert. Emergency contact: ${check.emergency_contact_name} (${check.emergency_contact_phone}). Meeting location: ${check.date_location}`
@@ -116,7 +115,7 @@ export default function SafetyCheckMonitor() {
 
   const cancelCheckMutation = useMutation({
     mutationFn: async (checkId) => {
-      await base44.entities.SafetyCheck.update(checkId, {
+      await updateRecord('safety_checks', checkId, {
         status: 'completed'
       });
     },

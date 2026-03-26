@@ -1,7 +1,6 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { createRecord, deleteRecord, listRecords, updateRecord } from '@/lib/supabase-helpers';
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -23,11 +22,11 @@ export default function ContestManagement() {
 
   const { data: contests = [] } = useQuery({
     queryKey: ['admin-contest-periods'],
-    queryFn: () => base44.entities.ContestPeriod.list('-month', 20)
+    queryFn: () => listRecords('contest_periods', '-month', 20)
   });
 
   const createMutation = useMutation({
-    mutationFn: (data) => base44.entities.ContestPeriod.create(data),
+    mutationFn: (data) => createRecord('contest_periods', data),
     onSuccess: () => {
       queryClient.invalidateQueries(['admin-contest-periods']);
       setIsDialogOpen(false);
@@ -36,7 +35,7 @@ export default function ContestManagement() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.ContestPeriod.update(id, data),
+    mutationFn: ({ id, data }) => updateRecord('contest_periods', id, data),
     onSuccess: () => {
       queryClient.invalidateQueries(['admin-contest-periods']);
       setIsDialogOpen(false);
@@ -45,7 +44,7 @@ export default function ContestManagement() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id) => base44.entities.ContestPeriod.delete(id),
+    mutationFn: (id) => deleteRecord('contest_periods', id),
     onSuccess: () => queryClient.invalidateQueries(['admin-contest-periods'])
   });
 

@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -18,8 +17,8 @@ export default function PhotoPerformance() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const user = await base44.auth.me();
-      const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+      const user = await getCurrentUser();
+      const profiles = await filterRecords('user_profiles', { user_id: user.id });
       if (profiles.length > 0) {
         setMyProfile(profiles[0]);
       }
@@ -30,7 +29,7 @@ export default function PhotoPerformance() {
   // Fetch engagement data
   const { data: engagements = [] } = useQuery({
     queryKey: ['photo-engagement', myProfile?.id],
-    queryFn: () => base44.entities.PhotoEngagement.filter({ profile_id: myProfile.id }),
+    queryFn: () => filterRecords('photo_engagements', { profile_id: myProfile.id }),
     enabled: !!myProfile
   });
 
@@ -70,13 +69,13 @@ export default function PhotoPerformance() {
       const optimizedPhotos = photoStats.map(s => s.url);
       const bestPhoto = optimizedPhotos[0];
 
-      await base44.entities.UserProfile.update(myProfile.id, {
+      await updateRecord('user_profiles', myProfile.id, {
         photos: optimizedPhotos,
         primary_photo: bestPhoto
       });
 
       // Log notification
-      await base44.entities.Notification.create({
+      await createRecord('notifications', {
         user_profile_id: myProfile.id,
         type: 'profile_performance',
         title: '✨ Photos Optimized!',

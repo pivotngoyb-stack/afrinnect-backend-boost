@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, getCurrentUser, invokeFunction, isAuthenticated, logout } from '@/lib/supabase-helpers';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -20,7 +20,7 @@ export default function AuthTest() {
 
     // Test 1: Check if authenticated
     try {
-      const isAuth = await base44.auth.isAuthenticated();
+      const isAuth = await isAuthenticated();
       testResults.isAuthenticated = { pass: isAuth, message: isAuth ? 'User is authenticated' : 'User not authenticated' };
     } catch (e: any) {
       testResults.isAuthenticated = { pass: false, message: e.message };
@@ -28,7 +28,7 @@ export default function AuthTest() {
 
     // Test 2: Get current user
     try {
-      const user = await base44.auth.me();
+      const user = await getCurrentUser();
       testResults.getCurrentUser = { pass: !!user, message: user ? `User: ${user.email}` : 'No user found' };
     } catch (e: any) {
       testResults.getCurrentUser = { pass: false, message: e.message };
@@ -36,9 +36,9 @@ export default function AuthTest() {
 
     // Test 3: Check profile exists
     try {
-      const user = await base44.auth.me();
+      const user = await getCurrentUser();
       if (user) {
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         testResults.profileExists = { pass: profiles.length > 0, message: profiles.length > 0 ? 'Profile found' : 'No profile' };
       }
     } catch (e: any) {
@@ -47,9 +47,9 @@ export default function AuthTest() {
 
     // Test 4: Check legal acceptance
     try {
-      const user = await base44.auth.me();
+      const user = await getCurrentUser();
       if (user) {
-        const acceptances = await base44.entities.LegalAcceptance.filter({ user_id: user.id });
+        const acceptances = await filterRecords('legal_acceptances', { user_id: user.id });
         testResults.legalAcceptance = { pass: acceptances.length > 0, message: acceptances.length > 0 ? 'Legal terms accepted' : 'No acceptance' };
       }
     } catch (e: any) {
@@ -65,7 +65,7 @@ export default function AuthTest() {
 
     // Test 6: Test OTP backend
     try {
-      const otpTest = await base44.functions.invoke('sendOTP', { phone_number: '+15555555555' }).catch((e: any) => ({ error: e.message }));
+      const otpTest = await invokeFunction('sendOTP', { phone_number: '+15555555555' }).catch((e: any) => ({ error: e.message }));
       testResults.otpBackend = {
         pass: !(otpTest as any).error,
         message: (otpTest as any).error || 'OTP backend working'
@@ -76,7 +76,7 @@ export default function AuthTest() {
 
     // Test 7: Test rate limiting
     try {
-      const rateLimitTest = await base44.functions.invoke('rateLimitAuth', {
+      const rateLimitTest = await invokeFunction('rateLimitAuth', {
         action: 'login',
         identifier: 'test@test.com'
       }).catch((e: any) => ({ error: e.message }));

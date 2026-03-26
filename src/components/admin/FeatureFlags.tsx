@@ -1,7 +1,6 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, updateRecord } from '@/lib/supabase-helpers';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,7 +24,7 @@ export default function FeatureFlags({ flags }) {
 
   const createFlagMutation = useMutation({
     mutationFn: async () => {
-      await base44.entities.FeatureFlag.create(formData);
+      await createRecord('feature_flags', formData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['admin-feature-flags']);
@@ -43,7 +42,7 @@ export default function FeatureFlags({ flags }) {
 
   const updateFlagMutation = useMutation({
     mutationFn: async ({ flagId, updates }) => {
-      await base44.entities.FeatureFlag.update(flagId, updates);
+      await updateRecord('feature_flags', flagId, updates);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['admin-feature-flags']);

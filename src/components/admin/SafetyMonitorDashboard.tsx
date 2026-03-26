@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, getCurrentUser, sendEmail, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Shield, AlertTriangle, CheckCircle, MapPin, Phone, User, Clock, Ban, Flag, MessageSquare, Eye } from 'lucide-react';
@@ -24,7 +23,7 @@ export default function SafetyMonitorDashboard() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const user = await base44.auth.me();
+        const user = await getCurrentUser();
         setCurrentUser(user);
       } catch (e) {
         console.error("Failed to fetch admin user", e);
@@ -36,7 +35,7 @@ export default function SafetyMonitorDashboard() {
   // Fetch all active safety checks
   const { data: activeSafetyChecks = [] } = useQuery({
     queryKey: ['admin-safety-checks'],
-    queryFn: () => base44.entities.SafetyCheck.filter(
+    queryFn: () => filterRecords('safety_checks', 
       { status: { $in: ['active', 'alert_triggered'] } },
       '-created_date'
     ),
@@ -46,7 +45,7 @@ export default function SafetyMonitorDashboard() {
   // Fetch flagged messages
   const { data: flaggedMessages = [] } = useQuery({
     queryKey: ['flagged-messages'],
-    queryFn: () => base44.entities.Message.filter(
+    queryFn: () => filterRecords('messages', 
       { is_flagged: true },
       '-created_date',
       50
@@ -57,7 +56,7 @@ export default function SafetyMonitorDashboard() {
   // Fetch AI moderation alerts
   const { data: moderationAlerts = [] } = useQuery({
     queryKey: ['moderation-alerts'],
-    queryFn: () => base44.entities.ModerationAction.filter(
+    queryFn: () => filterRecords('moderation_actions', 
       { action_taken: 'pending' },
       '-created_date',
       50
@@ -69,13 +68,13 @@ export default function SafetyMonitorDashboard() {
     mutationFn: async ({ checkId, action, notes }) => {
       const check = activeSafetyChecks.find(c => c.id === checkId);
       
-      await base44.entities.SafetyCheck.update(checkId, {
+      await updateRecord('safety_checks', checkId, {
         status: action === 'resolved' ? 'completed' : 'alert_triggered',
         moderator_notes: notes
       });
 
       // Log admin action
-      await base44.entities.AdminAuditLog.create({
+      await createRecord('admin_audit_logs', {
         admin_user_id: currentUser?.id || 'unknown_admin',
         admin_email: currentUser?.email || 'unknown_admin@afrinnect.com',
         action_type: 'safety_alert_response',
@@ -85,7 +84,7 @@ export default function SafetyMonitorDashboard() {
 
       // If emergency, contact authorities
       if (action === 'emergency') {
-        await base44.integrations.Core.SendEmail({
+        await sendEmail({
           to: 'emergency@afrinnect.com',
           subject: '🚨 URGENT: Safety Emergency Escalated',
           body: `Safety check ${checkId} has been escalated to emergency. User: ${check.user_profile_id}. Location: ${check.date_location}. Admin notes: ${notes}`
@@ -101,12 +100,12 @@ export default function SafetyMonitorDashboard() {
 
   const reviewMessageMutation = useMutation({
     mutationFn: async ({ messageId, action }) => {
-      await base44.entities.Message.update(messageId, {
+      await updateRecord('messages', messageId, {
         is_flagged: action === 'keep_flagged',
         is_deleted: action === 'delete'
       });
 
-      await base44.entities.AdminAuditLog.create({
+      await createRecord('admin_audit_logs', {
         admin_user_id: currentUser?.id || 'unknown_admin',
         admin_email: currentUser?.email || 'unknown_admin@afrinnect.com',
         action_type: 'message_moderation',

@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
@@ -35,9 +34,9 @@ export default function Matches() {
   useEffect(() => {
     const fetchMyProfile = async () => {
       try {
-        const user = await base44.auth.me();
+        const user = await getCurrentUser();
         if (user) {
-          const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+          const profiles = await filterRecords('user_profiles', { user_id: user.id });
           if (profiles.length > 0) {
             setMyProfile(profiles[0]);
           }
@@ -57,8 +56,8 @@ export default function Matches() {
         if (!myProfile) return [];
         // OPTIMIZED: Fetch with limits
         const [matches1, matches2] = await Promise.all([
-          base44.entities.Match.filter({ user1_id: myProfile.id, is_match: true, status: 'active' }, '-matched_at', 50),
-          base44.entities.Match.filter({ user2_id: myProfile.id, is_match: true, status: 'active' }, '-matched_at', 50)
+          filterRecords('matches', { user1_id: myProfile.id, is_match: true, status: 'active' }, '-matched_at', 50),
+          filterRecords('matches', { user2_id: myProfile.id, is_match: true, status: 'active' }, '-matched_at', 50)
         ]);
         
         const rawMatches = [...matches1, ...matches2];
@@ -114,7 +113,7 @@ export default function Matches() {
         const profiles = await Promise.all(
           profileIds.map(async (id) => {
             try {
-              return await base44.entities.UserProfile.filter({ id });
+              return await filterRecords('user_profiles', { id });
             } catch (error) {
               console.error(`Failed to fetch profile ${id}:`, error);
               return [];
@@ -155,7 +154,7 @@ export default function Matches() {
         
         // Get all likes and matches in parallel (only 2 API calls)
         const [allLikes, allMatches] = await Promise.all([
-          base44.entities.Like.filter({ liked_id: myProfile.id }, '-created_date', 50),
+          filterRecords('likes', { liked_id: myProfile.id }, '-created_date', 50),
           (async () => {
             // Use direct Supabase query with proper OR grouping
             const { data } = await supabase
@@ -202,7 +201,7 @@ export default function Matches() {
         const profiles = await Promise.all(
           limitedLikes.map(async (like) => {
             try {
-              const result = await base44.entities.UserProfile.filter({ id: like.liker_id });
+              const result = await filterRecords('user_profiles', { id: like.liker_id });
               return result[0];
             } catch (error) {
               console.error(`Failed to fetch liker profile ${like.liker_id}:`, error);
@@ -233,14 +232,14 @@ export default function Matches() {
           matchesData.slice(0, 50).map(async (match) => {
             try {
               // Get last message
-              const messages = await base44.entities.Message.filter(
+              const messages = await filterRecords('messages', 
                 { match_id: match.id },
                 '-created_date',
                 1
               );
               
               // Count unread messages
-              const unreadMessages = await base44.entities.Message.filter({
+              const unreadMessages = await filterRecords('messages', {
                 match_id: match.id,
                 receiver_id: myProfile.id,
                 is_read: false

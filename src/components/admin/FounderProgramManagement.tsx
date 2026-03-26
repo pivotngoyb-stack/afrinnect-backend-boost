@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, invokeFunction, listRecords, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -36,7 +35,7 @@ export default function FounderProgramManagement() {
   const { data: settings, isLoading: loadingSettings } = useQuery({
     queryKey: ['founder-settings'],
     queryFn: async () => {
-      const records = await base44.entities.SystemSettings.filter({ key: 'founder_program' });
+      const records = await filterRecords('system_settings', { key: 'founder_program' });
       return records[0]?.value || {
         founders_mode_enabled: false,
         auto_assign_new_users: false,
@@ -51,7 +50,7 @@ export default function FounderProgramManagement() {
     queryFn: async () => {
       // Try backend function first (if available)
       try {
-        const response = await base44.functions.invoke('getFounderStats', {});
+        const response = await invokeFunction('getFounderStats', {});
         if (response?.success && response?.data) {
           return {
             total_founders: response.data.summary?.total || 0,
@@ -69,9 +68,9 @@ export default function FounderProgramManagement() {
 
       // Fallback: Calculate stats locally
       const [founders, codes, redemptions] = await Promise.all([
-        base44.entities.UserProfile.filter({ is_founding_member: true }),
-        base44.entities.FounderInviteCode.list('-created_date', 50),
-        base44.entities.FounderCodeRedemption.list('-created_date', 100)
+        filterRecords('user_profiles', { is_founding_member: true }),
+        listRecords('founder_invite_codes', '-created_date', 50),
+        listRecords('founder_code_redemptions', '-created_date', 100)
       ]);
 
       const now = new Date();
@@ -127,18 +126,18 @@ export default function FounderProgramManagement() {
   const { data: foundingMembers, isLoading: loadingMembers } = useQuery({
     queryKey: ['founding-members'],
     queryFn: async () => {
-      return await base44.entities.UserProfile.filter({ is_founding_member: true });
+      return await filterRecords('user_profiles', { is_founding_member: true });
     }
   });
 
   // Update settings mutation
   const updateSettingsMutation = useMutation({
     mutationFn: async (newSettings) => {
-      const records = await base44.entities.SystemSettings.filter({ key: 'founder_program' });
+      const records = await filterRecords('system_settings', { key: 'founder_program' });
       if (records.length > 0) {
-        await base44.entities.SystemSettings.update(records[0].id, { value: newSettings });
+        await updateRecord('system_settings', records[0].id, { value: newSettings });
       } else {
-        await base44.entities.SystemSettings.create({
+        await createRecord('system_settings', {
           key: 'founder_program',
           value: newSettings,
           description: 'Founding Member Program Configuration'
@@ -154,7 +153,7 @@ export default function FounderProgramManagement() {
   // Create invite code mutation
   const createCodeMutation = useMutation({
     mutationFn: async (codeData) => {
-      await base44.entities.FounderInviteCode.create({
+      await createRecord('founder_invite_codes', {
         code: codeData.code.toUpperCase(),
         max_redemptions: codeData.max_redemptions,
         trial_days: codeData.trial_days,
@@ -174,7 +173,7 @@ export default function FounderProgramManagement() {
   const manageUserMutation = useMutation({
     mutationFn: async (data) => {
       // Find profile by email
-      const profiles = await base44.entities.UserProfile.filter({ created_by: data.email });
+      const profiles = await filterRecords('user_profiles', { created_by: data.email });
       if (profiles.length === 0) {
         throw new Error('User not found with that email');
       }
@@ -184,7 +183,7 @@ export default function FounderProgramManagement() {
         const trialDays = data.trial_days || 183;
         const trialEndsAt = new Date(Date.now() + trialDays * 24 * 60 * 60 * 1000);
         
-        await base44.entities.UserProfile.update(profile.id, {
+        await updateRecord('user_profiles', profile.id, {
           is_founding_member: true,
           founding_member_granted_at: new Date().toISOString(),
           founding_member_trial_ends_at: trialEndsAt.toISOString(),
@@ -196,7 +195,7 @@ export default function FounderProgramManagement() {
         });
         return { action: 'Founding member status granted' };
       } else if (data.action === 'revoke') {
-        await base44.entities.UserProfile.update(profile.id, {
+        await updateRecord('user_profiles', profile.id, {
           is_founding_member: false,
           founding_trial_consumed: true,
           is_premium: false,
@@ -211,7 +210,7 @@ export default function FounderProgramManagement() {
           : new Date();
         const newEnd = new Date(currentEnd.getTime() + (data.extend_days || 30) * 24 * 60 * 60 * 1000);
         
-        await base44.entities.UserProfile.update(profile.id, {
+        await updateRecord('user_profiles', profile.id, {
           founding_member_trial_ends_at: newEnd.toISOString(),
           premium_until: newEnd.toISOString()
         });

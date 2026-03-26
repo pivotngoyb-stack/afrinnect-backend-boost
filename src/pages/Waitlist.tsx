@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
@@ -26,7 +25,7 @@ export default function Waitlist() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const user = await base44.auth.me();
+        const user = await getCurrentUser();
         if (user) {
           setFormData(prev => ({
             ...prev,
@@ -61,14 +60,14 @@ export default function Waitlist() {
 
     try {
       // Check if already on waitlist
-      const existing = await base44.entities.WaitlistEntry.filter({ email: formData.email });
+      const existing = await filterRecords('waitlist_entries', { email: formData.email });
       if (existing.length > 0) {
         setIsSuccess(true); // Treat duplicate as success to avoid leaking info
         setIsSubmitting(false);
         return;
       }
 
-      await base44.entities.WaitlistEntry.create({
+      await createRecord('waitlist_entries', {
         email: formData.email,
         full_name: formData.full_name,
         location: formData.location,

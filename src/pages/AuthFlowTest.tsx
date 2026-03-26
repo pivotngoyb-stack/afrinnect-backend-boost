@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, getCurrentUser, invokeFunction, isAuthenticated, logout } from '@/lib/supabase-helpers';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,7 +22,7 @@ export default function AuthFlowTest() {
     // Test 1: Authentication check
     console.log('Test 1: Checking authentication...');
     try {
-      const isAuth = await base44.auth.isAuthenticated();
+      const isAuth = await isAuthenticated();
       results.authCheck = { pass: true, message: `Authenticated: ${isAuth}` };
     } catch (e) {
       results.authCheck = { pass: false, message: e.message };
@@ -32,7 +31,7 @@ export default function AuthFlowTest() {
     // Test 2: Get current user
     console.log('Test 2: Getting current user...');
     try {
-      const user = await base44.auth.me();
+      const user = await getCurrentUser();
       results.getUser = { pass: !!user, message: user ? `User: ${user.email}` : 'No user' };
     } catch (e) {
       results.getUser = { pass: false, message: e.message };
@@ -41,9 +40,9 @@ export default function AuthFlowTest() {
     // Test 3: Legal acceptance check
     console.log('Test 3: Checking legal acceptance...');
     try {
-      const user = await base44.auth.me();
+      const user = await getCurrentUser();
       if (user) {
-        const acceptances = await base44.entities.LegalAcceptance.filter({ user_id: user.id });
+        const acceptances = await filterRecords('legal_acceptances', { user_id: user.id });
         results.legalCheck = { pass: true, message: `Acceptances: ${acceptances.length}` };
       }
     } catch (e) {
@@ -53,9 +52,9 @@ export default function AuthFlowTest() {
     // Test 4: Profile check
     console.log('Test 4: Checking profile...');
     try {
-      const user = await base44.auth.me();
+      const user = await getCurrentUser();
       if (user) {
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         results.profileCheck = { pass: true, message: `Profiles: ${profiles.length}` };
       }
     } catch (e) {
@@ -83,7 +82,7 @@ export default function AuthFlowTest() {
     // Test 7: Send OTP
     console.log('Test 7: Sending OTP...');
     try {
-      const response = await base44.functions.invoke('sendOTP', { phone_number: testPhone });
+      const response = await invokeFunction('sendOTP', { phone_number: testPhone });
       if (response.data.success) {
         setReceivedOTP(response.data.otp_code);
         results.sendOTP = { pass: true, message: `OTP: ${response.data.otp_code}` };
@@ -125,7 +124,7 @@ export default function AuthFlowTest() {
     }
 
     try {
-      const response = await base44.functions.invoke('verifyOTP', {
+      const response = await invokeFunction('verifyOTP', {
         phone_number: testPhone,
         otp_code: testOTP
       });

@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -20,8 +19,8 @@ export default function CouplesComparison({ isOpen, onClose }) {
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const user = await base44.auth.me();
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const user = await getCurrentUser();
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) setMyProfile(profiles[0]);
       } catch (e) { console.error(e); }
     };
@@ -32,13 +31,13 @@ export default function CouplesComparison({ isOpen, onClose }) {
     queryKey: ['my-matches'],
     queryFn: async () => {
       if (!myProfile) return [];
-      const matches1 = await base44.entities.Match.filter({ user1_id: myProfile.id });
-      const matches2 = await base44.entities.Match.filter({ user2_id: myProfile.id });
+      const matches1 = await filterRecords('matches', { user1_id: myProfile.id });
+      const matches2 = await filterRecords('matches', { user2_id: myProfile.id });
       const allMatches = [...matches1, ...matches2];
       
       const enhancedMatches = await Promise.all(allMatches.map(async (match) => {
         const otherId = match.user1_id === myProfile.id ? match.user2_id : match.user1_id;
-        const otherProfiles = await base44.entities.UserProfile.filter({ id: otherId });
+        const otherProfiles = await filterRecords('user_profiles', { id: otherId });
         return { ...match, otherProfile: otherProfiles[0] };
       }));
       

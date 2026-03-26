@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Shield, Clock, User, Phone, MapPin, Calendar, Loader2 } from 'lucide-react';
@@ -38,7 +37,7 @@ export default function SafetyCheckSetup({ myProfile, matchProfile, initialData 
 
   const createSafetyCheckMutation = useMutation({
     mutationFn: async () => {
-      return base44.entities.SafetyCheck.create({
+      return createRecord('safety_checks', {
         user_profile_id: myProfile.id,
         meeting_with_profile_id: matchProfile.id,
         ...formData,

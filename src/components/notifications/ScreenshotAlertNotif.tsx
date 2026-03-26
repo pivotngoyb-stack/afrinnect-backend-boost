@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, X, AlertTriangle } from 'lucide-react';
@@ -13,13 +12,13 @@ export default function ScreenshotAlertNotif({ myProfileId }: { myProfileId: str
   const { data: screenshotAlerts = [] } = useQuery({
     queryKey: ['screenshot-alerts', myProfileId],
     queryFn: async () => {
-      const alerts = await base44.entities.ScreenshotAlert.filter({
+      const alerts = await filterRecords('screenshot_alerts', {
         screenshot_of_profile_id: myProfileId,
         alert_sent: false
       }, '-created_date', 10);
 
       for (const alert of alerts) {
-        await base44.entities.ScreenshotAlert.update(alert.id, {
+        await updateRecord('screenshot_alerts', alert.id, {
           alert_sent: true
         });
       }

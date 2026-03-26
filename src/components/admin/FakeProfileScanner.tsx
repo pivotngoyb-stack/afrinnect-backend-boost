@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, invokeLLM, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, Shield, Ban, Eye, RefreshCw } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -15,12 +14,12 @@ export default function FakeProfileScanner() {
 
   const { data: detections = [] } = useQuery({
     queryKey: ['fake-profile-detections'],
-    queryFn: () => base44.entities.FakeProfileDetection.filter({}, '-risk_score', 100)
+    queryFn: () => filterRecords('fake_profile_detections', {}, '-risk_score', 100)
   });
 
   const { data: profiles = [] } = useQuery({
     queryKey: ['all-profiles-scan'],
-    queryFn: () => base44.entities.UserProfile.filter({}, '-created_date', 1000)
+    queryFn: () => filterRecords('user_profiles', {}, '-created_date', 1000)
   });
 
   const scanProfileMutation = useMutation({
@@ -53,7 +52,7 @@ export default function FakeProfileScanner() {
       }
 
       // AI analysis
-      const aiAnalysis = await base44.integrations.Core.InvokeLLM({
+      const aiAnalysis = await invokeLLM({
         prompt: `Analyze this dating profile for signs of being fake or a scammer. Profile: Name: ${profile.display_name}, Bio: ${profile.bio || 'None'}, Photos: ${profile.photos?.length || 0}, Location: ${profile.current_city}, ${profile.current_country}. Return JSON with is_suspicious (boolean), confidence (0-100), and reasons (array of strings).`,
         response_json_schema: {
           type: "object",
@@ -77,7 +76,7 @@ export default function FakeProfileScanner() {
       else if (riskScore >= 40) status = 'suspicious';
 
       // Create or update detection record
-      await base44.entities.FakeProfileDetection.create({
+      await createRecord('fake_profile_detections', {
         user_profile_id: profileId,
         risk_score: Math.round(riskScore),
         risk_factors: riskFactors,
@@ -96,14 +95,14 @@ export default function FakeProfileScanner() {
 
   const banProfileMutation = useMutation({
     mutationFn: async ({ profileId, detectionId }) => {
-      await base44.entities.UserProfile.update(profileId, {
+      await updateRecord('user_profiles', profileId, {
         is_banned: true,
         is_active: false,
         ban_reason: 'Flagged as fake/suspicious profile by admin'
       });
 
       if (detectionId) {
-        await base44.entities.FakeProfileDetection.update(detectionId, {
+        await updateRecord('fake_profile_detections', detectionId, {
           status: 'banned',
           reviewed_by_human: true
         });

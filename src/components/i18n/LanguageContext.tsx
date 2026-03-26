@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { translations } from './translations';
 
 const LanguageContext = createContext();
@@ -20,9 +19,9 @@ export const LanguageProvider = ({ children }) => {
   useEffect(() => {
     const loadLanguage = async () => {
       try {
-        const user = await base44.auth.me();
+        const user = await getCurrentUser();
         if (user) {
-          const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+          const profiles = await filterRecords('user_profiles', { user_id: user.id });
           if (profiles.length > 0 && profiles[0].preferred_language) {
             setLanguage(profiles[0].preferred_language);
           }
@@ -40,11 +39,11 @@ export const LanguageProvider = ({ children }) => {
   const changeLanguage = async (newLanguage) => {
     setLanguage(newLanguage);
     try {
-      const user = await base44.auth.me();
+      const user = await getCurrentUser();
       if (user) {
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) {
-          await base44.entities.UserProfile.update(profiles[0].id, {
+          await updateRecord('user_profiles', profiles[0].id, {
             preferred_language: newLanguage
           });
         }

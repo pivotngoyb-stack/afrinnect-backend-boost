@@ -1,6 +1,4 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Heart, Sparkles, Star, Crown, PartyPopper } from 'lucide-react';
 import { Button } from "@/components/ui/button";

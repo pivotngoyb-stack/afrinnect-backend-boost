@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, getCurrentUser, invokeFunction, invokeLLM, updateRecord, uploadFile } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPageUrl } from '@/utils';
 import { Link } from 'react-router-dom';
@@ -94,8 +93,8 @@ export default function Chat() {
   useEffect(() => {
     const fetchProfiles = async () => {
       try {
-        const user = await base44.auth.me();
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const user = await getCurrentUser();
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) {
           setMyProfile(profiles[0]);
         }
@@ -111,11 +110,11 @@ export default function Chat() {
     queryKey: ['match', matchId],
     queryFn: async () => {
       try {
-        const matches = await base44.entities.Match.filter({ id: matchId });
+        const matches = await filterRecords('matches', { id: matchId });
         if (matches.length > 0) {
           const m = matches[0];
           const otherId = m.user1_id === myProfile?.id ? m.user2_id : m.user1_id;
-          const otherProfiles = await base44.entities.UserProfile.filter({ id: otherId });
+          const otherProfiles = await filterRecords('user_profiles', { id: otherId });
           if (otherProfiles.length > 0) {
             setOtherProfile(otherProfiles[0]);
           }
@@ -175,7 +174,7 @@ export default function Chat() {
         // Batch update to reduce API calls
         Promise.all(
           unreadMessages.map(m => 
-            base44.entities.Message.update(m.id, {
+            updateRecord('messages', m.id, {
               is_read: true,
               read_at: new Date().toISOString()
             }).catch(err => console.error('Failed to mark message as read:', err))
@@ -195,7 +194,7 @@ export default function Chat() {
       }
       
       // Call secure backend function
-      const response = await base44.functions.invoke('sendMessage', {
+      const response = await invokeFunction('sendMessage', {
         matchId,
         content,
         type,
@@ -249,7 +248,7 @@ export default function Chat() {
   // Image mutation
   const sendImageMutation = useMutation({
     mutationFn: async (file) => {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await uploadFile({ file });
       await sendMessageMutation.mutateAsync({ content: 'Image', type: 'image', mediaUrl: file_url });
     },
     onError: () => {
@@ -264,7 +263,7 @@ export default function Chat() {
       const message = messages.find(m => m.id === messageId);
       if (!message) return;
 
-      const translated = await base44.integrations.Core.InvokeLLM({
+      const translated = await invokeLLM({
         prompt: `Translate this message to ${targetLang}: "${message.content}". Return only the translation.`,
         response_json_schema: {
           type: "object",
@@ -274,7 +273,7 @@ export default function Chat() {
         }
       });
 
-      await base44.entities.MessageTranslation.create({
+      await createRecord('message_translations', {
         message_id: messageId,
         original_language: 'unknown',
         translated_text: { [targetLang]: translated.translation }
@@ -291,7 +290,7 @@ export default function Chat() {
   // Report mutation - uses backend edge function for proper validation
   const reportMutation = useMutation({
     mutationFn: async () => {
-      const response = await base44.functions.invoke('submitReport', {
+      const response = await invokeFunction('submitReport', {
         reported_id: otherProfile.id,
         report_type: 'harassment',
         description: reportReason,
@@ -308,7 +307,7 @@ export default function Chat() {
   // Block user mutation - uses backend for proper validation
   const blockMutation = useMutation({
     mutationFn: async () => {
-      const response = await base44.functions.invoke('blockUser', {
+      const response = await invokeFunction('blockUser', {
         action: 'block',
         target_profile_id: otherProfile.id,
         match_id: match?.id,
@@ -384,7 +383,7 @@ export default function Chat() {
 
     setIsGeneratingReply(true);
     try {
-      const res = await base44.integrations.Core.InvokeLLM({
+      const res = await invokeLLM({
         prompt: `
           Generate 3 short, flirty or engaging reply options to this message: "${lastMessage.content}".
           Context: Dating app chat. Keep it casual and fun.

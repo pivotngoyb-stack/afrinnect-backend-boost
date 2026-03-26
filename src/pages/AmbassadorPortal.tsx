@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/lib/supabase-helpers';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -23,7 +22,7 @@ export default function AmbassadorPortal() {
   const { data, isLoading, error } = useQuery({
     queryKey: ['ambassador-portal'],
     queryFn: async () => {
-      const response = await base44.functions.invoke('ambassadorGetPortalData', {});
+      const response = await invokeFunction('ambassadorGetPortalData', {});
       if (response.data.error) throw new Error(response.data.error);
       return response.data;
     }

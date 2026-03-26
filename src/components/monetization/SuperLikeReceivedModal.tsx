@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Crown, Lock, Heart, Sparkles, X } from 'lucide-react';

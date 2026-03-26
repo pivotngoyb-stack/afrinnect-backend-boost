@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { deleteRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -18,9 +17,9 @@ export default function Notifications() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const user = await base44.auth.me();
+        const user = await getCurrentUser();
         if (user) {
-          const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+          const profiles = await filterRecords('user_profiles', { user_id: user.id });
           if (profiles.length > 0) {
             setMyProfile(profiles[0]);
           }
@@ -36,7 +35,7 @@ export default function Notifications() {
     queryKey: ['notifications', myProfile?.id],
     queryFn: async () => {
       try {
-        const allNotifs = await base44.entities.Notification.filter(
+        const allNotifs = await filterRecords('notifications', 
           { user_profile_id: myProfile.id },
           '-created_date',
           50
@@ -72,7 +71,7 @@ export default function Notifications() {
   });
 
   const markReadMutation = useMutation({
-    mutationFn: (notifId) => base44.entities.Notification.update(notifId, { is_read: true }),
+    mutationFn: (notifId) => updateRecord('notifications', notifId, { is_read: true }),
     onSuccess: () => {
       queryClient.invalidateQueries(['notifications']);
     }
@@ -81,7 +80,7 @@ export default function Notifications() {
   const markAllReadMutation = useMutation({
     mutationFn: async () => {
       const unread = notifications.filter(n => !n.is_read);
-      await Promise.all(unread.map(n => base44.entities.Notification.update(n.id, { is_read: true })));
+      await Promise.all(unread.map(n => updateRecord('notifications', n.id, { is_read: true })));
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['notifications']);
@@ -89,7 +88,7 @@ export default function Notifications() {
   });
 
   const deleteNotifMutation = useMutation({
-    mutationFn: (notifId) => base44.entities.Notification.delete(notifId),
+    mutationFn: (notifId) => deleteRecord('notifications', notifId),
     onSuccess: () => {
       queryClient.invalidateQueries(['notifications']);
     }

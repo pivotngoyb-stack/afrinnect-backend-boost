@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, getCurrentUser, listRecords } from '@/lib/supabase-helpers';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -23,8 +22,8 @@ export default function Marketplace() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const user = await base44.auth.me();
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const user = await getCurrentUser();
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) setMyProfile(profiles[0]);
       } catch (e) {}
     };
@@ -33,7 +32,7 @@ export default function Marketplace() {
 
   const { data: vendors = [], isLoading } = useQuery({
     queryKey: ['marketplace-vendors'],
-    queryFn: () => base44.entities.WeddingVendor.list('-is_featured'), // Featured first
+    queryFn: () => listRecords('wedding_vendors', '-is_featured'), // Featured first
     staleTime: 300000
   });
 

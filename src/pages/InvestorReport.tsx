@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useEffect, useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { invokeFunction } from '@/lib/supabase-helpers';
 import { useQuery } from '@tanstack/react-query';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -25,7 +24,7 @@ export default function InvestorReport() {
   const { data: reportData, isLoading, error } = useQuery({
     queryKey: ['investor-report-full'],
     queryFn: async () => {
-      const response = await base44.functions.invoke('getReportData', {});
+      const response = await invokeFunction('getReportData', {});
       if (response.data?.error) throw new Error(response.data.error);
       return response.data;
     },

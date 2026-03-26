@@ -1,11 +1,10 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AlertTriangle, Shield, Play, RefreshCw, Ban, CheckCircle } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, invokeFunction, updateRecord } from '@/lib/supabase-helpers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 
@@ -37,7 +36,7 @@ export default function RateLimitMonitor({ violations, currentUser }) {
     setIsRunningAI(true);
     setAiResult(null);
     try {
-      const result = await base44.functions.invoke('autoDetectScammers', {});
+      const result = await invokeFunction('autoDetectScammers', {});
       setAiResult(result.data);
       queryClient.invalidateQueries(['admin-audit-logs']);
       queryClient.invalidateQueries(['admin-reports']);
@@ -54,10 +53,10 @@ export default function RateLimitMonitor({ violations, currentUser }) {
   const manualBanMutation = useMutation({
     mutationFn: async (email) => {
       // Find profiles with this email
-      const profiles = await base44.entities.UserProfile.filter({ created_by: email });
+      const profiles = await filterRecords('user_profiles', { created_by: email });
       
       for (const profile of profiles) {
-        await base44.entities.UserProfile.update(profile.id, {
+        await updateRecord('user_profiles', profile.id, {
           is_banned: true,
           is_active: false,
           ban_reason: 'Manually banned by admin for rate limit abuse'
@@ -65,7 +64,7 @@ export default function RateLimitMonitor({ violations, currentUser }) {
       }
 
       // Log the action
-      await base44.entities.AdminAuditLog.create({
+      await createRecord('admin_audit_logs', {
         admin_user_id: currentUser.id,
         admin_email: currentUser.email,
         action_type: 'user_ban',

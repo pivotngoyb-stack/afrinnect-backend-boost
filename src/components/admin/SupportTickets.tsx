@@ -1,7 +1,6 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, updateRecord } from '@/lib/supabase-helpers';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,7 +18,7 @@ export default function SupportTickets({ tickets, currentUser }) {
 
   const updateTicketMutation = useMutation({
     mutationFn: async ({ ticketId, updates }) => {
-      await base44.entities.SupportTicket.update(ticketId, updates);
+      await updateRecord('support_tickets', ticketId, updates);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['admin-support-tickets']);

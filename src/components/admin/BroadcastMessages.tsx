@@ -1,7 +1,6 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, updateRecord } from '@/lib/supabase-helpers';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +22,7 @@ export default function BroadcastMessages({ broadcasts, profiles, currentUser })
 
   const createBroadcastMutation = useMutation({
     mutationFn: async () => {
-      const broadcast = await base44.entities.BroadcastMessage.create({
+      const broadcast = await createRecord('broadcast_messages', {
         ...formData,
         created_by: currentUser.email,
         status: formData.send_at ? 'scheduled' : 'draft',
@@ -55,7 +54,7 @@ export default function BroadcastMessages({ broadcasts, profiles, currentUser })
 
         // Create notifications for all target users
         for (const profile of targetProfiles) {
-          await base44.entities.Notification.create({
+          await createRecord('notifications', {
             user_profile_id: profile.id,
             type: 'admin_message',
             title: formData.title,
@@ -65,7 +64,7 @@ export default function BroadcastMessages({ broadcasts, profiles, currentUser })
         }
 
         // Update broadcast status
-        await base44.entities.BroadcastMessage.update(broadcast.id, {
+        await updateRecord('broadcast_messages', broadcast.id, {
           status: 'sent',
           sent_count: targetProfiles.length
         });

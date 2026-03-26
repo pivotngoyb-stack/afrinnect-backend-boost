@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { filterRecords, getCurrentUser, listRecords } from '@/lib/supabase-helpers';
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { 
@@ -35,7 +35,7 @@ export default function AdminSubscriptions() {
 
   const checkAuth = async () => {
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await getCurrentUser();
       if (!currentUser || currentUser.role !== 'admin') {
         navigate(createPageUrl('Home'));
         return;
@@ -50,8 +50,8 @@ export default function AdminSubscriptions() {
     setLoading(true);
     try {
       const [subs, profs] = await Promise.all([
-        base44.entities.Subscription.list('-created_date', 500),
-        base44.entities.UserProfile.list('-created_date', 2000)
+        listRecords('subscriptions', '-created_date', 500),
+        listRecords('user_profiles', '-created_date', 2000)
       ]);
       setSubscriptions(subs);
       setProfiles(profs);

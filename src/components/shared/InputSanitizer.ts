@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 export const sanitizeText = (text: string): string => {
   if (!text) return '';

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { CheckCircle, XCircle, Clock, MessageSquare, Eye } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, updateRecord } from '@/lib/supabase-helpers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 
@@ -21,7 +20,7 @@ export default function DisputeManagement({ disputes, currentUser }) {
       const dispute = disputes.find(d => d.id === disputeId);
       
       // Update dispute status
-      await base44.entities.Dispute.update(disputeId, {
+      await updateRecord('disputes', disputeId, {
         status: approved ? 'approved' : 'rejected',
         admin_response: response,
         reviewed_by: currentUser.email,
@@ -30,9 +29,9 @@ export default function DisputeManagement({ disputes, currentUser }) {
 
       // If approved, unban the user
       if (approved && dispute.user_profile_id) {
-        const profile = await base44.entities.UserProfile.filter({ id: dispute.user_profile_id });
+        const profile = await filterRecords('user_profiles', { id: dispute.user_profile_id });
         if (profile.length > 0) {
-          await base44.entities.UserProfile.update(profile[0].id, {
+          await updateRecord('user_profiles', profile[0].id, {
             is_banned: false,
             is_suspended: false,
             is_active: true,
@@ -43,7 +42,7 @@ export default function DisputeManagement({ disputes, currentUser }) {
       }
 
       // Log admin action
-      await base44.entities.AdminAuditLog.create({
+      await createRecord('admin_audit_logs', {
         admin_user_id: currentUser.id,
         admin_email: currentUser.email,
         action_type: approved ? 'user_unban' : 'dispute_rejected',
@@ -57,7 +56,7 @@ export default function DisputeManagement({ disputes, currentUser }) {
 
       // Send notification to user
       if (dispute.user_profile_id) {
-        await base44.entities.Notification.create({
+        await createRecord('notifications', {
           user_profile_id: dispute.user_profile_id,
           type: 'admin_message',
           title: approved ? 'Appeal Approved' : 'Appeal Decision',

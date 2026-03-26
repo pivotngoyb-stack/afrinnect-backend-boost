@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { bulkCreateRecords, createRecord, filterRecords, getCurrentUser, listRecords } from '@/lib/supabase-helpers';
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { 
@@ -48,7 +48,7 @@ export default function AdminBroadcast() {
 
   const checkAuth = async () => {
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await getCurrentUser();
       if (!currentUser || currentUser.role !== 'admin') {
         navigate(createPageUrl('Home'));
         return;
@@ -64,7 +64,7 @@ export default function AdminBroadcast() {
     setLoading(true);
     try {
       const [profs, history] = await Promise.all([
-        base44.entities.UserProfile.list('-created_date', 2000),
+        listRecords('user_profiles', '-created_date', 2000),
         base44.entities.BroadcastMessage?.list('-created_date', 20) || []
       ]);
       setProfiles(profs.filter(p => p.is_active && !p.is_banned));
@@ -117,12 +117,12 @@ export default function AdminBroadcast() {
       // Batch create (in chunks of 50)
       for (let i = 0; i < notifications.length; i += 50) {
         const batch = notifications.slice(i, i + 50);
-        await base44.entities.Notification.bulkCreate(batch);
+        await bulkCreateRecords('notifications', batch);
       }
 
       // Record broadcast
       if (base44.entities.BroadcastMessage) {
-        await base44.entities.BroadcastMessage.create({
+        await createRecord('broadcast_messages', {
           title: broadcast.title,
           message: broadcast.message,
           target_audience: broadcast.targetAudience,

@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, updateRecord } from '@/lib/supabase-helpers';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,13 +45,13 @@ export default function SystemSettings() {
   useEffect(() => {
     const fetchSettings = async () => {
       // Use list to debug if filter is failing, but filter should work
-      const records = await base44.entities.SystemSettings.filter({ key: 'launch_configuration' });
+      const records = await filterRecords('system_settings', { key: 'launch_configuration' });
       if (records.length > 0) {
         setSettings(prev => ({ ...prev, isLive: records[0].value.is_live }));
       } else {
         // Create default if missing
         try {
-          await base44.entities.SystemSettings.create({
+          await createRecord('system_settings', {
             key: 'launch_configuration',
             value: { is_live: false },
             description: 'Launch configuration'
@@ -68,13 +67,13 @@ export default function SystemSettings() {
   const handleSave = async () => {
     try {
       // Save launch configuration
-      const records = await base44.entities.SystemSettings.filter({ key: 'launch_configuration' });
+      const records = await filterRecords('system_settings', { key: 'launch_configuration' });
       if (records.length > 0) {
-        await base44.entities.SystemSettings.update(records[0].id, {
+        await updateRecord('system_settings', records[0].id, {
           value: { is_live: settings.isLive }
         });
       } else {
-        await base44.entities.SystemSettings.create({
+        await createRecord('system_settings', {
           key: 'launch_configuration',
           value: { is_live: settings.isLive },
           description: 'Launch configuration'

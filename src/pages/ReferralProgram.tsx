@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,10 +13,10 @@ export default function ReferralProgram() {
   
   useEffect(() => {
     const init = async () => {
-      const u = await base44.auth.me();
+      const u = await getCurrentUser();
       setUser(u);
       
-      const referrals = await base44.entities.Referral.filter({ referrer_id: u.id });
+      const referrals = await filterRecords('referrals', { referrer_id: u.id });
       setStats({
         total: referrals.length,
         completed: referrals.filter(r => r.status === 'completed').length,

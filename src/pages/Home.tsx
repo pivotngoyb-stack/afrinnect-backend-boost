@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, deleteRecord, filterRecords, getCurrentUser, isAuthenticated, updateRecord } from '@/lib/supabase-helpers';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
@@ -64,7 +63,7 @@ export default function Home() {
     const timer = setTimeout(() => {
       queryClient.prefetchQuery({
         queryKey: ['who-likes-me', myProfile.id],
-        queryFn: () => base44.entities.Like.filter({ liked_id: myProfile.id, is_seen: false }, '-created_at', 50),
+        queryFn: () => filterRecords('likes', { liked_id: myProfile.id, is_seen: false }, '-created_at', 50),
         staleTime: 120000
       });
     }, 2000);
@@ -76,7 +75,7 @@ export default function Home() {
     queryFn: async () => {
       if (!myProfile?.id) return { likes: 0, views: 0 };
       try {
-        const likes = await base44.entities.Like.filter({ liked_id: myProfile.id, is_seen: false });
+        const likes = await filterRecords('likes', { liked_id: myProfile.id, is_seen: false });
         return { likes: likes.length, views: 0 };
       } catch { return { likes: 0, views: 0 }; }
     },
@@ -90,7 +89,7 @@ export default function Home() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const isAuth = await base44.auth.isAuthenticated();
+        const isAuth = await isAuthenticated();
         if (!isAuth) { navigate(createPageUrl('Landing')); return; }
         setIsCheckingAuth(false);
       } catch { navigate(createPageUrl('Landing')); }
@@ -103,11 +102,11 @@ export default function Home() {
     if (isCheckingAuth) return;
     const fetchMyProfile = async () => {
       try {
-        const user = await base44.auth.me();
+        const user = await getCurrentUser();
         if (!user) { navigate(createPageUrl('Landing')); return; }
         if (user.role === 'admin' || user.email === 'pivotngoyb@gmail.com') setIsAdmin(true);
 
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) {
           const profile = profiles[0];
           if (profile.is_banned || profile.is_suspended) { setMyProfile(profile); return; }
@@ -120,7 +119,7 @@ export default function Home() {
           const existingDeviceIds = profile.device_ids || [];
           if (!existingDeviceIds.includes(deviceId)) {
             if (existingDeviceIds.length >= 4) { navigate(createPageUrl('Settings')); return; }
-            await base44.entities.UserProfile.update(profile.id, {
+            await updateRecord('user_profiles', profile.id, {
               device_ids: [...existingDeviceIds, deviceId],
               device_info: [...(profile.device_info || []), { device_id: deviceId, device_name: navigator.userAgent.substring(0, 50), last_login: new Date().toISOString() }]
             });
@@ -135,7 +134,7 @@ export default function Home() {
             try {
               let newStreak = profile.login_streak || 0;
               newStreak = lastLogin === yesterday ? newStreak + 1 : 1;
-              await base44.entities.UserProfile.update(profile.id, { login_streak: newStreak, last_login_date: today, last_active: new Date().toISOString() });
+              await updateRecord('user_profiles', profile.id, { login_streak: newStreak, last_login_date: today, last_active: new Date().toISOString() });
             } catch {}
           }
         } else { navigate(createPageUrl('Onboarding')); }
@@ -161,9 +160,9 @@ export default function Home() {
     queryFn: async () => {
       try {
         const [allProfiles, myPasses, myLikes] = await Promise.all([
-          base44.entities.UserProfile.filter({ is_active: true, is_banned: false }, '-created_at', 200),
-          base44.entities.Pass.filter({ passer_id: myProfile.id }, '-created_at', 500).catch(() => []),
-          base44.entities.Like.filter({ liker_id: myProfile.id }, '-created_at', 500).catch(() => []),
+          filterRecords('user_profiles', { is_active: true, is_banned: false }, '-created_at', 200),
+          filterRecords('passes', { passer_id: myProfile.id }, '-created_at', 500).catch(() => []),
+          filterRecords('likes', { liker_id: myProfile.id }, '-created_at', 500).catch(() => []),
         ]);
 
         const passedIds = new Set(myPasses.map(p => p.passed_id));
@@ -220,19 +219,19 @@ export default function Home() {
 
       const today = new Date().toISOString().split('T')[0];
       const shouldReset = myProfile.daily_likes_reset_date !== today;
-      await base44.entities.UserProfile.update(myProfile.id, {
+      await updateRecord('user_profiles', myProfile.id, {
         daily_likes_count: shouldReset ? 1 : (myProfile.daily_likes_count || 0) + 1,
         daily_likes_reset_date: today
       });
 
-      const likedProfiles = await base44.entities.UserProfile.filter({ id: likedId });
+      const likedProfiles = await filterRecords('user_profiles', { id: likedId });
       if (!likedProfiles.length) throw new Error('Profile not found');
       const likedProfile = likedProfiles[0];
 
       const tier = myProfile.subscription_tier || 'free';
       const isPriorityLike = tier === 'elite' || tier === 'vip';
 
-      await base44.entities.Like.create({
+      await createRecord('likes', {
         liker_id: myProfile.id, liked_id: likedId,
         liker_user_id: myProfile.user_id, liked_user_id: likedProfile.user_id,
         is_super_like: isSuperLike, is_seen: false,
@@ -244,7 +243,7 @@ export default function Home() {
         const { data: existingMatch } = await supabase.from('matches').select('id')
           .or(`and(user1_id.eq.${myProfile.id},user2_id.eq.${likedId}),and(user1_id.eq.${likedId},user2_id.eq.${myProfile.id})`);
         if (existingMatch?.length > 0) {
-          await base44.entities.Message.create({
+          await createRecord('messages', {
             match_id: existingMatch[0].id, sender_id: myProfile.id, receiver_id: likedId,
             sender_user_id: myProfile.user_id, receiver_user_id: likedProfile.user_id,
             content: likeNote, message_type: 'text', like_note: likeNote
@@ -252,10 +251,10 @@ export default function Home() {
         }
       }
 
-      let mutualLikes = await base44.entities.Like.filter({ liker_id: likedId, liked_id: myProfile.id });
+      let mutualLikes = await filterRecords('likes', { liker_id: likedId, liked_id: myProfile.id });
 
       if (mutualLikes.length === 0 && likedProfile.is_seed && Math.random() < 0.7) {
-        await base44.entities.Like.create({
+        await createRecord('likes', {
           liker_id: likedId, liked_id: myProfile.id,
           liker_user_id: likedProfile.user_id, liked_user_id: myProfile.user_id,
           is_super_like: false, is_seen: true,
@@ -270,10 +269,10 @@ export default function Home() {
         if (!existingMatches?.length) {
           if (!myProfile.has_matched_before) {
             trackEvent(CONVERSION_EVENTS.FIRST_MATCH);
-            await base44.entities.UserProfile.update(myProfile.id, { has_matched_before: true });
+            await updateRecord('user_profiles', myProfile.id, { has_matched_before: true });
           }
 
-          await base44.entities.Match.create({
+          await createRecord('matches', {
             user1_id: myProfile.id, user2_id: likedId,
             user1_user_id: myProfile.user_id, user2_user_id: likedProfile.user_id,
             user1_liked: true, user2_liked: true, is_match: true,
@@ -282,12 +281,12 @@ export default function Home() {
             is_expired: false, last_chance_sent: false, first_message_sent: false, status: 'active'
           });
 
-          await base44.entities.Notification.create({
+          await createRecord('notifications', {
             user_profile_id: likedId, user_id: likedProfile.user_id, type: 'match',
             title: "It's a Match! 💕", message: `You and ${myProfile.display_name} liked each other!`,
             from_profile_id: myProfile.id, link_to: createPageUrl('Matches')
           });
-          await base44.entities.Notification.create({
+          await createRecord('notifications', {
             user_profile_id: myProfile.id, user_id: myProfile.user_id, type: 'match',
             title: "It's a Match! 💕", message: `You and ${likedProfile.display_name} liked each other!`,
             from_profile_id: likedId, link_to: createPageUrl('Matches')
@@ -297,7 +296,7 @@ export default function Home() {
         }
         return { isMatch: true };
       } else {
-        await base44.entities.Notification.create({
+        await createRecord('notifications', {
           user_profile_id: likedId, user_id: likedProfile.user_id,
           type: isSuperLike ? 'super_like' : 'like',
           title: isSuperLike ? "You got a Super Like! ⭐" : "Someone likes you!",
@@ -334,7 +333,7 @@ export default function Home() {
     const tier = myProfile?.subscription_tier || 'free';
     if (tier === 'free') {
       const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
-      const weekly = await base44.entities.Like.filter({ liker_id: myProfile.id, is_super_like: true, created_date: { $gte: weekAgo } });
+      const weekly = await filterRecords('likes', { liker_id: myProfile.id, is_super_like: true, created_date: { $gte: weekAgo } });
       if (weekly.length >= 1) return;
     }
     if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
@@ -346,7 +345,7 @@ export default function Home() {
   const passMutation = useMutation({
     mutationFn: async () => {
       if (navigator.vibrate) navigator.vibrate(30);
-      await base44.entities.Pass.create({
+      await createRecord('passes', {
         passer_id: myProfile.id, passed_id: currentProfile.id,
         passer_user_id: myProfile.user_id, is_rewindable: true
       });
@@ -373,12 +372,12 @@ export default function Home() {
 
     const lastAction = swipeHistory[swipeHistory.length - 1];
     if (lastAction.action === 'like' || lastAction.action === 'superlike') {
-      const existing = await base44.entities.Like.filter({ liker_id: myProfile.id, liked_id: lastAction.profile.id });
-      for (const l of existing) await base44.entities.Like.delete(l.id);
+      const existing = await filterRecords('likes', { liker_id: myProfile.id, liked_id: lastAction.profile.id });
+      for (const l of existing) await deleteRecord('likes', l.id);
     }
     if (lastAction.action === 'pass') {
-      const existing = await base44.entities.Pass.filter({ passer_id: myProfile.id, passed_id: lastAction.profile.id });
-      for (const p of existing) await base44.entities.Pass.delete(p.id);
+      const existing = await filterRecords('passes', { passer_id: myProfile.id, passed_id: lastAction.profile.id });
+      for (const p of existing) await deleteRecord('passes', p.id);
     }
     setCurrentIndex(lastAction.index);
     setSwipeHistory(swipeHistory.slice(0, -1));
@@ -386,7 +385,7 @@ export default function Home() {
   };
 
   const completeTutorial = async () => {
-    if (myProfile) await base44.entities.UserProfile.update(myProfile.id, { tutorial_completed: true });
+    if (myProfile) await updateRecord('user_profiles', myProfile.id, { tutorial_completed: true });
   };
 
   const tutorialSteps = [

@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, listRecords, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,19 +31,19 @@ export default function ABTestManager() {
   // Fetch active tests
   const { data: activeTests = [] } = useQuery({
     queryKey: ['ab-tests-active'],
-    queryFn: () => base44.entities.ABTest.filter({ is_active: true }, '-started_at')
+    queryFn: () => filterRecords('ab_tests', { is_active: true }, '-started_at')
   });
 
   // Fetch user assignments
   const { data: testAssignments = [] } = useQuery({
     queryKey: ['ab-test-assignments'],
-    queryFn: () => base44.entities.ABTest.list('-assigned_at', 1000)
+    queryFn: () => listRecords('ab_tests', '-assigned_at', 1000)
   });
 
   // Fetch analytics for conversions
   const { data: analytics = [] } = useQuery({
     queryKey: ['ab-test-analytics'],
-    queryFn: () => base44.entities.ProfileAnalytics.filter({
+    queryFn: () => filterRecords('profile_analytics', {
       event_type: { $regex: 'ab_test' }
     }, '-created_date', 5000)
   });
@@ -52,7 +51,7 @@ export default function ABTestManager() {
   const createTestMutation = useMutation({
     mutationFn: async (testData) => {
       // Create the test configuration (this will be used by the hook)
-      return await base44.entities.ABTest.create({
+      return await createRecord('ab_tests', {
         ...testData,
         user_id: 'config', // Special marker for config records
         variant: 'config',
@@ -75,7 +74,7 @@ export default function ABTestManager() {
 
   const toggleTestMutation = useMutation({
     mutationFn: ({ id, isActive }) => 
-      base44.entities.ABTest.update(id, { 
+      updateRecord('ab_tests', id, { 
         is_active: !isActive,
         ended_at: !isActive ? null : new Date().toISOString()
       }),
@@ -86,7 +85,7 @@ export default function ABTestManager() {
 
   const declareWinnerMutation = useMutation({
     mutationFn: ({ id, winner }) =>
-      base44.entities.ABTest.update(id, {
+      updateRecord('ab_tests', id, {
         winner,
         is_active: false,
         ended_at: new Date().toISOString()

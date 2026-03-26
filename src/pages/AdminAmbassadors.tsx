@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { createRecord, filterRecords, getCurrentUser, listRecords, updateRecord } from '@/lib/supabase-helpers';
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { 
@@ -44,7 +44,7 @@ export default function AdminAmbassadors() {
 
   const checkAuth = async () => {
     try {
-      const currentUser = await base44.auth.me();
+      const currentUser = await getCurrentUser();
       if (!currentUser || currentUser.role !== 'admin') {
         navigate(createPageUrl('Home'));
         return;
@@ -59,7 +59,7 @@ export default function AdminAmbassadors() {
     setLoading(true);
     try {
       const [ambs, refs, comms] = await Promise.all([
-        base44.entities.Ambassador.list('-created_date', 100),
+        listRecords('ambassadors', '-created_date', 100),
         base44.entities.AmbassadorReferral?.list('-created_date', 500) || [],
         base44.entities.AmbassadorCommission?.list('-created_date', 500) || []
       ]);
@@ -75,7 +75,7 @@ export default function AdminAmbassadors() {
   const createAmbassador = async () => {
     try {
       const referralCode = `AMBA_${newAmbassador.handle.toUpperCase()}`;
-      await base44.entities.Ambassador.create({
+      await createRecord('ambassadors', {
         ...newAmbassador,
         referral_code: referralCode,
         referral_link: `https://afrinnect.app/join?ref=${referralCode}`,
@@ -102,7 +102,7 @@ export default function AdminAmbassadors() {
 
   const updateAmbassadorStatus = async (ambassador, status) => {
     try {
-      await base44.entities.Ambassador.update(ambassador.id, { status });
+      await updateRecord('ambassadors', ambassador.id, { status });
       toast.success(`Ambassador ${status}`);
       await loadData();
     } catch (error) {

@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, getCurrentUser, updateRecord, uploadFile } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -23,9 +22,9 @@ export default function SuccessStoryContest() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const user = await base44.auth.me();
+      const user = await getCurrentUser();
       if (user) {
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) setMyProfile(profiles[0]);
       }
     };
@@ -36,7 +35,7 @@ export default function SuccessStoryContest() {
 
   const { data: stories = [] } = useQuery({
     queryKey: ['success-stories', currentMonth],
-    queryFn: () => base44.entities.SuccessStoryContest.filter(
+    queryFn: () => filterRecords('success_story_contests', 
       { contest_month: currentMonth, status: { $in: ['approved', 'winner'] } },
       '-votes'
     )
@@ -45,14 +44,14 @@ export default function SuccessStoryContest() {
   const { data: contestConfig } = useQuery({
     queryKey: ['contest-config', currentMonth],
     queryFn: async () => {
-      const configs = await base44.entities.ContestPeriod.filter({ month: currentMonth });
+      const configs = await filterRecords('contest_periods', { month: currentMonth });
       return configs[0] || null;
     }
   });
 
   const submitMutation = useMutation({
     mutationFn: async () => {
-      return base44.entities.SuccessStoryContest.create({
+      return createRecord('success_story_contests', {
         user1_id: myProfile.id,
         story_title: storyTitle,
         story_text: storyText,
@@ -73,7 +72,7 @@ export default function SuccessStoryContest() {
   const voteMutation = useMutation({
     mutationFn: async (storyId) => {
       const story = stories.find(s => s.id === storyId);
-      return base44.entities.SuccessStoryContest.update(storyId, {
+      return updateRecord('success_story_contests', storyId, {
         votes: (story.votes || 0) + 1
       });
     },
@@ -85,7 +84,7 @@ export default function SuccessStoryContest() {
   const handlePhotoUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await uploadFile({ file });
       setUploadedPhotos([...uploadedPhotos, file_url]);
     }
   };

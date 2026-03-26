@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, getCurrentUser, invokeFunction, invokeLLM } from '@/lib/supabase-helpers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -26,26 +25,26 @@ export default function DatePlanner() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const user = await base44.auth.me();
+        const user = await getCurrentUser();
         if (!user) return;
 
         // 1. Get My Profile
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length === 0) return;
         setMyProfile(profiles[0]);
         const myId = profiles[0].id;
 
         // 2. Get Match Details & Profile
-        const matches = await base44.entities.Match.filter({ id: matchId });
+        const matches = await filterRecords('matches', { id: matchId });
         if (matches.length > 0) {
             const match = matches[0];
             const otherId = match.user1_id === myId ? match.user2_id : match.user1_id;
-            const otherProfiles = await base44.entities.UserProfile.filter({ id: otherId });
+            const otherProfiles = await filterRecords('user_profiles', { id: otherId });
             if (otherProfiles.length > 0) setMatchProfile(otherProfiles[0]);
         }
 
         // 3. Get Active Date Plans
-        const plans = await base44.entities.DatePlan.filter({ 
+        const plans = await filterRecords('date_plans', { 
             match_id: matchId,
             status: { $in: ['proposed', 'accepted'] }
         });
@@ -65,7 +64,7 @@ export default function DatePlanner() {
 
   const respondMutation = useMutation({
     mutationFn: async ({ status }) => {
-        await base44.functions.invoke('respondToDate', {
+        await invokeFunction('respondToDate', {
             datePlanId: existingPlan.id,
             response: status
         });
@@ -79,7 +78,7 @@ export default function DatePlanner() {
   const generateSuggestions = async () => {
     setLoading(true);
     try {
-      const result = await base44.integrations.Core.InvokeLLM({
+      const result = await invokeLLM({
         prompt: `Suggest 3 date ideas in ${myProfile.current_city}, ${myProfile.current_country} for a culturally-minded couple. Include venue name, type, estimated budget, and why it's good for a first date.
 
 Return JSON array:
@@ -120,7 +119,7 @@ Return JSON array:
 
   const suggestDateMutation = useMutation({
     mutationFn: async (suggestion) => {
-      const response = await base44.functions.invoke('proposeDate', {
+      const response = await invokeFunction('proposeDate', {
         matchId,
         suggestion
       });

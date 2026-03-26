@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 const DEFAULT_TIERS: Record<string, any> = {
   free: {

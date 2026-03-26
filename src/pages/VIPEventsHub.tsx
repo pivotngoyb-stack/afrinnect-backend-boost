@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -26,8 +25,8 @@ export default function VIPEventsHub() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const user = await base44.auth.me();
-        const profiles = await base44.entities.UserProfile.filter({ user_id: user.id });
+        const user = await getCurrentUser();
+        const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) {
           setMyProfile(profiles[0]);
         }
@@ -46,7 +45,7 @@ export default function VIPEventsHub() {
     queryKey: ['vip-events', 'upcoming'],
     queryFn: async () => {
       const now = new Date().toISOString();
-      return base44.entities.VIPEvent.filter({ 
+      return filterRecords('vip_events', { 
         status: 'upcoming',
         scheduled_at: { $gte: now }
       }, 'scheduled_at', 20);
@@ -58,7 +57,7 @@ export default function VIPEventsHub() {
   const { data: pastEvents = [] } = useQuery({
     queryKey: ['vip-events', 'past'],
     queryFn: async () => {
-      return base44.entities.VIPEvent.filter({ 
+      return filterRecords('vip_events', { 
         status: 'completed'
       }, '-scheduled_at', 10);
     },
@@ -69,7 +68,7 @@ export default function VIPEventsHub() {
   const { data: myRegistrations = [] } = useQuery({
     queryKey: ['vip-registrations', myProfile?.id],
     queryFn: async () => {
-      return base44.entities.VIPEventRegistration.filter({ 
+      return filterRecords('vip_event_registrations', { 
         user_profile_id: myProfile.id 
       });
     },
@@ -78,7 +77,7 @@ export default function VIPEventsHub() {
 
   const registerMutation = useMutation({
     mutationFn: async (eventId) => {
-      return base44.entities.VIPEventRegistration.create({
+      return createRecord('vip_event_registrations', {
         event_id: eventId,
         user_profile_id: myProfile.id,
         user_id: myProfile.user_id,
@@ -94,7 +93,7 @@ export default function VIPEventsHub() {
 
   const unregisterMutation = useMutation({
     mutationFn: async (registrationId) => {
-      await base44.entities.VIPEventRegistration.update(registrationId, { status: 'cancelled' });
+      await updateRecord('vip_event_registrations', registrationId, { status: 'cancelled' });
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['vip-registrations']);

@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { listRecords } from '@/lib/supabase-helpers';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,12 +15,12 @@ export default function ReceiptsManagement() {
 
   const { data: receipts = [] } = useQuery({
     queryKey: ['admin-receipts'],
-    queryFn: () => base44.asServiceRole.entities.Receipt.list('-created_date', 500),
+    queryFn: () => listRecords('receipts', '-created_at', 500),
   });
 
   const { data: profiles = [] } = useQuery({
     queryKey: ['admin-profiles-receipts'],
-    queryFn: () => base44.asServiceRole.entities.UserProfile.list('-created_date', 1000),
+    queryFn: () => listRecords('user_profiles', '-created_at', 1000),
   });
 
   // Calculate stats

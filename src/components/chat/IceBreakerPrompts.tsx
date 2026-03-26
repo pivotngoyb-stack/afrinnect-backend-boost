@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords } from '@/lib/supabase-helpers';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Send, X } from 'lucide-react';
@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 export default function IceBreakerPrompts({ onSelectQuestion, onClose }) {
   const { data: iceBreakers = [] } = useQuery({
     queryKey: ['ice-breakers'],
-    queryFn: () => base44.entities.IceBreaker.filter({ is_active: true })
+    queryFn: () => filterRecords('ice_breakers', { is_active: true })
   });
 
   const [selectedCategory, setSelectedCategory] = useState('all');

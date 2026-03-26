@@ -1,7 +1,6 @@
-// @ts-nocheck
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { deleteRecord, filterRecords, listRecords } from '@/lib/supabase-helpers';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,10 +13,10 @@ export default function StoryManagement() {
   const { data: stories = [] } = useQuery({
     queryKey: ['admin-stories'],
     queryFn: async () => {
-      const allStories = await base44.entities.Story.list('-created_date', 200);
+      const allStories = await listRecords('stories', '-created_date', 200);
       const profileIds = [...new Set(allStories.map(s => s.user_profile_id))];
       const profiles = await Promise.all(
-        profileIds.map(id => base44.entities.UserProfile.filter({ id }))
+        profileIds.map(id => filterRecords('user_profiles', { id }))
       );
       return allStories.map(story => ({
         ...story,
@@ -27,7 +26,7 @@ export default function StoryManagement() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (storyId) => base44.entities.Story.delete(storyId),
+    mutationFn: (storyId) => deleteRecord('stories', storyId),
     onSuccess: () => queryClient.invalidateQueries(['admin-stories'])
   });
 

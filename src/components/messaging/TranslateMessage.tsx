@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { createRecord, filterRecords, invokeLLM, updateRecord } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
 import { Languages, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -28,7 +27,7 @@ export default function TranslateMessage({ message, messageId }) {
   const translateMutation = useMutation({
     mutationFn: async (lang) => {
       // Use AI to translate
-      const result = await base44.integrations.Core.InvokeLLM({
+      const result = await invokeLLM({
         prompt: `Translate this message to ${LANGUAGES.find(l => l.code === lang)?.name}: "${message}"
         
         Provide ONLY the translation, nothing else.`,
@@ -41,17 +40,17 @@ export default function TranslateMessage({ message, messageId }) {
       });
 
       // Save translation
-      const translations = await base44.entities.MessageTranslation.filter({ message_id: messageId });
+      const translations = await filterRecords('message_translations', { message_id: messageId });
       if (translations.length > 0) {
         const existing = translations[0];
-        await base44.entities.MessageTranslation.update(existing.id, {
+        await updateRecord('message_translations', existing.id, {
           translated_text: {
             ...existing.translated_text,
             [lang]: result.translation
           }
         });
       } else {
-        await base44.entities.MessageTranslation.create({
+        await createRecord('message_translations', {
           message_id: messageId,
           original_language: 'auto',
           translated_text: { [lang]: result.translation }

@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
@@ -36,7 +35,7 @@ export default function PasswordReset() {
     setLoading(true);
     try {
       // Base44's built-in password reset
-      await base44.auth.resetPassword(email);
+      await supabase.auth.resetPasswordForEmail(email);
       setSent(true);
     } catch (err) {
       setError(err.message || 'Failed to send reset email. Please try again.');

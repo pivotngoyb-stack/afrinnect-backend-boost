@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React from 'react';
-import { base44 } from '@/api/base44Client';
+import { filterRecords, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,12 +11,12 @@ export default function SuccessStoryModeration() {
 
   const { data: stories = [] } = useQuery({
     queryKey: ['admin-success-stories'],
-    queryFn: () => base44.entities.SuccessStory.filter({ is_approved: false }, '-created_date', 100)
+    queryFn: () => filterRecords('success_stories', { is_approved: false }, '-created_date', 100)
   });
 
   const moderateMutation = useMutation({
     mutationFn: async ({ storyId, approved, featured = false }) => {
-      await base44.entities.SuccessStory.update(storyId, { 
+      await updateRecord('success_stories', storyId, { 
         is_approved: approved,
         is_featured: featured
       });

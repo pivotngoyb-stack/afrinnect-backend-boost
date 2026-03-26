@@ -1,6 +1,5 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { getCurrentUser, listRecords } from '@/lib/supabase-helpers';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
@@ -21,7 +20,7 @@ export default function CustomerView() {
   useEffect(() => {
     const checkAdmin = async () => {
       try {
-        const user = await base44.auth.me();
+        const user = await getCurrentUser();
         if (user && user.email === 'pivotngoyb@gmail.com') {
           setIsAdmin(true);
         } else {
@@ -37,7 +36,7 @@ export default function CustomerView() {
   // Fetch all user profiles for impersonation
   const { data: profiles = [] } = useQuery({
     queryKey: ['all-profiles'],
-    queryFn: () => base44.entities.UserProfile.list('-created_date', 100),
+    queryFn: () => listRecords('user_profiles', '-created_date', 100),
     enabled: isAdmin
   });
 

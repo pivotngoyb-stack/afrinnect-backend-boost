@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 export async function compressImage(file: File, maxWidth = 1200, quality = 0.8): Promise<File> {
   return new Promise((resolve, reject) => {
