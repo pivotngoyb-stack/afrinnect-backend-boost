@@ -163,4 +163,8 @@ const OnboardingSettings = forwardRef<HTMLDivElement, any>((props, ref) => {
       </CardContent>
     </Card>
   );
-}
+});
+
+OnboardingSettings.displayName = "OnboardingSettings";
+
+export default OnboardingSettings;
