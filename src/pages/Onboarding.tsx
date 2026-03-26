@@ -22,6 +22,7 @@ import { useConversionTracker, CONVERSION_EVENTS } from '@/components/shared/Con
 import { useLanguage } from '@/components/i18n/LanguageContext';
 import CelebrationModal from '@/components/shared/CelebrationModal';
 import FoundingMemberWelcome from '@/components/founding/FoundingMemberWelcome';
+import { toast } from '@/hooks/use-toast';
 
 const AFRICAN_COUNTRIES = [
   'Nigeria', 'Ghana', 'Kenya', 'South Africa', 'Ethiopia', 'Egypt', 'Morocco',
@@ -161,7 +162,7 @@ export default function Onboarding() {
 
     // Validate max size (10MB)
     if (file.size > 10 * 1024 * 1024) {
-      alert(t('errors.photoSize'));
+      toast({ title: t('errors.photoSize', variant: 'destructive' }));
       return;
     }
 
@@ -174,7 +175,7 @@ export default function Onboarding() {
       }
     } catch (error) {
       console.error('Upload failed:', error);
-      alert(t('errors.uploadFailed'));
+      toast({ title: t('errors.uploadFailed', variant: 'destructive' }));
     } finally {
       setIsUploading(false);
     }
@@ -275,7 +276,7 @@ export default function Onboarding() {
         friendlyMessage = msg;
       }
       
-      alert(friendlyMessage);
+      toast({ title: friendlyMessage });
     }
       });
 
@@ -299,7 +300,7 @@ export default function Onboarding() {
             // Only allow USA and Canada for now
             const isAdmin = user?.role === 'admin' || user?.email === 'pivotngoyb@gmail.com';
             if (!isAdmin && (!country || !['United States', 'Canada', 'United States of America'].includes(country))) {
-              alert('Afrinnect is currently only available in the United States and Canada. You will be redirected to join our waitlist.');
+              toast({ title: 'Afrinnect is currently only available in the United States and Canada. You will be redirected to join our waitlist.' });
               await base44.auth.logout(createPageUrl('Waitlist'));
               return;
             }
@@ -316,19 +317,19 @@ export default function Onboarding() {
           } catch (e) {
             console.error('Location validation failed:', e);
             // On error, don't allow - require location verification
-            alert('We could not verify your location. Please ensure location services are enabled and try again.');
+            toast({ title: 'We could not verify your location. Please ensure location services are enabled and try again.', variant: 'destructive' });
             setGettingLocation(false);
             return;
           }
           setGettingLocation(false);
         },
         (error) => {
-          alert(t('location.enableAccess'));
+          toast({ title: t('location.enableAccess' }));
           setGettingLocation(false);
         }
       );
     } else {
-      alert(t('location.geoNotSupported'));
+      toast({ title: t('location.geoNotSupported' }));
       setGettingLocation(false);
     }
   };

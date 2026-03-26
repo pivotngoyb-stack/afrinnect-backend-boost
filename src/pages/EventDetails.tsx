@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import AfricanPattern from '@/components/shared/AfricanPattern';
+import { toast } from '@/hooks/use-toast';
 
 export default function EventDetails() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -108,7 +109,7 @@ export default function EventDetails() {
       try { await navigator.share(shareData); } catch (e) {}
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert('Event link copied!');
+      toast({ title: 'Event link copied!' });
     }
   };
 

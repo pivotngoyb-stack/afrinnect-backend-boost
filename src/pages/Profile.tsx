@@ -36,6 +36,7 @@ import NotificationBell from '@/components/shared/NotificationBell';
 import ProfileSuggestions from '@/components/matching/ProfileSuggestions';
 import { Share2, AlertTriangle } from 'lucide-react';
 import { useLanguage } from '@/components/i18n/LanguageContext';
+import { toast } from '@/hooks/use-toast';
 
 export default function Profile() {
   const { t } = useLanguage();
@@ -192,7 +193,7 @@ export default function Profile() {
     } else {
       // Fallback: copy link
       navigator.clipboard.writeText(window.location.href);
-      alert(t('admin.home.linkCopied'));
+      toast({ title: t('admin.home.linkCopied' }));
     }
   };
 

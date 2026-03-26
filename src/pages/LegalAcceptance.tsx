@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
 import Logo from '@/components/shared/Logo';
+import { toast } from '@/hooks/use-toast';
 
 export default function LegalAcceptance() {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ export default function LegalAcceptance() {
     if (!user) return;
     
     if (!accepted.terms || !accepted.privacy || !accepted.guidelines) {
-      alert('Please accept all agreements to continue');
+      toast({ title: 'Please accept all agreements to continue', variant: 'destructive' });
       return;
     }
 
@@ -73,7 +74,7 @@ export default function LegalAcceptance() {
       navigate('/onboarding');
     } catch (error) {
       console.error("Failed to accept terms:", error);
-      alert("Something went wrong. Please try again.");
+      toast({ title: "Something went wrong. Please try again.", variant: 'destructive' });
     }
   };
 

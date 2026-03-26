@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import AfricanPattern from '@/components/shared/AfricanPattern';
 import LoadingSkeleton from '@/components/shared/LoadingSkeleton';
 import EmptyState from '@/components/shared/EmptyState';
+import { toast } from '@/hooks/use-toast';
 
 export default function Marketplace() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -150,7 +151,7 @@ export default function Marketplace() {
                                     </Button>
                                 </a>
                                 <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={() => {
-                                    alert("Messaging vendors is coming soon! Please call them directly for now.");
+                                    toast({ title: "Messaging vendors is coming soon! Please call them directly for now.", variant: 'destructive' });
                                 }}>
                                     Message
                                 </Button>

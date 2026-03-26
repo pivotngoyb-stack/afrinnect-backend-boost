@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { CheckCircle, XCircle, Clock, MessageSquare, Eye } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from '@/hooks/use-toast';
 
 export default function DisputeManagement({ disputes, currentUser }) {
   const [selectedDispute, setSelectedDispute] = useState(null);
@@ -69,7 +70,7 @@ export default function DisputeManagement({ disputes, currentUser }) {
       queryClient.invalidateQueries(['admin-disputes']);
       setSelectedDispute(null);
       setAdminResponse('');
-      alert('Dispute resolved successfully!');
+      toast({ title: 'Dispute resolved successfully!' });
     }
   });
 
@@ -266,7 +267,7 @@ export default function DisputeManagement({ disputes, currentUser }) {
                 <Button
                   onClick={() => {
                     if (!adminResponse.trim()) {
-                      alert('Please provide a response to the user.');
+                      toast({ title: 'Please provide a response to the user.', variant: 'destructive' });
                       return;
                     }
                     if (confirm('Approve this appeal and unban the user?')) {
@@ -285,7 +286,7 @@ export default function DisputeManagement({ disputes, currentUser }) {
                 <Button
                   onClick={() => {
                     if (!adminResponse.trim()) {
-                      alert('Please provide a response to the user.');
+                      toast({ title: 'Please provide a response to the user.', variant: 'destructive' });
                       return;
                     }
                     if (confirm('Reject this appeal? User will remain banned.')) {

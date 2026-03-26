@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar } from "@/components/ui/avatar";
 import { format } from 'date-fns';
+import { toast } from '@/hooks/use-toast';
 
 export default function EventChat() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -108,7 +109,7 @@ export default function EventChat() {
       queryClient.invalidateQueries({ queryKey: ['event-messages'] });
     },
     onError: (error) => {
-      alert(error.message);
+      toast({ title: error.message, variant: 'destructive' });
     }
   });
 

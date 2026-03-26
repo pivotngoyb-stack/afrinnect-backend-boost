@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Zap, Shield, Crown, CheckCircle, AlertCircle, Clock } from 'lucide-react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { toast } from '@/hooks/use-toast';
 
 export default function BoostProfileButton({ userProfile, onBoostSuccess }: { userProfile: any; onBoostSuccess?: () => void }) {
   const [showDialog, setShowDialog] = useState(false);
@@ -30,7 +31,7 @@ export default function BoostProfileButton({ userProfile, onBoostSuccess }: { us
     try {
       const response = await base44.functions.invoke('boostProfile');
       if (response.data.success) {
-        alert('🚀 Profile Boosted! Your profile will be shown to more people for 24 hours.');
+        toast({ title: '🚀 Profile Boosted! Your profile will be shown to more people for 24 hours.' });
         setShowDialog(false);
         if (onBoostSuccess) onBoostSuccess();
       } else if (response.data.error) {
@@ -47,7 +48,7 @@ export default function BoostProfileButton({ userProfile, onBoostSuccess }: { us
   };
 
   const handlePurchaseBoost = () => {
-    alert('Payment will be available via in-app purchases.');
+    toast({ title: 'Payment will be available via in-app purchases.' });
   };
 
   const getTimeRemaining = () => {

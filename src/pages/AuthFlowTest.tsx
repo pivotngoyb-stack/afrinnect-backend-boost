@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, Loader2, Phone, Mail, Lock } from 'lucide-react';
 import { validateEmail, validatePhone, checkRateLimit } from '@/components/auth/RateLimitGuard';
+import { toast } from '@/hooks/use-toast';
 
 export default function AuthFlowTest() {
   const [testResults, setTestResults] = useState({});
@@ -119,7 +120,7 @@ export default function AuthFlowTest() {
 
   const testOTPVerification = async () => {
     if (!testOTP || testOTP.length !== 6) {
-      alert('Please enter 6-digit OTP');
+      toast({ title: 'Please enter 6-digit OTP', variant: 'destructive' });
       return;
     }
 
@@ -130,14 +131,14 @@ export default function AuthFlowTest() {
       });
       
       if (response.data.success) {
-        alert('✅ OTP Verified Successfully!');
+        toast({ title: '✅ OTP Verified Successfully!' });
         setTestResults(prev => ({
           ...prev,
           verifyOTP: { pass: true, message: 'OTP verification successful' }
         }));
       }
     } catch (e) {
-      alert('❌ Verification failed: ' + (e.response?.data?.error || e.message));
+      toast({ title: '❌ Verification failed: ' + (e.response?.data?.error || e.message, variant: 'destructive' }));
       setTestResults(prev => ({
         ...prev,
         verifyOTP: { pass: false, message: e.response?.data?.error || e.message }

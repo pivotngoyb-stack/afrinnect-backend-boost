@@ -7,6 +7,7 @@ import { ShieldX, MessageSquare, AlertCircle, CheckCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import Logo from '@/components/shared/Logo';
 import AfricanPattern from '@/components/shared/AfricanPattern';
+import { toast } from '@/hooks/use-toast';
 
 interface BannedScreenProps {
   userProfile?: { id: string } | null;
@@ -22,7 +23,7 @@ export default function BannedScreen({ userProfile, banReason, userEmail }: Bann
 
   const handleSubmitDispute = async () => {
     if (!disputeReason.trim()) {
-      alert('Please explain why you believe this ban is incorrect.');
+      toast({ title: 'Please explain why you believe this ban is incorrect.', variant: 'destructive' });
       return;
     }
 
@@ -41,7 +42,7 @@ export default function BannedScreen({ userProfile, banReason, userEmail }: Bann
       setShowDispute(false);
     } catch (error) {
       console.error('Failed to submit dispute:', error);
-      alert('Failed to submit dispute. Please try again.');
+      toast({ title: 'Failed to submit dispute. Please try again.', variant: 'destructive' });
     } finally {
       setIsSubmitting(false);
     }

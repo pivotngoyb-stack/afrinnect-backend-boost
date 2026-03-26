@@ -46,6 +46,7 @@ import ReadReceipts from '@/components/chat/ReadReceipts';
 import PremiumTypingIndicator from '@/components/chat/PremiumTypingIndicator';
 import { useVerificationGate } from '@/hooks/useVerificationGate';
 import VerificationGateBanner from '@/components/shared/VerificationGateBanner';
+import { toast } from '@/hooks/use-toast';
 
 export default function Chat() {
   usePerformanceMonitor('Chat');
@@ -226,9 +227,9 @@ export default function Chat() {
       if (error.message === 'upgrade_required') {
         setShowMessageLimitPaywall(true);
       } else if (error.message.includes('too quickly')) {
-        alert('⏱️ Please slow down - you can send up to 20 messages per minute.');
+        toast({ title: '⏱️ Please slow down - you can send up to 20 messages per minute.', variant: 'destructive' });
       } else {
-        alert(error.message);
+        toast({ title: error.message, variant: 'destructive' });
       }
       // Remove all optimistic messages on error
       queryClient.setQueryData(['messages', matchId], (old = []) => 
@@ -252,7 +253,7 @@ export default function Chat() {
       await sendMessageMutation.mutateAsync({ content: 'Image', type: 'image', mediaUrl: file_url });
     },
     onError: () => {
-      alert('Failed to upload image');
+      toast({ title: 'Failed to upload image', variant: 'destructive' });
     }
   });
 
@@ -300,7 +301,7 @@ export default function Chat() {
     onSuccess: () => {
       setShowReport(false);
       setReportReason('');
-      alert('Report submitted. Our team will review it.');
+      toast({ title: 'Report submitted. Our team will review it.' });
     }
   });
 
@@ -402,7 +403,7 @@ export default function Chat() {
       }
     } catch (e) {
       console.error("Smart reply failed", e);
-      alert("Could not generate a reply at this time. Please try again.");
+      toast({ title: "Could not generate a reply at this time. Please try again.", variant: 'destructive' });
     } finally {
       setIsGeneratingReply(false);
     }

@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Trash2, Edit2, Plus, ExternalLink } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 export default function VendorManagement() {
   const queryClient = useQueryClient();
@@ -100,7 +101,7 @@ export default function VendorManagement() {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
       setFormData({...formData, image_url: file_url});
     } catch (error) {
-      alert('Photo upload failed');
+      toast({ title: 'Photo upload failed', variant: 'destructive' });
     }
     setUploadingPhoto(false);
   };

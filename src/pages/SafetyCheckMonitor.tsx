@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { toast } from '@/hooks/use-toast';
 
 export default function SafetyCheckMonitor() {
   const [myProfile, setMyProfile] = useState(null);
@@ -109,7 +110,7 @@ export default function SafetyCheckMonitor() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['safety-checks']);
-      alert('Emergency alert sent to your emergency contact and our support team.');
+      toast({ title: 'Emergency alert sent to your emergency contact and our support team.' });
     }
   });
 

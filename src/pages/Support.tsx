@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PrioritySupportBadge from '@/components/shared/PrioritySupportBadge';
+import { toast } from '@/hooks/use-toast';
 
 const CATEGORIES = [
   { value: 'technical', label: 'Technical Issue', description: 'App crashes, bugs, or errors' },
@@ -101,7 +102,7 @@ export default function Support() {
 
   const handleSubmit = () => {
     if (!formData.category || !formData.subject || !formData.description) {
-      alert('Please fill in all fields');
+      toast({ title: 'Please fill in all fields', variant: 'destructive' });
       return;
     }
     createTicketMutation.mutate(formData);

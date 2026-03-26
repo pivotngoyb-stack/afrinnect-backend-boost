@@ -7,6 +7,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { AlertTriangle, Shield, Play, RefreshCw, Ban, CheckCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from '@/hooks/use-toast';
 
 export default function RateLimitMonitor({ violations, currentUser }) {
   const [isRunningAI, setIsRunningAI] = useState(false);
@@ -40,10 +41,10 @@ export default function RateLimitMonitor({ violations, currentUser }) {
       setAiResult(result.data);
       queryClient.invalidateQueries(['admin-audit-logs']);
       queryClient.invalidateQueries(['admin-reports']);
-      alert(`AI Analysis Complete! Analyzed ${result.data.analyzed} users, banned ${result.data.banned} suspicious accounts.`);
+      toast({ title: `AI Analysis Complete! Analyzed ${result.data.analyzed} users, banned ${result.data.banned} suspicious accounts.` });
     } catch (error) {
       console.error('AI analysis failed:', error);
-      alert('AI analysis failed: ' + error.message);
+      toast({ title: 'AI analysis failed: ' + error.message, variant: 'destructive' });
     } finally {
       setIsRunningAI(false);
     }
@@ -74,7 +75,7 @@ export default function RateLimitMonitor({ violations, currentUser }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['admin-audit-logs']);
-      alert('User banned successfully!');
+      toast({ title: 'User banned successfully!' });
     }
   });
 

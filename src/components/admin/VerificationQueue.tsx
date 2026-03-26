@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { CheckCircle, XCircle, Shield, Camera, IdCard, Crown, Award } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 export default function VerificationQueue({ requests, profiles, currentUser }) {
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -69,7 +70,7 @@ export default function VerificationQueue({ requests, profiles, currentUser }) {
       queryClient.invalidateQueries(['admin-verifications']);
       queryClient.invalidateQueries(['admin-profiles']);
       setSelectedRequest(null);
-      alert('Verification approved!');
+      toast({ title: 'Verification approved!' });
     }
   });
 
@@ -118,7 +119,7 @@ export default function VerificationQueue({ requests, profiles, currentUser }) {
       queryClient.invalidateQueries(['admin-verifications']);
       setSelectedRequest(null);
       setRejectionReason('');
-      alert('Verification rejected.');
+      toast({ title: 'Verification rejected.' });
     }
   });
 

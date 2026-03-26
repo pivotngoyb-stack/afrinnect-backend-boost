@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { toast } from '@/hooks/use-toast';
 
 const SHOP_ITEMS = [
   {
@@ -101,7 +102,7 @@ export default function Shop() {
 
   const handlePurchase = async (item) => {
     // Show coming soon message - payments will be via App Store/Play Store
-    alert('In-app purchases coming soon! This will be available through the App Store and Google Play.');
+    toast({ title: 'In-app purchases coming soon! This will be available through the App Store and Google Play.' });
   };
 
   const tier = myProfile?.subscription_tier || 'free';

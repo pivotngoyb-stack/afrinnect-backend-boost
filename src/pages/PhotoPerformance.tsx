@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import AfricanPattern from '@/components/shared/AfricanPattern';
+import { toast } from '@/hooks/use-toast';
 
 export default function PhotoPerformance() {
   const [myProfile, setMyProfile] = useState(null);
@@ -84,7 +85,7 @@ export default function PhotoPerformance() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['profile']);
-      alert('✨ Photos optimized! Your best-performing photo is now first.');
+      toast({ title: '✨ Photos optimized! Your best-performing photo is now first.' });
     }
   });
 

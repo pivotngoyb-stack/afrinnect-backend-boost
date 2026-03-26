@@ -15,6 +15,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { format } from 'date-fns';
 import confetti from 'canvas-confetti';
+import { toast } from '@/hooks/use-toast';
 
 export default function VIPEventsHub() {
   const navigate = useNavigate();
@@ -111,7 +112,7 @@ export default function VIPEventsHub() {
 
   const handleRegister = (event) => {
     if (event.current_participants >= event.max_participants) {
-      alert('This event is full. Please try another event.');
+      toast({ title: 'This event is full. Please try another event.', variant: 'destructive' });
       return;
     }
     registerMutation.mutate(event.id);
