@@ -583,6 +583,79 @@ export type Database = {
         }
         Relationships: []
       }
+      business_favorites: {
+        Row: {
+          business_id: string
+          created_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_favorites_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_reviews: {
+        Row: {
+          business_id: string
+          comment: string | null
+          created_at: string | null
+          id: string
+          is_approved: boolean | null
+          rating: number
+          updated_at: string | null
+          user_id: string
+          user_profile_id: string | null
+        }
+        Insert: {
+          business_id: string
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          is_approved?: boolean | null
+          rating: number
+          updated_at?: string | null
+          user_id: string
+          user_profile_id?: string | null
+        }
+        Update: {
+          business_id?: string
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          is_approved?: boolean | null
+          rating?: number
+          updated_at?: string | null
+          user_id?: string
+          user_profile_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_reviews_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_games: {
         Row: {
           created_at: string | null
@@ -1580,6 +1653,93 @@ export type Database = {
           match_id?: string | null
           updated_at?: string | null
           user_profile_id?: string
+        }
+        Relationships: []
+      }
+      marketplace_businesses: {
+        Row: {
+          address: string | null
+          average_rating: number | null
+          category: string
+          city: string | null
+          country: string | null
+          created_at: string | null
+          description: string | null
+          email: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          is_verified: boolean | null
+          latitude: number | null
+          logo_url: string | null
+          longitude: number | null
+          name: string
+          opening_hours: Json | null
+          owner_user_id: string | null
+          phone: string | null
+          price_range: string | null
+          subcategory: string | null
+          tags: string[] | null
+          total_reviews: number | null
+          updated_at: string | null
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          average_rating?: number | null
+          category?: string
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          email?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          is_verified?: boolean | null
+          latitude?: number | null
+          logo_url?: string | null
+          longitude?: number | null
+          name: string
+          opening_hours?: Json | null
+          owner_user_id?: string | null
+          phone?: string | null
+          price_range?: string | null
+          subcategory?: string | null
+          tags?: string[] | null
+          total_reviews?: number | null
+          updated_at?: string | null
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          average_rating?: number | null
+          category?: string
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          description?: string | null
+          email?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          is_verified?: boolean | null
+          latitude?: number | null
+          logo_url?: string | null
+          longitude?: number | null
+          name?: string
+          opening_hours?: Json | null
+          owner_user_id?: string | null
+          phone?: string | null
+          price_range?: string | null
+          subcategory?: string | null
+          tags?: string[] | null
+          total_reviews?: number | null
+          updated_at?: string | null
+          website?: string | null
         }
         Relationships: []
       }
