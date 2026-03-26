@@ -22,6 +22,7 @@ interface NavItem {
 
 interface AdminSidebarProps {
   pendingReports?: number;
+  activePage?: string;
 }
 
 export default function AdminSidebar({ pendingReports = 0 }: AdminSidebarProps) {
