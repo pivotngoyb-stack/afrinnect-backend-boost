@@ -14,8 +14,7 @@ export default function BoostProfileButton({ userProfile, onBoostSuccess }: { us
   const [error, setError] = useState('');
   const [showPaywall, setShowPaywall] = useState(false);
 
-  const isVerified = userProfile?.verification_status?.id_verified || 
-                     userProfile?.verification_status?.photo_verified;
+  const isVerified = true; // Boost available to all users
   
   const hasActiveBoost = userProfile?.profile_boost_active && 
                          userProfile?.boost_expires_at && 
@@ -85,15 +84,6 @@ export default function BoostProfileButton({ userProfile, onBoostSuccess }: { us
           </DialogHeader>
 
           <div className="space-y-4">
-            {!isVerified && (
-              <Alert variant="destructive">
-                <AlertCircle className="h-5 w-5" />
-                <AlertDescription>
-                  <strong>Verification Required</strong><br />
-                  You must be verified to boost. Please complete photo verification to unlock this feature.
-                </AlertDescription>
-              </Alert>
-            )}
 
             {hasActiveBoost && (
               <Alert>
