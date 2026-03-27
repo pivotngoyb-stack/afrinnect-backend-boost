@@ -210,7 +210,7 @@ export default function Profile() {
   const completion = calculateProfileCompletion();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 relative pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative pb-24">
       <AfricanPattern className="text-primary" opacity={0.03} />
 
       {/* Header */}
@@ -491,14 +491,14 @@ export default function Profile() {
               {profile?.languages?.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {profile.languages.map((lang, idx) => (
-                    <Badge key={idx} variant="secondary" className="bg-gray-100">
+                    <Badge key={idx} variant="secondary" className="bg-muted">
                       {lang}
                     </Badge>
                   ))}
                 </div>
               ) : (
                 <Link to={createPageUrl('EditProfile')}>
-                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-gray-200 text-muted-foreground hover:text-primary hover:border-purple-200">
+                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-border text-muted-foreground hover:text-primary hover:border-purple-200">
                     + Add Languages
                   </Button>
                 </Link>
@@ -527,7 +527,7 @@ export default function Profile() {
                 </div>
               ) : (
                 <Link to={createPageUrl('EditProfile')}>
-                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-gray-200 text-muted-foreground hover:text-amber-600 hover:border-amber-200">
+                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-border text-muted-foreground hover:text-amber-600 hover:border-amber-200">
                     + Add Interests
                   </Button>
                 </Link>
@@ -556,7 +556,7 @@ export default function Profile() {
                 </div>
               ) : (
                 <Link to={createPageUrl('EditProfile')}>
-                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-gray-200 text-muted-foreground hover:text-green-600 hover:border-green-200">
+                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-border text-muted-foreground hover:text-green-600 hover:border-green-200">
                     + Add Cultural Values
                   </Button>
                 </Link>

@@ -29,7 +29,7 @@ export default function PhotoReorderModal({ photos, primaryPhoto, open, onClose,
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Reorder Your Photos</DialogTitle>
-          <p className="text-sm text-gray-500">Drag to reorder • Tap star to set primary</p>
+          <p className="text-sm text-muted-foreground">Drag to reorder • Tap star to set primary</p>
         </DialogHeader>
         
         <DragDropContext onDragEnd={handleDragEnd}>
@@ -46,17 +46,17 @@ export default function PhotoReorderModal({ photos, primaryPhoto, open, onClose,
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                        className="flex items-center gap-3 bg-gray-50 rounded-lg p-2"
+                        className="flex items-center gap-3 bg-muted rounded-lg p-2"
                       >
                         <div {...provided.dragHandleProps}>
-                          <GripVertical size={20} className="text-gray-400" />
+                          <GripVertical size={20} className="text-muted-foreground" />
                         </div>
                         <img
                           src={photo}
                           alt=""
                           className="w-16 h-16 rounded-lg object-cover"
                         />
-                        <span className="text-sm text-gray-600 flex-1">Photo {index + 1}</span>
+                        <span className="text-sm text-muted-foreground flex-1">Photo {index + 1}</span>
                         <Button
                           variant={primary === photo ? "default" : "ghost"}
                           size="icon"

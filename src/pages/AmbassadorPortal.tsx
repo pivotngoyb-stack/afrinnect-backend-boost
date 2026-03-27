@@ -36,7 +36,7 @@ export default function AmbassadorPortal() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-muted flex items-center justify-center">
         <Loader2 className="animate-spin h-8 w-8 text-purple-600" />
       </div>
     );
@@ -44,12 +44,12 @@ export default function AmbassadorPortal() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-muted flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
           <CardContent className="pt-6 text-center">
             <AlertCircle className="mx-auto h-12 w-12 text-red-500 mb-4" />
             <h2 className="text-xl font-bold mb-2">Access Denied</h2>
-            <p className="text-gray-600 mb-4">{error.message}</p>
+            <p className="text-muted-foreground mb-4">{error.message}</p>
             <Link to={createPageUrl('Home')}>
               <Button>Go to Home</Button>
             </Link>
@@ -63,13 +63,13 @@ export default function AmbassadorPortal() {
 
   const tierColors = {
     bronze: 'bg-amber-700',
-    silver: 'bg-gray-400',
+    silver: 'bg-muted',
     gold: 'bg-yellow-500',
     platinum: 'bg-purple-600'
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted">
       {/* Header */}
       <header className="bg-gradient-to-r from-purple-700 to-amber-600 text-white">
         <div className="max-w-6xl mx-auto px-4 py-8">
@@ -103,7 +103,7 @@ export default function AmbassadorPortal() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500">Signups</p>
+                  <p className="text-sm text-muted-foreground">Signups</p>
                   <p className="text-2xl font-bold">{stats.total_signups}</p>
                 </div>
                 <Users className="h-8 w-8 text-purple-500" />
@@ -114,7 +114,7 @@ export default function AmbassadorPortal() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500">Subscribers</p>
+                  <p className="text-sm text-muted-foreground">Subscribers</p>
                   <p className="text-2xl font-bold">{stats.total_subscribers}</p>
                 </div>
                 <Target className="h-8 w-8 text-green-500" />
@@ -125,7 +125,7 @@ export default function AmbassadorPortal() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500">Conversion</p>
+                  <p className="text-sm text-muted-foreground">Conversion</p>
                   <p className="text-2xl font-bold">{stats.conversion_rate}%</p>
                 </div>
                 <TrendingUp className="h-8 w-8 text-blue-500" />
@@ -136,7 +136,7 @@ export default function AmbassadorPortal() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500">Revenue Generated</p>
+                  <p className="text-sm text-muted-foreground">Revenue Generated</p>
                   <p className="text-2xl font-bold">${stats.total_revenue_generated.toFixed(0)}</p>
                 </div>
                 <DollarSign className="h-8 w-8 text-amber-500" />
@@ -182,9 +182,9 @@ export default function AmbassadorPortal() {
                     </div>
                     <span className="font-bold text-green-600">${earnings.approved.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                  <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
                     <div className="flex items-center gap-2">
-                      <DollarSign className="h-4 w-4 text-gray-600" />
+                      <DollarSign className="h-4 w-4 text-muted-foreground" />
                       <span>Total Paid</span>
                     </div>
                     <span className="font-bold">${earnings.paid.toFixed(2)}</span>
@@ -203,11 +203,11 @@ export default function AmbassadorPortal() {
                   )}
 
                   <div className="pt-4 border-t">
-                    <p className="text-sm text-gray-500 mb-2">Next payout: {format(new Date(next_payout_date), 'MMM d, yyyy')}</p>
+                    <p className="text-sm text-muted-foreground mb-2">Next payout: {format(new Date(next_payout_date), 'MMM d, yyyy')}</p>
                     {payout_eligible ? (
                       <Badge className="bg-green-600">Eligible for Payout</Badge>
                     ) : (
-                      <p className="text-xs text-gray-400">Min ${ambassador.payout_threshold || 50} required</p>
+                      <p className="text-xs text-muted-foreground">Min ${ambassador.payout_threshold || 50} required</p>
                     )}
                   </div>
                 </CardContent>
@@ -271,14 +271,14 @@ export default function AmbassadorPortal() {
                     {active_campaigns.map(campaign => (
                       <div key={campaign.id} className="p-4 bg-white rounded-lg border border-amber-200">
                         <h4 className="font-bold text-amber-900">{campaign.name}</h4>
-                        <p className="text-sm text-gray-600 mt-1">{campaign.description}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{campaign.description}</p>
                         {campaign.bonus_multiplier && (
                           <Badge className="mt-2 bg-amber-600">{campaign.bonus_multiplier}x Bonus</Badge>
                         )}
                         {campaign.flat_bonus_amount && (
                           <Badge className="mt-2 bg-amber-600">+${campaign.flat_bonus_amount} per conversion</Badge>
                         )}
-                        <p className="text-xs text-gray-400 mt-2">
+                        <p className="text-xs text-muted-foreground mt-2">
                           Ends {format(new Date(campaign.ends_at), 'MMM d, yyyy')}
                         </p>
                       </div>
@@ -297,16 +297,16 @@ export default function AmbassadorPortal() {
                 {recent_activity?.length > 0 ? (
                   <div className="space-y-2">
                     {recent_activity.slice(0, 10).map(event => (
-                      <div key={event.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                      <div key={event.id} className="flex items-center justify-between p-2 bg-muted rounded">
                         <div className="flex items-center gap-2">
                           <Badge variant="outline" className="capitalize">{event.event_type}</Badge>
-                          <span className="text-sm text-gray-500">{event.user_ref}</span>
+                          <span className="text-sm text-muted-foreground">{event.user_ref}</span>
                         </div>
                         <div className="text-right">
                           {event.revenue_amount > 0 && (
                             <span className="text-green-600 font-medium">${event.revenue_amount}</span>
                           )}
-                          <span className="text-xs text-gray-400 ml-2">
+                          <span className="text-xs text-muted-foreground ml-2">
                             {format(new Date(event.created_date), 'MMM d')}
                           </span>
                         </div>
@@ -314,7 +314,7 @@ export default function AmbassadorPortal() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-center text-gray-500 py-8">No activity yet. Start sharing your referral link!</p>
+                  <p className="text-center text-muted-foreground py-8">No activity yet. Start sharing your referral link!</p>
                 )}
               </CardContent>
             </Card>
@@ -329,40 +329,40 @@ export default function AmbassadorPortal() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
-                  <label className="text-sm font-medium text-gray-700">Referral Link (with code)</label>
+                  <label className="text-sm font-medium text-foreground">Referral Link (with code)</label>
                   <div className="flex gap-2 mt-1">
                     <input 
                       type="text" 
                       readOnly 
                       value={`https://afrinnect.com/Onboarding?a=${ambassador.referral_code}`}
-                      className="flex-1 px-3 py-2 border rounded-lg bg-gray-50 text-sm"
+                      className="flex-1 px-3 py-2 border rounded-lg bg-muted text-sm"
                     />
                     <Button onClick={() => copyToClipboard(`https://afrinnect.com/Onboarding?a=${ambassador.referral_code}`, 'Link')}>
                       <Copy size={16} className="mr-2" /> Copy
                     </Button>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Share this link - the code is automatically applied!</p>
+                  <p className="text-xs text-muted-foreground mt-1">Share this link - the code is automatically applied!</p>
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-gray-700">Referral Code (manual entry)</label>
+                  <label className="text-sm font-medium text-foreground">Referral Code (manual entry)</label>
                   <div className="flex gap-2 mt-1">
                     <input 
                       type="text" 
                       readOnly 
                       value={ambassador.referral_code}
-                      className="flex-1 px-3 py-2 border rounded-lg bg-gray-50 font-mono text-lg"
+                      className="flex-1 px-3 py-2 border rounded-lg bg-muted font-mono text-lg"
                     />
                     <Button onClick={() => copyToClipboard(ambassador.referral_code, 'Code')}>
                       <Copy size={16} className="mr-2" /> Copy
                     </Button>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Users can enter this code during signup</p>
+                  <p className="text-xs text-muted-foreground mt-1">Users can enter this code during signup</p>
                 </div>
 
                 {ambassador.qr_code_url && (
                   <div className="text-center pt-4">
-                    <p className="text-sm font-medium text-gray-700 mb-2">QR Code</p>
+                    <p className="text-sm font-medium text-foreground mb-2">QR Code</p>
                     <img src={ambassador.qr_code_url} alt="QR Code" className="mx-auto w-48 h-48 border rounded-lg" />
                     <Button variant="outline" size="sm" className="mt-2">
                       <Download size={16} className="mr-2" /> Download QR
@@ -446,14 +446,14 @@ export default function AmbassadorPortal() {
                       <div key={payout.id} className="flex items-center justify-between p-3 border rounded-lg">
                         <div>
                           <p className="font-medium">${payout.total_amount.toFixed(2)}</p>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-muted-foreground">
                             {format(new Date(payout.period_start), 'MMM d')} - {format(new Date(payout.period_end), 'MMM d, yyyy')}
                           </p>
                         </div>
                         <Badge className={
                           payout.status === 'paid' ? 'bg-green-600' :
                           payout.status === 'processing' ? 'bg-blue-600' :
-                          payout.status === 'failed' ? 'bg-red-600' : 'bg-gray-400'
+                          payout.status === 'failed' ? 'bg-red-600' : 'bg-muted'
                         }>
                           {payout.status}
                         </Badge>
@@ -461,7 +461,7 @@ export default function AmbassadorPortal() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-center text-gray-500 py-8">No payouts yet</p>
+                  <p className="text-center text-muted-foreground py-8">No payouts yet</p>
                 )}
               </CardContent>
             </Card>
@@ -483,7 +483,7 @@ export default function AmbassadorPortal() {
                           <img src={asset.thumbnail_url} alt={asset.name} className="w-full h-32 object-cover rounded mb-2" />
                         )}
                         <h4 className="font-medium">{asset.name}</h4>
-                        <p className="text-sm text-gray-500">{asset.description}</p>
+                        <p className="text-sm text-muted-foreground">{asset.description}</p>
                         <Badge variant="outline" className="mt-2">{asset.asset_type}</Badge>
                         {asset.file_url && (
                           <Button variant="outline" size="sm" className="w-full mt-2" asChild>
@@ -501,7 +501,7 @@ export default function AmbassadorPortal() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-center text-gray-500 py-8">No content assets available yet</p>
+                  <p className="text-center text-muted-foreground py-8">No content assets available yet</p>
                 )}
               </CardContent>
             </Card>

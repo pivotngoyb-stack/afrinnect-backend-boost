@@ -67,7 +67,7 @@ export default function PremiumTypingIndicator({
         exit={{ opacity: 0, y: 10 }}
         className="flex items-center gap-2 px-4 py-2 mb-2"
       >
-        <div className="bg-white border border-gray-200 rounded-2xl px-4 py-2 flex items-center gap-3 shadow-sm">
+        <div className="bg-white border border-border rounded-2xl px-4 py-2 flex items-center gap-3 shadow-sm">
           <div className="flex gap-1">
             <motion.div
               animate={{ scale: [1, 1.2, 1] }}
@@ -85,7 +85,7 @@ export default function PremiumTypingIndicator({
               className="w-2 h-2 bg-purple-500 rounded-full"
             />
           </div>
-          <span className="text-sm text-gray-600">
+          <span className="text-sm text-muted-foreground">
             <strong>{displayName}</strong> is typing...
           </span>
         </div>

@@ -79,7 +79,7 @@ export default function ReceiptsManagement() {
                 <DollarSign size={24} className="text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Revenue</p>
+                <p className="text-sm text-muted-foreground">Total Revenue</p>
                 <p className="text-2xl font-bold text-green-700">${totalRevenue.toFixed(2)}</p>
               </div>
             </div>
@@ -93,7 +93,7 @@ export default function ReceiptsManagement() {
                 <Calendar size={24} className="text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">This Month</p>
+                <p className="text-sm text-muted-foreground">This Month</p>
                 <p className="text-2xl font-bold text-blue-700">${monthlyRevenue.toFixed(2)}</p>
               </div>
             </div>
@@ -107,7 +107,7 @@ export default function ReceiptsManagement() {
                 <Receipt size={24} className="text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Receipts</p>
+                <p className="text-sm text-muted-foreground">Total Receipts</p>
                 <p className="text-2xl font-bold text-purple-700">{receipts.length}</p>
               </div>
             </div>
@@ -121,7 +121,7 @@ export default function ReceiptsManagement() {
                 <Mail size={24} className="text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Receipts Sent</p>
+                <p className="text-sm text-muted-foreground">Receipts Sent</p>
                 <p className="text-2xl font-bold text-amber-700">{receiptsSent}/{receipts.length}</p>
               </div>
             </div>
@@ -146,7 +146,7 @@ export default function ReceiptsManagement() {
         <CardContent>
           <div className="grid md:grid-cols-3 gap-4">
             <div className="relative">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search by transaction ID, email, or name..."
                 value={searchTerm}
@@ -193,7 +193,7 @@ export default function ReceiptsManagement() {
               const profile = profiles.find(p => p.id === receipt.user_profile_id);
               
               return (
-                <div key={receipt.id} className="p-4 bg-gray-50 rounded-lg border hover:bg-gray-100 transition">
+                <div key={receipt.id} className="p-4 bg-muted rounded-lg border hover:bg-muted transition">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
@@ -211,29 +211,29 @@ export default function ReceiptsManagement() {
                       
                       <div className="grid md:grid-cols-2 gap-4 text-sm">
                         <div>
-                          <p className="text-gray-600">Customer</p>
+                          <p className="text-muted-foreground">Customer</p>
                           <p className="font-medium">{receipt.customer_name}</p>
-                          <p className="text-gray-500 text-xs">{receipt.customer_email}</p>
+                          <p className="text-muted-foreground text-xs">{receipt.customer_email}</p>
                         </div>
                         <div>
-                          <p className="text-gray-600">Plan</p>
+                          <p className="text-muted-foreground">Plan</p>
                           <p className="font-medium capitalize">{receipt.plan_name} ({receipt.billing_period})</p>
                         </div>
                       </div>
                       
                       <div className="grid md:grid-cols-3 gap-4 mt-3 text-sm">
                         <div>
-                          <p className="text-gray-600">Purchase Date</p>
+                          <p className="text-muted-foreground">Purchase Date</p>
                           <p className="font-medium">{new Date(receipt.purchase_date).toLocaleString()}</p>
                         </div>
                         <div>
-                          <p className="text-gray-600">Subscription Period</p>
+                          <p className="text-muted-foreground">Subscription Period</p>
                           <p className="font-medium text-xs">
                             {new Date(receipt.subscription_start_date).toLocaleDateString()} - {new Date(receipt.subscription_end_date).toLocaleDateString()}
                           </p>
                         </div>
                         <div>
-                          <p className="text-gray-600">Provider</p>
+                          <p className="text-muted-foreground">Provider</p>
                           <p className="font-medium capitalize">{receipt.payment_provider}</p>
                         </div>
                       </div>
@@ -243,8 +243,8 @@ export default function ReceiptsManagement() {
                       <p className="text-2xl font-bold text-green-600">
                         ${receipt.amount_paid.toFixed(2)}
                       </p>
-                      <p className="text-xs text-gray-500">{receipt.currency}</p>
-                      <Badge className={receipt.receipt_sent ? 'bg-green-600 mt-2' : 'bg-gray-600 mt-2'}>
+                      <p className="text-xs text-muted-foreground">{receipt.currency}</p>
+                      <Badge className={receipt.receipt_sent ? 'bg-green-600 mt-2' : 'bg-secondary mt-2'}>
                         {receipt.receipt_sent ? 'Sent' : 'Pending'}
                       </Badge>
                     </div>
@@ -254,7 +254,7 @@ export default function ReceiptsManagement() {
             })}
             
             {filteredReceipts.length === 0 && (
-              <p className="text-center text-gray-500 py-8">No receipts found</p>
+              <p className="text-center text-muted-foreground py-8">No receipts found</p>
             )}
           </div>
         </CardContent>

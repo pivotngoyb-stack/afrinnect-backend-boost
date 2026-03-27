@@ -61,7 +61,7 @@ export default function SpeedDatingLobby() {
               <Heart size={40} className="text-white" />
             </div>
             <h2 className="text-2xl font-bold mb-4">Virtual Speed Dating</h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-muted-foreground mb-6">
               This feature is exclusive to VIP members. Upgrade to participate in live speed dating events!
             </p>
             <Button onClick={() => navigate(createPageUrl('PricingPlans'))} className="w-full">
@@ -80,9 +80,9 @@ export default function SpeedDatingLobby() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Heart size={32} className="text-pink-600" />
-            <h1 className="text-3xl font-bold text-gray-900">Virtual Speed Dating</h1>
+            <h1 className="text-3xl font-bold text-foreground">Virtual Speed Dating</h1>
           </div>
-          <p className="text-gray-600">Meet 5-10 people in quick 3-minute video chats</p>
+          <p className="text-muted-foreground">Meet 5-10 people in quick 3-minute video chats</p>
         </div>
 
         {/* Waiting Lobby */}
@@ -92,8 +92,8 @@ export default function SpeedDatingLobby() {
               <div className="w-24 h-24 bg-gradient-to-br from-pink-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
                 <Users size={48} className="text-purple-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Waiting for next event...</h2>
-              <p className="text-gray-600 mb-6">
+              <h2 className="text-2xl font-bold text-foreground mb-4">Waiting for next event...</h2>
+              <p className="text-muted-foreground mb-6">
                 Speed dating events run every Friday and Saturday at 8 PM EST. Register for an upcoming event to participate!
               </p>
               <Button onClick={() => navigate(createPageUrl('VIPEventsHub'))} className="bg-gradient-to-r from-pink-600 to-purple-600">
@@ -123,7 +123,7 @@ export default function SpeedDatingLobby() {
             {/* Video Area */}
             <Card>
               <CardContent className="p-0">
-                <div className="aspect-video bg-gray-900 rounded-t-xl flex items-center justify-center">
+                <div className="aspect-video bg-background rounded-t-xl flex items-center justify-center">
                   <div className="text-center">
                     <Video size={64} className="text-white/50 mx-auto mb-4" />
                     <p className="text-white/70">Video call will appear here</p>
@@ -132,8 +132,8 @@ export default function SpeedDatingLobby() {
                 <div className="p-6 bg-gradient-to-r from-pink-50 to-purple-50">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-bold text-gray-900">Sarah, 28</h3>
-                      <p className="text-sm text-gray-600">Marketing Manager • New York</p>
+                      <h3 className="font-bold text-foreground">Sarah, 28</h3>
+                      <p className="text-sm text-muted-foreground">Marketing Manager • New York</p>
                     </div>
                     <Button className="bg-gradient-to-r from-pink-600 to-red-600">
                       <Heart size={18} className="mr-2" />

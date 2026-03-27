@@ -94,7 +94,7 @@ export default function PageVisitsAnalytics() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Today's Visits</p>
+                <p className="text-sm text-muted-foreground">Today's Visits</p>
                 <p className="text-2xl font-bold">{visitsToday}</p>
               </div>
               <Eye size={32} className="text-purple-600" />
@@ -106,7 +106,7 @@ export default function PageVisitsAnalytics() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">This Week</p>
+                <p className="text-sm text-muted-foreground">This Week</p>
                 <p className="text-2xl font-bold">{visitsThisWeek}</p>
               </div>
               <TrendingUp size={32} className="text-blue-600" />
@@ -118,7 +118,7 @@ export default function PageVisitsAnalytics() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">This Month</p>
+                <p className="text-sm text-muted-foreground">This Month</p>
                 <p className="text-2xl font-bold">{visitsThisMonth}</p>
               </div>
               <Globe size={32} className="text-green-600" />
@@ -130,7 +130,7 @@ export default function PageVisitsAnalytics() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Unique Visitors</p>
+                <p className="text-sm text-muted-foreground">Unique Visitors</p>
                 <p className="text-2xl font-bold">{uniqueVisitors}</p>
               </div>
               <Clock size={32} className="text-amber-600" />
@@ -194,14 +194,14 @@ export default function PageVisitsAnalytics() {
               </thead>
               <tbody>
                 {analytics.slice(0, 20).map((item, idx) => (
-                  <tr key={idx} className="border-b hover:bg-gray-50">
+                  <tr key={idx} className="border-b hover:bg-muted">
                     <td className="py-2 px-3 font-medium">
                       {item.event_type?.replace(/_/g, ' ') || 'Unknown'}
                     </td>
-                    <td className="py-2 px-3 text-gray-500">
+                    <td className="py-2 px-3 text-muted-foreground">
                       {item.user_profile_id ? item.user_profile_id.slice(0, 8) + '...' : 'Anonymous'}
                     </td>
-                    <td className="py-2 px-3 text-gray-500">
+                    <td className="py-2 px-3 text-muted-foreground">
                       {new Date(item.created_date).toLocaleString()}
                     </td>
                   </tr>

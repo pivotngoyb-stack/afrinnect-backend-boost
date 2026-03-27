@@ -221,7 +221,7 @@ export default function Analytics() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 relative pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative pb-24">
       <AfricanPattern className="text-purple-600" opacity={0.03} />
 
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b">
@@ -237,7 +237,7 @@ export default function Analytics() {
           </div>
           
           <Tabs value={timeRange} onValueChange={setTimeRange}>
-            <TabsList className="bg-gray-100">
+            <TabsList className="bg-muted">
               <TabsTrigger value="7days">7d</TabsTrigger>
               <TabsTrigger value="30days">30d</TabsTrigger>
               <TabsTrigger value="90days">90d</TabsTrigger>
@@ -252,7 +252,7 @@ export default function Analytics() {
             <CardContent className="p-6 text-center">
               <Crown size={40} className="mx-auto mb-4 text-amber-600" />
               <h3 className="font-bold text-lg mb-2">Unlock Full Analytics</h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-muted-foreground mb-4">
                 Upgrade to Premium to see detailed insights and who viewed your profile
               </p>
               <Link to={createPageUrl('PricingPlans')}>
@@ -273,7 +273,7 @@ export default function Analytics() {
                 <TrendingUp size={16} className="text-green-500" />
               </div>
               <p className="text-2xl font-bold">{stats?.totalViews || 0}</p>
-              <p className="text-sm text-gray-500">Profile Views</p>
+              <p className="text-sm text-muted-foreground">Profile Views</p>
             </CardContent>
           </Card>
 
@@ -284,7 +284,7 @@ export default function Analytics() {
                 <TrendingUp size={16} className="text-green-500" />
               </div>
               <p className="text-2xl font-bold">{stats?.totalLikes || 0}</p>
-              <p className="text-sm text-gray-500">Likes Received</p>
+              <p className="text-sm text-muted-foreground">Likes Received</p>
             </CardContent>
           </Card>
 
@@ -295,7 +295,7 @@ export default function Analytics() {
                 <TrendingUp size={16} className="text-green-500" />
               </div>
               <p className="text-2xl font-bold">{stats?.totalMatches || 0}</p>
-              <p className="text-sm text-gray-500">New Matches</p>
+              <p className="text-sm text-muted-foreground">New Matches</p>
             </CardContent>
           </Card>
 
@@ -306,7 +306,7 @@ export default function Analytics() {
                 <TrendingUp size={16} className="text-green-500" />
               </div>
               <p className="text-2xl font-bold">{stats?.responseRate || 0}%</p>
-              <p className="text-sm text-gray-500">Response Rate</p>
+              <p className="text-sm text-muted-foreground">Response Rate</p>
             </CardContent>
           </Card>
         </div>
@@ -317,19 +317,19 @@ export default function Analytics() {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="font-bold text-lg">Engagement Rate</h3>
-                <p className="text-sm text-gray-500">Views to likes conversion</p>
+                <p className="text-sm text-muted-foreground">Views to likes conversion</p>
               </div>
               <div className="text-3xl font-bold text-purple-600">
                 {stats?.engagementRate || 0}%
               </div>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-3">
+            <div className="w-full bg-muted rounded-full h-3">
               <div
                 className="bg-gradient-to-r from-purple-600 to-pink-600 h-3 rounded-full transition-all duration-500"
                 style={{ width: `${Math.min(stats?.engagementRate || 0, 100)}%` }}
               />
             </div>
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-muted-foreground mt-2">
               {stats?.engagementRate >= 20 ? '🔥 Great engagement!' : stats?.engagementRate >= 10 ? '👍 Good job!' : '💡 Tip: Update your photos for better engagement'}
             </p>
           </CardContent>
@@ -381,7 +381,7 @@ export default function Analytics() {
                 </LineChart>
               </ResponsiveContainer>
             ) : (
-              <p className="text-center text-gray-500 py-8">No engagement data yet. Keep swiping!</p>
+              <p className="text-center text-muted-foreground py-8">No engagement data yet. Keep swiping!</p>
             )}
           </CardContent>
         </Card>
@@ -424,7 +424,7 @@ export default function Analytics() {
                         style={{ backgroundColor: COLORS[idx % COLORS.length] }}
                       />
                       <span className="text-sm capitalize">{source.name}</span>
-                      <span className="text-sm text-gray-500">({source.value})</span>
+                      <span className="text-sm text-muted-foreground">({source.value})</span>
                     </div>
                   ))}
                 </div>
@@ -447,13 +447,13 @@ export default function Analytics() {
                 <div className="space-y-3">
                   {stats.recentViews.map((view, idx) => (
                     <Link key={idx} to={createPageUrl(`Profile?id=${view.viewer_profile_id}`)}>
-                      <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                      <div className="flex items-center gap-3 p-3 bg-muted rounded-lg hover:bg-muted transition">
                         <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
                           <Eye size={20} className="text-purple-600" />
                         </div>
                         <div className="flex-1">
                           <p className="font-medium">Profile viewed</p>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-muted-foreground">
                             {new Date(view.created_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                           </p>
                         </div>
@@ -465,16 +465,16 @@ export default function Analytics() {
                   ))}
                 </div>
               ) : (
-                <p className="text-center text-gray-500 py-8">No profile views yet</p>
+                <p className="text-center text-muted-foreground py-8">No profile views yet</p>
               )}
             </CardContent>
           </Card>
         ) : (
           <Card className="mb-6 border-amber-200">
             <CardContent className="p-8 text-center">
-              <Lock size={48} className="mx-auto mb-4 text-gray-400" />
+              <Lock size={48} className="mx-auto mb-4 text-muted-foreground" />
               <h4 className="font-bold mb-2">See Who Viewed Your Profile</h4>
-              <p className="text-sm text-gray-500 mb-4">Upgrade to Premium to unlock</p>
+              <p className="text-sm text-muted-foreground mb-4">Upgrade to Premium to unlock</p>
             </CardContent>
           </Card>
         )}
@@ -523,7 +523,7 @@ export default function Analytics() {
                   ))}
                 </div>
               ) : (
-                <p className="text-center text-gray-500 py-8">No likes yet</p>
+                <p className="text-center text-muted-foreground py-8">No likes yet</p>
               )}
             </CardContent>
           </Card>
@@ -532,7 +532,7 @@ export default function Analytics() {
             <CardContent className="p-8 text-center">
               <Heart size={48} className="mx-auto mb-4 text-pink-400" />
               <h4 className="font-bold mb-2">See Who Likes You</h4>
-              <p className="text-sm text-gray-500 mb-4">Upgrade to Premium to see everyone who likes you</p>
+              <p className="text-sm text-muted-foreground mb-4">Upgrade to Premium to see everyone who likes you</p>
               <Link to={createPageUrl('PricingPlans')}>
                 <Button className="bg-gradient-to-r from-pink-600 to-purple-700">
                   Upgrade to Premium
@@ -559,9 +559,9 @@ export default function Analytics() {
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-medium">{insight.country}</span>
-                        <span className="text-sm text-gray-500">{insight.percentage}%</span>
+                        <span className="text-sm text-muted-foreground">{insight.percentage}%</span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="w-full bg-muted rounded-full h-2">
                         <div
                           className="bg-gradient-to-r from-purple-600 to-amber-600 h-2 rounded-full"
                           style={{ width: `${insight.percentage}%` }}
@@ -570,12 +570,12 @@ export default function Analytics() {
                     </div>
                   </div>
                 ))}
-                <p className="text-xs text-gray-500 mt-4">
+                <p className="text-xs text-muted-foreground mt-4">
                   Based on your {matches.length} match{matches.length !== 1 ? 'es' : ''}
                 </p>
               </div>
             ) : (
-              <p className="text-center text-gray-500 py-8">
+              <p className="text-center text-muted-foreground py-8">
                 Start matching to see cultural insights
               </p>
             )}

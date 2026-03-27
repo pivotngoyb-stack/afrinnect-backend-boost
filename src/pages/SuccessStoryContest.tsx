@@ -177,8 +177,8 @@ export default function SuccessStoryContest() {
                   <img src={winner.photos[0]} className="w-full h-64 object-cover rounded-lg mb-4" />
                 )}
                 <h4 className="text-xl font-bold mb-2">{winner.story_title}</h4>
-                <p className="text-gray-700 mb-3">{winner.story_text}</p>
-                <div className="flex items-center gap-2 text-gray-600">
+                <p className="text-foreground mb-3">{winner.story_text}</p>
+                <div className="flex items-center gap-2 text-muted-foreground">
                   <Heart size={18} className="text-red-500" />
                   <span>{winner.votes || 0} votes</span>
                 </div>
@@ -198,7 +198,7 @@ export default function SuccessStoryContest() {
                     <img src={story.photos[0]} className="w-full h-40 object-cover rounded-lg mb-3" />
                   )}
                   <h4 className="font-bold mb-2">{story.story_title}</h4>
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-3">{story.story_text}</p>
+                  <p className="text-sm text-muted-foreground mb-3 line-clamp-3">{story.story_text}</p>
                   <Button
                     onClick={() => voteMutation.mutate(story.id)}
                     variant="outline"

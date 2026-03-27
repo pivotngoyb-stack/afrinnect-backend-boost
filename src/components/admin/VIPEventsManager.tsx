@@ -207,7 +207,7 @@ export default function VIPEventsManager() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">VIP Events Manager</h2>
-          <p className="text-gray-500">Create and manage exclusive events for VIP members</p>
+          <p className="text-muted-foreground">Create and manage exclusive events for VIP members</p>
         </div>
         <Dialog open={isCreating || !!editingEvent} onOpenChange={(open) => { if (!open) { setIsCreating(false); setEditingEvent(null); resetForm(); } }}>
           <DialogTrigger asChild>
@@ -236,7 +236,7 @@ export default function VIPEventsManager() {
                     <Badge className={
                       event.status === 'upcoming' ? 'bg-green-500' :
                       event.status === 'live' ? 'bg-red-500' :
-                      event.status === 'completed' ? 'bg-gray-500' : 'bg-yellow-500'
+                      event.status === 'completed' ? 'bg-muted' : 'bg-yellow-500'
                     }>
                       {event.status}
                     </Badge>
@@ -244,8 +244,8 @@ export default function VIPEventsManager() {
                     <Badge variant="outline">{event.tier_required?.toUpperCase()}</Badge>
                   </div>
                   <h3 className="text-lg font-bold">{event.title}</h3>
-                  <p className="text-sm text-gray-500 line-clamp-1">{event.description}</p>
-                  <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground line-clamp-1">{event.description}</p>
+                  <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <Calendar size={14} />
                       {event.scheduled_at ? format(new Date(event.scheduled_at), 'MMM d, yyyy h:mm a') : '-'}
@@ -273,7 +273,7 @@ export default function VIPEventsManager() {
 
         {events.length === 0 && (
           <Card>
-            <CardContent className="p-12 text-center text-gray-500">
+            <CardContent className="p-12 text-center text-muted-foreground">
               No events created yet. Click "Create Event" to get started.
             </CardContent>
           </Card>

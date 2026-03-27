@@ -84,7 +84,7 @@ export default function BroadcastMessages({ broadcasts, profiles, currentUser })
   });
 
   const statusColors = {
-    draft: 'bg-gray-100 text-gray-800',
+    draft: 'bg-muted text-foreground',
     scheduled: 'bg-blue-100 text-blue-800',
     sending: 'bg-yellow-100 text-yellow-800',
     sent: 'bg-green-100 text-green-800',
@@ -101,7 +101,7 @@ export default function BroadcastMessages({ broadcasts, profiles, currentUser })
               <Send size={24} className="text-purple-600" />
               <div>
                 <p className="text-2xl font-bold">{broadcasts.length}</p>
-                <p className="text-sm text-gray-600">Total Broadcasts</p>
+                <p className="text-sm text-muted-foreground">Total Broadcasts</p>
               </div>
             </div>
           </CardContent>
@@ -114,7 +114,7 @@ export default function BroadcastMessages({ broadcasts, profiles, currentUser })
                 <p className="text-2xl font-bold">
                   {broadcasts.reduce((sum, b) => sum + (b.sent_count || 0), 0)}
                 </p>
-                <p className="text-sm text-gray-600">Messages Sent</p>
+                <p className="text-sm text-muted-foreground">Messages Sent</p>
               </div>
             </div>
           </CardContent>
@@ -127,7 +127,7 @@ export default function BroadcastMessages({ broadcasts, profiles, currentUser })
                 <p className="text-2xl font-bold">
                   {broadcasts.reduce((sum, b) => sum + (b.open_count || 0), 0)}
                 </p>
-                <p className="text-sm text-gray-600">Opens</p>
+                <p className="text-sm text-muted-foreground">Opens</p>
               </div>
             </div>
           </CardContent>
@@ -157,8 +157,8 @@ export default function BroadcastMessages({ broadcasts, profiles, currentUser })
                     <Badge variant="outline">{broadcast.target_audience}</Badge>
                   </div>
                   <h3 className="font-semibold">{broadcast.title}</h3>
-                  <p className="text-sm text-gray-600 line-clamp-2">{broadcast.body}</p>
-                  <div className="flex items-center gap-4 text-xs text-gray-500 mt-2">
+                  <p className="text-sm text-muted-foreground line-clamp-2">{broadcast.body}</p>
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2">
                     <span className="flex items-center gap-1">
                       <Users size={12} />
                       {broadcast.sent_count || 0} sent
@@ -177,7 +177,7 @@ export default function BroadcastMessages({ broadcasts, profiles, currentUser })
               </div>
             ))}
             {broadcasts.length === 0 && (
-              <p className="text-center text-gray-500 py-8">No broadcasts sent yet</p>
+              <p className="text-center text-muted-foreground py-8">No broadcasts sent yet</p>
             )}
           </div>
         </CardContent>
@@ -235,7 +235,7 @@ export default function BroadcastMessages({ broadcasts, profiles, currentUser })
                 onChange={(e) => setFormData({...formData, send_at: e.target.value})}
                 className="mt-2"
               />
-              <p className="text-xs text-gray-500 mt-1">Leave empty to send immediately</p>
+              <p className="text-xs text-muted-foreground mt-1">Leave empty to send immediately</p>
             </div>
 
             <Button

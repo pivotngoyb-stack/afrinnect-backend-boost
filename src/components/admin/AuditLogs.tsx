@@ -42,7 +42,7 @@ export default function AuditLogs({ logs }) {
               <Shield size={24} className="text-blue-600" />
               <div>
                 <p className="text-2xl font-bold">{logs.length}</p>
-                <p className="text-sm text-gray-600">Total Actions</p>
+                <p className="text-sm text-muted-foreground">Total Actions</p>
               </div>
             </div>
           </CardContent>
@@ -59,7 +59,7 @@ export default function AuditLogs({ logs }) {
                     return logDate.toDateString() === today.toDateString();
                   }).length}
                 </p>
-                <p className="text-sm text-gray-600">Today</p>
+                <p className="text-sm text-muted-foreground">Today</p>
               </div>
             </div>
           </CardContent>
@@ -72,7 +72,7 @@ export default function AuditLogs({ logs }) {
                 <p className="text-2xl font-bold">
                   {logs.filter(l => l.action_type === 'user_ban' || l.action_type === 'user_delete').length}
                 </p>
-                <p className="text-sm text-gray-600">Moderation Actions</p>
+                <p className="text-sm text-muted-foreground">Moderation Actions</p>
               </div>
             </div>
           </CardContent>
@@ -85,7 +85,7 @@ export default function AuditLogs({ logs }) {
                 <p className="text-2xl font-bold">
                   {[...new Set(logs.map(l => l.admin_email))].length}
                 </p>
-                <p className="text-sm text-gray-600">Active Admins</p>
+                <p className="text-sm text-muted-foreground">Active Admins</p>
               </div>
             </div>
           </CardContent>
@@ -109,7 +109,7 @@ export default function AuditLogs({ logs }) {
         <CardContent>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="relative">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search by admin email or user ID..."
                 value={searchTerm}
@@ -145,37 +145,37 @@ export default function AuditLogs({ logs }) {
         <CardContent>
           <div className="space-y-2 max-h-[600px] overflow-y-auto">
             {filteredLogs.map(log => (
-              <div key={log.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border hover:bg-gray-100 transition">
+              <div key={log.id} className="flex items-center justify-between p-4 bg-muted rounded-lg border hover:bg-muted transition">
                 <div className="flex items-center gap-4 flex-1">
-                  <Badge className={actionColors[log.action_type] || 'bg-gray-600'}>
+                  <Badge className={actionColors[log.action_type] || 'bg-secondary'}>
                     {log.action_type.replace(/_/g, ' ')}
                   </Badge>
                   <div className="flex-1">
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-foreground">
                       {log.admin_email}
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-muted-foreground">
                       Target: {log.target_user_id || 'N/A'}
                     </p>
                     {log.details && (
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-muted-foreground mt-1">
                         {JSON.stringify(log.details)}
                       </p>
                     )}
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     {new Date(log.created_date).toLocaleString()}
                   </p>
                   {log.ip_address && (
-                    <p className="text-xs text-gray-500">IP: {log.ip_address}</p>
+                    <p className="text-xs text-muted-foreground">IP: {log.ip_address}</p>
                   )}
                 </div>
               </div>
             ))}
             {filteredLogs.length === 0 && (
-              <p className="text-center text-gray-500 py-8">No audit logs found</p>
+              <p className="text-center text-muted-foreground py-8">No audit logs found</p>
             )}
           </div>
         </CardContent>

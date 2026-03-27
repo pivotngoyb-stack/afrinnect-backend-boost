@@ -356,7 +356,7 @@ export default function Stories() {
               <label htmlFor="story-file" className="w-full cursor-pointer">
                 <motion.div
                   whileTap={{ scale: 0.98 }}
-                  className="border-2 border-dashed border-gray-600 rounded-3xl p-16 text-center"
+                  className="border-2 border-dashed border-border rounded-3xl p-16 text-center"
                 >
                   {isUploading ? (
                     <div className="flex flex-col items-center">
@@ -369,7 +369,7 @@ export default function Stories() {
                         <ImagePlus size={36} className="text-primary-foreground" />
                       </div>
                       <p className="text-white text-lg font-medium mb-1">Tap to select</p>
-                      <p className="text-gray-400 text-sm">Photo or video</p>
+                      <p className="text-muted-foreground text-sm">Photo or video</p>
                     </>
                   )}
                 </motion.div>
@@ -389,13 +389,13 @@ export default function Stories() {
                   onChange={(e) => setCaption(e.target.value)}
                   placeholder="Add a caption..."
                   disabled={isUploading}
-                  className="bg-gray-900 border-gray-700 text-white placeholder:text-gray-500 rounded-full"
+                  className="bg-background border-border text-white placeholder:text-muted-foreground rounded-full"
                 />
               </div>
             </div>
 
             <div className="p-6 text-center">
-              <p className="text-gray-500 text-xs">Stories disappear after 24 hours</p>
+              <p className="text-muted-foreground text-xs">Stories disappear after 24 hours</p>
             </div>
           </motion.div>
         )}

@@ -47,7 +47,7 @@ export default function Marketplace() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 relative pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative pb-24">
       <AfricanPattern className="text-purple-600" opacity={0.03} />
 
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b">
@@ -58,7 +58,7 @@ export default function Marketplace() {
                         <ArrowLeft size={24} />
                     </Button>
                 </Link>
-                <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
                     <ShoppingBag className="text-purple-600" />
                     Marketplace
                 </h1>
@@ -66,7 +66,7 @@ export default function Marketplace() {
 
             <div className="flex flex-col md:flex-row gap-3">
                 <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
                     <Input 
                         placeholder="Search vendors..." 
                         value={searchQuery}
@@ -119,14 +119,14 @@ export default function Marketplace() {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="space-y-3 text-sm text-gray-600 mb-4">
+                            <div className="space-y-3 text-sm text-muted-foreground mb-4">
                                 <div className="flex items-center gap-2">
-                                    <MapPin size={16} className="text-gray-400" />
+                                    <MapPin size={16} className="text-muted-foreground" />
                                     {vendor.location}
                                 </div>
                                 {vendor.website && (
                                     <div className="flex items-center gap-2">
-                                        <ExternalLink size={16} className="text-gray-400" />
+                                        <ExternalLink size={16} className="text-muted-foreground" />
                                         <a 
                                             href={vendor.website} 
                                             target="_blank" 
@@ -139,7 +139,7 @@ export default function Marketplace() {
                                 )}
                             </div>
                             
-                            <p className="text-gray-600 line-clamp-3 mb-4 h-12">
+                            <p className="text-muted-foreground line-clamp-3 mb-4 h-12">
                                 {vendor.description}
                             </p>
 

@@ -157,8 +157,8 @@ export default function ImplementationStatus() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Implementation Status Report</h2>
-        <p className="text-gray-600">Complete overview of all features and their implementation status</p>
+        <h2 className="text-2xl font-bold text-foreground mb-2">Implementation Status Report</h2>
+        <p className="text-muted-foreground">Complete overview of all features and their implementation status</p>
       </div>
 
       {/* Summary Stats */}
@@ -217,8 +217,8 @@ export default function ImplementationStatus() {
               <CardContent>
                 <ul className="space-y-2">
                   {feature.items.map((item, i) => (
-                    <li key={i} className="text-sm text-gray-700 flex items-start gap-2">
-                      <span className="text-gray-400 mt-0.5">•</span>
+                    <li key={i} className="text-sm text-foreground flex items-start gap-2">
+                      <span className="text-muted-foreground mt-0.5">•</span>
                       <span>{item}</span>
                     </li>
                   ))}
@@ -241,8 +241,8 @@ export default function ImplementationStatus() {
                 <CardContent>
                   <ul className="space-y-2">
                     {feature.items.map((item, i) => (
-                      <li key={i} className="text-sm text-gray-700 flex items-start gap-2">
-                        <span className="text-gray-400 mt-0.5">•</span>
+                      <li key={i} className="text-sm text-foreground flex items-start gap-2">
+                        <span className="text-muted-foreground mt-0.5">•</span>
                         <span>{item}</span>
                       </li>
                     ))}
@@ -268,21 +268,21 @@ export default function ImplementationStatus() {
               <Badge className="bg-amber-600 mt-1">1</Badge>
               <div>
                 <p className="font-semibold">Video Events Integration</p>
-                <p className="text-sm text-gray-600">Connect Jitsi rooms to VideoEvent entity for group video dating</p>
+                <p className="text-sm text-muted-foreground">Connect Jitsi rooms to VideoEvent entity for group video dating</p>
               </div>
             </li>
             <li className="flex items-start gap-3">
               <Badge className="bg-amber-600 mt-1">2</Badge>
               <div>
                 <p className="font-semibold">Background Check Provider</p>
-                <p className="text-sm text-gray-600">Integrate Checkr or similar service for real verification</p>
+                <p className="text-sm text-muted-foreground">Integrate Checkr or similar service for real verification</p>
               </div>
             </li>
             <li className="flex items-start gap-3">
               <Badge className="bg-amber-600 mt-1">3</Badge>
               <div>
                 <p className="font-semibold">Marketplace Messaging</p>
-                <p className="text-sm text-gray-600">Build direct messaging to vendors through the platform</p>
+                <p className="text-sm text-muted-foreground">Build direct messaging to vendors through the platform</p>
               </div>
             </li>
           </ul>

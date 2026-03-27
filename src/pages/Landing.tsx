@@ -216,8 +216,8 @@ export default function Landing() {
               {recentSignup.name[0]}
             </div>
             <div>
-              <p className="text-sm font-semibold text-gray-900">{t('landingExtra.justJoined').replace('{name}', recentSignup.name)}</p>
-              <p className="text-xs text-gray-500">{recentSignup.location} • {recentSignup.time}</p>
+              <p className="text-sm font-semibold text-foreground">{t('landingExtra.justJoined').replace('{name}', recentSignup.name)}</p>
+              <p className="text-xs text-muted-foreground">{recentSignup.location} • {recentSignup.time}</p>
             </div>
           </motion.div>
         )}
@@ -369,8 +369,8 @@ export default function Landing() {
                   className="w-12 h-12 rounded-full object-cover"
                 />
                 <div>
-                  <p className="font-bold text-gray-900 text-sm">{t('landingExtra.newMatch')}</p>
-                  <p className="text-xs text-gray-500">Kwame — Ghana</p>
+                  <p className="font-bold text-foreground text-sm">{t('landingExtra.newMatch')}</p>
+                  <p className="text-xs text-muted-foreground">Kwame — Ghana</p>
                 </div>
               </div>
             </motion.div>
@@ -388,8 +388,8 @@ export default function Landing() {
                   className="w-12 h-12 rounded-full object-cover"
                 />
                 <div>
-                  <p className="font-bold text-gray-900 text-sm">{t('landingExtra.matchPercent')}</p>
-                  <p className="text-xs text-gray-500">Zara — Kenya</p>
+                  <p className="font-bold text-foreground text-sm">{t('landingExtra.matchPercent')}</p>
+                  <p className="text-xs text-muted-foreground">Zara — Kenya</p>
                 </div>
               </div>
             </motion.div>
@@ -418,10 +418,10 @@ export default function Landing() {
       <section className="relative z-10 bg-white py-20">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold text-foreground mb-4">
               {t('landing.whyChoose')}
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-muted-foreground">
               {t('landing.whySubtitle')}
             </p>
           </div>
@@ -440,10 +440,10 @@ export default function Landing() {
                     <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-100 to-amber-100 flex items-center justify-center">
                       <feature.icon size={32} className="text-purple-600" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    <h3 className="text-xl font-bold text-foreground mb-2">
                       {feature.title}
                     </h3>
-                    <p className="text-gray-600">
+                    <p className="text-muted-foreground">
                       {feature.description}
                     </p>
                   </CardContent>
@@ -461,10 +461,10 @@ export default function Landing() {
             <span className="inline-block bg-purple-100 text-purple-700 text-sm font-semibold px-4 py-1 rounded-full mb-4">
               {t('landingExtra.testimonials.badge')}
             </span>
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold text-foreground mb-4">
               {t('landingExtra.testimonials.title')}
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               {t('landingExtra.testimonials.subtitle')}
             </p>
           </div>
@@ -503,17 +503,17 @@ export default function Landing() {
                       {/* Quote */}
                       <div className="md:w-3/5 p-8 md:p-10">
                         <div className="text-purple-600 text-5xl font-serif leading-none mb-4">"</div>
-                        <p className="text-lg text-gray-700 mb-6 leading-relaxed">
+                        <p className="text-lg text-foreground mb-6 leading-relaxed">
                           {testimonials[activeTestimonial].quote}
                         </p>
-                        <div className="border-t border-gray-100 pt-4">
-                          <p className="font-bold text-gray-900 text-lg">
+                        <div className="border-t border-border pt-4">
+                          <p className="font-bold text-foreground text-lg">
                             {testimonials[activeTestimonial].name}
                           </p>
                           <p className="text-sm text-purple-600 font-medium">
                             {testimonials[activeTestimonial].location}
                           </p>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-muted-foreground mt-1">
                             {testimonials[activeTestimonial].detail}
                           </p>
                         </div>
@@ -531,7 +531,7 @@ export default function Landing() {
                   key={idx}
                   onClick={() => setActiveTestimonial(idx)}
                   className={`h-2 rounded-full transition-all ${
-                    idx === activeTestimonial ? 'bg-purple-600 w-8' : 'bg-gray-300 w-2'
+                    idx === activeTestimonial ? 'bg-purple-600 w-8' : 'bg-muted w-2'
                   }`}
                 />
               ))}
@@ -539,7 +539,7 @@ export default function Landing() {
             
             {/* CTA after testimonials */}
             <div className="text-center mt-10">
-              <p className="text-gray-600 mb-4">{t('landingExtra.testimonials.yourStory')}</p>
+              <p className="text-muted-foreground mb-4">{t('landingExtra.testimonials.yourStory')}</p>
               <Button 
                 onClick={handleGetStarted}
                 size="lg" 
@@ -559,10 +559,10 @@ export default function Landing() {
       <section className="relative z-10 bg-white py-20">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold text-foreground mb-4">
               {t('landing.howItWorks')}
             </h2>
-            <p className="text-xl text-gray-600">{t('landingExtra.howItWorksSubtitle')}</p>
+            <p className="text-xl text-muted-foreground">{t('landingExtra.howItWorksSubtitle')}</p>
           </div>
 
           <div className="grid md:grid-cols-4 gap-8">
@@ -619,8 +619,8 @@ export default function Landing() {
                       <div className="w-10 h-10 mb-3 rounded-full bg-purple-100 flex items-center justify-center">
                         <item.icon size={20} className="text-purple-600" />
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
-                      <p className="text-gray-600 text-sm">{item.desc}</p>
+                      <h3 className="text-xl font-bold text-foreground mb-2">{item.title}</h3>
+                      <p className="text-muted-foreground text-sm">{item.desc}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -637,7 +637,7 @@ export default function Landing() {
             <Crown size={20} />
             <span className="font-semibold">{t('landing.premium.subtitle')}</span>
           </div>
-          <h2 className="text-4xl font-bold text-gray-900 mb-6">
+          <h2 className="text-4xl font-bold text-foreground mb-6">
             {t('landing.premium.title')}
           </h2>
           <div className="grid md:grid-cols-3 gap-6 mb-10">
@@ -649,7 +649,7 @@ export default function Landing() {
               t('monetization.premiumFeatures.rewindSwipe'),
               t('monetization.premiumFeatures.profileBoosts')
             ].map((feature, idx) => (
-              <div key={idx} className="flex items-center justify-center gap-2 text-gray-700">
+              <div key={idx} className="flex items-center justify-center gap-2 text-foreground">
                 <CheckCircle size={20} className="text-green-600" />
                 <span>{feature}</span>
               </div>
@@ -692,7 +692,7 @@ export default function Landing() {
               <Button 
                 onClick={handleGetStarted}
                 size="lg" 
-                className="bg-white text-purple-900 hover:bg-gray-100 px-12 py-7 text-xl rounded-full shadow-2xl transform hover:scale-105 transition-all font-bold"
+                className="bg-white text-purple-900 hover:bg-muted px-12 py-7 text-xl rounded-full shadow-2xl transform hover:scale-105 transition-all font-bold"
               >
                 {t('landingExtra.joinAfrinnect')}
                 <ArrowRight size={24} className="ml-2" />
@@ -708,7 +708,7 @@ export default function Landing() {
       </section>
 
       {/* Mobile Sticky CTA - High Converting */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 p-3 md:hidden" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 12px)' }}>
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border p-3 md:hidden" style={{ paddingBottom: 'max(env(safe-area-inset-bottom), 12px)' }}>
         {isLoggedIn ? (
           <Link to={createPageUrl('Home')} className="block">
             <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white rounded-full py-6 text-base font-bold">
@@ -724,7 +724,7 @@ export default function Landing() {
               {t('landingExtra.testimonials.joinFree')}
               <ArrowRight size={18} className="ml-2" />
             </Button>
-            <p className="text-center text-xs text-gray-500">
+            <p className="text-center text-xs text-muted-foreground">
               {t('landingExtra.joinMembers').replace('{count}', String(liveCount))}
             </p>
           </div>
@@ -732,24 +732,24 @@ export default function Landing() {
       </div>
 
       {/* Footer */}
-      <footer className="relative z-10 bg-gray-900 text-white py-12 pb-32 md:pb-12">
+      <footer className="relative z-10 bg-background text-white py-12 pb-32 md:pb-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <Logo size="default" />
-          <p className="text-gray-400 mt-4">
+          <p className="text-muted-foreground mt-4">
             {t('landing.footer.tagline')}
           </p>
-          <div className="flex justify-center gap-6 mt-6 text-sm text-gray-400">
+          <div className="flex justify-center gap-6 mt-6 text-sm text-muted-foreground">
             <Link to={createPageUrl('Privacy')} className="hover:text-white" id="privacy-policy">{t('landingExtra.footerPrivacy')}</Link>
             <Link to={createPageUrl('Terms')} className="hover:text-white">{t('landingExtra.footerTerms')}</Link>
             <Link to={createPageUrl('CommunityGuidelines')} className="hover:text-white">{t('landing.footer.guidelines')}</Link>
           </div>
           {/* Contact & Copyright */}
           <div className="mt-8 pt-8 border-t border-gray-800">
-            <p className="text-sm text-gray-400 mb-2">
+            <p className="text-sm text-muted-foreground mb-2">
               {t('landingExtra.footerContact')} <a href="mailto:Support@afrinnect.com" className="text-amber-400 hover:text-amber-300">Support@afrinnect.com</a>
             </p>
-            <p className="text-sm text-gray-400">© {new Date().getFullYear()} Afrinnect. {t('landingExtra.footerRights')}</p>
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} Afrinnect. {t('landingExtra.footerRights')}</p>
+            <p className="text-xs text-muted-foreground mt-2">
               {t('landingExtra.footerTrademark')}
             </p>
           </div>

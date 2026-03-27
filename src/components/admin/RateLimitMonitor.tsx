@@ -96,7 +96,7 @@ export default function RateLimitMonitor({ violations, currentUser }) {
                     <Button
                       onClick={runAIAnalysis}
                       disabled={isRunningAI}
-                      className="bg-white text-red-900 hover:bg-gray-100"
+                      className="bg-white text-red-900 hover:bg-muted"
                     >
                       {isRunningAI ? (
                         <>
@@ -166,10 +166,10 @@ export default function RateLimitMonitor({ violations, currentUser }) {
                   {aiResult.details.map((user, idx) => (
                     <div key={idx} className="bg-white p-3 rounded border border-green-200 mb-2">
                       <p className="font-medium">{user.email}</p>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-muted-foreground">
                         {user.violations} violations • {user.analysis.confidence}% confidence
                       </p>
-                      <p className="text-sm text-gray-700 mt-1">
+                      <p className="text-sm text-foreground mt-1">
                         Reason: {user.analysis.reasoning}
                       </p>
                     </div>
@@ -197,24 +197,24 @@ export default function RateLimitMonitor({ violations, currentUser }) {
                 <div
                   key={user.id}
                   className={`p-4 rounded-lg border ${
-                    isHighRisk ? 'bg-red-50 border-red-300' : 'bg-gray-50 border-gray-200'
+                    isHighRisk ? 'bg-red-50 border-red-300' : 'bg-muted border-border'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         {isHighRisk && <AlertTriangle size={18} className="text-red-600" />}
-                        <p className="font-semibold text-gray-900">{user.email}</p>
+                        <p className="font-semibold text-foreground">{user.email}</p>
                         {isHighRisk && (
                           <Badge className="bg-red-600">HIGH RISK</Badge>
                         )}
                       </div>
-                      <div className="flex gap-4 text-sm text-gray-600">
+                      <div className="flex gap-4 text-sm text-muted-foreground">
                         <span>Total: {user.totalCount} violations</span>
                         {loginViolations > 0 && <span>Login: {loginViolations}</span>}
                         {signupViolations > 0 && <span>Signup: {signupViolations}</span>}
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-muted-foreground mt-1">
                         Last violation: {new Date(user.violations[0].created_date).toLocaleString()}
                       </p>
                     </div>
@@ -237,7 +237,7 @@ export default function RateLimitMonitor({ violations, currentUser }) {
             })}
 
             {sortedUsers.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-muted-foreground">
                 <Shield size={48} className="mx-auto mb-2 opacity-50" />
                 <p>No rate limit violations in the last 24 hours</p>
                 <p className="text-sm">Your security system is working perfectly! 🎉</p>

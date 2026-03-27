@@ -4,7 +4,7 @@ import MigrationCostCalculator from '@/components/migration/MigrationCostCalcula
 
 export default function MigrationCalculator() {
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-muted py-8">
       <MigrationCostCalculator />
     </div>
   );

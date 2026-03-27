@@ -60,7 +60,7 @@ export default function FeatureFlags({ flags }) {
               <Flag size={24} className="text-purple-600" />
               <div>
                 <p className="text-2xl font-bold">{flags.length}</p>
-                <p className="text-sm text-gray-600">Total Flags</p>
+                <p className="text-sm text-muted-foreground">Total Flags</p>
               </div>
             </div>
           </CardContent>
@@ -71,7 +71,7 @@ export default function FeatureFlags({ flags }) {
               <Flag size={24} className="text-green-600" />
               <div>
                 <p className="text-2xl font-bold">{flags.filter(f => f.is_enabled).length}</p>
-                <p className="text-sm text-gray-600">Enabled</p>
+                <p className="text-sm text-muted-foreground">Enabled</p>
               </div>
             </div>
           </CardContent>
@@ -84,7 +84,7 @@ export default function FeatureFlags({ flags }) {
                 <p className="text-2xl font-bold">
                   {flags.filter(f => f.rollout_percentage > 0 && f.rollout_percentage < 100).length}
                 </p>
-                <p className="text-sm text-gray-600">Partial Rollout</p>
+                <p className="text-sm text-muted-foreground">Partial Rollout</p>
               </div>
             </div>
           </CardContent>
@@ -111,8 +111,8 @@ export default function FeatureFlags({ flags }) {
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
                     <h3 className="font-semibold">{flag.display_name}</h3>
-                    <p className="text-sm text-gray-600">{flag.description}</p>
-                    <p className="text-xs text-gray-500 font-mono mt-1">{flag.feature_name}</p>
+                    <p className="text-sm text-muted-foreground">{flag.description}</p>
+                    <p className="text-xs text-muted-foreground font-mono mt-1">{flag.feature_name}</p>
                   </div>
                   <Switch
                     checked={flag.is_enabled}
@@ -154,7 +154,7 @@ export default function FeatureFlags({ flags }) {
               </div>
             ))}
             {flags.length === 0 && (
-              <p className="text-center text-gray-500 py-8">No feature flags configured</p>
+              <p className="text-center text-muted-foreground py-8">No feature flags configured</p>
             )}
           </div>
         </CardContent>

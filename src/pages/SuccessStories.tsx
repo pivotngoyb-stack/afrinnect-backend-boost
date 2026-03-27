@@ -141,12 +141,12 @@ export default function SuccessStories() {
                       )}
                     </div>
 
-                    <p className="text-gray-700 mb-4 leading-relaxed">
+                    <p className="text-foreground mb-4 leading-relaxed">
                       "{story.story_text}"
                     </p>
 
                     {story.match_date && (
-                      <p className="text-sm text-gray-500 mb-3">
+                      <p className="text-sm text-muted-foreground mb-3">
                         Matched on {format(new Date(story.match_date), 'MMMM yyyy')}
                       </p>
                     )}
@@ -172,8 +172,8 @@ export default function SuccessStories() {
 
         {stories.length === 0 && !isLoading && (
           <div className="text-center py-20">
-            <Heart size={64} className="mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-600">No success stories yet</p>
+            <Heart size={64} className="mx-auto text-muted-foreground mb-4" />
+            <p className="text-muted-foreground">No success stories yet</p>
           </div>
         )}
       </main>

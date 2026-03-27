@@ -164,7 +164,7 @@ export default function ABTestManager() {
                     {test.is_active ? 'Active' : 'Paused'}
                   </Badge>
                 </div>
-                <p className="text-sm text-gray-500 capitalize">{test.test_type}</p>
+                <p className="text-sm text-muted-foreground capitalize">{test.test_type}</p>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -177,7 +177,7 @@ export default function ABTestManager() {
                     <div className="text-2xl font-bold text-blue-600">
                       {stats.variantARate}%
                     </div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-muted-foreground">
                       {stats.variantAConversions} conversions
                     </p>
                   </div>
@@ -191,13 +191,13 @@ export default function ABTestManager() {
                     <div className="text-2xl font-bold text-purple-600">
                       {stats.variantBRate}%
                     </div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-muted-foreground">
                       {stats.variantBConversions} conversions
                     </p>
                   </div>
 
                   {/* Results */}
-                  <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="p-3 bg-muted rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                       <TrendingUp size={16} className={
                         parseFloat(stats.improvement) > 0 ? 'text-green-600' : 'text-red-600'
@@ -207,7 +207,7 @@ export default function ABTestManager() {
                         {parseFloat(stats.improvement) > 0 ? ' improvement' : ' decrease'}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-muted-foreground">
                       Variant {stats.winner} is performing better
                     </p>
                   </div>
@@ -257,7 +257,7 @@ export default function ABTestManager() {
       {activeTests.filter(t => t.user_id === 'config').length === 0 && (
         <Card>
           <CardContent className="text-center py-12">
-            <p className="text-gray-500 mb-4">No active A/B tests</p>
+            <p className="text-muted-foreground mb-4">No active A/B tests</p>
             <Button onClick={() => setShowCreateModal(true)}>
               Create Your First Test
             </Button>
@@ -309,7 +309,7 @@ export default function ABTestManager() {
                 value={newTest.traffic_split}
                 onChange={(e) => setNewTest({ ...newTest, traffic_split: parseInt(e.target.value) })}
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 % of users who will see Variant B
               </p>
             </div>

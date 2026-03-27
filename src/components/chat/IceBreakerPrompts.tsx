@@ -42,14 +42,14 @@ export default function IceBreakerPrompts({ onSelectQuestion, onClose }) {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Sparkles size={24} className="text-purple-600" />
-                <h3 className="text-xl font-bold text-gray-900">Ice Breakers</h3>
+                <h3 className="text-xl font-bold text-foreground">Ice Breakers</h3>
               </div>
               <Button variant="ghost" size="icon" onClick={onClose}>
                 <X size={20} />
               </Button>
             </div>
 
-            <p className="text-gray-600 mb-4 text-sm">
+            <p className="text-muted-foreground mb-4 text-sm">
               Break the ice with culturally relevant conversation starters
             </p>
 
@@ -89,10 +89,10 @@ export default function IceBreakerPrompts({ onSelectQuestion, onClose }) {
                     >
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between gap-3">
-                          <p className="text-gray-800 group-hover:text-purple-600 transition-colors">
+                          <p className="text-foreground group-hover:text-purple-600 transition-colors">
                             {question.question}
                           </p>
-                          <Send size={16} className="text-gray-400 group-hover:text-purple-600 transition-colors flex-shrink-0 mt-1" />
+                          <Send size={16} className="text-muted-foreground group-hover:text-purple-600 transition-colors flex-shrink-0 mt-1" />
                         </div>
                         <div className="flex gap-2 mt-2">
                           <Badge variant="outline" className="text-xs">

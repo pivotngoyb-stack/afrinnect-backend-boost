@@ -140,7 +140,7 @@ export default function CompatibilityQuiz() {
                 <CardContent className="p-6">
                   <Badge className="mb-3 capitalize">{quiz.category}</Badge>
                   <h3 className="text-xl font-bold mb-2">{quiz.title}</h3>
-                  <p className="text-sm text-gray-600 mb-4">{quiz.description}</p>
+                  <p className="text-sm text-muted-foreground mb-4">{quiz.description}</p>
                   <p className="text-sm text-purple-600 font-medium">{quiz.questions.length} questions • 5 min</p>
                 </CardContent>
               </Card>
@@ -165,23 +165,23 @@ export default function CompatibilityQuiz() {
                 <Sparkles size={40} className="text-purple-600" />
               </div>
               <h2 className="text-2xl font-bold mb-2">Quiz Complete!</h2>
-              <p className="text-gray-600 mb-4">Your Primary Love Language:</p>
+              <p className="text-muted-foreground mb-4">Your Primary Love Language:</p>
               <div className="mb-4">
                 <h3 className="text-3xl font-bold text-purple-600 mb-2 capitalize">{result.personality.replace('_', ' ')}</h3>
                 {result.description && (
-                  <p className="text-sm text-gray-600 mb-3">{result.description}</p>
+                  <p className="text-sm text-muted-foreground mb-3">{result.description}</p>
                 )}
               </div>
               
               {result.allScores && (
                 <div className="mb-6 text-left">
-                  <p className="text-sm font-semibold text-gray-700 mb-2">All Love Languages:</p>
+                  <p className="text-sm font-semibold text-foreground mb-2">All Love Languages:</p>
                   <div className="space-y-2">
                     {Object.entries(result.allScores).map(([type, score]) => (
                       <div key={type} className="flex items-center justify-between text-sm">
-                        <span className="capitalize text-gray-700">{type.replace('_', ' ')}</span>
+                        <span className="capitalize text-foreground">{type.replace('_', ' ')}</span>
                         <div className="flex items-center gap-2">
-                          <div className="w-24 bg-gray-200 rounded-full h-2">
+                          <div className="w-24 bg-muted rounded-full h-2">
                             <div 
                               className="bg-purple-600 h-2 rounded-full" 
                               style={{width: `${(score / 50) * 100}%`}}
@@ -195,7 +195,7 @@ export default function CompatibilityQuiz() {
                 </div>
               )}
               
-              <p className="text-sm text-gray-600 mb-6">
+              <p className="text-sm text-muted-foreground mb-6">
                 Understanding your love language helps us find compatible matches who will appreciate how you express and receive love!
               </p>
               <div className="flex gap-3">
@@ -226,7 +226,7 @@ export default function CompatibilityQuiz() {
             <Button variant="ghost" size="icon" onClick={resetQuiz}>
               <ArrowLeft size={24} />
             </Button>
-            <span className="text-sm text-gray-600">Question {currentQuestion + 1} of {selectedQuiz.questions.length}</span>
+            <span className="text-sm text-muted-foreground">Question {currentQuestion + 1} of {selectedQuiz.questions.length}</span>
           </div>
           <Progress value={progress} className="h-2" />
         </div>

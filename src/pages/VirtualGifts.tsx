@@ -131,7 +131,7 @@ export default function VirtualGifts() {
               className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
                 activeCategory === cat.id
                   ? 'bg-purple-600 text-white'
-                  : 'bg-white text-gray-600 hover:bg-purple-50'
+                  : 'bg-white text-muted-foreground hover:bg-purple-50'
               }`}
             >
               {cat.label}
@@ -190,7 +190,7 @@ export default function VirtualGifts() {
                   className="mt-2"
                   maxLength={100}
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   {message.length}/100
                 </p>
               </CardContent>

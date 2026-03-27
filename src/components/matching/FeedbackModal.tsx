@@ -102,32 +102,32 @@ export default function FeedbackModal({
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b">
             <div>
-              <h3 className="font-bold text-gray-900">
+              <h3 className="font-bold text-foreground">
                 {actionType === 'pass' ? 'Help us improve' : 'Why are you unmatching?'}
               </h3>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 Your feedback helps us find better matches
               </p>
             </div>
             <button 
               onClick={handleSkip}
-              className="p-2 hover:bg-gray-100 rounded-full"
+              className="p-2 hover:bg-muted rounded-full"
             >
-              <X size={20} className="text-gray-500" />
+              <X size={20} className="text-muted-foreground" />
             </button>
           </div>
 
           {/* Profile Preview */}
           {profile && (
-            <div className="flex items-center gap-3 p-4 bg-gray-50">
+            <div className="flex items-center gap-3 p-4 bg-muted">
               <img 
                 src={profile.primary_photo || profile.photos?.[0]} 
                 alt={profile.display_name}
                 className="w-12 h-12 rounded-full object-cover"
               />
               <div>
-                <p className="font-medium text-gray-900">{profile.display_name}</p>
-                <p className="text-sm text-gray-500">
+                <p className="font-medium text-foreground">{profile.display_name}</p>
+                <p className="text-sm text-muted-foreground">
                   {profile.current_city}, {profile.current_state}
                 </p>
               </div>
@@ -136,7 +136,7 @@ export default function FeedbackModal({
 
           {/* Reasons */}
           <div className="p-4 space-y-2 max-h-[40vh] overflow-y-auto">
-            <p className="text-sm text-gray-600 mb-3">
+            <p className="text-sm text-muted-foreground mb-3">
               Select all that apply (optional):
             </p>
             {reasons.map((reason) => {
@@ -149,10 +149,10 @@ export default function FeedbackModal({
                   className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all ${
                     isSelected 
                       ? 'border-purple-500 bg-purple-50 text-purple-700' 
-                      : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                      : 'border-border hover:border-border text-foreground'
                   }`}
                 >
-                  <Icon size={18} className={isSelected ? 'text-purple-500' : 'text-gray-400'} />
+                  <Icon size={18} className={isSelected ? 'text-purple-500' : 'text-muted-foreground'} />
                   <span className="font-medium">{reason.label}</span>
                   {isSelected && (
                     <span className="ml-auto text-purple-500">✓</span>

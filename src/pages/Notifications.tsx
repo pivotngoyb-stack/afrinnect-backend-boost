@@ -111,14 +111,14 @@ export default function Notifications() {
       case 'super_like': return <Crown className="text-amber-500" size={24} />;
       case 'message': return <MessageCircle className="text-blue-500" size={24} />;
       case 'admin_message': return <Shield className="text-red-500" size={24} />;
-      default: return <Users className="text-gray-500" size={24} />;
+      default: return <Users className="text-muted-foreground" size={24} />;
     }
   };
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
+    <div className="min-h-screen bg-muted pb-24">
       <header className="sticky top-0 z-40 bg-white border-b">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -173,7 +173,7 @@ export default function Notifications() {
                   onClick={() => handleNotificationClick(notif)}
                   className={`p-4 rounded-xl border cursor-pointer transition-all hover:shadow-md ${
                     notif.is_read
-                      ? 'bg-white border-gray-200'
+                      ? 'bg-white border-border'
                       : isLikeNotif ? 'bg-gradient-to-r from-purple-50 to-pink-50 border-purple-300 border-2' : 'bg-purple-50 border-purple-200'
                   } ${notif.is_admin ? 'border-l-4 border-l-red-500' : ''} ${needsPremium ? 'opacity-75' : ''}`}
                 >
@@ -182,8 +182,8 @@ export default function Notifications() {
                     <div className="flex-1">
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <h3 className="font-semibold text-gray-900">{notif.title}</h3>
-                          <p className="text-sm text-gray-600 mt-1">
+                          <h3 className="font-semibold text-foreground">{notif.title}</h3>
+                          <p className="text-sm text-muted-foreground mt-1">
                             {needsPremium ? 'Someone special is interested in you! Upgrade to see who.' : notif.message}
                           </p>
                           {notif.is_admin && (
@@ -203,12 +203,12 @@ export default function Notifications() {
                             e.stopPropagation();
                             deleteNotifMutation.mutate(notif.id);
                           }}
-                          className="text-gray-400 hover:text-red-500 transition"
+                          className="text-muted-foreground hover:text-red-500 transition"
                         >
                           <Trash2 size={16} />
                         </button>
                       </div>
-                      <p className="text-xs text-gray-400 mt-2">
+                      <p className="text-xs text-muted-foreground mt-2">
                         {new Date(notif.created_date).toLocaleString()}
                       </p>
                     </div>

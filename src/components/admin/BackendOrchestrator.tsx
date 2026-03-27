@@ -184,7 +184,7 @@ export default function BackendOrchestrator() {
       critical: 'bg-red-600',
       high: 'bg-orange-600',
       medium: 'bg-blue-600',
-      low: 'bg-gray-600'
+      low: 'bg-secondary'
     };
     return <Badge className={colors[priority]}>{priority}</Badge>;
   };
@@ -198,7 +198,7 @@ export default function BackendOrchestrator() {
             <Settings className="text-purple-600" />
             Backend Job Orchestrator
           </h3>
-          <p className="text-sm text-gray-600">Manage and monitor automated backend jobs</p>
+          <p className="text-sm text-muted-foreground">Manage and monitor automated backend jobs</p>
         </div>
         <Badge className="bg-green-600">
           {scheduledJobs.filter(j => j.enabled).length} Active
@@ -220,30 +220,30 @@ export default function BackendOrchestrator() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Job Details */}
-                <p className="text-sm text-gray-600 mb-3">{job.description}</p>
+                <p className="text-sm text-muted-foreground mb-3">{job.description}</p>
                 <div className="grid grid-cols-3 gap-4 text-sm">
                   <div>
-                    <p className="text-gray-500 text-xs">Schedule</p>
+                    <p className="text-muted-foreground text-xs">Schedule</p>
                     <p className="font-medium">{job.schedule}</p>
                   </div>
                   <div>
-                    <p className="text-gray-500 text-xs">Last Run</p>
+                    <p className="text-muted-foreground text-xs">Last Run</p>
                     <p className="font-medium">
                       {job.lastRun ? new Date(job.lastRun).toLocaleTimeString() : 'Automated'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-500 text-xs">Priority</p>
+                    <p className="text-muted-foreground text-xs">Priority</p>
                     {getPriorityBadge(job.priority)}
                   </div>
                 </div>
 
                 {/* Job Logs */}
                 {jobLogs[job.name]?.length > 0 && (
-                  <div className="bg-gray-50 rounded-lg p-3 max-h-32 overflow-y-auto">
-                    <p className="text-xs font-medium text-gray-700 mb-2">Recent Logs:</p>
+                  <div className="bg-muted rounded-lg p-3 max-h-32 overflow-y-auto">
+                    <p className="text-xs font-medium text-foreground mb-2">Recent Logs:</p>
                     {jobLogs[job.name].slice(-3).reverse().map((log, idx) => (
-                      <div key={idx} className="text-xs text-gray-600 mb-1">
+                      <div key={idx} className="text-xs text-muted-foreground mb-1">
                         <span className={log.status === 'success' ? 'text-green-600' : 'text-red-600'}>
                           {log.status === 'success' ? '✓' : '✗'}
                         </span>
@@ -282,7 +282,7 @@ export default function BackendOrchestrator() {
                       checked={job.enabled}
                       onCheckedChange={() => toggleJobEnabled(job.id)}
                     />
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-muted-foreground">
                       {job.enabled ? 'Enabled' : 'Disabled'}
                     </span>
                   </div>
@@ -299,7 +299,7 @@ export default function BackendOrchestrator() {
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium">Bulk Actions</p>
-              <p className="text-sm text-gray-600">Run all enabled jobs at once</p>
+              <p className="text-sm text-muted-foreground">Run all enabled jobs at once</p>
             </div>
             <Button
               onClick={() => {

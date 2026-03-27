@@ -87,7 +87,7 @@ export default function Waitlist() {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-amber-50 flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50 to-amber-50 flex items-center justify-center p-4 relative overflow-hidden">
         <AfricanPattern className="text-purple-600" opacity={0.05} />
         
         <motion.div 
@@ -102,8 +102,8 @@ export default function Waitlist() {
               </div>
               
               <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">You're on the list!</h2>
-                <p className="text-gray-600">
+                <h2 className="text-3xl font-bold text-foreground mb-2">You're on the list!</h2>
+                <p className="text-muted-foreground">
                   Thank you for joining the Afrinnect waitlist. We'll verify your spot and notify you as soon as we're ready for you!
                 </p>
               </div>
@@ -123,7 +123,7 @@ export default function Waitlist() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-amber-50 flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50 to-amber-50 flex flex-col relative overflow-hidden">
       <AfricanPattern className="text-purple-600" opacity={0.05} />
 
       {/* Header */}
@@ -155,11 +155,11 @@ export default function Waitlist() {
               <Sparkles size={16} className="mr-2" />
               Limited Spots Available
             </div>
-            <h1 className="text-4xl md:text-6xl font-black text-gray-900 mb-6 tracking-tight leading-none drop-shadow-sm uppercase">
+            <h1 className="text-4xl md:text-6xl font-black text-foreground mb-6 tracking-tight leading-none drop-shadow-sm uppercase">
               Warning: VIP Access <br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-amber-600">Is Closing Soon!</span>
             </h1>
-            <p className="text-xl font-bold text-gray-700 mb-4">
+            <p className="text-xl font-bold text-foreground mb-4">
               Join our growing community. <span className="text-purple-600 bg-purple-50 px-2 py-1 rounded">Find meaningful connections.</span>
             </p>
           </div>
@@ -170,7 +170,7 @@ export default function Waitlist() {
                 <div className="space-y-2">
                   <Label htmlFor="full_name">Full Name</Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-3 text-gray-400" size={18} />
+                    <User className="absolute left-3 top-3 text-muted-foreground" size={18} />
                     <Input 
                       id="full_name"
                       placeholder="Kwame Mensah" 
@@ -185,7 +185,7 @@ export default function Waitlist() {
                 <div className="space-y-2">
                 <Label htmlFor="location">Where do you live? (City, Country)</Label>
                 <div className="relative">
-                  <User className="absolute left-3 top-3 text-gray-400" size={18} />
+                  <User className="absolute left-3 top-3 text-muted-foreground" size={18} />
                   <Input 
                     id="location"
                     placeholder="Lagos, Ghana" 
@@ -199,7 +199,7 @@ export default function Waitlist() {
                 <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-3 text-gray-400" size={18} />
+                    <Mail className="absolute left-3 top-3 text-muted-foreground" size={18} />
                     <Input 
                       id="email"
                       type="email" 
@@ -224,14 +224,14 @@ export default function Waitlist() {
                 </div>
 
                 {/* GDPR Consent Checkbox */}
-                <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-start gap-3 p-3 bg-muted rounded-lg">
                   <Checkbox
                     id="terms"
                     checked={agreedToTerms}
                     onCheckedChange={setAgreedToTerms}
                     className="mt-0.5"
                   />
-                  <Label htmlFor="terms" className="text-sm text-gray-600 leading-tight cursor-pointer">
+                  <Label htmlFor="terms" className="text-sm text-muted-foreground leading-tight cursor-pointer">
                     I agree to the{' '}
                     <Link to={createPageUrl('Terms')} className="text-purple-600 underline" target="_blank">Terms of Service</Link>
                     {' '}and{' '}
@@ -253,7 +253,7 @@ export default function Waitlist() {
                   {!isSubmitting && <Send size={18} className="ml-2" />}
                 </Button>
                 
-                <p className="text-xs text-center text-gray-500 mt-4">
+                <p className="text-xs text-center text-muted-foreground mt-4">
                   We respect your privacy and will never share your data.
                 </p>
               </form>

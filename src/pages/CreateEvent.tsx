@@ -158,7 +158,7 @@ export default function CreateEvent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 relative pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative pb-24">
       <AfricanPattern className="text-purple-600" opacity={0.03} />
 
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b">
@@ -208,9 +208,9 @@ export default function CreateEvent() {
                   </button>
                 </div>
               ) : (
-                <label className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-purple-400 transition">
-                  <Upload size={48} className="text-gray-400 mb-2" />
-                  <p className="text-gray-500">Click to upload cover image</p>
+                <label className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-border rounded-lg cursor-pointer hover:border-purple-400 transition">
+                  <Upload size={48} className="text-muted-foreground mb-2" />
+                  <p className="text-muted-foreground">Click to upload cover image</p>
                   {uploading && <Loader2 className="animate-spin mt-2" />}
                   <input
                     type="file"
@@ -347,7 +347,7 @@ export default function CreateEvent() {
                   placeholder="Zoom, Google Meet, or custom link"
                   type="url"
                 />
-                <p className="text-xs text-gray-500 mt-1">Attendees will see this link after RSVPing</p>
+                <p className="text-xs text-muted-foreground mt-1">Attendees will see this link after RSVPing</p>
               </div>
             ) : (
               <div className="space-y-4">

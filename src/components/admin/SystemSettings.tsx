@@ -115,7 +115,7 @@ export default function SystemSettings() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label className="text-gray-300">Platform Name</Label>
+                <Label className="text-muted-foreground">Platform Name</Label>
                 <Input
                   value={settings.platformName}
                   onChange={(e) => setSettings({...settings, platformName: e.target.value})}
@@ -126,7 +126,7 @@ export default function SystemSettings() {
               <div className="flex items-center justify-between p-4 bg-purple-500/20 rounded-lg border border-purple-500/50">
                 <div>
                   <Label className="text-white text-lg font-bold">GO LIVE / LAUNCH MODE</Label>
-                  <p className="text-sm text-gray-300">
+                  <p className="text-sm text-muted-foreground">
                     {settings.isLive 
                       ? "APP IS LIVE! Users can access normally." 
                       : "MAINTENANCE MODE. Users are redirected to Waitlist."}
@@ -141,8 +141,8 @@ export default function SystemSettings() {
               
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-gray-300">Maintenance Mode (Legacy)</Label>
-                  <p className="text-sm text-gray-400">Disable all user access</p>
+                  <Label className="text-muted-foreground">Maintenance Mode (Legacy)</Label>
+                  <p className="text-sm text-muted-foreground">Disable all user access</p>
                 </div>
                 <Switch
                   checked={settings.maintenanceMode}
@@ -152,8 +152,8 @@ export default function SystemSettings() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-gray-300">New User Registration</Label>
-                  <p className="text-sm text-gray-400">Allow new users to sign up</p>
+                  <Label className="text-muted-foreground">New User Registration</Label>
+                  <p className="text-sm text-muted-foreground">Allow new users to sign up</p>
                 </div>
                 <Switch
                   checked={settings.newUserRegistration}
@@ -163,8 +163,8 @@ export default function SystemSettings() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-gray-300">Email Verification Required</Label>
-                  <p className="text-sm text-gray-400">Users must verify email</p>
+                  <Label className="text-muted-foreground">Email Verification Required</Label>
+                  <p className="text-sm text-muted-foreground">Users must verify email</p>
                 </div>
                 <Switch
                   checked={settings.emailVerificationRequired}
@@ -182,7 +182,7 @@ export default function SystemSettings() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label className="text-gray-300">Free Daily Likes</Label>
+                <Label className="text-muted-foreground">Free Daily Likes</Label>
                 <Input
                   type="number"
                   value={settings.freeDailyLikes}
@@ -192,7 +192,7 @@ export default function SystemSettings() {
               </div>
 
               <div>
-                <Label className="text-gray-300">Premium Daily Likes</Label>
+                <Label className="text-muted-foreground">Premium Daily Likes</Label>
                 <Input
                   type="number"
                   value={settings.premiumDailyLikes}
@@ -202,7 +202,7 @@ export default function SystemSettings() {
               </div>
 
               <div>
-                <Label className="text-gray-300">Max Profile Photos</Label>
+                <Label className="text-muted-foreground">Max Profile Photos</Label>
                 <Input
                   type="number"
                   value={settings.maxProfilePhotos}
@@ -212,7 +212,7 @@ export default function SystemSettings() {
               </div>
 
               <div>
-                <Label className="text-gray-300">Max Bio Characters</Label>
+                <Label className="text-muted-foreground">Max Bio Characters</Label>
                 <Input
                   type="number"
                   value={settings.maxBio}
@@ -235,8 +235,8 @@ export default function SystemSettings() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-gray-300">Auto Moderation</Label>
-                  <p className="text-sm text-gray-400">AI-powered content moderation</p>
+                  <Label className="text-muted-foreground">Auto Moderation</Label>
+                  <p className="text-sm text-muted-foreground">AI-powered content moderation</p>
                 </div>
                 <Switch
                   checked={settings.autoModerationEnabled}
@@ -246,8 +246,8 @@ export default function SystemSettings() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-gray-300">Manual Review Required</Label>
-                  <p className="text-sm text-gray-400">All photos need admin approval</p>
+                  <Label className="text-muted-foreground">Manual Review Required</Label>
+                  <p className="text-sm text-muted-foreground">All photos need admin approval</p>
                 </div>
                 <Switch
                   checked={settings.manualReviewRequired}
@@ -256,7 +256,7 @@ export default function SystemSettings() {
               </div>
 
               <div>
-                <Label className="text-gray-300">Minimum Age Requirement</Label>
+                <Label className="text-muted-foreground">Minimum Age Requirement</Label>
                 <Input
                   type="number"
                   value={settings.minAgeRequirement}
@@ -266,7 +266,7 @@ export default function SystemSettings() {
               </div>
 
               <div>
-                <Label className="text-gray-300">Maximum Age Allowed</Label>
+                <Label className="text-muted-foreground">Maximum Age Allowed</Label>
                 <Input
                   type="number"
                   value={settings.maxAgeAllowed}
@@ -289,8 +289,8 @@ export default function SystemSettings() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-gray-300">Regional Pricing</Label>
-                  <p className="text-sm text-gray-400">Offer discounts by region</p>
+                  <Label className="text-muted-foreground">Regional Pricing</Label>
+                  <p className="text-sm text-muted-foreground">Offer discounts by region</p>
                 </div>
                 <Switch
                   checked={settings.regionalPricingEnabled}
@@ -299,7 +299,7 @@ export default function SystemSettings() {
               </div>
 
               <div>
-                <Label className="text-gray-300">African Countries Discount (%)</Label>
+                <Label className="text-muted-foreground">African Countries Discount (%)</Label>
                 <Input
                   type="number"
                   value={settings.africanDiscount}
@@ -326,8 +326,8 @@ export default function SystemSettings() {
               ].map(feature => (
                 <div key={feature.key} className="flex items-center justify-between">
                   <div>
-                    <Label className="text-gray-300">{feature.label}</Label>
-                    <p className="text-sm text-gray-400">{feature.desc}</p>
+                    <Label className="text-muted-foreground">{feature.label}</Label>
+                    <p className="text-sm text-muted-foreground">{feature.desc}</p>
                   </div>
                   <Switch
                     checked={settings[feature.key]}

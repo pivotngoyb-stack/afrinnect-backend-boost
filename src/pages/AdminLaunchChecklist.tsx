@@ -9,7 +9,7 @@ import Logo from '@/components/shared/Logo';
 
 export default function AdminLaunchChecklist() {
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-muted p-8">
       <div className="max-w-3xl mx-auto space-y-8">
         <div className="flex items-center justify-between">
            <Logo />
@@ -21,11 +21,11 @@ export default function AdminLaunchChecklist() {
         </div>
 
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center justify-center gap-2">
+          <h1 className="text-3xl font-bold text-foreground flex items-center justify-center gap-2">
             <Rocket className="text-purple-600" />
             Afrinnect Launch Checklist
           </h1>
-          <p className="text-gray-600">Follow these steps when you are ready to go live.</p>
+          <p className="text-muted-foreground">Follow these steps when you are ready to go live.</p>
         </div>
 
         <Card className="border-l-4 border-l-amber-500">
@@ -48,7 +48,7 @@ export default function AdminLaunchChecklist() {
                 </p>
               </div>
             </div>
-            <p className="text-gray-600 text-sm pl-11">
+            <p className="text-muted-foreground text-sm pl-11">
               This will automatically revert the Landing page buttons to the signup flow and remove the blockers in the onboarding process.
             </p>
           </CardContent>
@@ -68,7 +68,7 @@ export default function AdminLaunchChecklist() {
               </div>
               <div className="space-y-2">
                 <p className="font-medium">Send the Launch Email</p>
-                <ol className="list-decimal list-inside text-sm text-gray-600 space-y-2">
+                <ol className="list-decimal list-inside text-sm text-muted-foreground space-y-2">
                   <li>Go to your <strong>Admin Dashboard</strong></li>
                   <li>Navigate to the <strong>Messaging</strong> tab</li>
                   <li>Find the <strong>Waitlist Invitations</strong> card</li>
@@ -99,21 +99,21 @@ export default function AdminLaunchChecklist() {
                   <CheckCircle className="text-blue-600" size={20} />
                 </div>
                 <h3 className="font-medium">User Growth</h3>
-                <p className="text-xs text-gray-500">Watch the "Users" tab for new signups</p>
+                <p className="text-xs text-muted-foreground">Watch the "Users" tab for new signups</p>
               </div>
               <div className="bg-white border p-4 rounded-lg text-center space-y-2 hover:shadow-md transition-shadow">
                 <div className="mx-auto w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                   <Shield className="text-green-600" size={20} />
                 </div>
                 <h3 className="font-medium">Safety</h3>
-                <p className="text-xs text-gray-500">Monitor "Moderation" for reports</p>
+                <p className="text-xs text-muted-foreground">Monitor "Moderation" for reports</p>
               </div>
               <div className="bg-white border p-4 rounded-lg text-center space-y-2 hover:shadow-md transition-shadow">
                 <div className="mx-auto w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
                   <AlertTriangle className="text-red-600" size={20} />
                 </div>
                 <h3 className="font-medium">Issues</h3>
-                <p className="text-xs text-gray-500">Check "Error Logs" for any bugs</p>
+                <p className="text-xs text-muted-foreground">Check "Error Logs" for any bugs</p>
               </div>
             </div>
           </CardContent>

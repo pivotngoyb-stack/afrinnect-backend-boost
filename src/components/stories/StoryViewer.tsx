@@ -178,7 +178,7 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-3 pt-8 z-30">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-white/50 bg-gray-800">
+          <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-white/50 bg-secondary">
             <img
               src={story.user_profile?.primary_photo}
               alt=""
@@ -218,7 +218,7 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute top-20 right-4 bg-gray-900 rounded-xl overflow-hidden z-40"
+            className="absolute top-20 right-4 bg-background rounded-xl overflow-hidden z-40"
           >
             <button
               onClick={handleDelete}

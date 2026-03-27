@@ -125,7 +125,7 @@ export default function PricingManagement({ plans: initialPlans }) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">Active Plans</p>
+                <p className="text-muted-foreground text-sm">Active Plans</p>
                 <p className="text-2xl font-bold text-white">{plans.filter(p => p.is_active).length}</p>
               </div>
               <DollarSign size={24} className="text-green-400" />
@@ -137,7 +137,7 @@ export default function PricingManagement({ plans: initialPlans }) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">Active Promos</p>
+                <p className="text-muted-foreground text-sm">Active Promos</p>
                 <p className="text-2xl font-bold text-white">{activePromos.length}</p>
               </div>
               <Tag size={24} className="text-purple-400" />
@@ -149,7 +149,7 @@ export default function PricingManagement({ plans: initialPlans }) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">A/B Tests</p>
+                <p className="text-muted-foreground text-sm">A/B Tests</p>
                 <p className="text-2xl font-bold text-white">{activeTests.length}</p>
               </div>
               <TestTube size={24} className="text-blue-400" />
@@ -161,7 +161,7 @@ export default function PricingManagement({ plans: initialPlans }) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm">Referrals</p>
+                <p className="text-muted-foreground text-sm">Referrals</p>
                 <p className="text-2xl font-bold text-white">{completedReferrals.length}</p>
               </div>
               <Gift size={24} className="text-amber-400" />
@@ -205,13 +205,13 @@ export default function PricingManagement({ plans: initialPlans }) {
                         }
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-4 text-gray-300">
+                    <div className="grid grid-cols-2 gap-4 text-muted-foreground">
                       <div>
-                        <p className="text-sm text-gray-400">Price</p>
+                        <p className="text-sm text-muted-foreground">Price</p>
                         <p className="text-lg font-semibold">${plan.price_usd}/{plan.billing_period}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-400">Features</p>
+                        <p className="text-sm text-muted-foreground">Features</p>
                         <p className="text-sm">{plan.features?.length || 0} features</p>
                       </div>
                     </div>
@@ -221,7 +221,7 @@ export default function PricingManagement({ plans: initialPlans }) {
                     size="icon"
                     onClick={() => setEditDialog({ open: true, type: 'plan', item: plan })}
                   >
-                    <Edit size={18} className="text-gray-400" />
+                    <Edit size={18} className="text-muted-foreground" />
                   </Button>
                 </div>
               </CardContent>
@@ -258,19 +258,19 @@ export default function PricingManagement({ plans: initialPlans }) {
                         }}
                       />
                     </div>
-                    <div className="grid grid-cols-3 gap-4 text-gray-300 text-sm">
+                    <div className="grid grid-cols-3 gap-4 text-muted-foreground text-sm">
                       {promo.discount_percentage && (
                         <div>
-                          <p className="text-gray-400">Discount</p>
+                          <p className="text-muted-foreground">Discount</p>
                           <p>{promo.discount_percentage}% off</p>
                         </div>
                       )}
                       <div>
-                        <p className="text-gray-400">Uses</p>
+                        <p className="text-muted-foreground">Uses</p>
                         <p>{promo.current_uses}/{promo.max_uses || '∞'}</p>
                       </div>
                       <div>
-                        <p className="text-gray-400">Audience</p>
+                        <p className="text-muted-foreground">Audience</p>
                         <p className="capitalize">{promo.target_audience.replace('_', ' ')}</p>
                       </div>
                     </div>
@@ -310,7 +310,7 @@ export default function PricingManagement({ plans: initialPlans }) {
                           <Badge className="bg-green-500">Winner: {test.winner}</Badge>
                         )}
                       </div>
-                      <p className="text-sm text-gray-400">Split: {test.traffic_split}% B / {100 - test.traffic_split}% A</p>
+                      <p className="text-sm text-muted-foreground">Split: {test.traffic_split}% B / {100 - test.traffic_split}% A</p>
                     </div>
                     <Switch checked={test.is_active} />
                   </div>
@@ -318,7 +318,7 @@ export default function PricingManagement({ plans: initialPlans }) {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="bg-white/5 p-4 rounded-lg">
                       <h4 className="text-white font-semibold mb-2">Variant A (Control)</h4>
-                      <div className="space-y-1 text-sm text-gray-300">
+                      <div className="space-y-1 text-sm text-muted-foreground">
                         <p>Views: {test.metrics?.variant_a_views || 0}</p>
                         <p>Conversions: {test.metrics?.variant_a_conversions || 0}</p>
                         <p className="font-bold text-white">Rate: {aConvRate}%</p>
@@ -327,7 +327,7 @@ export default function PricingManagement({ plans: initialPlans }) {
 
                     <div className="bg-white/5 p-4 rounded-lg">
                       <h4 className="text-white font-semibold mb-2">Variant B (Test)</h4>
-                      <div className="space-y-1 text-sm text-gray-300">
+                      <div className="space-y-1 text-sm text-muted-foreground">
                         <p>Views: {test.metrics?.variant_b_views || 0}</p>
                         <p>Conversions: {test.metrics?.variant_b_conversions || 0}</p>
                         <p className="font-bold text-white">Rate: {bConvRate}%</p>
@@ -346,7 +346,7 @@ export default function PricingManagement({ plans: initialPlans }) {
               <h3 className="text-lg font-bold text-white mb-4">Referral Program Settings</h3>
               <div className="space-y-4">
                 <div>
-                  <Label className="text-gray-300">Reward for Referrer</Label>
+                  <Label className="text-muted-foreground">Reward for Referrer</Label>
                   <Select defaultValue="free_week">
                     <SelectTrigger className="bg-white/10 border-white/20 text-white">
                       <SelectValue />
@@ -359,7 +359,7 @@ export default function PricingManagement({ plans: initialPlans }) {
                   </Select>
                 </div>
                 <div>
-                  <Label className="text-gray-300">Reward for New User</Label>
+                  <Label className="text-muted-foreground">Reward for New User</Label>
                   <Select defaultValue="discount">
                     <SelectTrigger className="bg-white/10 border-white/20 text-white">
                       <SelectValue />
@@ -378,19 +378,19 @@ export default function PricingManagement({ plans: initialPlans }) {
           <div className="grid grid-cols-3 gap-4 text-sm">
             <Card className="bg-white/5 border-white/10">
               <CardContent className="p-4">
-                <p className="text-gray-400">Total Referrals</p>
+                <p className="text-muted-foreground">Total Referrals</p>
                 <p className="text-2xl font-bold text-white">{referrals.length}</p>
               </CardContent>
             </Card>
             <Card className="bg-white/5 border-white/10">
               <CardContent className="p-4">
-                <p className="text-gray-400">Completed</p>
+                <p className="text-muted-foreground">Completed</p>
                 <p className="text-2xl font-bold text-green-400">{completedReferrals.length}</p>
               </CardContent>
             </Card>
             <Card className="bg-white/5 border-white/10">
               <CardContent className="p-4">
-                <p className="text-gray-400">Conversion Rate</p>
+                <p className="text-muted-foreground">Conversion Rate</p>
                 <p className="text-2xl font-bold text-white">
                   {referrals.length > 0 ? ((completedReferrals.length / referrals.length) * 100).toFixed(1) : 0}%
                 </p>
@@ -402,7 +402,7 @@ export default function PricingManagement({ plans: initialPlans }) {
 
       {/* Edit/Create Dialogs */}
       <Dialog open={editDialog.open} onOpenChange={(open) => setEditDialog({ ...editDialog, open })}>
-        <DialogContent className="bg-gray-900 border-white/20 text-white max-w-2xl">
+        <DialogContent className="bg-background border-white/20 text-white max-w-2xl">
           <DialogHeader>
             <DialogTitle>
               {editDialog.type === 'plan' && (editDialog.item ? 'Edit Plan' : 'Create Plan')}
@@ -454,7 +454,7 @@ function PlanForm({ plan, onSubmit }) {
   return (
     <div className="space-y-4">
       <div>
-        <Label className="text-gray-300">Plan Name</Label>
+        <Label className="text-muted-foreground">Plan Name</Label>
         <Input
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -464,7 +464,7 @@ function PlanForm({ plan, onSubmit }) {
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label className="text-gray-300">Tier</Label>
+          <Label className="text-muted-foreground">Tier</Label>
           <Select value={formData.tier} onValueChange={(v) => setFormData({ ...formData, tier: v })}>
             <SelectTrigger className="bg-white/10 border-white/20 text-white">
               <SelectValue />
@@ -477,7 +477,7 @@ function PlanForm({ plan, onSubmit }) {
           </Select>
         </div>
         <div>
-          <Label className="text-gray-300">Billing Period</Label>
+          <Label className="text-muted-foreground">Billing Period</Label>
           <Select value={formData.billing_period} onValueChange={(v) => setFormData({ ...formData, billing_period: v })}>
             <SelectTrigger className="bg-white/10 border-white/20 text-white">
               <SelectValue />
@@ -492,7 +492,7 @@ function PlanForm({ plan, onSubmit }) {
         </div>
       </div>
       <div>
-        <Label className="text-gray-300">Price (USD)</Label>
+        <Label className="text-muted-foreground">Price (USD)</Label>
         <Input
           type="number"
           step="0.01"
@@ -507,14 +507,14 @@ function PlanForm({ plan, onSubmit }) {
             checked={formData.is_active}
             onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
           />
-          <Label className="text-gray-300">Active</Label>
+          <Label className="text-muted-foreground">Active</Label>
         </div>
         <div className="flex items-center gap-2">
           <Switch
             checked={formData.is_featured}
             onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked })}
           />
-          <Label className="text-gray-300">Featured</Label>
+          <Label className="text-muted-foreground">Featured</Label>
         </div>
       </div>
       <Button onClick={handleSubmit} className="w-full">

@@ -46,7 +46,7 @@ export default function ProgressToTrial({
               {completedCount}/{totalRequired}
             </span>
           </div>
-          <Progress value={progress} className="h-1.5 bg-gray-200 mt-1.5" />
+          <Progress value={progress} className="h-1.5 bg-muted mt-1.5" />
         </div>
         {isExpanded ? (
           <ChevronUp size={18} className="text-muted-foreground" />

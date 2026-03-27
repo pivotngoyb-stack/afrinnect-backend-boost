@@ -25,7 +25,7 @@ export default function ChatBubble({ message, isOwn, senderPhoto }) {
           className={`rounded-2xl px-4 py-2 ${
             isOwn 
               ? 'bg-gradient-to-br from-purple-600 to-purple-700 text-white rounded-br-md' 
-              : 'bg-gray-100 text-gray-800 rounded-bl-md'
+              : 'bg-muted text-foreground rounded-bl-md'
           }`}
         >
           {message.message_type === 'image' ? (
@@ -43,10 +43,10 @@ export default function ChatBubble({ message, isOwn, senderPhoto }) {
                 <Mic size={18} className={isOwn ? 'text-white' : 'text-purple-600'} />
               </div>
               <div className="flex-1">
-                <div className={`h-1 rounded-full ${isOwn ? 'bg-white/30' : 'bg-gray-300'}`}>
+                <div className={`h-1 rounded-full ${isOwn ? 'bg-white/30' : 'bg-muted'}`}>
                   <div className={`h-full w-1/2 rounded-full ${isOwn ? 'bg-white' : 'bg-purple-600'}`} />
                 </div>
-                <span className={`text-xs mt-1 block ${isOwn ? 'text-white/70' : 'text-gray-500'}`}>
+                <span className={`text-xs mt-1 block ${isOwn ? 'text-white/70' : 'text-muted-foreground'}`}>
                   0:15
                 </span>
               </div>
@@ -65,11 +65,11 @@ export default function ChatBubble({ message, isOwn, senderPhoto }) {
         
         <div className={`flex items-center gap-1 mt-1 px-1 ${isOwn ? 'justify-end' : 'justify-between'}`}>
           <div className="flex items-center gap-1">
-            <span className="text-xs text-gray-400">{formatTime(message.created_date)}</span>
+            <span className="text-xs text-muted-foreground">{formatTime(message.created_date)}</span>
             {isOwn && (
               message.is_read 
                 ? <CheckCheck size={14} className="text-blue-500" />
-                : <Check size={14} className="text-gray-400" />
+                : <Check size={14} className="text-muted-foreground" />
             )}
           </div>
           {!isOwn && message.message_type === 'text' && (

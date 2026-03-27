@@ -198,7 +198,7 @@ export default function AnalyticsDashboard() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Total Users</p>
+                <p className="text-sm text-muted-foreground">Total Users</p>
                 <p className="text-2xl font-bold">{stats?.totalUsers?.toLocaleString()}</p>
               </div>
               <Users className="text-purple-600" size={32} />
@@ -213,12 +213,12 @@ export default function AnalyticsDashboard() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Active Subscriptions</p>
+                <p className="text-sm text-muted-foreground">Active Subscriptions</p>
                 <p className="text-2xl font-bold">{stats?.activeSubscriptions?.toLocaleString()}</p>
               </div>
               <Crown className="text-amber-500" size={32} />
             </div>
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-muted-foreground mt-2">
               ${stats?.revenue?.toLocaleString()} revenue
             </p>
           </CardContent>
@@ -228,12 +228,12 @@ export default function AnalyticsDashboard() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Total Matches</p>
+                <p className="text-sm text-muted-foreground">Total Matches</p>
                 <p className="text-2xl font-bold">{stats?.totalMatches?.toLocaleString()}</p>
               </div>
               <Heart className="text-pink-500" size={32} />
             </div>
-            <p className="text-xs text-gray-500 mt-2">
+            <p className="text-xs text-muted-foreground mt-2">
               {stats?.totalLikes?.toLocaleString()} likes
             </p>
           </CardContent>
@@ -243,7 +243,7 @@ export default function AnalyticsDashboard() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Messages</p>
+                <p className="text-sm text-muted-foreground">Messages</p>
                 <p className="text-2xl font-bold">{stats?.totalMessages?.toLocaleString()}</p>
               </div>
               <MessageCircle className="text-blue-500" size={32} />
@@ -362,7 +362,7 @@ export default function AnalyticsDashboard() {
                   <span>Signup → Profile Complete</span>
                   <span className="font-semibold">78%</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-muted rounded-full h-2">
                   <div className="bg-purple-600 h-2 rounded-full" style={{ width: '78%' }}></div>
                 </div>
               </div>
@@ -371,7 +371,7 @@ export default function AnalyticsDashboard() {
                   <span>Profile → First Like</span>
                   <span className="font-semibold">65%</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-muted rounded-full h-2">
                   <div className="bg-pink-600 h-2 rounded-full" style={{ width: '65%' }}></div>
                 </div>
               </div>
@@ -380,7 +380,7 @@ export default function AnalyticsDashboard() {
                   <span>Like → Match</span>
                   <span className="font-semibold">12%</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-muted rounded-full h-2">
                   <div className="bg-amber-500 h-2 rounded-full" style={{ width: '12%' }}></div>
                 </div>
               </div>
@@ -389,7 +389,7 @@ export default function AnalyticsDashboard() {
                   <span>Match → Message</span>
                   <span className="font-semibold">45%</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-muted rounded-full h-2">
                   <div className="bg-blue-600 h-2 rounded-full" style={{ width: '45%' }}></div>
                 </div>
               </div>
@@ -398,7 +398,7 @@ export default function AnalyticsDashboard() {
                   <span>Free → Premium</span>
                   <span className="font-semibold">{stats?.totalUsers ? ((stats.activeSubscriptions / stats.totalUsers) * 100).toFixed(1) : 0}%</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-muted rounded-full h-2">
                   <div className="bg-green-600 h-2 rounded-full" style={{ width: `${stats?.totalUsers ? ((stats.activeSubscriptions / stats.totalUsers) * 100) : 0}%` }}></div>
                 </div>
               </div>

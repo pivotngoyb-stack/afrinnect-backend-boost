@@ -54,8 +54,8 @@ export default function AppStoreComplianceAdmin() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">App Store Compliance</h1>
-          <p className="text-gray-500">Checklist for iOS App Store and Google Play Store</p>
+          <h1 className="text-2xl font-bold text-foreground">App Store Compliance</h1>
+          <p className="text-muted-foreground">Checklist for iOS App Store and Google Play Store</p>
         </div>
         <Link to={createPageUrl('AppStoreCompliance')} target="_blank">
           <Button variant="outline" className="gap-2">
@@ -73,7 +73,7 @@ export default function AppStoreComplianceAdmin() {
               <Apple size={32} />
               <div>
                 <h3 className="font-bold text-lg">iOS App Store</h3>
-                <p className="text-gray-400 text-sm">7/8 requirements met</p>
+                <p className="text-muted-foreground text-sm">7/8 requirements met</p>
               </div>
             </div>
             <div className="flex gap-2">
@@ -116,17 +116,17 @@ export default function AppStoreComplianceAdmin() {
             {iosChecklist.map(item => {
               const Icon = item.icon;
               return (
-                <div key={item.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={item.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
                   <div className="flex items-center gap-3">
                     {item.status === 'pass' ? (
                       <CheckCircle2 className="h-5 w-5 text-green-500" />
                     ) : (
                       <AlertCircle className="h-5 w-5 text-yellow-500" />
                     )}
-                    <Icon className="h-4 w-4 text-gray-400" />
+                    <Icon className="h-4 w-4 text-muted-foreground" />
                     <div>
                       <p className="font-medium text-sm">{item.label}</p>
-                      <p className="text-xs text-gray-500">{item.desc}</p>
+                      <p className="text-xs text-muted-foreground">{item.desc}</p>
                     </div>
                   </div>
                   {getStatusBadge(item.status)}
@@ -150,17 +150,17 @@ export default function AppStoreComplianceAdmin() {
             {androidChecklist.map(item => {
               const Icon = item.icon;
               return (
-                <div key={item.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={item.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
                   <div className="flex items-center gap-3">
                     {item.status === 'pass' ? (
                       <CheckCircle2 className="h-5 w-5 text-green-500" />
                     ) : (
                       <AlertCircle className="h-5 w-5 text-yellow-500" />
                     )}
-                    <Icon className="h-4 w-4 text-gray-400" />
+                    <Icon className="h-4 w-4 text-muted-foreground" />
                     <div>
                       <p className="font-medium text-sm">{item.label}</p>
-                      <p className="text-xs text-gray-500">{item.desc}</p>
+                      <p className="text-xs text-muted-foreground">{item.desc}</p>
                     </div>
                   </div>
                   {getStatusBadge(item.status)}

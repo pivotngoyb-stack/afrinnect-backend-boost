@@ -147,7 +147,7 @@ export default function AuthFlowTest() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-muted p-8">
       <div className="max-w-4xl mx-auto space-y-6">
         <Card>
           <CardHeader>
@@ -184,7 +184,7 @@ export default function AuthFlowTest() {
                       )}
                       <div>
                         <p className="font-medium text-sm">{name}</p>
-                        <p className="text-xs text-gray-500">{result.message}</p>
+                        <p className="text-xs text-muted-foreground">{result.message}</p>
                       </div>
                     </div>
                     <Badge variant={result.pass ? 'default' : 'destructive'}>

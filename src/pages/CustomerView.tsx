@@ -65,7 +65,7 @@ export default function CustomerView() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted">
       {/* Header */}
       <header className="bg-white border-b shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4">
@@ -77,8 +77,8 @@ export default function CustomerView() {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Customer View</h1>
-                <p className="text-sm text-gray-500">Preview and test the user experience</p>
+                <h1 className="text-xl font-bold text-foreground">Customer View</h1>
+                <p className="text-sm text-muted-foreground">Preview and test the user experience</p>
               </div>
             </div>
 
@@ -102,7 +102,7 @@ export default function CustomerView() {
               <div className="flex items-center gap-4">
                 <User size={20} className="text-amber-600" />
                 <div className="flex-1">
-                  <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                  <Label className="text-sm font-medium text-foreground mb-2 block">
                     Impersonate User (Optional)
                   </Label>
                   <Select value={impersonateUserId || 'none'} onValueChange={(val) => setImpersonateUserId(val === 'none' ? null : val)}>
@@ -124,7 +124,7 @@ export default function CustomerView() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setImpersonateUserId(null)}
-                    className="text-gray-500"
+                    className="text-muted-foreground"
                   >
                     Clear
                   </Button>
@@ -151,13 +151,13 @@ export default function CustomerView() {
             >
               <div
                 onClick={() => setSelectedPage(page)}
-                className="bg-white rounded-xl border-2 border-gray-200 hover:border-purple-400 hover:shadow-lg transition-all p-4 cursor-pointer group h-full"
+                className="bg-white rounded-xl border-2 border-border hover:border-purple-400 hover:shadow-lg transition-all p-4 cursor-pointer group h-full"
               >
                 <div className="flex flex-col items-center text-center gap-2">
                   <div className="text-3xl">{page.icon}</div>
-                  <h3 className="font-semibold text-gray-900 text-sm">{page.label}</h3>
+                  <h3 className="font-semibold text-foreground text-sm">{page.label}</h3>
                   {page.needsAuth && (
-                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                    <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
                       Requires Login
                     </span>
                   )}
@@ -205,12 +205,12 @@ export default function CustomerView() {
             }`}
           >
             {/* Preview Header */}
-            <div className="bg-gray-100 border-b px-4 py-3 flex items-center justify-between">
+            <div className="bg-muted border-b px-4 py-3 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <span className="text-2xl">{selectedPage.icon}</span>
                 <div>
-                  <h3 className="font-bold text-gray-900">{selectedPage.label}</h3>
-                  <p className="text-xs text-gray-500">
+                  <h3 className="font-bold text-foreground">{selectedPage.label}</h3>
+                  <p className="text-xs text-muted-foreground">
                     {impersonateUserId ? 'Viewing as selected user' : 'Admin view'}
                   </p>
                 </div>
@@ -219,14 +219,14 @@ export default function CustomerView() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setSelectedPage(null)}
-                className="hover:bg-gray-200"
+                className="hover:bg-muted"
               >
                 <X size={20} />
               </Button>
             </div>
 
             {/* Iframe Preview */}
-            <div className="w-full h-full bg-gray-50">
+            <div className="w-full h-full bg-muted">
               <iframe
                 src={impersonateUserId 
                   ? `${createPageUrl(selectedPage.name)}?_impersonate=${impersonateUserId}`

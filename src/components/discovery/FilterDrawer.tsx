@@ -190,7 +190,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
         <SheetHeader className="p-6 border-b">
           <div className="flex items-center justify-between">
             <SheetTitle className="text-xl font-bold">Filters</SheetTitle>
-            <Button variant="ghost" size="sm" onClick={resetFilters} className="text-gray-500">
+            <Button variant="ghost" size="sm" onClick={resetFilters} className="text-muted-foreground">
               <RotateCcw size={16} className="mr-1" />
               Reset
             </Button>
@@ -201,7 +201,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
           <div className="space-y-8">
             {/* Age Range */}
             <div>
-              <Label className="text-sm font-semibold text-gray-700 mb-4 block">
+              <Label className="text-sm font-semibold text-foreground mb-4 block">
                 Age Range: {localFilters.age_min} - {localFilters.age_max}
               </Label>
               <div className="pt-2 px-2">
@@ -221,7 +221,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
 
             {/* Distance */}
             <div>
-              <Label className="text-sm font-semibold text-gray-700 mb-4 block">
+              <Label className="text-sm font-semibold text-foreground mb-4 block">
                 Distance: {localFilters.distance_km === 500 ? 'Global' : `${localFilters.distance_km} km`}
               </Label>
               <div className="pt-2 px-2">
@@ -238,7 +238,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
 
             {/* Countries of Origin */}
             <div>
-              <Label className="text-sm font-semibold text-gray-700 mb-3 block">
+              <Label className="text-sm font-semibold text-foreground mb-3 block">
                 Heritage Country
                 {!isPremium && <span className="text-amber-600 text-xs ml-2">Premium</span>}
               </Label>
@@ -268,7 +268,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
 
             {/* US States */}
             <div>
-              <Label className="text-sm font-semibold text-gray-700 mb-3 block">
+              <Label className="text-sm font-semibold text-foreground mb-3 block">
                 US State
                 {!isPremium && <span className="text-amber-600 text-xs ml-2">Premium</span>}
               </Label>
@@ -298,7 +298,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
 
             {/* Relationship Goals */}
             <div>
-              <Label className="text-sm font-semibold text-gray-700 mb-3 block">
+              <Label className="text-sm font-semibold text-foreground mb-3 block">
                 Looking For
               </Label>
               <div className="space-y-2">
@@ -319,7 +319,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
 
             {/* Religion */}
             <div>
-              <Label className="text-sm font-semibold text-gray-700 mb-3 block">
+              <Label className="text-sm font-semibold text-foreground mb-3 block">
                 Religion
               </Label>
               <div className="space-y-2">
@@ -340,7 +340,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
 
             {/* Education */}
             <div>
-              <Label className="text-sm font-semibold text-gray-700 mb-3 block">
+              <Label className="text-sm font-semibold text-foreground mb-3 block">
                 Education Level
                 {!isPremium && <span className="text-amber-600 text-xs ml-2">Premium</span>}
               </Label>
@@ -363,7 +363,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
 
             {/* Height Range */}
             <div>
-              <Label className="text-sm font-semibold text-gray-700 mb-4 block">
+              <Label className="text-sm font-semibold text-foreground mb-4 block">
                 Height: {localFilters.height_min || 140} - {localFilters.height_max || 220} cm
               </Label>
               <div className="pt-2 px-2">
@@ -383,7 +383,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
 
             {/* Languages */}
             <div>
-              <Label className="text-sm font-semibold text-gray-700 mb-3 block">
+              <Label className="text-sm font-semibold text-foreground mb-3 block">
                 Languages Spoken
               </Label>
               <div className="flex flex-wrap gap-2">
@@ -406,10 +406,10 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
 
             {/* Lifestyle */}
             <div>
-              <Label className="text-sm font-semibold text-gray-700 mb-3 block">Lifestyle</Label>
+              <Label className="text-sm font-semibold text-foreground mb-3 block">Lifestyle</Label>
               <div className="space-y-4">
                 <div>
-                  <Label className="text-xs text-gray-600 mb-2 block">Smoking</Label>
+                  <Label className="text-xs text-muted-foreground mb-2 block">Smoking</Label>
                   <div className="flex flex-wrap gap-2">
                     {['never', 'sometimes', 'regularly'].map(option => (
                       <Badge
@@ -424,7 +424,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
                   </div>
                 </div>
                 <div>
-                  <Label className="text-xs text-gray-600 mb-2 block">Drinking</Label>
+                  <Label className="text-xs text-muted-foreground mb-2 block">Drinking</Label>
                   <div className="flex flex-wrap gap-2">
                     {['never', 'socially', 'regularly'].map(option => (
                       <Badge
@@ -439,7 +439,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
                   </div>
                 </div>
                 <div>
-                  <Label className="text-xs text-gray-600 mb-2 block">Fitness</Label>
+                  <Label className="text-xs text-muted-foreground mb-2 block">Fitness</Label>
                   <div className="flex flex-wrap gap-2">
                     {['never', 'sometimes', 'active', 'very_active'].map(option => (
                       <Badge
@@ -458,7 +458,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
 
             {/* Cultural Values */}
             <div>
-              <Label className="text-sm font-semibold text-gray-700 mb-3 block">
+              <Label className="text-sm font-semibold text-foreground mb-3 block">
                 Cultural Values
                 {!isPremium && <span className="text-amber-600 text-xs ml-2">Premium</span>}
               </Label>
@@ -488,7 +488,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
 
             {/* Interests */}
             <div>
-              <Label className="text-sm font-semibold text-gray-700 mb-3 block">
+              <Label className="text-sm font-semibold text-foreground mb-3 block">
                 Interests
                 {!isPremium && <span className="text-amber-600 text-xs ml-2">Premium</span>}
               </Label>
@@ -518,7 +518,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
 
             {/* Preferred Language */}
             <div>
-              <Label className="text-sm font-semibold text-gray-700 mb-3 block">
+              <Label className="text-sm font-semibold text-foreground mb-3 block">
                 Preferred Language
                 {!isPremium && <span className="text-amber-600 text-xs ml-2">Premium</span>}
               </Label>
@@ -550,8 +550,8 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
             <div className="pt-4 border-t">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-sm font-semibold text-gray-700">Verified Profiles Only</Label>
-                  <p className="text-xs text-gray-500 mt-1">Show only photo-verified users</p>
+                  <Label className="text-sm font-semibold text-foreground">Verified Profiles Only</Label>
+                  <p className="text-xs text-muted-foreground mt-1">Show only photo-verified users</p>
                 </div>
                 <Checkbox
                   checked={localFilters.verified_only}

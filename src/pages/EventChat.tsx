@@ -128,7 +128,7 @@ export default function EventChat() {
   const isAttending = event?.attendees?.includes(myProfile?.id);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-muted flex flex-col">
       <header className="bg-white border-b sticky top-0 z-40">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -139,7 +139,7 @@ export default function EventChat() {
             </Link>
             <div>
               <h1 className="font-bold">{event.title}</h1>
-              <div className="flex items-center gap-1 text-xs text-gray-500">
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Calendar size={12} />
                 <span>{event.attendees?.length || 0} attending</span>
               </div>
@@ -150,8 +150,8 @@ export default function EventChat() {
 
       <ScrollArea className="flex-1 max-w-4xl w-full mx-auto px-4 py-4">
         {!isAttending ? (
-          <div className="text-center py-12 text-gray-500">
-            <Calendar size={48} className="mx-auto mb-4 text-gray-300" />
+          <div className="text-center py-12 text-muted-foreground">
+            <Calendar size={48} className="mx-auto mb-4 text-muted-foreground" />
             <p className="font-semibold mb-2">RSVP to join the conversation</p>
             <Link to={createPageUrl(`EventDetails?id=${eventId}`)}>
               <Button className="mt-4 bg-purple-600">RSVP to Event</Button>
@@ -160,8 +160,8 @@ export default function EventChat() {
         ) : (
           <div className="space-y-4">
             {messages.length === 0 ? (
-              <div className="text-center py-12 text-gray-500">
-                <Calendar size={48} className="mx-auto mb-4 text-gray-300" />
+              <div className="text-center py-12 text-muted-foreground">
+                <Calendar size={48} className="mx-auto mb-4 text-muted-foreground" />
                 <p>No messages yet. Start the conversation!</p>
               </div>
             ) : (
@@ -182,19 +182,19 @@ export default function EventChat() {
                       />
                     </Avatar>
                     <div className={`flex flex-col ${isMyMessage ? 'items-end' : ''}`}>
-                      <p className="text-xs text-gray-500 mb-1">
+                      <p className="text-xs text-muted-foreground mb-1">
                         {senderProfile?.display_name || 'User'}
                       </p>
                       <div
                         className={`rounded-2xl px-4 py-2 max-w-xs ${
                           isMyMessage
                             ? 'bg-purple-600 text-white'
-                            : 'bg-white border border-gray-200'
+                            : 'bg-white border border-border'
                         }`}
                       >
                         <p className="text-sm">{msg.content}</p>
                       </div>
-                      <p className="text-xs text-gray-400 mt-1">
+                      <p className="text-xs text-muted-foreground mt-1">
                         {format(new Date(msg.created_at), 'h:mm a')}
                       </p>
                     </div>
@@ -228,7 +228,7 @@ export default function EventChat() {
               )}
             </Button>
           </div>
-          <p className="text-xs text-gray-500 text-center mt-2 flex items-center justify-center gap-1">
+          <p className="text-xs text-muted-foreground text-center mt-2 flex items-center justify-center gap-1">
             <Shield size={12} />
             Messages are moderated by AI
           </p>

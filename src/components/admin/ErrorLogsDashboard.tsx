@@ -105,15 +105,15 @@ export default function ErrorLogsDashboard() {
       case 'critical': return 'bg-red-100 text-red-800 border-red-200';
       case 'high': return 'bg-orange-100 text-orange-800 border-orange-200';
       case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      default: return 'bg-muted text-foreground border-border';
     }
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">System Health & Errors</h2>
-        <Badge variant="outline" className="text-gray-600 border-gray-300">
+        <h2 className="text-2xl font-bold text-foreground">System Health & Errors</h2>
+        <Badge variant="outline" className="text-muted-foreground border-border">
           Live Monitor
         </Badge>
       </div>
@@ -123,8 +123,8 @@ export default function ErrorLogsDashboard() {
         <Card>
           <CardContent className="p-4 flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Total Errors (24h)</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+              <p className="text-sm text-muted-foreground">Total Errors (24h)</p>
+              <p className="text-2xl font-bold text-foreground">{stats.total}</p>
             </div>
             <Activity className="text-blue-500" />
           </CardContent>
@@ -132,7 +132,7 @@ export default function ErrorLogsDashboard() {
         <Card>
           <CardContent className="p-4 flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">New / Open</p>
+              <p className="text-sm text-muted-foreground">New / Open</p>
               <p className="text-2xl font-bold text-red-600">{stats.new}</p>
             </div>
             <AlertOctagon className="text-red-500" />
@@ -141,7 +141,7 @@ export default function ErrorLogsDashboard() {
         <Card>
           <CardContent className="p-4 flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Resolved</p>
+              <p className="text-sm text-muted-foreground">Resolved</p>
               <p className="text-2xl font-bold text-green-600">{stats.resolved}</p>
             </div>
             <CheckCircle className="text-green-500" />
@@ -150,7 +150,7 @@ export default function ErrorLogsDashboard() {
         <Card>
           <CardContent className="p-4 flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Critical</p>
+              <p className="text-sm text-muted-foreground">Critical</p>
               <p className="text-2xl font-bold text-orange-600">{stats.critical}</p>
             </div>
             <Activity className="text-orange-500" />
@@ -161,7 +161,7 @@ export default function ErrorLogsDashboard() {
       {/* Controls */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
           <Input 
             placeholder="Search error messages..." 
             className="pl-10"
@@ -184,11 +184,11 @@ export default function ErrorLogsDashboard() {
 
       {/* Error List */}
       <Card className="overflow-hidden">
-        <div className="divide-y divide-gray-100">
+        <div className="divide-y divide-border">
           {filteredErrors.map((error) => (
             <div 
               key={error.id} 
-              className="p-4 hover:bg-gray-50 transition-colors cursor-pointer flex items-center justify-between group"
+              className="p-4 hover:bg-muted transition-colors cursor-pointer flex items-center justify-between group"
               onClick={() => setSelectedError(error)}
             >
               <div className="flex-1 min-w-0 pr-4">
@@ -196,22 +196,22 @@ export default function ErrorLogsDashboard() {
                   <Badge variant="outline" className={getSeverityColor(error.severity)}>
                     {error.severity?.toUpperCase() || 'UNKNOWN'}
                   </Badge>
-                  <span className="text-xs text-gray-500 font-mono">
+                  <span className="text-xs text-muted-foreground font-mono">
                     {new Date(error.created_date).toLocaleString()}
                   </span>
                   {error.status === 'new' && (
                     <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
                   )}
                 </div>
-                <p className="font-medium text-sm truncate text-gray-900">{error.message}</p>
-                <p className="text-xs text-gray-500 truncate mt-1">{error.url}</p>
+                <p className="font-medium text-sm truncate text-foreground">{error.message}</p>
+                <p className="text-xs text-muted-foreground truncate mt-1">{error.url}</p>
               </div>
-              <ChevronRight className="text-gray-400 group-hover:text-gray-600 transition-colors" />
+              <ChevronRight className="text-muted-foreground group-hover:text-muted-foreground transition-colors" />
             </div>
           ))}
           
           {filteredErrors.length === 0 && (
-            <div className="p-8 text-center text-gray-500">
+            <div className="p-8 text-center text-muted-foreground">
               {isLoading ? 'Loading errors...' : 'No errors found matching your filters.'}
             </div>
           )}
@@ -220,7 +220,7 @@ export default function ErrorLogsDashboard() {
 
       {/* Detail View Drawer */}
       <Sheet open={!!selectedError} onOpenChange={() => setSelectedError(null)}>
-        <SheetContent className="w-[90%] sm:w-[540px] bg-gray-900 border-l border-white/10 text-white overflow-y-auto">
+        <SheetContent className="w-[90%] sm:w-[540px] bg-background border-l border-white/10 text-white overflow-y-auto">
           {selectedError && (
             <div className="space-y-6 pt-6">
               <SheetHeader>
@@ -228,14 +228,14 @@ export default function ErrorLogsDashboard() {
                   <Badge variant="outline" className={getSeverityColor(selectedError.severity)}>
                     {selectedError.severity}
                   </Badge>
-                  <Badge variant="outline" className="text-gray-400 border-gray-700">
+                  <Badge variant="outline" className="text-muted-foreground border-border">
                     {selectedError.status}
                   </Badge>
                 </div>
                 <SheetTitle className="text-white mt-2 break-words">
                   {selectedError.message}
                 </SheetTitle>
-                <SheetDescription className="text-gray-400">
+                <SheetDescription className="text-muted-foreground">
                   Occurred {new Date(selectedError.created_date).toLocaleString()}
                 </SheetDescription>
               </SheetHeader>
@@ -305,7 +305,7 @@ export default function ErrorLogsDashboard() {
               </div>
 
               <Tabs defaultValue="stack" className="w-full">
-                <TabsList className="bg-gray-800 w-full">
+                <TabsList className="bg-secondary w-full">
                   <TabsTrigger value="stack" className="flex-1">Stack Trace</TabsTrigger>
                   <TabsTrigger value="breadcrumbs" className="flex-1">Journey</TabsTrigger>
                   <TabsTrigger value="context" className="flex-1">Context</TabsTrigger>
@@ -316,8 +316,8 @@ export default function ErrorLogsDashboard() {
                     {selectedError.stack || 'No stack trace available'}
                   </div>
                   {selectedError.component_stack && (
-                    <div className="bg-black/50 p-4 rounded-lg font-mono text-xs text-gray-300 overflow-x-auto whitespace-pre-wrap border border-white/10">
-                      <p className="text-gray-500 mb-2">// Component Stack</p>
+                    <div className="bg-black/50 p-4 rounded-lg font-mono text-xs text-muted-foreground overflow-x-auto whitespace-pre-wrap border border-white/10">
+                      <p className="text-muted-foreground mb-2">// Component Stack</p>
                       {selectedError.component_stack}
                     </div>
                   )}
@@ -329,11 +329,11 @@ export default function ErrorLogsDashboard() {
                       <div key={i} className="relative">
                         <div className="absolute -left-[21px] top-1 w-3 h-3 rounded-full bg-blue-500 ring-4 ring-gray-900" />
                         <p className="text-sm font-medium text-blue-200">{crumb.message}</p>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           {new Date(crumb.timestamp).toLocaleTimeString()} • {crumb.category}
                         </p>
                         {crumb.data && (
-                          <pre className="mt-1 text-[10px] text-gray-500 bg-black/30 p-1 rounded">
+                          <pre className="mt-1 text-[10px] text-muted-foreground bg-black/30 p-1 rounded">
                             {JSON.stringify(crumb.data, null, 2)}
                           </pre>
                         )}
@@ -347,29 +347,29 @@ export default function ErrorLogsDashboard() {
                 </TabsContent>
 
                 <TabsContent value="context" className="mt-4 space-y-4">
-                  <Card className="bg-gray-800 border-white/10">
+                  <Card className="bg-secondary border-white/10">
                     <CardContent className="p-4 space-y-4">
                       <div className="flex items-center gap-3">
-                        <User className="text-gray-400" size={16} />
+                        <User className="text-muted-foreground" size={16} />
                         <div>
-                          <p className="text-xs text-gray-500">User</p>
+                          <p className="text-xs text-muted-foreground">User</p>
                           <p className="text-sm text-white">{selectedError.user_email || 'Anonymous'}</p>
-                          <p className="text-xs text-gray-500">{selectedError.user_id}</p>
+                          <p className="text-xs text-muted-foreground">{selectedError.user_id}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Globe className="text-gray-400" size={16} />
+                        <Globe className="text-muted-foreground" size={16} />
                         <div>
-                          <p className="text-xs text-gray-500">URL</p>
+                          <p className="text-xs text-muted-foreground">URL</p>
                           <p className="text-sm text-white break-all">{selectedError.url}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Smartphone className="text-gray-400" size={16} />
+                        <Smartphone className="text-muted-foreground" size={16} />
                         <div>
-                          <p className="text-xs text-gray-500">Device</p>
+                          <p className="text-xs text-muted-foreground">Device</p>
                           <p className="text-sm text-white">{selectedError.device} • {selectedError.os}</p>
-                          <p className="text-xs text-gray-500 truncate max-w-[200px]">{selectedError.browser}</p>
+                          <p className="text-xs text-muted-foreground truncate max-w-[200px]">{selectedError.browser}</p>
                         </div>
                       </div>
                     </CardContent>

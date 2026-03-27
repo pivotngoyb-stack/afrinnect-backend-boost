@@ -165,7 +165,7 @@ export default function AuditTrailDashboard() {
       case 'high': return 'bg-orange-500 text-white';
       case 'medium': return 'bg-yellow-500 text-black';
       case 'low': return 'bg-blue-500 text-white';
-      default: return 'bg-gray-500 text-white';
+      default: return 'bg-muted text-white';
     }
   };
 
@@ -207,7 +207,7 @@ export default function AuditTrailDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-white">Audit Trail</h2>
-          <p className="text-gray-400">Centralized view of all system events and actions</p>
+          <p className="text-muted-foreground">Centralized view of all system events and actions</p>
         </div>
         <Button onClick={exportAuditLog} className="gap-2">
           <Download className="w-4 h-4" />
@@ -217,7 +217,7 @@ export default function AuditTrailDashboard() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="bg-secondary border-border">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-red-500/20 rounded-lg">
@@ -225,13 +225,13 @@ export default function AuditTrailDashboard() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{stats?.errors || 0}</p>
-                <p className="text-sm text-gray-400">Errors (24h)</p>
+                <p className="text-sm text-muted-foreground">Errors (24h)</p>
               </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="bg-secondary border-border">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-orange-500/20 rounded-lg">
@@ -239,13 +239,13 @@ export default function AuditTrailDashboard() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{stats?.moderation || 0}</p>
-                <p className="text-sm text-gray-400">Mod Actions (24h)</p>
+                <p className="text-sm text-muted-foreground">Mod Actions (24h)</p>
               </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="bg-secondary border-border">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-blue-500/20 rounded-lg">
@@ -253,13 +253,13 @@ export default function AuditTrailDashboard() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{stats?.analytics || 0}</p>
-                <p className="text-sm text-gray-400">Events (Today)</p>
+                <p className="text-sm text-muted-foreground">Events (Today)</p>
               </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="bg-secondary border-border">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-green-500/20 rounded-lg">
@@ -267,7 +267,7 @@ export default function AuditTrailDashboard() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-white">{auditEvents.length}</p>
-                <p className="text-sm text-gray-400">Displayed</p>
+                <p className="text-sm text-muted-foreground">Displayed</p>
               </div>
             </div>
           </CardContent>
@@ -275,23 +275,23 @@ export default function AuditTrailDashboard() {
       </div>
 
       {/* Filters */}
-      <Card className="bg-gray-800 border-gray-700">
+      <Card className="bg-secondary border-border">
         <CardContent className="pt-6">
           <div className="flex flex-wrap gap-4">
             <div className="flex-1 min-w-[200px]">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   placeholder="Search events..."
                   value={filters.search}
                   onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                  className="pl-10 bg-gray-700 border-gray-600 text-white"
+                  className="pl-10 bg-secondary border-border text-white"
                 />
               </div>
             </div>
             
             <Select value={filters.eventType} onValueChange={(v) => setFilters({ ...filters, eventType: v })}>
-              <SelectTrigger className="w-[150px] bg-gray-700 border-gray-600 text-white">
+              <SelectTrigger className="w-[150px] bg-secondary border-border text-white">
                 <SelectValue placeholder="Event Type" />
               </SelectTrigger>
               <SelectContent>
@@ -304,7 +304,7 @@ export default function AuditTrailDashboard() {
             </Select>
             
             <Select value={filters.severity} onValueChange={(v) => setFilters({ ...filters, severity: v })}>
-              <SelectTrigger className="w-[150px] bg-gray-700 border-gray-600 text-white">
+              <SelectTrigger className="w-[150px] bg-secondary border-border text-white">
                 <SelectValue placeholder="Severity" />
               </SelectTrigger>
               <SelectContent>
@@ -318,7 +318,7 @@ export default function AuditTrailDashboard() {
             </Select>
             
             <Select value={filters.dateRange} onValueChange={(v) => setFilters({ ...filters, dateRange: v })}>
-              <SelectTrigger className="w-[150px] bg-gray-700 border-gray-600 text-white">
+              <SelectTrigger className="w-[150px] bg-secondary border-border text-white">
                 <SelectValue placeholder="Date Range" />
               </SelectTrigger>
               <SelectContent>
@@ -333,7 +333,7 @@ export default function AuditTrailDashboard() {
       </Card>
 
       {/* Events Table */}
-      <Card className="bg-gray-800 border-gray-700">
+      <Card className="bg-secondary border-border">
         <CardHeader>
           <CardTitle className="text-white">Event Log</CardTitle>
         </CardHeader>
@@ -341,40 +341,40 @@ export default function AuditTrailDashboard() {
           <ScrollArea className="h-[500px]">
             <Table>
               <TableHeader>
-                <TableRow className="border-gray-700">
-                  <TableHead className="text-gray-400">Time</TableHead>
-                  <TableHead className="text-gray-400">Type</TableHead>
-                  <TableHead className="text-gray-400">Event</TableHead>
-                  <TableHead className="text-gray-400">User</TableHead>
-                  <TableHead className="text-gray-400">Severity</TableHead>
-                  <TableHead className="text-gray-400">Source</TableHead>
-                  <TableHead className="text-gray-400">Actions</TableHead>
+                <TableRow className="border-border">
+                  <TableHead className="text-muted-foreground">Time</TableHead>
+                  <TableHead className="text-muted-foreground">Type</TableHead>
+                  <TableHead className="text-muted-foreground">Event</TableHead>
+                  <TableHead className="text-muted-foreground">User</TableHead>
+                  <TableHead className="text-muted-foreground">Severity</TableHead>
+                  <TableHead className="text-muted-foreground">Source</TableHead>
+                  <TableHead className="text-muted-foreground">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center text-gray-400 py-8">
+                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                       Loading...
                     </TableCell>
                   </TableRow>
                 ) : auditEvents.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center text-gray-400 py-8">
+                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                       No events found
                     </TableCell>
                   </TableRow>
                 ) : (
                   auditEvents.map((event) => (
-                    <TableRow key={`${event.source}-${event.id}`} className="border-gray-700 hover:bg-gray-700/50">
-                      <TableCell className="text-gray-300">
+                    <TableRow key={`${event.source}-${event.id}`} className="border-border hover:bg-secondary/50">
+                      <TableCell className="text-muted-foreground">
                         <div className="flex items-center gap-2">
-                          <Clock className="w-3 h-3 text-gray-500" />
+                          <Clock className="w-3 h-3 text-muted-foreground" />
                           {moment(event.timestamp).format('MMM D HH:mm:ss')}
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-2 text-gray-300">
+                        <div className="flex items-center gap-2 text-muted-foreground">
                           {getTypeIcon(event.type)}
                           {event.type}
                         </div>
@@ -382,7 +382,7 @@ export default function AuditTrailDashboard() {
                       <TableCell className="text-white font-medium">
                         {event.event_type}
                       </TableCell>
-                      <TableCell className="text-gray-300">
+                      <TableCell className="text-muted-foreground">
                         {event.user_id?.substring(0, 8)}...
                       </TableCell>
                       <TableCell>
@@ -390,7 +390,7 @@ export default function AuditTrailDashboard() {
                           {event.severity}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-gray-400 text-sm">
+                      <TableCell className="text-muted-foreground text-sm">
                         {event.source}
                       </TableCell>
                       <TableCell>
@@ -398,7 +398,7 @@ export default function AuditTrailDashboard() {
                           variant="ghost"
                           size="sm"
                           onClick={() => setSelectedEvent(event)}
-                          className="text-gray-400 hover:text-white"
+                          className="text-muted-foreground hover:text-white"
                         >
                           <Eye className="w-4 h-4" />
                         </Button>
@@ -414,7 +414,7 @@ export default function AuditTrailDashboard() {
 
       {/* Event Detail Dialog */}
       <Dialog open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)}>
-        <DialogContent className="bg-gray-800 border-gray-700 max-w-2xl">
+        <DialogContent className="bg-secondary border-border max-w-2xl">
           <DialogHeader>
             <DialogTitle className="text-white">Event Details</DialogTitle>
           </DialogHeader>
@@ -422,34 +422,34 @@ export default function AuditTrailDashboard() {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-gray-400">Timestamp</p>
+                  <p className="text-sm text-muted-foreground">Timestamp</p>
                   <p className="text-white">{moment(selectedEvent.timestamp).format('YYYY-MM-DD HH:mm:ss')}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Event Type</p>
+                  <p className="text-sm text-muted-foreground">Event Type</p>
                   <p className="text-white">{selectedEvent.event_type}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">User ID</p>
+                  <p className="text-sm text-muted-foreground">User ID</p>
                   <p className="text-white font-mono text-sm">{selectedEvent.user_id || 'N/A'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Target ID</p>
+                  <p className="text-sm text-muted-foreground">Target ID</p>
                   <p className="text-white font-mono text-sm">{selectedEvent.target_id || 'N/A'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Severity</p>
+                  <p className="text-sm text-muted-foreground">Severity</p>
                   <Badge className={getSeverityColor(selectedEvent.severity)}>{selectedEvent.severity}</Badge>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Source</p>
+                  <p className="text-sm text-muted-foreground">Source</p>
                   <p className="text-white">{selectedEvent.source}</p>
                 </div>
               </div>
               
               <div>
-                <p className="text-sm text-gray-400 mb-2">Event Data</p>
-                <pre className="bg-gray-900 p-4 rounded-lg text-sm text-gray-300 overflow-auto max-h-[300px]">
+                <p className="text-sm text-muted-foreground mb-2">Event Data</p>
+                <pre className="bg-background p-4 rounded-lg text-sm text-muted-foreground overflow-auto max-h-[300px]">
                   {JSON.stringify(selectedEvent.data, null, 2)}
                 </pre>
               </div>

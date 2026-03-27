@@ -24,7 +24,7 @@ const TIER_ICONS = {
 };
 
 const TIER_COLORS = {
-  free: 'bg-gray-100 text-gray-600 border-gray-200',
+  free: 'bg-muted text-muted-foreground border-border',
   premium: 'bg-purple-100 text-purple-600 border-purple-200',
   elite: 'bg-amber-100 text-amber-600 border-amber-200',
   vip: 'bg-slate-900 text-white border-slate-700'
@@ -84,9 +84,9 @@ function LimitInput({ label, value, onChange, isUnlimited, onUnlimitedChange }) 
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <Label className="text-sm font-medium text-gray-700">{label}</Label>
+        <Label className="text-sm font-medium text-foreground">{label}</Label>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500">Unlimited</span>
+          <span className="text-xs text-muted-foreground">Unlimited</span>
           <Switch
             checked={isUnlimited}
             onCheckedChange={(checked) => {
@@ -215,7 +215,7 @@ function TierCard({ tier, onSave, isSaving }) {
             <CardContent className="pt-0 space-y-6">
               {/* Limits Section */}
               <div>
-                <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <h4 className="font-semibold text-foreground mb-4 flex items-center gap-2">
                   <Settings size={16} />
                   Daily Limits
                 </h4>
@@ -260,7 +260,7 @@ function TierCard({ tier, onSave, isSaving }) {
 
               {/* Features Section */}
               <div>
-                <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <h4 className="font-semibold text-foreground mb-4 flex items-center gap-2">
                   <Sparkles size={16} />
                   Features
                 </h4>
@@ -271,7 +271,7 @@ function TierCard({ tier, onSave, isSaving }) {
                       className={`flex items-center justify-between p-3 rounded-lg border transition-all cursor-pointer ${
                         isFeatureEnabled(feature.key)
                           ? 'bg-green-50 border-green-200'
-                          : 'bg-gray-50 border-gray-200'
+                          : 'bg-muted border-border'
                       }`}
                       onClick={() => isEditing && toggleFeature(feature.key)}
                     >
@@ -279,9 +279,9 @@ function TierCard({ tier, onSave, isSaving }) {
                         {isFeatureEnabled(feature.key) ? (
                           <Check size={16} className="text-green-600" />
                         ) : (
-                          <X size={16} className="text-gray-400" />
+                          <X size={16} className="text-muted-foreground" />
                         )}
-                        <span className={`text-sm font-medium ${isFeatureEnabled(feature.key) ? 'text-green-800' : 'text-gray-500'}`}>
+                        <span className={`text-sm font-medium ${isFeatureEnabled(feature.key) ? 'text-green-800' : 'text-muted-foreground'}`}>
                           {feature.label}
                         </span>
                       </div>
@@ -292,13 +292,13 @@ function TierCard({ tier, onSave, isSaving }) {
 
               {/* Pricing Section */}
               <div>
-                <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <h4 className="font-semibold text-foreground mb-4 flex items-center gap-2">
                   <Crown size={16} />
                   Pricing (USD)
                 </h4>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <Label className="text-sm text-gray-600">Monthly</Label>
+                    <Label className="text-sm text-muted-foreground">Monthly</Label>
                     <Input
                       type="number"
                       step="0.01"
@@ -313,7 +313,7 @@ function TierCard({ tier, onSave, isSaving }) {
                     />
                   </div>
                   <div>
-                    <Label className="text-sm text-gray-600">Quarterly</Label>
+                    <Label className="text-sm text-muted-foreground">Quarterly</Label>
                     <Input
                       type="number"
                       step="0.01"
@@ -328,7 +328,7 @@ function TierCard({ tier, onSave, isSaving }) {
                     />
                   </div>
                   <div>
-                    <Label className="text-sm text-gray-600">Yearly</Label>
+                    <Label className="text-sm text-muted-foreground">Yearly</Label>
                     <Input
                       type="number"
                       step="0.01"
@@ -484,8 +484,8 @@ export default function TierConfigurationManager() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Subscription Tiers</h2>
-          <p className="text-gray-500 mt-1">Configure limits, features, and pricing for each tier</p>
+          <h2 className="text-2xl font-bold text-foreground">Subscription Tiers</h2>
+          <p className="text-muted-foreground mt-1">Configure limits, features, and pricing for each tier</p>
         </div>
         <div className="flex gap-2">
           {!hasConfigs && (

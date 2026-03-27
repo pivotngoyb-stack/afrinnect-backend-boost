@@ -92,7 +92,7 @@ export default function AmbassadorApply() {
             <CardContent className="pt-6 text-center">
               <CheckCircle className="mx-auto h-16 w-16 text-green-500 mb-4" />
               <h2 className="text-2xl font-bold mb-2">You're Already an Ambassador!</h2>
-              <p className="text-gray-600 mb-4">
+              <p className="text-muted-foreground mb-4">
                 Status: <span className="font-semibold capitalize">{existingAmbassador.status}</span>
               </p>
               <Link to={createPageUrl('AmbassadorPortal')}>
@@ -120,7 +120,7 @@ export default function AmbassadorApply() {
                   <CheckCircle className="h-10 w-10 text-green-600" />
                 </div>
                 <h2 className="text-2xl font-bold mb-2">Application Submitted!</h2>
-                <p className="text-gray-600 mb-6">
+                <p className="text-muted-foreground mb-6">
                   We'll review your application and get back to you within 24-48 hours. 
                   You'll receive an email at <strong>{formData.email}</strong> when approved.
                 </p>
@@ -161,7 +161,7 @@ export default function AmbassadorApply() {
                   <CardContent className="pt-6 text-center">
                     <benefit.icon className="mx-auto h-8 w-8 text-purple-600 mb-3" />
                     <h3 className="font-semibold mb-1">{benefit.title}</h3>
-                    <p className="text-sm text-gray-500">{benefit.desc}</p>
+                    <p className="text-sm text-muted-foreground">{benefit.desc}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -177,17 +177,17 @@ export default function AmbassadorApply() {
                   <div className="text-center">
                     <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3 text-purple-600 font-bold">1</div>
                     <h4 className="font-semibold mb-1">Apply</h4>
-                    <p className="text-sm text-gray-500">Fill out the application form</p>
+                    <p className="text-sm text-muted-foreground">Fill out the application form</p>
                   </div>
                   <div className="text-center">
                     <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3 text-purple-600 font-bold">2</div>
                     <h4 className="font-semibold mb-1">Get Approved</h4>
-                    <p className="text-sm text-gray-500">We'll review and approve within 48h</p>
+                    <p className="text-sm text-muted-foreground">We'll review and approve within 48h</p>
                   </div>
                   <div className="text-center">
                     <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3 text-purple-600 font-bold">3</div>
                     <h4 className="font-semibold mb-1">Start Earning</h4>
-                    <p className="text-sm text-gray-500">Share your link and earn commissions</p>
+                    <p className="text-sm text-muted-foreground">Share your link and earn commissions</p>
                   </div>
                 </div>
               </CardContent>
@@ -220,7 +220,7 @@ export default function AmbassadorApply() {
                       onChange={(e) => setFormData({ ...formData, handle: e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '') })}
                       placeholder="e.g., joelle"
                     />
-                    <p className="text-xs text-gray-500 mt-1">Your referral code will be: AMBA_{formData.handle.toUpperCase() || 'YOURNAME'}</p>
+                    <p className="text-xs text-muted-foreground mt-1">Your referral code will be: AMBA_{formData.handle.toUpperCase() || 'YOURNAME'}</p>
                   </div>
                   <div>
                     <Label>Display Name*</Label>
@@ -337,7 +337,7 @@ export default function AmbassadorApply() {
                     checked={formData.terms_accepted}
                     onCheckedChange={(checked) => setFormData({ ...formData, terms_accepted: checked })}
                   />
-                  <label htmlFor="terms" className="text-sm text-gray-600">
+                  <label htmlFor="terms" className="text-sm text-muted-foreground">
                     I agree to the <Link to={createPageUrl('Terms')} className="text-purple-600 underline">Ambassador Terms & Conditions</Link> and understand that commissions are subject to a 14-day hold period.
                   </label>
                 </div>

@@ -125,8 +125,8 @@ export default function SafetyMonitorDashboard() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Safety Monitor</h2>
-          <p className="text-gray-600">Real-time safety check monitoring and AI-powered automation</p>
+          <h2 className="text-2xl font-bold text-foreground">Safety Monitor</h2>
+          <p className="text-muted-foreground">Real-time safety check monitoring and AI-powered automation</p>
         </div>
         <Badge className={alerts.length > 0 ? 'bg-red-600 animate-pulse' : 'bg-green-600'}>
           {alerts.length} Active Alerts
@@ -142,7 +142,7 @@ export default function SafetyMonitorDashboard() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Active Checks</p>
+                <p className="text-sm text-muted-foreground">Active Checks</p>
                 <p className="text-3xl font-bold">{active.length}</p>
               </div>
               <Shield className="text-blue-600" size={32} />
@@ -154,7 +154,7 @@ export default function SafetyMonitorDashboard() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Emergency Alerts</p>
+                <p className="text-sm text-muted-foreground">Emergency Alerts</p>
                 <p className="text-3xl font-bold text-red-600">{alerts.length}</p>
               </div>
               <AlertTriangle className="text-red-600" size={32} />
@@ -166,7 +166,7 @@ export default function SafetyMonitorDashboard() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Flagged Messages</p>
+                <p className="text-sm text-muted-foreground">Flagged Messages</p>
                 <p className="text-3xl font-bold">{flaggedMessages.length}</p>
               </div>
               <MessageSquare className="text-amber-600" size={32} />
@@ -178,7 +178,7 @@ export default function SafetyMonitorDashboard() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">AI Alerts</p>
+                <p className="text-sm text-muted-foreground">AI Alerts</p>
                 <p className="text-3xl font-bold">{moderationAlerts.length}</p>
               </div>
               <Eye className="text-purple-600" size={32} />
@@ -206,7 +206,7 @@ export default function SafetyMonitorDashboard() {
             <Card>
               <CardContent className="p-8 text-center">
                 <CheckCircle size={48} className="mx-auto text-green-600 mb-4" />
-                <p className="text-gray-600">No active emergency alerts</p>
+                <p className="text-muted-foreground">No active emergency alerts</p>
               </CardContent>
             </Card>
           ) : (
@@ -230,26 +230,26 @@ export default function SafetyMonitorDashboard() {
                   <CardContent className="p-6 space-y-3">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-xs text-gray-600 font-medium">User ID</p>
+                        <p className="text-xs text-muted-foreground font-medium">User ID</p>
                         <p className="text-sm">{check.user_profile_id}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-600 font-medium">Meeting With</p>
+                        <p className="text-xs text-muted-foreground font-medium">Meeting With</p>
                         <p className="text-sm">{check.meeting_with_profile_id}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-600 font-medium">Location</p>
+                        <p className="text-xs text-muted-foreground font-medium">Location</p>
                         <p className="text-sm">{check.date_location}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-600 font-medium">Alert Time</p>
+                        <p className="text-xs text-muted-foreground font-medium">Alert Time</p>
                         <p className="text-sm">{new Date(check.updated_date).toLocaleString()}</p>
                       </div>
                     </div>
 
                     {check.panic_location && (
                       <div className="bg-white rounded-lg p-3 border border-red-200">
-                        <p className="text-xs text-gray-600 font-medium mb-1">Live Location</p>
+                        <p className="text-xs text-muted-foreground font-medium mb-1">Live Location</p>
                         <a
                           href={`https://maps.google.com/?q=${check.panic_location.lat},${check.panic_location.lng}`}
                           target="_blank"
@@ -263,9 +263,9 @@ export default function SafetyMonitorDashboard() {
                     )}
 
                     <div className="bg-white rounded-lg p-3 border border-red-200">
-                      <p className="text-xs text-gray-600 font-medium mb-1">Emergency Contact</p>
+                      <p className="text-xs text-muted-foreground font-medium mb-1">Emergency Contact</p>
                       <p className="text-sm font-medium">{check.emergency_contact_name}</p>
-                      <p className="text-sm text-gray-600">{check.emergency_contact_phone}</p>
+                      <p className="text-sm text-muted-foreground">{check.emergency_contact_phone}</p>
                     </div>
 
                     <div className="flex gap-2 pt-3">
@@ -350,11 +350,11 @@ export default function SafetyMonitorDashboard() {
                       </div>
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div>
-                          <span className="text-gray-600">Location:</span>
+                          <span className="text-muted-foreground">Location:</span>
                           <p className="font-medium">{check.date_location}</p>
                         </div>
                         <div>
-                          <span className="text-gray-600">Check-in:</span>
+                          <span className="text-muted-foreground">Check-in:</span>
                           <p className="font-medium">{checkInTime.toLocaleTimeString()}</p>
                         </div>
                       </div>
@@ -375,9 +375,9 @@ export default function SafetyMonitorDashboard() {
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-2">
                       <Badge className="bg-amber-600">AI Flagged</Badge>
-                      <p className="text-xs text-gray-500">{new Date(msg.created_date).toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground">{new Date(msg.created_date).toLocaleString()}</p>
                     </div>
-                    <p className="text-sm bg-gray-50 p-3 rounded-lg mb-3">{msg.content}</p>
+                    <p className="text-sm bg-muted p-3 rounded-lg mb-3">{msg.content}</p>
                     
                     {/* AI Recommendation */}
                     <AIRecommendations

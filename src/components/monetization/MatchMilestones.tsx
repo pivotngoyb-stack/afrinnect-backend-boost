@@ -113,7 +113,7 @@ export default function MatchMilestones({ userProfile, newMatchCount }) {
               
               <Button
                 onClick={dismissCelebration}
-                className="w-full bg-white text-purple-600 hover:bg-gray-100 font-bold py-3"
+                className="w-full bg-white text-purple-600 hover:bg-muted font-bold py-3"
               >
                 <PartyPopper size={18} className="mr-2" />
                 Keep Going!

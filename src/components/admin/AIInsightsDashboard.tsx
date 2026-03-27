@@ -93,7 +93,7 @@ export default function AIInsightsDashboard() {
           </div>
           <div>
             <h2 className="text-2xl font-bold">AI Insights Dashboard</h2>
-            <p className="text-gray-600">Consolidated AI-powered moderation and automation</p>
+            <p className="text-muted-foreground">Consolidated AI-powered moderation and automation</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -124,7 +124,7 @@ export default function AIInsightsDashboard() {
         <CardContent className="p-4">
           <div className="flex items-center gap-4 flex-wrap">
             <div className="flex items-center gap-2">
-              <Filter size={16} className="text-gray-500" />
+              <Filter size={16} className="text-muted-foreground" />
               <span className="text-sm font-medium">Filters:</span>
             </div>
             <Select value={severityFilter} onValueChange={setSeverityFilter}>
@@ -166,7 +166,7 @@ export default function AIInsightsDashboard() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Flagged Messages</p>
+                <p className="text-sm text-muted-foreground">Flagged Messages</p>
                 <p className="text-2xl font-bold">{flaggedMessages.length}</p>
               </div>
               <MessageSquare className="text-amber-600" size={24} />
@@ -178,7 +178,7 @@ export default function AIInsightsDashboard() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Pending Actions</p>
+                <p className="text-sm text-muted-foreground">Pending Actions</p>
                 <p className="text-2xl font-bold">{moderationActions.length}</p>
               </div>
               <AlertTriangle className="text-red-600" size={24} />
@@ -190,7 +190,7 @@ export default function AIInsightsDashboard() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Auto-Approved</p>
+                <p className="text-sm text-muted-foreground">Auto-Approved</p>
                 <p className="text-2xl font-bold">{autoApprovedVerifications}</p>
               </div>
               <CheckCircle className="text-green-600" size={24} />
@@ -202,7 +202,7 @@ export default function AIInsightsDashboard() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Avg AI Score</p>
+                <p className="text-sm text-muted-foreground">Avg AI Score</p>
                 <p className="text-2xl font-bold">{avgConfidenceScore}%</p>
               </div>
               <TrendingUp className="text-blue-600" size={24} />
@@ -233,13 +233,13 @@ export default function AIInsightsDashboard() {
                     <div key={action.id} className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
                       <div className="flex-1">
                         <p className="text-sm font-medium">{action.action_type}</p>
-                        <p className="text-xs text-gray-600">{action.reason}</p>
+                        <p className="text-xs text-muted-foreground">{action.reason}</p>
                       </div>
                       <Badge className="bg-red-600">High</Badge>
                     </div>
                   ))}
                   {moderationActions.filter(a => a.severity === 'high').length === 0 && (
-                    <p className="text-sm text-gray-500 text-center py-4">No high priority alerts</p>
+                    <p className="text-sm text-muted-foreground text-center py-4">No high priority alerts</p>
                   )}
                 </div>
               </CardContent>
@@ -257,8 +257,8 @@ export default function AIInsightsDashboard() {
                         action.severity === 'high' ? 'bg-red-500' :
                         action.severity === 'medium' ? 'bg-amber-500' : 'bg-green-500'
                       }`} />
-                      <span className="flex-1 text-gray-700 truncate">{action.action_type}</span>
-                      <span className="text-xs text-gray-500">{new Date(action.created_date).toLocaleTimeString()}</span>
+                      <span className="flex-1 text-foreground truncate">{action.action_type}</span>
+                      <span className="text-xs text-muted-foreground">{new Date(action.created_date).toLocaleTimeString()}</span>
                     </div>
                   ))}
                 </div>
@@ -275,9 +275,9 @@ export default function AIInsightsDashboard() {
               <CardContent className="p-4">
                 <div className="flex items-start justify-between mb-3">
                   <Badge className="bg-amber-600">AI Flagged</Badge>
-                  <span className="text-xs text-gray-500">{new Date(msg.created_date).toLocaleString()}</span>
+                  <span className="text-xs text-muted-foreground">{new Date(msg.created_date).toLocaleString()}</span>
                 </div>
-                <div className="bg-gray-50 p-3 rounded-lg mb-3">
+                <div className="bg-muted p-3 rounded-lg mb-3">
                   <p className="text-sm">{msg.content}</p>
                 </div>
                 <AIRecommendations
@@ -299,7 +299,7 @@ export default function AIInsightsDashboard() {
             <Card>
               <CardContent className="p-12 text-center">
                 <CheckCircle size={48} className="mx-auto text-green-500 mb-4" />
-                <p className="text-gray-600">No flagged messages - all clear!</p>
+                <p className="text-muted-foreground">No flagged messages - all clear!</p>
               </CardContent>
             </Card>
           )}
@@ -314,7 +314,7 @@ export default function AIInsightsDashboard() {
                   <Badge className={action.severity === 'high' ? 'bg-red-600' : 'bg-amber-600'}>
                     Pattern Detected
                   </Badge>
-                  <span className="text-xs text-gray-500">{new Date(action.created_date).toLocaleString()}</span>
+                  <span className="text-xs text-muted-foreground">{new Date(action.created_date).toLocaleString()}</span>
                 </div>
                 <p className="text-sm mb-3">{action.reason}</p>
                 {action.details?.patterns && (
@@ -336,7 +336,7 @@ export default function AIInsightsDashboard() {
             <Card>
               <CardContent className="p-12 text-center">
                 <Shield size={48} className="mx-auto text-green-500 mb-4" />
-                <p className="text-gray-600">No concerning patterns detected</p>
+                <p className="text-muted-foreground">No concerning patterns detected</p>
               </CardContent>
             </Card>
           )}
@@ -369,8 +369,8 @@ export default function AIInsightsDashboard() {
           {verificationRequests.length === 0 && (
             <Card>
               <CardContent className="p-12 text-center">
-                <Users size={48} className="mx-auto text-gray-300 mb-4" />
-                <p className="text-gray-600">No pending verifications</p>
+                <Users size={48} className="mx-auto text-muted-foreground mb-4" />
+                <p className="text-muted-foreground">No pending verifications</p>
               </CardContent>
             </Card>
           )}

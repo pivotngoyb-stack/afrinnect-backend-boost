@@ -109,16 +109,16 @@ export default function AppStoreCompliance() {
       case 'fail':
         return <AlertCircle className="h-5 w-5 text-red-500" />;
       default:
-        return <Clock className="h-5 w-5 text-gray-400" />;
+        return <Clock className="h-5 w-5 text-muted-foreground" />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-muted p-6">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">App Store Compliance</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-3xl font-bold text-foreground">App Store Compliance</h1>
+          <p className="text-muted-foreground mt-2">
             Checklist for Apple App Store and Google Play Store submission requirements
           </p>
         </div>
@@ -161,7 +161,7 @@ export default function AppStoreCompliance() {
           </CardHeader>
           <CardContent>
             {loading ? (
-              <div className="text-center py-8 text-gray-500">Running checks...</div>
+              <div className="text-center py-8 text-muted-foreground">Running checks...</div>
             ) : (
               <div className="space-y-4">
                 {checkResults && Object.entries(checkResults).map(([key, check]) => {
@@ -173,12 +173,12 @@ export default function AppStoreCompliance() {
                     >
                       <div className="flex items-center gap-4">
                         {getStatusIcon(check.status)}
-                        <div className="p-2 bg-gray-100 rounded-lg">
-                          <Icon className="h-5 w-5 text-gray-600" />
+                        <div className="p-2 bg-muted rounded-lg">
+                          <Icon className="h-5 w-5 text-muted-foreground" />
                         </div>
                         <div>
                           <div className="font-medium">{check.label}</div>
-                          <div className="text-sm text-gray-500">{check.description}</div>
+                          <div className="text-sm text-muted-foreground">{check.description}</div>
                         </div>
                       </div>
                       {getStatusBadge(check.status)}

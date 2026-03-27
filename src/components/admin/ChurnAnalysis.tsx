@@ -18,7 +18,7 @@ export default function ChurnAnalysis() {
   });
 
   if (isLoading) {
-    return <div className="animate-pulse"><Card className="h-64 bg-gray-100" /></div>;
+    return <div className="animate-pulse"><Card className="h-64 bg-muted" /></div>;
   }
 
   const now = new Date();
@@ -61,28 +61,28 @@ export default function ChurnAnalysis() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <AlertCircle size={16} className="text-red-500" />
-              <p className="text-sm text-gray-600">Churn Rate (30d)</p>
+              <p className="text-sm text-muted-foreground">Churn Rate (30d)</p>
             </div>
             <p className="text-3xl font-bold text-red-600">{churnRate}%</p>
-            <p className="text-xs text-gray-500 mt-1">{expiredThisMonth.length} churned</p>
+            <p className="text-xs text-muted-foreground mt-1">{expiredThisMonth.length} churned</p>
           </div>
 
           <div>
             <div className="flex items-center gap-2 mb-2">
               <AlertCircle size={16} className="text-amber-500" />
-              <p className="text-sm text-gray-600">Expiring Soon</p>
+              <p className="text-sm text-muted-foreground">Expiring Soon</p>
             </div>
             <p className="text-3xl font-bold text-amber-600">{expiringsSoon.length}</p>
-            <p className="text-xs text-gray-500 mt-1">Next 7 days</p>
+            <p className="text-xs text-muted-foreground mt-1">Next 7 days</p>
           </div>
 
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <Users size={16} className="text-gray-500" />
-              <p className="text-sm text-gray-600">Inactive Users</p>
+              <Users size={16} className="text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">Inactive Users</p>
             </div>
-            <p className="text-3xl font-bold text-gray-700">{inactiveUsers.length}</p>
-            <p className="text-xs text-gray-500 mt-1">30+ days inactive</p>
+            <p className="text-3xl font-bold text-foreground">{inactiveUsers.length}</p>
+            <p className="text-xs text-muted-foreground mt-1">30+ days inactive</p>
           </div>
         </div>
 
@@ -97,7 +97,7 @@ export default function ChurnAnalysis() {
                 <div key={sub.id} className="flex items-center justify-between p-3 bg-amber-50 rounded-lg border border-amber-200">
                   <div>
                     <p className="text-sm font-medium">{sub.user_profile_id}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-muted-foreground">
                       {sub.plan_type} • Expires {new Date(sub.end_date).toLocaleDateString()}
                     </p>
                   </div>

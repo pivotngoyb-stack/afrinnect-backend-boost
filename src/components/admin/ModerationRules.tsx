@@ -77,7 +77,7 @@ export default function ModerationRules({ rules, currentUser }) {
               <AlertTriangle size={24} className="text-purple-600" />
               <div>
                 <p className="text-2xl font-bold">{rules.length}</p>
-                <p className="text-sm text-gray-600">Total Rules</p>
+                <p className="text-sm text-muted-foreground">Total Rules</p>
               </div>
             </div>
           </CardContent>
@@ -88,7 +88,7 @@ export default function ModerationRules({ rules, currentUser }) {
               <AlertTriangle size={24} className="text-green-600" />
               <div>
                 <p className="text-2xl font-bold">{rules.filter(r => r.is_active).length}</p>
-                <p className="text-sm text-gray-600">Active Rules</p>
+                <p className="text-sm text-muted-foreground">Active Rules</p>
               </div>
             </div>
           </CardContent>
@@ -101,7 +101,7 @@ export default function ModerationRules({ rules, currentUser }) {
                 <p className="text-2xl font-bold">
                   {rules.filter(r => r.severity === 'critical' || r.severity === 'high').length}
                 </p>
-                <p className="text-sm text-gray-600">High Priority</p>
+                <p className="text-sm text-muted-foreground">High Priority</p>
               </div>
             </div>
           </CardContent>
@@ -130,8 +130,8 @@ export default function ModerationRules({ rules, currentUser }) {
                     <Badge className={severityColors[rule.severity]}>{rule.severity}</Badge>
                     <Badge variant="outline">{rule.rule_type.replace('_', ' ')}</Badge>
                   </div>
-                  <p className="font-mono text-sm bg-gray-100 px-2 py-1 rounded">{rule.pattern}</p>
-                  <p className="text-xs text-gray-600 mt-1">Action: {rule.action.replace('_', ' ')}</p>
+                  <p className="font-mono text-sm bg-muted px-2 py-1 rounded">{rule.pattern}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Action: {rule.action.replace('_', ' ')}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <Switch
@@ -149,7 +149,7 @@ export default function ModerationRules({ rules, currentUser }) {
               </div>
             ))}
             {rules.length === 0 && (
-              <p className="text-center text-gray-500 py-8">No moderation rules configured</p>
+              <p className="text-center text-muted-foreground py-8">No moderation rules configured</p>
             )}
           </div>
         </CardContent>

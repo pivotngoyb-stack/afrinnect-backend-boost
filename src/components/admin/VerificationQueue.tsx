@@ -148,7 +148,7 @@ export default function VerificationQueue({ requests, profiles, currentUser }) {
                     <Shield size={24} className="text-orange-600" />
                     <div>
                       <p className="text-2xl font-bold">{pendingRequests.length}</p>
-                      <p className="text-sm text-gray-600">Pending Reviews</p>
+                      <p className="text-sm text-muted-foreground">Pending Reviews</p>
                     </div>
                   </div>
                 </CardContent>
@@ -168,7 +168,7 @@ export default function VerificationQueue({ requests, profiles, currentUser }) {
                       <p className="text-2xl font-bold">
                         {requests.filter(r => r.verification_type === 'photo' && r.status === 'pending').length}
                       </p>
-                      <p className="text-sm text-gray-600">Photo Verifications</p>
+                      <p className="text-sm text-muted-foreground">Photo Verifications</p>
                     </div>
                   </div>
                 </CardContent>
@@ -188,7 +188,7 @@ export default function VerificationQueue({ requests, profiles, currentUser }) {
                       <p className="text-2xl font-bold">
                         {requests.filter(r => r.verification_type === 'id' && r.status === 'pending').length}
                       </p>
-                      <p className="text-sm text-gray-600">ID Verifications</p>
+                      <p className="text-sm text-muted-foreground">ID Verifications</p>
                     </div>
                   </div>
                 </CardContent>
@@ -208,7 +208,7 @@ export default function VerificationQueue({ requests, profiles, currentUser }) {
                       <p className="text-2xl font-bold">
                         {requests.filter(r => (r.verification_type === 'elite' || r.verification_type === 'vip') && r.status === 'pending').length}
                       </p>
-                      <p className="text-sm text-gray-600">Premium Badges</p>
+                      <p className="text-sm text-muted-foreground">Premium Badges</p>
                     </div>
                   </div>
                 </CardContent>
@@ -229,12 +229,12 @@ export default function VerificationQueue({ requests, profiles, currentUser }) {
             {pendingRequests.map(request => {
               const profile = profiles.find(p => p.id === request.user_profile_id);
               return (
-                <div key={request.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
+                <div key={request.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted">
                   <div className="flex items-center gap-4">
                     {getVerificationIcon(request.verification_type)}
                     <div>
                       <p className="font-semibold">{profile?.display_name || 'Unknown User'}</p>
-                      <p className="text-sm text-gray-600 capitalize">{request.verification_type} Verification</p>
+                      <p className="text-sm text-muted-foreground capitalize">{request.verification_type} Verification</p>
                       {request.ai_confidence_score && (
                         <Badge variant="outline" className="mt-1">
                           AI Score: {request.ai_confidence_score}%
@@ -256,7 +256,7 @@ export default function VerificationQueue({ requests, profiles, currentUser }) {
               );
             })}
             {pendingRequests.length === 0 && (
-              <p className="text-center text-gray-500 py-8">No pending verifications</p>
+              <p className="text-center text-muted-foreground py-8">No pending verifications</p>
             )}
           </div>
         </CardContent>

@@ -123,7 +123,7 @@ export default function RefundsManager() {
           {searchMutation.data && (
             <div className="space-y-4">
               {/* User Info */}
-              <div className="bg-gray-50 rounded-lg p-4">
+              <div className="bg-muted rounded-lg p-4">
                 <div className="flex items-center gap-4">
                   <img
                     src={searchMutation.data.profile.primary_photo || '/placeholder-avatar.png'}
@@ -132,7 +132,7 @@ export default function RefundsManager() {
                   />
                   <div>
                     <h3 className="font-bold text-lg">{searchMutation.data.profile.display_name}</h3>
-                    <p className="text-gray-600">{searchMutation.data.profile.created_by}</p>
+                    <p className="text-muted-foreground">{searchMutation.data.profile.created_by}</p>
                     <div className="flex gap-2 mt-1">
                       <Badge variant={searchMutation.data.profile.subscription_tier === 'free' ? 'secondary' : 'default'}>
                         {searchMutation.data.profile.subscription_tier || 'free'}
@@ -149,7 +149,7 @@ export default function RefundsManager() {
               <div>
                 <h4 className="font-semibold mb-3">Subscription History</h4>
                 {searchMutation.data.subscriptions.length === 0 ? (
-                  <p className="text-gray-500">No subscriptions found</p>
+                  <p className="text-muted-foreground">No subscriptions found</p>
                 ) : (
                   <div className="space-y-3">
                     {searchMutation.data.subscriptions.map((sub) => (
@@ -159,10 +159,10 @@ export default function RefundsManager() {
                       >
                         <div>
                           <p className="font-medium">{sub.plan_type}</p>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-muted-foreground">
                             {sub.payment_provider} • ${sub.amount_paid} {sub.currency}
                           </p>
-                          <p className="text-xs text-gray-400">
+                          <p className="text-xs text-muted-foreground">
                             {new Date(sub.start_date).toLocaleDateString()} - {new Date(sub.end_date).toLocaleDateString()}
                           </p>
                         </div>
