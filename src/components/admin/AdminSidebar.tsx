@@ -4,9 +4,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { 
   BarChart3, Users, Shield, TrendingUp, DollarSign, MessageSquare,
-  Settings, ChevronLeft, ChevronRight, Flag, Book, Store,
-  Eye, LogOut, Megaphone, Gift, Star, Zap, ClipboardList
 } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
