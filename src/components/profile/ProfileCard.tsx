@@ -16,10 +16,7 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const rotate = useTransform(x, [-220, 220], [-12, 12]);
-  const cardScale = useTransform(y, [-220, 0, 120], [1.03, 1, 0.98]);
-  const photoScale = useTransform(y, [-220, 0, 120], [1.08, 1, 0.98]);
-  const photoOffsetY = useTransform(y, [-220, 0, 120], [-8, 0, 6]);
+  const rotate = useTransform(x, [-220, 220], [-6, 6]);
   const likeOpacity = useTransform(x, [40, 150], [0, 1]);
   const nopeOpacity = useTransform(x, [-40, -150], [0, 1]);
   const superOpacity = useTransform(y, [-40, -180], [0, 1]);
@@ -136,51 +133,48 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
     <ProfileTierDecoration tier={profile?.subscription_tier}>
       <motion.div
         className={`relative mx-auto overflow-hidden border border-border/50 bg-card shadow-elevated ${expanded ? 'w-full max-w-xl max-h-[90dvh] rounded-3xl' : 'h-full min-h-[500px] w-full rounded-[1.75rem] cursor-grab active:cursor-grabbing'}`}
-        style={{ x, y, rotate, scale: cardScale }}
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+        style={{ x, y, rotate, willChange: 'transform' }}
+        initial={false}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0, transition: { duration: 0.15 } }}
         drag={!expanded && showActions ? true : false}
-        dragConstraints={{ left: 0, right: 0 }}
-        dragElastic={0.14}
-        dragTransition={{ bounceStiffness: 420, bounceDamping: 24 }}
+        dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+        dragElastic={0.08}
+        dragTransition={{ bounceStiffness: 600, bounceDamping: 30 }}
         onDragEnd={handleDragEnd}
       >
         {!expanded && showActions && (
           <>
             <motion.div style={{ opacity: likeOpacity }} className="absolute top-12 left-7 z-50 pointer-events-none -rotate-12">
-              <div className="rounded-xl border-[3px] border-brand-sage bg-background/20 px-4 py-2 backdrop-blur-sm">
-                <span className="text-3xl font-extrabold tracking-widest text-brand-sage">LIKE</span>
+              <div className="rounded-xl border-[3px] border-brand-sage bg-foreground/60 px-4 py-2">
+                <span className="text-3xl font-extrabold tracking-widest text-brand-sage" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>LIKE</span>
               </div>
             </motion.div>
             <motion.div style={{ opacity: nopeOpacity }} className="absolute top-12 right-7 z-50 pointer-events-none rotate-12">
-              <div className="rounded-xl border-[3px] border-destructive bg-background/20 px-4 py-2 backdrop-blur-sm">
-                <span className="text-3xl font-extrabold tracking-widest text-destructive">NOPE</span>
+              <div className="rounded-xl border-[3px] border-destructive bg-foreground/60 px-4 py-2">
+                <span className="text-3xl font-extrabold tracking-widest text-destructive" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>NOPE</span>
               </div>
             </motion.div>
             <motion.div style={{ opacity: superOpacity }} className="absolute top-16 left-1/2 z-50 -translate-x-1/2 pointer-events-none">
-              <div className="rounded-xl border-[3px] border-brand-gold bg-background/20 px-4 py-2 backdrop-blur-sm">
-                <span className="text-2xl font-extrabold tracking-widest text-brand-gold">SUPER</span>
+              <div className="rounded-xl border-[3px] border-brand-gold bg-foreground/60 px-4 py-2">
+                <span className="text-2xl font-extrabold tracking-widest text-brand-gold" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>SUPER</span>
               </div>
             </motion.div>
           </>
         )}
 
         <div className={`relative overflow-hidden group ${expanded ? 'min-h-[70dvh] h-full' : 'h-full min-h-[500px] cursor-pointer'}`} onClick={toggleDetails}>
-          <AnimatePresence mode="wait">
-            <motion.div key={currentPhotoIndex} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="absolute inset-0">
-              <motion.img
-                src={photos[currentPhotoIndex]}
-                alt={profile?.display_name}
-                className="h-full w-full object-cover object-center"
-                style={{ scale: photoScale, y: photoOffsetY }}
-                loading="lazy"
-              />
-            </motion.div>
-          </AnimatePresence>
+          <div className="absolute inset-0">
+            <img
+              src={photos[currentPhotoIndex]}
+              alt={profile?.display_name}
+              className="h-full w-full object-cover object-center"
+              loading="lazy"
+              draggable={false}
+            />
+          </div>
 
           <div className="absolute inset-0 bg-gradient-to-t from-foreground/95 via-primary/35 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-background/5 backdrop-blur-[2px]" />
 
           {photos.length > 1 && (
             <>
@@ -232,7 +226,7 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
             </div>
 
             {profile?.relationship_goal && (
-              <Badge className="mt-2 border-0 bg-background/20 text-primary-foreground backdrop-blur-sm text-xs">
+              <Badge className="mt-2 border-0 bg-foreground/20 text-primary-foreground text-xs">
                 {relationshipLabels[profile.relationship_goal]}
               </Badge>
             )}
@@ -245,13 +239,14 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
               <div className="mt-3 flex flex-wrap gap-2">
                 {interestChips.map((interest: string, idx: number) => (
                   <span key={`${interest}-${idx}`} className="rounded-full border border-background/30 bg-background/20 px-2.5 py-1 text-xs text-primary-foreground backdrop-blur-sm">
+                  <span key={`${interest}-${idx}`} className="rounded-full border border-background/30 bg-foreground/20 px-2.5 py-1 text-xs text-primary-foreground">
                     {addInterestEmoji(interest)}
                   </span>
                 ))}
               </div>
             )}
 
-            <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-background/20 px-3 py-1.5 text-xs text-primary-foreground/95 backdrop-blur-sm">
+            <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-foreground/20 px-3 py-1.5 text-xs text-primary-foreground/95">
               <Sparkles size={12} />
               <span>{socialProof}</span>
             </div>
@@ -265,7 +260,7 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: '100%', opacity: 0 }}
               transition={{ type: 'spring', damping: 24, stiffness: 220 }}
-              className="absolute inset-x-0 bottom-0 z-40 max-h-[72%] overflow-y-auto rounded-t-[1.6rem] border-t border-border/60 bg-card/95 backdrop-blur-xl"
+              className="absolute inset-x-0 bottom-0 z-40 max-h-[72%] overflow-y-auto rounded-t-[1.6rem] border-t border-border/60 bg-card"
             >
               <div className="p-5 space-y-4">
                 <div className="mx-auto h-1.5 w-12 rounded-full bg-muted" />
