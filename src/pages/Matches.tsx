@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/components/i18n/LanguageContext';
 import { filterRecords, getCurrentUser } from '@/lib/supabase-helpers';

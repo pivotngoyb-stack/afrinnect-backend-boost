@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Crown, Lock, Sparkles } from 'lucide-react';

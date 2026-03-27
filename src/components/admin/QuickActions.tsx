@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { invokeFunction } from '@/lib/supabase-helpers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';

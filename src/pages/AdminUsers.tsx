@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useSearchParams } from "react-router-dom";

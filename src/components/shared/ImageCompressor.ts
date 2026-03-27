@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 export interface ImageSizes {
   thumbnail: File; // 200px wide, for lists/grids

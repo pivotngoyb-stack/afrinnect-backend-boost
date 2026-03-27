@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { createRecord, deleteRecord, getCurrentUser, listRecords, updateRecord } from '@/lib/supabase-helpers';
 import { useNavigate } from "react-router-dom";

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { MapPin, Loader2 } from 'lucide-react';

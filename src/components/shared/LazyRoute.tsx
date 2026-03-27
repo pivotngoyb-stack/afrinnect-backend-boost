@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { Suspense } from 'react';
 import LoadingSkeleton from './LoadingSkeleton';
 

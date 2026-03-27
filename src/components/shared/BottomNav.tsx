@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Heart, Compass, CalendarDays, UserRound, Users } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Loader2, Crop, ZoomIn, ZoomOut, RotateCw, AlertTriangle } from 'lucide-react';

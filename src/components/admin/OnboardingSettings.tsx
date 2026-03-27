@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect, forwardRef } from "react";
 import { createRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
