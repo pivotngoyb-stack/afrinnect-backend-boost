@@ -1,9 +1,9 @@
 // @ts-nocheck
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Globe, Search, Loader2, Users } from 'lucide-react';
+import { ArrowLeft, Globe, MapPin, Search, Loader2, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -14,7 +14,6 @@ export default function Explore() {
   const [search, setSearch] = useState('');
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
-  // Get current user
   const { data: currentUser } = useQuery({
     queryKey: ['current-user-explore'],
     queryFn: async () => {
@@ -23,18 +22,31 @@ export default function Explore() {
     },
   });
 
-  // Fetch global profiles
-  const { data: profiles = [], isLoading } = useQuery({
+  const { data: currentProfile } = useQuery({
+    queryKey: ['current-profile-explore', currentUser?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('user_profiles')
+        .select('id, current_country')
+        .eq('user_id', currentUser!.id)
+        .limit(1)
+        .single();
+      return data;
+    },
+    enabled: !!currentUser?.id,
+  });
+
+  // Fetch all active profiles
+  const { data: allProfiles = [], isLoading } = useQuery({
     queryKey: ['explore-profiles', currentUser?.id],
     queryFn: async () => {
-      // Calculate the max birth_date for 18+ (must be born on or before this date)
       const eighteenYearsAgo = new Date();
       eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
       const maxBirthDate = eighteenYearsAgo.toISOString().split('T')[0];
 
       const { data, error } = await supabase
         .from('user_profiles')
-        .select('id, user_id, display_name, primary_photo, country_of_origin, current_city, bio, birth_date')
+        .select('id, user_id, display_name, primary_photo, country_of_origin, current_country, current_city, bio, birth_date')
         .eq('is_active', true)
         .eq('is_banned', false)
         .neq('user_id', currentUser?.id || '')
@@ -47,6 +59,18 @@ export default function Explore() {
     },
     enabled: !!currentUser?.id,
   });
+
+  // Split into local (USA/Canada) and global
+  const LOCAL_COUNTRIES = ['United States', 'USA', 'US', 'Canada', 'CA'];
+  const localProfiles = useMemo(() => allProfiles.filter(p => LOCAL_COUNTRIES.some(c => c.toLowerCase() === (p.current_country || '').toLowerCase())), [allProfiles]);
+  const globalProfiles = useMemo(() => allProfiles.filter(p => !LOCAL_COUNTRIES.some(c => c.toLowerCase() === (p.current_country || '').toLowerCase())), [allProfiles]);
+
+  const hasGlobalProfiles = globalProfiles.length > 0;
+  const [mode, setMode] = useState<'local' | 'global'>('global');
+
+  // Use appropriate set based on mode; fallback to local if no global
+  const profiles = mode === 'global' && hasGlobalProfiles ? globalProfiles : localProfiles.length > 0 ? localProfiles : allProfiles;
+  const effectiveMode = mode === 'global' && hasGlobalProfiles ? 'global' : 'local';
 
   // Get unique countries
   const countries = [...new Set(profiles.map(p => p.country_of_origin).filter(Boolean))].sort();
@@ -76,20 +100,30 @@ export default function Explore() {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      {/* Header */}
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         <div className="max-w-2xl mx-auto px-4 py-3">
           <div className="flex items-center gap-3 mb-3">
             <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="shrink-0">
               <ArrowLeft size={20} />
             </Button>
-            <div className="flex items-center gap-2">
-              <Globe size={20} className="text-primary" />
-              <h1 className="text-lg font-bold text-foreground">Explore Globally</h1>
-            </div>
+            <button
+              onClick={() => setMode(mode === 'global' ? 'local' : 'global')}
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+            >
+              {effectiveMode === 'global' ? (
+                <>
+                  <Globe size={20} className="text-primary" />
+                  <h1 className="text-lg font-bold text-foreground">Explore Globally</h1>
+                </>
+              ) : (
+                <>
+                  <MapPin size={20} className="text-primary" />
+                  <h1 className="text-lg font-bold text-foreground">Explore Locally</h1>
+                </>
+              )}
+            </button>
           </div>
 
-          {/* Search */}
           <div className="relative">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <Input
@@ -100,7 +134,6 @@ export default function Explore() {
             />
           </div>
 
-          {/* Country filter chips */}
           {countries.length > 0 && (
             <div className="flex gap-2 mt-3 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide">
               <Button
@@ -128,7 +161,6 @@ export default function Explore() {
         </div>
       </header>
 
-      {/* Content */}
       <div className="max-w-2xl mx-auto px-4 py-4">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20">
@@ -139,7 +171,7 @@ export default function Explore() {
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <Users size={48} className="text-muted-foreground/40 mb-4" />
             <p className="text-lg font-medium text-foreground mb-1">
-              {search || selectedCountry ? 'No matching profiles found' : 'Profiles are loading...'}
+              {search || selectedCountry ? 'No matching profiles found' : 'No profiles available yet'}
             </p>
             <p className="text-muted-foreground mb-4">
               {search || selectedCountry 
