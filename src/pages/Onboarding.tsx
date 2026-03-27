@@ -31,8 +31,8 @@ const AFRICAN_COUNTRIES = [
   'Algeria', 'Tunisia', 'Libya', 'Somalia', 'Eritrea', 'Djibouti'
 ];
 
-// RESTRICTED: Only USA, Canada, and Pakistan for residence
-const ALLOWED_RESIDENCE_COUNTRIES = ['United States', 'Canada', 'Pakistan'];
+// RESTRICTED: Only USA and Canada for residence
+const ALLOWED_RESIDENCE_COUNTRIES = ['United States', 'Canada'];
 
 const ALL_COUNTRIES = [
   ...AFRICAN_COUNTRIES,
