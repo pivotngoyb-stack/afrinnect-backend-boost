@@ -216,7 +216,7 @@ export default function Landing() {
               {recentSignup.name[0]}
             </div>
             <div>
-              <p className="text-sm font-semibold text-gray-900">{recentSignup.name} just joined!</p>
+              <p className="text-sm font-semibold text-gray-900">{t('landingExtra.justJoined').replace('{name}', recentSignup.name)}</p>
               <p className="text-xs text-gray-500">{recentSignup.location} • {recentSignup.time}</p>
             </div>
           </motion.div>
