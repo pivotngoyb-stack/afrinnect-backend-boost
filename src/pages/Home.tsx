@@ -34,6 +34,9 @@ import PeopleLikeYouTeaser from '@/components/engagement/PeopleLikeYouTeaser';
 import NewMatchToast from '@/components/engagement/NewMatchToast';
 import ContextualUpgradeBanner from '@/components/monetization/ContextualUpgradeBanner';
 import BlurredLikesTeaser from '@/components/monetization/BlurredLikesTeaser';
+import ProfileViewerToast from '@/components/monetization/ProfileViewerToast';
+import FreeTrialCountdown from '@/components/monetization/FreeTrialCountdown';
+import MissedMatchRegret from '@/components/monetization/MissedMatchRegret';
 import { Loader2 } from 'lucide-react';
 
 export default function Home() {
