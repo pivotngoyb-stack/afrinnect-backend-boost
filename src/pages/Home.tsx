@@ -32,6 +32,8 @@ import ProfileViewsNudge from '@/components/engagement/ProfileViewsNudge';
 import DailyReturnBanner from '@/components/engagement/DailyReturnBanner';
 import PeopleLikeYouTeaser from '@/components/engagement/PeopleLikeYouTeaser';
 import NewMatchToast from '@/components/engagement/NewMatchToast';
+import ContextualUpgradeBanner from '@/components/monetization/ContextualUpgradeBanner';
+import BlurredLikesTeaser from '@/components/monetization/BlurredLikesTeaser';
 import { Loader2 } from 'lucide-react';
 
 export default function Home() {
@@ -460,6 +462,10 @@ export default function Home() {
         {isVerificationGated && <VerificationGateBanner matchCount={gateMatchCount} />}
 
         <main className="flex-1 flex flex-col overflow-hidden px-4" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+          <ContextualUpgradeBanner userProfile={myProfile} />
+          {!['premium', 'elite', 'vip'].includes(myProfile?.subscription_tier) && (
+            <BlurredLikesTeaser likesCount={activityCounts?.likes || 0} className="mb-3" />
+          )}
           <DailyReturnBanner userProfile={myProfile} />
           <LiveActivityFeed userProfile={myProfile} />
           <ProfileCompletionBar userProfile={myProfile} />
