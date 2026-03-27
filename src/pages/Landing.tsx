@@ -187,7 +187,7 @@ export default function Landing() {
                   variant="ghost" 
                   className="text-white hover:bg-white/20 font-semibold"
                 >
-                  Go to App →
+                  {t('landingExtra.goToApp')}
                 </Button>
               </Link>
             ) : (
@@ -243,7 +243,7 @@ export default function Landing() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
               </span>
-              <span className="text-white/90 text-sm font-medium">{liveCount} people exploring profiles right now</span>
+              <span className="text-white/90 text-sm font-medium">{t('landingExtra.liveCount').replace('{count}', String(liveCount))}</span>
             </motion.div>
 
             {/* Logo */}
@@ -256,26 +256,26 @@ export default function Landing() {
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-              Your Community<br />
+              {t('landing.title')}<br />
               <span className="bg-gradient-to-r from-amber-400 to-amber-200 bg-clip-text text-transparent">
-                Is Already Here
+                {t('landing.titleHighlight')}
               </span>
             </h1>
             <p className="text-lg md:text-xl text-white/90 mb-4 max-w-xl">
-              The community platform built for the African diaspora. Connect with people who truly share your culture, values, and heritage.
+              {t('landing.subtitle')}
             </p>
             
             {/* Geographic notice */}
             <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-lg px-4 py-2 mb-4">
               <span className="text-xl">🇺🇸 🇨🇦</span>
-              <span className="text-white/90 text-sm">Currently available in USA & Canada</span>
+              <span className="text-white/90 text-sm">{t('landingExtra.usaCanada')}</span>
             </div>
             
             {/* Urgency Message */}
             {founderEnabled && (
             <div className="bg-amber-500/20 border border-amber-400/30 rounded-xl p-4 mb-6">
               <p className="text-amber-200 text-sm font-medium">
-                🎉 <strong>Founding Member Bonus:</strong> Sign up now and get Premium features FREE for {founderTrialDays >= 60 ? `${Math.round(founderTrialDays / 30)} months` : `${founderTrialDays} days`}!
+                🎉 <strong>{t('landingExtra.founderBonus')}</strong> {t('landingExtra.founderBonusDesc').replace('{duration}', founderTrialDays >= 60 ? `${Math.round(founderTrialDays / 30)} months` : `${founderTrialDays} days`)}
               </p>
             </div>
             )}
@@ -288,7 +288,7 @@ export default function Landing() {
                     size="lg" 
                     className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-10 py-6 text-lg rounded-full shadow-2xl"
                   >
-                    Welcome Back! Go to App
+                    {t('landingExtra.welcomeBackGoToApp')}
                     <ArrowRight size={20} className="ml-2" />
                   </Button>
                 </Link>
@@ -299,8 +299,8 @@ export default function Landing() {
                     size="lg" 
                     className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-10 py-7 text-lg rounded-full shadow-2xl transform hover:scale-105 transition-all"
                   >
-                    Join the Community — It's Free
-                    <ArrowRight size={20} className="ml-2" />
+                     {t('landingExtra.joinCommunity')}
+                     <ArrowRight size={20} className="ml-2" />
                   </Button>
                 </>
               )}
@@ -309,15 +309,15 @@ export default function Landing() {
             <div className="flex flex-wrap items-center gap-4 text-white/80 text-sm">
               <div className="flex items-center gap-2">
                 <CheckCircle size={16} className="text-green-400" />
-                <span>100% Free to join</span>
+                <span>{t('landingExtra.freeToJoin')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle size={16} className="text-green-400" />
-                <span>No credit card required</span>
+                <span>{t('landingExtra.noCreditCard')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle size={16} className="text-green-400" />
-                <span>2 min setup</span>
+                <span>{t('landingExtra.twoMinSetup')}</span>
               </div>
             </div>
           </motion.div>
@@ -348,10 +348,10 @@ export default function Landing() {
                         className="w-10 h-10 rounded-full border-2 border-white object-cover"
                       />
                     ))}
-                  </div>
-                  <span className="text-sm font-medium">+10,000 members</span>
+                   </div>
+                  <span className="text-sm font-medium">{t('landingExtra.plusMembers')}</span>
                 </div>
-                <p className="text-lg font-semibold">Connect with your community and culture</p>
+                <p className="text-lg font-semibold">{t('landingExtra.connectCulture')}</p>
               </div>
             </div>
 
@@ -369,8 +369,8 @@ export default function Landing() {
                   className="w-12 h-12 rounded-full object-cover"
                 />
                 <div>
-                  <p className="font-bold text-gray-900 text-sm">New Match! 💕</p>
-                  <p className="text-xs text-gray-500">Kwame from Ghana</p>
+                  <p className="font-bold text-gray-900 text-sm">{t('landingExtra.newMatch')}</p>
+                  <p className="text-xs text-gray-500">Kwame — Ghana</p>
                 </div>
               </div>
             </motion.div>
@@ -388,8 +388,8 @@ export default function Landing() {
                   className="w-12 h-12 rounded-full object-cover"
                 />
                 <div>
-                  <p className="font-bold text-gray-900 text-sm">94% Match 🎯</p>
-                  <p className="text-xs text-gray-500">Zara from Kenya</p>
+                  <p className="font-bold text-gray-900 text-sm">{t('landingExtra.matchPercent')}</p>
+                  <p className="text-xs text-gray-500">Zara — Kenya</p>
                 </div>
               </div>
             </motion.div>
