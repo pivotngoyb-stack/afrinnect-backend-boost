@@ -502,9 +502,8 @@ export default function Home() {
   }
 
   return (
-    <PullToRefresh onRefresh={refetch}>
       <div className="h-[100dvh] flex flex-col bg-background relative overflow-hidden">
-        <AfricanPattern className="text-primary" opacity={0.03} variant="adinkra" />
+        <AfricanPattern className="text-primary" opacity={0.02} variant="adinkra" />
 
         <HomeHeader
           discoveryMode={discoveryMode} setDiscoveryMode={setDiscoveryMode}
@@ -576,10 +575,7 @@ export default function Home() {
             onClose={() => setShowMissedMatch(false)}
             matchScore={Math.floor(Math.random() * 10) + 90}
           />
-          <FreeTrialCountdown userProfile={myProfile} />
-          <ContextualUpgradeBanner userProfile={myProfile} />
         </main>
       </div>
-    </PullToRefresh>
   );
 }
