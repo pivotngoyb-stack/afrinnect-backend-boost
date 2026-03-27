@@ -4,12 +4,20 @@ import { motion } from 'framer-motion';
 import { MessageSquare, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { useLanguage } from '@/components/i18n/LanguageContext';
 
-const STARTERS = [
+const STARTERS_EN = [
   "What's something that always makes you smile?",
   "Tell me about your favorite place in the world",
   "What's your go-to weekend plan?",
   "If you could travel anywhere right now, where?",
+];
+
+const STARTERS_FR = [
+  "Qu'est-ce qui vous fait toujours sourire ?",
+  "Parlez-moi de votre endroit préféré au monde",
+  "Quel est votre programme de week-end idéal ?",
+  "Si vous pouviez voyager n'importe où maintenant, où iriez-vous ?",
 ];
 
 interface ChatReminderBannerProps {
@@ -18,7 +26,9 @@ interface ChatReminderBannerProps {
 }
 
 export default function ChatReminderBanner({ staleConversations, conversationData }: ChatReminderBannerProps) {
-  // Filter conversations where last message > 24h ago
+  const { t, language } = useLanguage();
+  const starters = language === 'fr' ? STARTERS_FR : STARTERS_EN;
+
   const stale = staleConversations.filter(p => {
     const conv = conversationData[p.match?.id];
     if (!conv?.lastMessage) return false;
@@ -28,7 +38,7 @@ export default function ChatReminderBanner({ staleConversations, conversationDat
 
   if (stale.length === 0) return null;
   const profile = stale[0];
-  const starter = STARTERS[Math.floor(Math.random() * STARTERS.length)];
+  const starter = starters[Math.floor(Math.random() * starters.length)];
 
   return (
     <motion.div
@@ -45,10 +55,10 @@ export default function ChatReminderBanner({ staleConversations, conversationDat
           />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-foreground">
-              Your chat with {profile.display_name?.split(' ')[0]} is going quiet 💬
+              {t('engagement.chatReminder').replace('{name}', profile.display_name?.split(' ')[0] || '')}
             </p>
             <p className="text-xs text-muted-foreground truncate mt-0.5">
-              Try: "{starter}"
+              {t('engagement.chatReminderTry')} "{starter}"
             </p>
           </div>
           <ArrowRight size={16} className="text-muted-foreground flex-shrink-0" />

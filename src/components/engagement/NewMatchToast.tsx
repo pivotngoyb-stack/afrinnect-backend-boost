@@ -1,9 +1,10 @@
 // @ts-nocheck
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, MessageCircle, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '@/components/i18n/LanguageContext';
 
 interface NewMatchToastProps {
   matchedProfile?: any;
@@ -12,6 +13,7 @@ interface NewMatchToastProps {
 }
 
 export default function NewMatchToast({ matchedProfile, show, onDismiss }: NewMatchToastProps) {
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   return (
@@ -28,28 +30,24 @@ export default function NewMatchToast({ matchedProfile, show, onDismiss }: NewMa
             <X size={16} />
           </button>
           <div className="flex items-center gap-3">
-            <motion.div
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-              className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center"
-            >
+            <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}
+              className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
               <Heart size={24} className="text-white" fill="white" />
             </motion.div>
             <div className="flex-1">
-              <p className="text-white font-bold text-base">You have a new match! 🔥</p>
+              <p className="text-white font-bold text-base">{t('engagement.newMatchToast.title')}</p>
               <p className="text-white/80 text-xs">
-                {matchedProfile?.display_name ? `${matchedProfile.display_name} liked you back` : "Someone liked you back!"}
+                {matchedProfile?.display_name
+                  ? t('engagement.newMatchToast.likedBack').replace('{name}', matchedProfile.display_name)
+                  : t('engagement.newMatchToast.someoneLikedBack')}
               </p>
             </div>
           </div>
           <div className="flex gap-2 mt-3">
-            <Button
-              size="sm"
-              onClick={() => { navigate('/matches'); onDismiss(); }}
-              className="flex-1 bg-white text-pink-600 hover:bg-white/90 text-xs font-semibold"
-            >
+            <Button size="sm" onClick={() => { navigate('/matches'); onDismiss(); }}
+              className="flex-1 bg-white text-pink-600 hover:bg-white/90 text-xs font-semibold">
               <MessageCircle size={14} className="mr-1" />
-              Say hi now
+              {t('engagement.newMatchToast.sayHi')}
             </Button>
           </div>
         </motion.div>

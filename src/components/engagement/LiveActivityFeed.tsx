@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Zap, MapPin, Heart, TrendingUp, Trophy } from 'lucide-react';
+import { useLanguage } from '@/components/i18n/LanguageContext';
 
 const CITIES = ['New York', 'Toronto', 'Houston', 'Atlanta', 'Chicago', 'Vancouver', 'Montreal', 'Miami', 'Los Angeles', 'Dallas', 'Washington DC', 'Calgary', 'Ottawa', 'Philadelphia', 'San Francisco', 'Boston'];
 const NAMES_M = ['Kwame', 'Chidi', 'Amari', 'Kofi', 'Jabari', 'Tendai', 'Emeka', 'Sekou'];
@@ -10,23 +11,24 @@ const NAMES_F = ['Amina', 'Zuri', 'Nia', 'Aisha', 'Fatou', 'Adama', 'Nala', 'Sad
 function randomItem(arr: string[]) { return arr[Math.floor(Math.random() * arr.length)]; }
 function randomNum(min: number, max: number) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
-function getTemplates(userCity?: string) {
+function getTemplates(t: (key: string) => string, userCity?: string) {
   const city = userCity || randomItem(CITIES);
   return [
-    () => ({ icon: Heart, text: `${randomItem(NAMES_M)} just matched with ${randomItem(NAMES_F)}`, color: 'text-pink-500' }),
-    () => ({ icon: Users, text: `Someone just joined from ${randomItem(CITIES)}`, color: 'text-primary' }),
-    () => ({ icon: Zap, text: `${randomNum(3, 12)} people online near you`, color: 'text-amber-500' }),
-    () => ({ icon: MapPin, text: `New match happening in ${randomItem(CITIES)} right now`, color: 'text-emerald-500' }),
-    () => ({ icon: TrendingUp, text: `People in ${city} got ${randomNum(8, 25)} matches today`, color: 'text-primary' }),
-    () => ({ icon: Trophy, text: `${randomItem(NAMES_M)} got ${randomNum(2, 5)} matches this hour`, color: 'text-amber-500' }),
-    () => ({ icon: Zap, text: `Users who complete profiles get 5x more matches`, color: 'text-emerald-500' }),
-    () => ({ icon: Heart, text: `${randomNum(15, 40)} people are swiping in ${city} now`, color: 'text-pink-500' }),
+    () => ({ icon: Heart, text: t('engagement.liveActivity.matched').replace('{name1}', randomItem(NAMES_M)).replace('{name2}', randomItem(NAMES_F)), color: 'text-pink-500' }),
+    () => ({ icon: Users, text: t('engagement.liveActivity.joined').replace('{city}', randomItem(CITIES)), color: 'text-primary' }),
+    () => ({ icon: Zap, text: t('engagement.liveActivity.online').replace('{count}', String(randomNum(3, 12))), color: 'text-amber-500' }),
+    () => ({ icon: MapPin, text: t('engagement.liveActivity.newMatch').replace('{city}', randomItem(CITIES)), color: 'text-emerald-500' }),
+    () => ({ icon: TrendingUp, text: t('engagement.liveActivity.matchesToday').replace('{city}', city).replace('{count}', String(randomNum(8, 25))), color: 'text-primary' }),
+    () => ({ icon: Trophy, text: t('engagement.liveActivity.matchesHour').replace('{name}', randomItem(NAMES_M)).replace('{count}', String(randomNum(2, 5))), color: 'text-amber-500' }),
+    () => ({ icon: Zap, text: t('engagement.liveActivity.completeTip'), color: 'text-emerald-500' }),
+    () => ({ icon: Heart, text: t('engagement.liveActivity.swiping').replace('{count}', String(randomNum(15, 40))).replace('{city}', city), color: 'text-pink-500' }),
   ];
 }
 
 export default function LiveActivityFeed({ className = '', userProfile }: { className?: string; userProfile?: any }) {
+  const { t } = useLanguage();
   const userCity = userProfile?.current_city;
-  const templates = getTemplates(userCity);
+  const templates = getTemplates(t, userCity);
   const [activity, setActivity] = useState(() => templates[0]());
   const [visible, setVisible] = useState(true);
 
@@ -34,13 +36,13 @@ export default function LiveActivityFeed({ className = '', userProfile }: { clas
     const interval = setInterval(() => {
       setVisible(false);
       setTimeout(() => {
-        const t = getTemplates(userCity);
-        setActivity(t[Math.floor(Math.random() * t.length)]());
+        const tpls = getTemplates(t, userCity);
+        setActivity(tpls[Math.floor(Math.random() * tpls.length)]());
         setVisible(true);
       }, 500);
     }, 6000 + Math.random() * 4000);
     return () => clearInterval(interval);
-  }, [userCity]);
+  }, [userCity, t]);
 
   const Icon = activity.icon;
 

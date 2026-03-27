@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Flame, Gift, Star, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/components/i18n/LanguageContext';
 
 interface DailyReturnBannerProps {
   userProfile: any;
@@ -10,6 +11,7 @@ interface DailyReturnBannerProps {
 }
 
 export default function DailyReturnBanner({ userProfile, className = '' }: DailyReturnBannerProps) {
+  const { t } = useLanguage();
   const [dismissed, setDismissed] = useState(false);
   const [shown, setShown] = useState(false);
 
@@ -27,9 +29,9 @@ export default function DailyReturnBanner({ userProfile, className = '' }: Daily
 
   const streak = userProfile.login_streak || 1;
   const messages = [
-    { text: 'New people are waiting for you today! 🔥', sub: 'Fresh profiles just added', icon: Star },
-    { text: `${streak}-day streak! You're on fire! 🔥`, sub: 'Keep it going for bonus visibility', icon: Flame },
-    { text: 'Someone new liked your profile! 👀', sub: "Don't keep them waiting", icon: Gift },
+    { text: t('engagement.dailyReturn.newPeople'), sub: t('engagement.dailyReturn.newPeopleSub'), icon: Star },
+    { text: t('engagement.dailyReturn.streak').replace('{count}', String(streak)), sub: t('engagement.dailyReturn.streakSub'), icon: Flame },
+    { text: t('engagement.dailyReturn.newLike'), sub: t('engagement.dailyReturn.newLikeSub'), icon: Gift },
   ];
   const msg = streak > 2 ? messages[1] : messages[Math.floor(Math.random() * messages.length)];
   const Icon = msg.icon;
@@ -61,7 +63,7 @@ export default function DailyReturnBanner({ userProfile, className = '' }: Daily
                 <Flame size={10} className="text-white" />
               </div>
             ))}
-            <span className="text-xs font-medium text-amber-600 dark:text-amber-400 ml-1">{streak} days</span>
+            <span className="text-xs font-medium text-amber-600 dark:text-amber-400 ml-1">{streak} {t('engagement.dailyReturn.days')}</span>
           </div>
         )}
       </motion.div>

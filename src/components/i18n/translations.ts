@@ -724,6 +724,158 @@ export const translations = {
         timestamp: "Timestamp",
         ipAddress: "IP Address"
       }
+    },
+    engagement: {
+      chatReminder: "Your chat with {name} is going quiet 💬",
+      chatReminderTry: "Try:",
+      dailyReturn: {
+        newPeople: "New people are waiting for you today! 🔥",
+        newPeopleSub: "Fresh profiles just added",
+        streak: "{count}-day streak! You're on fire! 🔥",
+        streakSub: "Keep it going for bonus visibility",
+        newLike: "Someone new liked your profile! 👀",
+        newLikeSub: "Don't keep them waiting",
+        days: "days",
+        completeForMatches: "🔥 Complete to get more matches",
+        almostThere: "✨ Almost there!"
+      },
+      liveActivity: {
+        matched: "{name1} just matched with {name2}",
+        joined: "Someone just joined from {city}",
+        online: "{count} people online near you",
+        newMatch: "New match happening in {city} right now",
+        matchesToday: "People in {city} got {count} matches today",
+        matchesHour: "{name} got {count} matches this hour",
+        completeTip: "Users who complete profiles get 5x more matches",
+        swiping: "{count} people are swiping in {city} now"
+      },
+      matchUrgency: {
+        hot: "Say hi now — they're online 🔥",
+        warm: "They're waiting for your message…",
+        urgent: "Don't miss this connection — expires soon ⏳"
+      },
+      peopleLikeYou: {
+        interested: "{count} {noun} interested in you",
+        personIs: "person is",
+        peopleAre: "people are",
+        tapToSee: "Tap to see who",
+        upgradeToSee: "Upgrade to see who",
+        seeWhoLikes: "See who likes you",
+        unlockToSee: "Unlock to see who"
+      },
+      profileCompletion: {
+        percent: "Your profile is {pct}% complete",
+        addPhoto: "Add a profile photo",
+        writeBio: "Write a bio",
+        selectInterests: "Select interests",
+        addPhotos: "Add 3+ photos",
+        setLocation: "Set your location",
+        setGoal: "Set relationship goal"
+      },
+      profileViews: {
+        viewed: "{count} {noun} viewed your profile today 👀",
+        person: "person",
+        people: "people",
+        tapToSee: "Tap to see who",
+        upgradeToSee: "Upgrade to see who's looking"
+      },
+      newMatchToast: {
+        title: "You have a new match! 🔥",
+        likedBack: "{name} liked you back",
+        someoneLikedBack: "Someone liked you back!",
+        sayHi: "Say hi now"
+      }
+    },
+    monetization: {
+      blurredLikes: {
+        liked: "{count} {noun} liked you!",
+        person: "person",
+        people: "people",
+        waiting: "They're waiting for you to like them back 💕",
+        reveal: "Reveal Who Likes You"
+      },
+      activitySummary: {
+        peopleLikeYou: "People like you",
+        seeWho: "See who"
+      },
+      trialExpiry: {
+        ended: "Your trial has ended",
+        upgradeToKeep: "Upgrade to keep premium features",
+        upgrade: "Upgrade",
+        endsIn: "Trial ends in {hours} hours",
+        dontLose: "Don't lose your premium features",
+        upgradeNow: "Upgrade Now"
+      },
+      messagePreview: {
+        newMessage: "New message",
+        upgradeToRead: "Upgrade to Read Full Message"
+      },
+      likesCounter: {
+        unlimited: "Unlimited",
+        likes: "likes"
+      },
+      socialProof: {
+        upgradedToday: "{count} people upgraded today",
+        justMatched: "just matched after upgrading",
+        upgradedElite: "upgraded to Elite",
+        foundMatch: "found their match today",
+        gotLikes: "got 5 new likes after upgrading",
+        limitedTime: "🔥 Limited time: 3-day free trial ending soon"
+      },
+      premiumFeatures: {
+        unlimitedLikes: "Unlimited Likes",
+        seeWhoLikes: "See Who Likes You",
+        advancedFilters: "Advanced Filters",
+        readReceipts: "Read Receipts",
+        rewindSwipe: "Rewind Last Swipe",
+        profileBoosts: "Profile Boosts"
+      }
+    },
+    landingExtra: {
+      goToApp: "Go to App →",
+      welcomeBackGoToApp: "Welcome Back! Go to App",
+      joinCommunity: "Join the Community — It's Free",
+      freeToJoin: "100% Free to join",
+      noCreditCard: "No credit card required",
+      twoMinSetup: "2 min setup",
+      liveCount: "{count} people exploring profiles right now",
+      founderBonus: "Founding Member Bonus:",
+      founderBonusDesc: "Sign up now and get Premium features FREE for {duration}!",
+      usaCanada: "Currently available in USA & Canada",
+      plusMembers: "+10,000 members",
+      connectCulture: "Connect with your community and culture",
+      newMatch: "New Match! 💕",
+      matchPercent: "94% Match 🎯",
+      justJoined: "{name} just joined!",
+      testimonials: {
+        badge: "Real Stories, Real Couples",
+        title: "They Almost Didn't Sign Up...",
+        subtitle: "Every love story starts with a single decision. These couples took the leap.",
+        yourStory: "Your story could be next...",
+        joinFree: "Join the Community — Free",
+        quote1: "I almost didn't sign up. I'd been disappointed by other apps. But Afrinnect was different - Kwame understood my values from day one. We're planning our traditional wedding next month!",
+        detail1: "Connected through shared Igbo heritage",
+        quote2: "I was skeptical about dating apps. My friend convinced me to try Afrinnect for just one week. I met Malik on day 3. Best decision I ever made.",
+        detail2: "Bonded over East African culture",
+        quote3: "Other apps made me feel invisible. On Afrinnect, I felt celebrated. David messaged me about my bio mentioning Ubuntu philosophy - we talked for 6 hours that first night.",
+        detail3: "Matched through shared values"
+      },
+      howItWorksSubtitle: "Getting started is simple",
+      ctaEmotional: "Somewhere out there, someone is waiting to meet you",
+      ctaTitle: "Your People Are Waiting",
+      ctaDesc: "Every day you wait is a day you could be connecting with people who share your culture, heritage, and vision for the future.",
+      ctaLive: "{count} members active now",
+      joinAfrinnect: "Join Afrinnect — Free",
+      free: "✓ 100% Free",
+      twoMinSignup: "✓ 2 min signup",
+      cancelAnytime: "✓ Cancel anytime",
+      openAfrinnect: "Open Afrinnect",
+      joinMembers: "Join {count}+ members • Takes 2 minutes",
+      footerPrivacy: "Privacy Policy",
+      footerTerms: "Terms of Service",
+      footerContact: "Contact us:",
+      footerRights: "All rights reserved.",
+      footerTrademark: "Afrinnect and the Afrinnect logo are trademarks of Afrinnect. Unauthorized use is prohibited."
     }
   },
   fr: {
@@ -1450,6 +1602,158 @@ export const translations = {
         timestamp: "Horodatage",
         ipAddress: "Adresse IP"
       }
+    },
+    engagement: {
+      chatReminder: "Votre conversation avec {name} est au point mort 💬",
+      chatReminderTry: "Essayez :",
+      dailyReturn: {
+        newPeople: "De nouvelles personnes vous attendent aujourd'hui ! 🔥",
+        newPeopleSub: "Des profils fraîchement ajoutés",
+        streak: "Série de {count} jours ! Vous êtes en feu ! 🔥",
+        streakSub: "Continuez pour une visibilité bonus",
+        newLike: "Quelqu'un a aimé votre profil ! 👀",
+        newLikeSub: "Ne le faites pas attendre",
+        days: "jours",
+        completeForMatches: "🔥 Complétez pour plus de matchs",
+        almostThere: "✨ Presque terminé !"
+      },
+      liveActivity: {
+        matched: "{name1} vient de matcher avec {name2}",
+        joined: "Quelqu'un vient de rejoindre depuis {city}",
+        online: "{count} personnes en ligne près de vous",
+        newMatch: "Un nouveau match à {city} en ce moment",
+        matchesToday: "Les gens à {city} ont eu {count} matchs aujourd'hui",
+        matchesHour: "{name} a eu {count} matchs cette heure",
+        completeTip: "Les profils complets reçoivent 5x plus de matchs",
+        swiping: "{count} personnes swipent à {city} en ce moment"
+      },
+      matchUrgency: {
+        hot: "Dites bonjour — en ligne maintenant 🔥",
+        warm: "En attente de votre message…",
+        urgent: "Ne manquez pas cette connexion — expire bientôt ⏳"
+      },
+      peopleLikeYou: {
+        interested: "{count} {noun} intéressé(e)s par vous",
+        personIs: "personne est",
+        peopleAre: "personnes sont",
+        tapToSee: "Appuyez pour voir qui",
+        upgradeToSee: "Passez Premium pour voir",
+        seeWhoLikes: "Voir qui vous aime",
+        unlockToSee: "Débloquer pour voir"
+      },
+      profileCompletion: {
+        percent: "Votre profil est complet à {pct}%",
+        addPhoto: "Ajouter une photo de profil",
+        writeBio: "Écrire une bio",
+        selectInterests: "Sélectionner des intérêts",
+        addPhotos: "Ajouter 3+ photos",
+        setLocation: "Définir votre localisation",
+        setGoal: "Définir votre objectif relationnel"
+      },
+      profileViews: {
+        viewed: "{count} {noun} ont consulté votre profil aujourd'hui 👀",
+        person: "personne",
+        people: "personnes",
+        tapToSee: "Appuyez pour voir qui",
+        upgradeToSee: "Passez Premium pour voir qui regarde"
+      },
+      newMatchToast: {
+        title: "Vous avez un nouveau match ! 🔥",
+        likedBack: "{name} vous a aimé en retour",
+        someoneLikedBack: "Quelqu'un vous a aimé en retour !",
+        sayHi: "Dire bonjour"
+      }
+    },
+    monetization: {
+      blurredLikes: {
+        liked: "{count} {noun} vous ont aimé !",
+        person: "personne",
+        people: "personnes",
+        waiting: "Ils attendent que vous les aimiez en retour 💕",
+        reveal: "Révéler qui vous aime"
+      },
+      activitySummary: {
+        peopleLikeYou: "Personnes qui vous aiment",
+        seeWho: "Voir qui"
+      },
+      trialExpiry: {
+        ended: "Votre essai est terminé",
+        upgradeToKeep: "Passez Premium pour conserver vos avantages",
+        upgrade: "Passer Premium",
+        endsIn: "L'essai se termine dans {hours} heures",
+        dontLose: "Ne perdez pas vos fonctionnalités premium",
+        upgradeNow: "Passer Premium"
+      },
+      messagePreview: {
+        newMessage: "Nouveau message",
+        upgradeToRead: "Passez Premium pour lire le message"
+      },
+      likesCounter: {
+        unlimited: "Illimité",
+        likes: "likes"
+      },
+      socialProof: {
+        upgradedToday: "{count} personnes ont upgrader aujourd'hui",
+        justMatched: "vient de matcher après l'upgrade",
+        upgradedElite: "est passé à Elite",
+        foundMatch: "a trouvé son match aujourd'hui",
+        gotLikes: "a reçu 5 nouveaux likes après l'upgrade",
+        limitedTime: "🔥 Offre limitée : essai gratuit de 3 jours bientôt terminé"
+      },
+      premiumFeatures: {
+        unlimitedLikes: "Likes illimités",
+        seeWhoLikes: "Voir qui vous aime",
+        advancedFilters: "Filtres avancés",
+        readReceipts: "Accusés de lecture",
+        rewindSwipe: "Annuler le swipe",
+        profileBoosts: "Boosts de profil"
+      }
+    },
+    landingExtra: {
+      goToApp: "Aller à l'appli →",
+      welcomeBackGoToApp: "Bon retour ! Accéder à l'appli",
+      joinCommunity: "Rejoindre la communauté — C'est gratuit",
+      freeToJoin: "100% Gratuit",
+      noCreditCard: "Sans carte de crédit",
+      twoMinSetup: "2 min d'inscription",
+      liveCount: "{count} personnes explorent des profils en ce moment",
+      founderBonus: "Bonus Membre Fondateur :",
+      founderBonusDesc: "Inscrivez-vous maintenant et obtenez les fonctionnalités Premium GRATUITEMENT pendant {duration} !",
+      usaCanada: "Actuellement disponible aux USA et au Canada",
+      plusMembers: "+10 000 membres",
+      connectCulture: "Connectez-vous avec votre communauté et votre culture",
+      newMatch: "Nouveau Match ! 💕",
+      matchPercent: "94% de compatibilité 🎯",
+      justJoined: "{name} vient de rejoindre !",
+      testimonials: {
+        badge: "Histoires vraies, vrais couples",
+        title: "Ils ont failli ne pas s'inscrire...",
+        subtitle: "Chaque histoire d'amour commence par une décision. Ces couples ont fait le pas.",
+        yourStory: "Votre histoire pourrait être la prochaine...",
+        joinFree: "Rejoindre la communauté — Gratuit",
+        quote1: "J'ai failli ne pas m'inscrire. Les autres applis m'avaient déçue. Mais Afrinnect était différent - Kwame a compris mes valeurs dès le premier jour. Nous préparons notre mariage traditionnel le mois prochain !",
+        detail1: "Connectés par leur héritage Igbo",
+        quote2: "J'étais sceptique sur les applis de rencontre. Mon amie m'a convaincue d'essayer Afrinnect une semaine. J'ai rencontré Malik au 3e jour. La meilleure décision de ma vie.",
+        detail2: "Unis par la culture est-africaine",
+        quote3: "Les autres applis me rendaient invisible. Sur Afrinnect, je me suis sentie célébrée. David m'a écrit à propos de ma bio sur la philosophie Ubuntu — on a parlé 6 heures cette première nuit.",
+        detail3: "Matchés grâce à des valeurs partagées"
+      },
+      howItWorksSubtitle: "C'est simple de commencer",
+      ctaEmotional: "Quelque part, quelqu'un attend de vous rencontrer",
+      ctaTitle: "Votre communauté vous attend",
+      ctaDesc: "Chaque jour qui passe est un jour de moins pour connecter avec des personnes qui partagent votre culture, votre héritage et votre vision.",
+      ctaLive: "{count} membres actifs maintenant",
+      joinAfrinnect: "Rejoindre Afrinnect — Gratuit",
+      free: "✓ 100% Gratuit",
+      twoMinSignup: "✓ 2 min d'inscription",
+      cancelAnytime: "✓ Annulez quand vous voulez",
+      openAfrinnect: "Ouvrir Afrinnect",
+      joinMembers: "Rejoignez {count}+ membres • 2 minutes",
+      footerPrivacy: "Politique de confidentialité",
+      footerTerms: "Conditions d'utilisation",
+      footerContact: "Contactez-nous :",
+      footerRights: "Tous droits réservés.",
+      footerTrademark: "Afrinnect et le logo Afrinnect sont des marques déposées d'Afrinnect. Toute utilisation non autorisée est interdite."
     }
   }
 };

@@ -1,13 +1,15 @@
 // @ts-nocheck
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Crown, Clock, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useLanguage } from '@/components/i18n/LanguageContext';
 
 export default function TrialExpiryBanner({ userProfile }) {
+  const { t } = useLanguage();
   const isPremium = userProfile?.is_premium;
   const premiumUntil = userProfile?.premium_until;
   const expiresAt = premiumUntil ? new Date(premiumUntil) : null;
@@ -24,11 +26,11 @@ export default function TrialExpiryBanner({ userProfile }) {
           <Crown className="h-5 w-5 text-amber-600" />
           <AlertDescription className="flex items-center justify-between">
             <div>
-              <p className="font-semibold text-foreground">Your trial has ended</p>
-              <p className="text-sm text-muted-foreground mt-1">Upgrade to keep premium features</p>
+              <p className="font-semibold text-foreground">{t('monetization.trialExpiry.ended')}</p>
+              <p className="text-sm text-muted-foreground mt-1">{t('monetization.trialExpiry.upgradeToKeep')}</p>
             </div>
             <Link to={createPageUrl('PricingPlans')}>
-              <Button className="bg-gradient-to-r from-amber-500 to-amber-600 ml-4"><Sparkles size={16} className="mr-2" /> Upgrade</Button>
+              <Button className="bg-gradient-to-r from-amber-500 to-amber-600 ml-4"><Sparkles size={16} className="mr-2" /> {t('monetization.trialExpiry.upgrade')}</Button>
             </Link>
           </AlertDescription>
         </Alert>
@@ -42,11 +44,11 @@ export default function TrialExpiryBanner({ userProfile }) {
         <Clock className="h-5 w-5 text-primary" />
         <AlertDescription className="flex items-center justify-between">
           <div>
-            <p className="font-semibold text-foreground">Trial ends in {hoursLeft} hours</p>
-            <p className="text-sm text-muted-foreground mt-1">Don't lose your premium features</p>
+            <p className="font-semibold text-foreground">{t('monetization.trialExpiry.endsIn').replace('{hours}', String(hoursLeft))}</p>
+            <p className="text-sm text-muted-foreground mt-1">{t('monetization.trialExpiry.dontLose')}</p>
           </div>
           <Link to={createPageUrl('PricingPlans')}>
-            <Button className="bg-gradient-to-r from-primary to-pink-600 ml-4"><Crown size={16} className="mr-2" /> Upgrade Now</Button>
+            <Button className="bg-gradient-to-r from-primary to-pink-600 ml-4"><Crown size={16} className="mr-2" /> {t('monetization.trialExpiry.upgradeNow')}</Button>
           </Link>
         </AlertDescription>
       </Alert>

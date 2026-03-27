@@ -100,8 +100,8 @@ export default function Landing() {
 
   const stats = [
     { number: "🇺🇸 🇨🇦", label: "USA & Canada" },
-    { number: "24/7", label: "Active Community" },
-    { number: "Free", label: "To Get Started" },
+    { number: "24/7", label: t('landing.stats.members') },
+    { number: t('common.free'), label: t('landing.getStarted') },
     { number: "100%", label: "Culture-Focused" }
   ];
 
@@ -111,24 +111,24 @@ export default function Landing() {
       location: "Met on Afrinnect • Now Engaged",
       image: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/4aa15e12a_image.png",
       secondImage: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/a4c7689a9_image.png",
-      quote: "I almost didn't sign up. I'd been disappointed by other apps. But Afrinnect was different - Kwame understood my values from day one. We're planning our traditional wedding next month!",
-      detail: "Connected through shared Igbo heritage"
+      quote: t('landingExtra.testimonials.quote1'),
+      detail: t('landingExtra.testimonials.detail1')
     },
     {
       name: "Zara & Malik",
       location: "Met on Afrinnect • Together 18 months",
       image: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/4a4914d37_image.png",
       secondImage: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/600f3567c_image.png",
-      quote: "I was skeptical about dating apps. My friend convinced me to try Afrinnect for just one week. I met Malik on day 3. Best decision I ever made.",
-      detail: "Bonded over East African culture"
+      quote: t('landingExtra.testimonials.quote2'),
+      detail: t('landingExtra.testimonials.detail2')
     },
     {
       name: "Thandiwe & David",
       location: "Met on Afrinnect • Married 2024",
       image: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/aa7b7d0ce_image.png",
       secondImage: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/9c6bf76a1_image.png",
-      quote: "Other apps made me feel invisible. On Afrinnect, I felt celebrated. David messaged me about my bio mentioning Ubuntu philosophy - we talked for 6 hours that first night.",
-      detail: "Matched through shared values"
+      quote: t('landingExtra.testimonials.quote3'),
+      detail: t('landingExtra.testimonials.detail3')
     }
   ];
 
@@ -187,7 +187,7 @@ export default function Landing() {
                   variant="ghost" 
                   className="text-white hover:bg-white/20 font-semibold"
                 >
-                  Go to App →
+                  {t('landingExtra.goToApp')}
                 </Button>
               </Link>
             ) : (
@@ -216,7 +216,7 @@ export default function Landing() {
               {recentSignup.name[0]}
             </div>
             <div>
-              <p className="text-sm font-semibold text-gray-900">{recentSignup.name} just joined!</p>
+              <p className="text-sm font-semibold text-gray-900">{t('landingExtra.justJoined').replace('{name}', recentSignup.name)}</p>
               <p className="text-xs text-gray-500">{recentSignup.location} • {recentSignup.time}</p>
             </div>
           </motion.div>
@@ -243,7 +243,7 @@ export default function Landing() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
               </span>
-              <span className="text-white/90 text-sm font-medium">{liveCount} people exploring profiles right now</span>
+              <span className="text-white/90 text-sm font-medium">{t('landingExtra.liveCount').replace('{count}', String(liveCount))}</span>
             </motion.div>
 
             {/* Logo */}
@@ -256,26 +256,26 @@ export default function Landing() {
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-              Your Community<br />
+              {t('landing.title')}<br />
               <span className="bg-gradient-to-r from-amber-400 to-amber-200 bg-clip-text text-transparent">
-                Is Already Here
+                {t('landing.titleHighlight')}
               </span>
             </h1>
             <p className="text-lg md:text-xl text-white/90 mb-4 max-w-xl">
-              The community platform built for the African diaspora. Connect with people who truly share your culture, values, and heritage.
+              {t('landing.subtitle')}
             </p>
             
             {/* Geographic notice */}
             <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-lg px-4 py-2 mb-4">
               <span className="text-xl">🇺🇸 🇨🇦</span>
-              <span className="text-white/90 text-sm">Currently available in USA & Canada</span>
+              <span className="text-white/90 text-sm">{t('landingExtra.usaCanada')}</span>
             </div>
             
             {/* Urgency Message */}
             {founderEnabled && (
             <div className="bg-amber-500/20 border border-amber-400/30 rounded-xl p-4 mb-6">
               <p className="text-amber-200 text-sm font-medium">
-                🎉 <strong>Founding Member Bonus:</strong> Sign up now and get Premium features FREE for {founderTrialDays >= 60 ? `${Math.round(founderTrialDays / 30)} months` : `${founderTrialDays} days`}!
+                🎉 <strong>{t('landingExtra.founderBonus')}</strong> {t('landingExtra.founderBonusDesc').replace('{duration}', founderTrialDays >= 60 ? `${Math.round(founderTrialDays / 30)} months` : `${founderTrialDays} days`)}
               </p>
             </div>
             )}
@@ -288,7 +288,7 @@ export default function Landing() {
                     size="lg" 
                     className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-10 py-6 text-lg rounded-full shadow-2xl"
                   >
-                    Welcome Back! Go to App
+                    {t('landingExtra.welcomeBackGoToApp')}
                     <ArrowRight size={20} className="ml-2" />
                   </Button>
                 </Link>
@@ -299,8 +299,8 @@ export default function Landing() {
                     size="lg" 
                     className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-10 py-7 text-lg rounded-full shadow-2xl transform hover:scale-105 transition-all"
                   >
-                    Join the Community — It's Free
-                    <ArrowRight size={20} className="ml-2" />
+                     {t('landingExtra.joinCommunity')}
+                     <ArrowRight size={20} className="ml-2" />
                   </Button>
                 </>
               )}
@@ -309,15 +309,15 @@ export default function Landing() {
             <div className="flex flex-wrap items-center gap-4 text-white/80 text-sm">
               <div className="flex items-center gap-2">
                 <CheckCircle size={16} className="text-green-400" />
-                <span>100% Free to join</span>
+                <span>{t('landingExtra.freeToJoin')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle size={16} className="text-green-400" />
-                <span>No credit card required</span>
+                <span>{t('landingExtra.noCreditCard')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle size={16} className="text-green-400" />
-                <span>2 min setup</span>
+                <span>{t('landingExtra.twoMinSetup')}</span>
               </div>
             </div>
           </motion.div>
@@ -348,10 +348,10 @@ export default function Landing() {
                         className="w-10 h-10 rounded-full border-2 border-white object-cover"
                       />
                     ))}
-                  </div>
-                  <span className="text-sm font-medium">+10,000 members</span>
+                   </div>
+                  <span className="text-sm font-medium">{t('landingExtra.plusMembers')}</span>
                 </div>
-                <p className="text-lg font-semibold">Connect with your community and culture</p>
+                <p className="text-lg font-semibold">{t('landingExtra.connectCulture')}</p>
               </div>
             </div>
 
@@ -369,8 +369,8 @@ export default function Landing() {
                   className="w-12 h-12 rounded-full object-cover"
                 />
                 <div>
-                  <p className="font-bold text-gray-900 text-sm">New Match! 💕</p>
-                  <p className="text-xs text-gray-500">Kwame from Ghana</p>
+                  <p className="font-bold text-gray-900 text-sm">{t('landingExtra.newMatch')}</p>
+                  <p className="text-xs text-gray-500">Kwame — Ghana</p>
                 </div>
               </div>
             </motion.div>
@@ -388,8 +388,8 @@ export default function Landing() {
                   className="w-12 h-12 rounded-full object-cover"
                 />
                 <div>
-                  <p className="font-bold text-gray-900 text-sm">94% Match 🎯</p>
-                  <p className="text-xs text-gray-500">Zara from Kenya</p>
+                  <p className="font-bold text-gray-900 text-sm">{t('landingExtra.matchPercent')}</p>
+                  <p className="text-xs text-gray-500">Zara — Kenya</p>
                 </div>
               </div>
             </motion.div>
@@ -459,13 +459,13 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <span className="inline-block bg-purple-100 text-purple-700 text-sm font-semibold px-4 py-1 rounded-full mb-4">
-              Real Stories, Real Couples
+              {t('landingExtra.testimonials.badge')}
             </span>
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              They Almost Didn't Sign Up...
+              {t('landingExtra.testimonials.title')}
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Every love story starts with a single decision. These couples took the leap.
+              {t('landingExtra.testimonials.subtitle')}
             </p>
           </div>
 
@@ -539,13 +539,13 @@ export default function Landing() {
             
             {/* CTA after testimonials */}
             <div className="text-center mt-10">
-              <p className="text-gray-600 mb-4">Your story could be next...</p>
+              <p className="text-gray-600 mb-4">{t('landingExtra.testimonials.yourStory')}</p>
               <Button 
                 onClick={handleGetStarted}
                 size="lg" 
                 className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-8 py-6 rounded-full shadow-xl"
               >
-                Join the Community — Free
+                {t('landingExtra.testimonials.joinFree')}
                 <ArrowRight size={18} className="ml-2" />
               </Button>
             </div>
@@ -562,7 +562,7 @@ export default function Landing() {
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
               {t('landing.howItWorks')}
             </h2>
-            <p className="text-xl text-gray-600">Getting started is simple</p>
+            <p className="text-xl text-gray-600">{t('landingExtra.howItWorksSubtitle')}</p>
           </div>
 
           <div className="grid md:grid-cols-4 gap-8">
@@ -642,12 +642,12 @@ export default function Landing() {
           </h2>
           <div className="grid md:grid-cols-3 gap-6 mb-10">
             {[
-              "Unlimited Likes",
-              "See Who Likes You",
-              "Advanced Filters",
-              "Read Receipts",
-              "Rewind Last Swipe",
-              "Profile Boosts"
+              t('monetization.premiumFeatures.unlimitedLikes'),
+              t('monetization.premiumFeatures.seeWhoLikes'),
+              t('monetization.premiumFeatures.advancedFilters'),
+              t('monetization.premiumFeatures.readReceipts'),
+              t('monetization.premiumFeatures.rewindSwipe'),
+              t('monetization.premiumFeatures.profileBoosts')
             ].map((feature, idx) => (
               <div key={idx} className="flex items-center justify-center gap-2 text-gray-700">
                 <CheckCircle size={20} className="text-green-600" />
@@ -670,13 +670,13 @@ export default function Landing() {
           >
             {/* Emotional Hook */}
             <p className="text-amber-300 text-lg mb-4 font-medium">
-              Somewhere out there, someone is waiting to meet you
+              {t('landingExtra.ctaEmotional')}
             </p>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Your People Are Waiting
+              {t('landingExtra.ctaTitle')}
             </h2>
             <p className="text-xl text-white/90 mb-4 max-w-2xl mx-auto">
-              Every day you wait is a day you could be connecting with people who share your culture, heritage, and vision for the future.
+              {t('landingExtra.ctaDesc')}
             </p>
             
             {/* Scarcity/Urgency */}
@@ -685,7 +685,7 @@ export default function Landing() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
               </span>
-              <span className="text-white/90 text-sm">{liveCount} members active now</span>
+              <span className="text-white/90 text-sm">{t('landingExtra.ctaLive').replace('{count}', String(liveCount))}</span>
             </div>
             
             <div className="flex flex-col items-center gap-4">
@@ -694,13 +694,13 @@ export default function Landing() {
                 size="lg" 
                 className="bg-white text-purple-900 hover:bg-gray-100 px-12 py-7 text-xl rounded-full shadow-2xl transform hover:scale-105 transition-all font-bold"
               >
-                Join Afrinnect — Free
+                {t('landingExtra.joinAfrinnect')}
                 <ArrowRight size={24} className="ml-2" />
               </Button>
               <div className="flex items-center gap-4 text-white/70 text-sm mt-2">
-                <span>✓ 100% Free</span>
-                <span>✓ 2 min signup</span>
-                <span>✓ Cancel anytime</span>
+                <span>{t('landingExtra.free')}</span>
+                <span>{t('landingExtra.twoMinSignup')}</span>
+                <span>{t('landingExtra.cancelAnytime')}</span>
               </div>
             </div>
           </motion.div>
@@ -712,7 +712,7 @@ export default function Landing() {
         {isLoggedIn ? (
           <Link to={createPageUrl('Home')} className="block">
             <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white rounded-full py-6 text-base font-bold">
-              Open Afrinnect
+              {t('landingExtra.openAfrinnect')}
             </Button>
           </Link>
         ) : (
@@ -721,11 +721,11 @@ export default function Landing() {
               onClick={handleGetStarted}
               className="w-full bg-gradient-to-r from-purple-600 to-amber-600 text-white rounded-full py-6 text-base font-bold shadow-lg"
             >
-              Join the Community — Free
+              {t('landingExtra.testimonials.joinFree')}
               <ArrowRight size={18} className="ml-2" />
             </Button>
             <p className="text-center text-xs text-gray-500">
-              Join {liveCount}+ members • Takes 2 minutes
+              {t('landingExtra.joinMembers').replace('{count}', String(liveCount))}
             </p>
           </div>
         )}
@@ -739,18 +739,18 @@ export default function Landing() {
             {t('landing.footer.tagline')}
           </p>
           <div className="flex justify-center gap-6 mt-6 text-sm text-gray-400">
-            <Link to={createPageUrl('Privacy')} className="hover:text-white" id="privacy-policy">Privacy Policy</Link>
-            <Link to={createPageUrl('Terms')} className="hover:text-white">Terms of Service</Link>
+            <Link to={createPageUrl('Privacy')} className="hover:text-white" id="privacy-policy">{t('landingExtra.footerPrivacy')}</Link>
+            <Link to={createPageUrl('Terms')} className="hover:text-white">{t('landingExtra.footerTerms')}</Link>
             <Link to={createPageUrl('CommunityGuidelines')} className="hover:text-white">{t('landing.footer.guidelines')}</Link>
           </div>
           {/* Contact & Copyright */}
           <div className="mt-8 pt-8 border-t border-gray-800">
             <p className="text-sm text-gray-400 mb-2">
-              Contact us: <a href="mailto:Support@afrinnect.com" className="text-amber-400 hover:text-amber-300">Support@afrinnect.com</a>
+              {t('landingExtra.footerContact')} <a href="mailto:Support@afrinnect.com" className="text-amber-400 hover:text-amber-300">Support@afrinnect.com</a>
             </p>
-            <p className="text-sm text-gray-400">© {new Date().getFullYear()} Afrinnect. All rights reserved.</p>
+            <p className="text-sm text-gray-400">© {new Date().getFullYear()} Afrinnect. {t('landingExtra.footerRights')}</p>
             <p className="text-xs text-gray-500 mt-2">
-              Afrinnect and the Afrinnect logo are trademarks of Afrinnect. Unauthorized use is prohibited.
+              {t('landingExtra.footerTrademark')}
             </p>
           </div>
         </div>
