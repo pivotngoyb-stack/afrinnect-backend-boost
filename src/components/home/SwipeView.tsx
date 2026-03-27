@@ -1,8 +1,7 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, RotateCcw, Users } from 'lucide-react';
+import { Globe, RotateCcw } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import ProfileCard from '@/components/profile/ProfileCard';
 import { ProfileCardSkeleton } from '@/components/shared/SkeletonLoader';
@@ -70,7 +69,7 @@ export default function SwipeView({
         </Button>
       )}
 
-      <AnimatePresence mode="wait">
+      <div className="flex-1 flex items-center justify-center w-full">
         {hasMoreProfiles && currentProfile ? (
           <ProfileCard
             key={currentProfile.id}
@@ -106,7 +105,7 @@ export default function SwipeView({
             </div>
           </div>
         )}
-      </AnimatePresence>
+      </div>
     </div>
   );
 }
