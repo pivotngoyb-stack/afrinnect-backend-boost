@@ -5,7 +5,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import confetti from 'canvas-confetti';
+// Lazy-load confetti to reduce initial bundle
+const lazyConfetti = () => import('canvas-confetti').then(m => m.default);
 import { usePerformanceMonitor } from '@/components/shared/usePerformanceMonitor';
 import { useConversionTracker, CONVERSION_EVENTS } from '@/components/shared/ConversionTracker';
 import { hasAccess } from '@/components/shared/TierGate';
@@ -65,7 +66,7 @@ export default function Home() {
     const timer = setTimeout(() => {
       queryClient.prefetchQuery({
         queryKey: ['who-likes-me', myProfile.id],
-        queryFn: () => filterRecords('likes', { liked_id: myProfile.id, is_seen: false }, '-created_at', 50),
+        queryFn: () => filterRecords('likes', { liked_id: myProfile.id, is_seen: false }, '-created_at', 50, 'id,liker_id'),
         staleTime: 120000
       });
     }, 2000);
@@ -77,13 +78,22 @@ export default function Home() {
     queryFn: async () => {
       if (!myProfile?.id) return { likes: 0, views: 0 };
       try {
-        const likes = await filterRecords('likes', { liked_id: myProfile.id, is_seen: false });
+        // OPTIMIZED: Use count queries instead of fetching all records
+        const { count: likesCount } = await supabase
+          .from('likes')
+          .select('id', { count: 'exact', head: true })
+          .eq('liked_id', myProfile.id)
+          .eq('is_seen', false);
         let views = 0;
         try {
-          const viewData = await filterRecords('profile_views', { viewed_profile_id: myProfile.id, is_seen: false });
-          views = viewData?.length || 0;
+          const { count: viewsCount } = await supabase
+            .from('profile_views')
+            .select('id', { count: 'exact', head: true })
+            .eq('viewed_profile_id', myProfile.id)
+            .eq('is_seen', false);
+          views = viewsCount || 0;
         } catch { /* table may not exist yet */ }
-        return { likes: likes.length, views };
+        return { likes: likesCount || 0, views };
       } catch { return { likes: 0, views: 0 }; }
     },
     enabled: !!myProfile?.id,
@@ -183,10 +193,11 @@ export default function Home() {
     queryKey: ['discovery-profiles', filters, discoveryMode, myProfile?.id],
     queryFn: async () => {
       try {
-        // Use direct Supabase query for reliable profile fetching
+        // OPTIMIZED: Select only fields needed for discovery cards
+        const DISCOVERY_FIELDS = 'id,user_id,display_name,primary_photo,photos,birth_date,age,gender,current_country,current_city,country_of_origin,tribe,ethnicity,ethnic_group,culture,bio,about_me,interests,cultural_values,relationship_goal,religion,profession,education,languages,location,is_active,is_banned,is_seed,is_verified,is_premium,subscription_tier,verification_status,blocked_users,looking_for,last_active,liked_by_count,likes_count,profile_views_count,voice_intro_url,prompts,community_name';
         const { data: allProfiles, error: profilesError } = await supabase
           .from('user_profiles')
-          .select('*')
+          .select(DISCOVERY_FIELDS)
           .eq('is_active', true)
           .eq('is_banned', false)
           .order('created_at', { ascending: false })
@@ -198,8 +209,8 @@ export default function Home() {
         }
 
         const [myPasses, myLikes] = await Promise.all([
-          filterRecords('passes', { passer_id: myProfile.id }, '-created_at', 500).catch((e) => { console.warn('Passes fetch failed:', e); return []; }),
-          filterRecords('likes', { liker_id: myProfile.id }, '-created_at', 500).catch((e) => { console.warn('Likes fetch failed:', e); return []; }),
+          filterRecords('passes', { passer_id: myProfile.id }, '-created_at', 500, 'id,passed_id').catch((e) => { console.warn('Passes fetch failed:', e); return []; }),
+          filterRecords('likes', { liker_id: myProfile.id }, '-created_at', 500, 'id,liked_id').catch((e) => { console.warn('Likes fetch failed:', e); return []; }),
         ]);
 
         const passedIds = new Set(myPasses.map(p => p.passed_id));
@@ -419,7 +430,7 @@ export default function Home() {
     },
     onSuccess: (data, variables) => {
       if (data?.isMatch) {
-        confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 }, colors: ['#ff6b9d', '#c084fc', '#f59e0b', '#ef4444'] });
+        lazyConfetti().then(confetti => confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 }, colors: ['#ff6b9d', '#c084fc', '#f59e0b', '#ef4444'] }));
         if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
         setShowMatchCelebration(true);
         setMatchCount(prev => prev + 1);
@@ -560,9 +571,10 @@ export default function Home() {
   const currentProfile = profiles[currentIndex];
   const hasMoreProfiles = currentIndex < profiles.length;
 
+  const filtersKey = JSON.stringify(filters);
   useEffect(() => {
     setCurrentIndex(0);
-  }, [discoveryMode, myProfile?.id, JSON.stringify(filters)]);
+  }, [discoveryMode, myProfile?.id, filtersKey]);
 
   useEffect(() => {
     if (profiles.length === 0) {

@@ -109,7 +109,7 @@ export default function Matches() {
     retryDelay: 5000
   });
 
-  // Fetch profiles for matches
+  // Fetch profiles for matches - OPTIMIZED: batch query instead of N+1
   const { data: matchedProfiles = [] } = useQuery({
     queryKey: ['matched-profiles', matchesData.map(m => m.id).join(',')],
     queryFn: async () => {
@@ -120,20 +120,18 @@ export default function Matches() {
           m.user1_id === myProfile.id ? m.user2_id : m.user1_id
         );
         
-        const profiles = await Promise.all(
-          profileIds.map(async (id) => {
-            try {
-              return await filterRecords('user_profiles', { id });
-            } catch (error) {
-              console.error(`Failed to fetch profile ${id}:`, error);
-              return [];
-            }
-          })
-        );
+        // OPTIMIZED: Single batch query with .in() instead of N individual queries
+        const MATCH_PROFILE_FIELDS = 'id,user_id,display_name,primary_photo,photos,subscription_tier,is_verified,verification_status,current_city,current_country,country_of_origin,last_active,blocked_users';
+        const { data: profiles, error } = await supabase
+          .from('user_profiles')
+          .select(MATCH_PROFILE_FIELDS)
+          .in('id', profileIds);
+        
+        if (error) throw error;
         
         // Build a map of profile ID -> profile for safe lookup
         const profileMap = new Map();
-        profiles.flat().forEach(p => { if (p) profileMap.set(p.id, p); });
+        (profiles || []).forEach(p => { if (p) profileMap.set(p.id, p); });
         
         // Associate each match with its profile by partner ID
         return matchesData
@@ -164,7 +162,7 @@ export default function Matches() {
         
         // Get all likes and matches in parallel (only 2 API calls)
         const [allLikes, allMatches] = await Promise.all([
-          filterRecords('likes', { liked_id: myProfile.id }, '-created_date', 50),
+          filterRecords('likes', { liked_id: myProfile.id }, '-created_date', 50, 'id,liker_id,is_super_like,created_at'),
           (async () => {
             // Use direct Supabase query with proper OR grouping
             const { data } = await supabase
@@ -200,71 +198,75 @@ export default function Matches() {
     retryDelay: 5000
   });
 
-  // Fetch profiles of people who liked me - OPTIMIZED
+  // Fetch profiles of people who liked me - OPTIMIZED: batch query
   const { data: likerProfiles = [] } = useQuery({
-    queryKey: ['liker-profiles', likesReceived],
+    queryKey: ['liker-profiles', likesReceived.map(l => l.liker_id).join(',')],
     queryFn: async () => {
       try {
         if (!likesReceived.length) return [];
-        // OPTIMIZED: Fetch only first 10
-        const limitedLikes = likesReceived.slice(0, 10);
-        const profiles = await Promise.all(
-          limitedLikes.map(async (like) => {
-            try {
-              const result = await filterRecords('user_profiles', { id: like.liker_id });
-              return result[0];
-            } catch (error) {
-              console.error(`Failed to fetch liker profile ${like.liker_id}:`, error);
-              return null;
-            }
-          })
-        );
-        return profiles.filter(Boolean);
+        const likerIds = likesReceived.slice(0, 10).map(l => l.liker_id);
+        const LIKER_FIELDS = 'id,user_id,display_name,primary_photo,photos,subscription_tier,is_verified,verification_status,current_city,current_country';
+        const { data: profiles, error } = await supabase
+          .from('user_profiles')
+          .select(LIKER_FIELDS)
+          .in('id', likerIds);
+        if (error) throw error;
+        return (profiles || []).filter(Boolean);
       } catch (error) {
         console.error('Failed to fetch liker profiles:', error);
         return [];
       }
     },
     enabled: likesReceived.length > 0,
-    staleTime: 600000, // OPTIMIZED: 10 minutes
+    staleTime: 600000,
     retry: 1,
     retryDelay: 5000
   });
 
-  // Fetch messages and unread counts for each match
+  // Fetch messages and unread counts — OPTIMIZED: 2 batch queries instead of N*2
   const { data: conversationData = {} } = useQuery({
     queryKey: ['conversations-data', matchesData.map(m => m.id).join(',')],
     queryFn: async () => {
       try {
-        const data = {};
-        // Batch fetch messages to reduce API calls
-        await Promise.all(
-          matchesData.slice(0, 50).map(async (match) => {
-            try {
-              // Get last message
-              const messages = await filterRecords('messages', 
-                { match_id: match.id },
-                '-created_date',
-                1
-              );
-              
-              // Count unread messages
-              const unreadMessages = await filterRecords('messages', {
-                match_id: match.id,
-                receiver_id: myProfile.id,
-                is_read: false
-              });
-              
-              data[match.id] = {
-                lastMessage: messages[0] || null,
-                unreadCount: unreadMessages.length
-              };
-            } catch (error) {
-              console.error(`Failed to fetch data for match ${match.id}:`, error);
-            }
-          })
-        );
-        
+        const matchIds = matchesData.slice(0, 50).map(m => m.id);
+        if (!matchIds.length) return {};
+
+        // Batch fetch: last message per match + unread counts in 2 queries
+        const [lastMsgsResult, unreadResult] = await Promise.all([
+          // Get recent messages for all matches at once
+          supabase
+            .from('messages')
+            .select('id,match_id,content,message_type,sender_id,created_at')
+            .in('match_id', matchIds)
+            .order('created_at', { ascending: false })
+            .limit(matchIds.length * 2), // rough: 2 per match to dedupe
+          // Get unread messages for current user
+          supabase
+            .from('messages')
+            .select('id,match_id')
+            .in('match_id', matchIds)
+            .eq('receiver_id', myProfile.id)
+            .eq('is_read', false)
+        ]);
+
+        const data: Record<string, any> = {};
+        // Initialize all matches
+        matchIds.forEach(id => { data[id] = { lastMessage: null, unreadCount: 0 }; });
+
+        // Process last messages — pick the latest per match
+        (lastMsgsResult.data || []).forEach(msg => {
+          if (!data[msg.match_id]?.lastMessage) {
+            data[msg.match_id] = { ...data[msg.match_id], lastMessage: { ...msg, created_date: msg.created_at } };
+          }
+        });
+
+        // Count unreads per match
+        (unreadResult.data || []).forEach(msg => {
+          if (data[msg.match_id]) {
+            data[msg.match_id].unreadCount = (data[msg.match_id].unreadCount || 0) + 1;
+          }
+        });
+
         return data;
       } catch (error) {
         console.error('Failed to fetch conversation data:', error);
@@ -272,7 +274,7 @@ export default function Matches() {
       }
     },
     enabled: matchesData.length > 0 && !!myProfile,
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 30000,
     staleTime: 15000,
     retry: 1,
     retryDelay: 5000

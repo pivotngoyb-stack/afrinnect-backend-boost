@@ -78,11 +78,11 @@ const addLegacyAliases = (rows: any[]): any[] =>
 /**
  * List records from a table with sorting and limit.
  */
-export async function listRecords(table: string, sort = '-created_at', limit = 50) {
+export async function listRecords(table: string, sort = '-created_at', limit = 50, fields?: string) {
   const { column, ascending } = parseSort(sort);
   const { data, error } = await db
     .from(table)
-    .select('*')
+    .select(fields || '*')
     .order(column, { ascending })
     .limit(limit);
   if (error) throw error;
@@ -96,11 +96,12 @@ export async function filterRecords(
   table: string,
   filters: Record<string, any>,
   sort = '-created_at',
-  limit = 50
+  limit = 50,
+  fields?: string
 ) {
   const { column, ascending } = parseSort(sort);
   const mapped = mapFilterKeys(filters);
-  let query = db.from(table).select('*');
+  let query = db.from(table).select(fields || '*');
 
   if (mapped.$or && Array.isArray(mapped.$or)) {
     const orConditions = mapped.$or.map((cond: Record<string, any>) =>

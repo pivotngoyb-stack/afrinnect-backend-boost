@@ -10,6 +10,8 @@ import { useConversionTracker, CONVERSION_EVENTS } from '@/components/shared/Con
 export function useUpgradePrompts(userProfile) {
   const [prompt, setPrompt] = useState(null);
   const { trackEvent } = useConversionTracker();
+  const trackEventRef = React.useRef(trackEvent);
+  trackEventRef.current = trackEvent;
 
   useEffect(() => {
     if (!userProfile || userProfile.subscription_tier !== 'free') return;
@@ -32,9 +34,9 @@ export function useUpgradePrompts(userProfile) {
     };
     for (const [key, trigger] of Object.entries(triggers)) {
       const result = trigger();
-      if (result) { setPrompt(result); trackEvent('upgrade_prompt_shown', { trigger: key }); break; }
+      if (result) { setPrompt(result); trackEventRef.current('upgrade_prompt_shown', { trigger: key }); break; }
     }
-  }, [userProfile, trackEvent]);
+  }, [userProfile?.subscription_tier, userProfile?.daily_likes_count]);
 
   return { prompt, dismissPrompt: () => setPrompt(null) };
 }
