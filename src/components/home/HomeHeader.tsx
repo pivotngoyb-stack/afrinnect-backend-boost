@@ -1,13 +1,13 @@
 // @ts-nocheck
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Grid3X3, Layers, Globe, MapPin, Crown, Heart as HeartIcon } from 'lucide-react';
+import { Globe, MapPin, Crown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Logo from '@/components/shared/Logo';
 import FilterDrawer from '@/components/discovery/FilterDrawer';
 import LikesCounter from '@/components/monetization/LikesCounter';
-import SuperLikeCounter from '@/components/monetization/SuperLikeCounter';
+
 import NotificationBell from '@/components/shared/NotificationBell';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '@/components/i18n/LanguageContext';
@@ -54,22 +54,8 @@ export default function HomeHeader({
               </TabsList>
             </Tabs>
 
-            <Tabs value={viewMode} onValueChange={setViewMode}>
-              <TabsList className="bg-muted h-8">
-                <TabsTrigger value="swipe" className="h-7 px-2"><Layers size={16} /></TabsTrigger>
-                <TabsTrigger value="grid" className="h-7 px-2"><Grid3X3 size={16} /></TabsTrigger>
-              </TabsList>
-            </Tabs>
-
-            <FilterDrawer
-              filters={filters}
-              onFiltersChange={setFilters}
-              isPremium={myProfile?.is_premium}
-              userTier={myProfile?.subscription_tier || 'free'}
-            />
 
             <LikesCounter userProfile={myProfile} />
-            <SuperLikeCounter userProfile={myProfile} />
 
             <NotificationBell />
             <ActivityDrawer userProfile={myProfile} />
