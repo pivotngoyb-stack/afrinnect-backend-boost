@@ -13,10 +13,10 @@ interface GridViewProps {
   handleSuperLike: (p: any) => void;
 }
 
-export default function GridView({
+const GridView = React.forwardRef<HTMLDivElement, GridViewProps>(function GridView({
   profiles, myProfile, selectedProfile, setSelectedProfile,
   handleLike, handleSuperLike,
-}: GridViewProps) {
+}, ref) {
   return (
     <>
       <div className="flex-1 overflow-y-auto py-4">
@@ -66,4 +66,6 @@ export default function GridView({
       </AnimatePresence>
     </>
   );
-}
+});
+
+export default GridView;
