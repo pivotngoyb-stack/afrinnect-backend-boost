@@ -34,6 +34,9 @@ import PeopleLikeYouTeaser from '@/components/engagement/PeopleLikeYouTeaser';
 import NewMatchToast from '@/components/engagement/NewMatchToast';
 import ContextualUpgradeBanner from '@/components/monetization/ContextualUpgradeBanner';
 import BlurredLikesTeaser from '@/components/monetization/BlurredLikesTeaser';
+import ProfileViewerToast from '@/components/monetization/ProfileViewerToast';
+import FreeTrialCountdown from '@/components/monetization/FreeTrialCountdown';
+import MissedMatchRegret from '@/components/monetization/MissedMatchRegret';
 import { Loader2 } from 'lucide-react';
 
 export default function Home() {
@@ -59,6 +62,7 @@ export default function Home() {
   const [feedbackProfile, setFeedbackProfile] = useState(null);
   const [profileViewStartTime, setProfileViewStartTime] = useState(Date.now());
   const [photosViewedCount, setPhotosViewedCount] = useState(0);
+  const [showMissedMatch, setShowMissedMatch] = useState(false);
   const [matchCount, setMatchCount] = useState(0);
   const [showNewMatchToast, setShowNewMatchToast] = useState(false);
   const [lastMatchedProfile, setLastMatchedProfile] = useState(null);
@@ -349,7 +353,11 @@ export default function Home() {
     },
     onError: (error) => {
       if (error.message === 'verification_required') return;
-      if (error.message === 'daily_limit_reached') setShowLimitPaywall(true);
+      if (error.message === 'daily_limit_reached') {
+        setShowLimitPaywall(true);
+        // Show missed match regret after closing the paywall
+        setTimeout(() => setShowMissedMatch(true), 500);
+      }
     }
   });
 
@@ -462,6 +470,7 @@ export default function Home() {
         {isVerificationGated && <VerificationGateBanner matchCount={gateMatchCount} />}
 
         <main className="flex-1 flex flex-col overflow-hidden px-4" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+          <FreeTrialCountdown userProfile={myProfile} />
           <ContextualUpgradeBanner userProfile={myProfile} />
           {!['premium', 'elite', 'vip'].includes(myProfile?.subscription_tier) && (
             <BlurredLikesTeaser likesCount={activityCounts?.likes || 0} className="mb-3" />
@@ -519,6 +528,12 @@ export default function Home() {
             show={showNewMatchToast}
             matchedProfile={lastMatchedProfile}
             onDismiss={() => setShowNewMatchToast(false)}
+          />
+          <ProfileViewerToast userProfile={myProfile} />
+          <MissedMatchRegret
+            show={showMissedMatch && !showLimitPaywall}
+            onClose={() => setShowMissedMatch(false)}
+            matchScore={Math.floor(Math.random() * 10) + 90}
           />
           <div className="h-20" />
         </main>
