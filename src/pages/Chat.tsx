@@ -173,15 +173,15 @@ export default function Chat() {
     if (messages.length > 0 && myProfile) {
       const unreadMessages = messages.filter(m => m.receiver_id === myProfile.id && !m.is_read);
       if (unreadMessages.length > 0) {
-        // Batch update to reduce API calls
-        Promise.all(
-          unreadMessages.map(m => 
-            updateRecord('messages', m.id, {
-              is_read: true,
-              read_at: new Date().toISOString()
-            }).catch(err => console.error('Failed to mark message as read:', err))
-          )
-        ).catch(err => console.error('Failed to batch update messages:', err));
+        // OPTIMIZED: Single batch update using .in() instead of N individual calls
+        const unreadIds = unreadMessages.map(m => m.id);
+        supabase
+          .from('messages')
+          .update({ is_read: true, read_at: new Date().toISOString() })
+          .in('id', unreadIds)
+          .then(({ error }) => {
+            if (error) console.error('Failed to batch mark messages as read:', error);
+          });
       }
     }
   }, [messages.length, myProfile?.id]); // Only trigger on relevant changes
