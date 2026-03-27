@@ -1,8 +1,8 @@
 // @ts-nocheck
 import { useEffect, useState, useCallback } from 'react';
-import { invokeFunction } from '@/lib/supabase-helpers';
-import { getMessaging, getToken, onMessage, isSupported } from 'firebase/messaging';
-import { app } from '@/components/firebase/firebaseConfig';
+import { Capacitor } from '@capacitor/core';
+import { PushNotifications } from '@capacitor/push-notifications';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function PushNotificationSetup({ userProfile }: { userProfile: any }) {
   const [isSetup, setIsSetup] = useState(false);
@@ -10,98 +10,76 @@ export default function PushNotificationSetup({ userProfile }: { userProfile: an
   const setupPushNotifications = useCallback(async () => {
     if (!userProfile || isSetup) return;
 
+    // Only run on native platforms (iOS/Android)
+    if (!Capacitor.isNativePlatform()) {
+      console.log('Push notifications: not a native platform, skipping');
+      return;
+    }
+
     try {
-      const supported = await isSupported();
-      if (!supported) {
-        console.log('Firebase Messaging not supported in this browser');
+      // Check current permission status
+      let permStatus = await PushNotifications.checkPermissions();
+
+      if (permStatus.receive === 'prompt') {
+        permStatus = await PushNotifications.requestPermissions();
+      }
+
+      if (permStatus.receive !== 'granted') {
+        console.log('Push notification permission denied');
         return;
       }
 
-      if (!('serviceWorker' in navigator)) {
-        console.log('Service workers not supported');
-        return;
-      }
+      // Register for push notifications
+      await PushNotifications.register();
 
-      const permission = await Notification.requestPermission();
-      if (permission !== 'granted') {
-        console.log('Notification permission denied');
-        return;
-      }
+      // Listen for registration success
+      PushNotifications.addListener('registration', async (token) => {
+        console.log('Push registration success, token:', token.value);
 
-      let vapidKey: string | undefined;
-      try {
-        const data = await invokeFunction('getVapidKey');
-        vapidKey = data?.vapid_key;
-        if (!vapidKey) {
-          console.warn('VAPID key not configured');
-          return;
-        }
-      } catch (e) {
-        console.warn('Failed to get VAPID key:', e);
-        return;
-      }
+        // Save token to user profile if different
+        if (userProfile.push_token !== token.value) {
+          try {
+            const { error } = await supabase
+              .from('user_profiles')
+              .update({ push_token: token.value })
+              .eq('user_id', userProfile.user_id);
 
-      let messaging: any;
-      try {
-        messaging = getMessaging(app);
-      } catch (e) {
-        console.warn("Messaging not supported:", e);
-        return;
-      }
-
-      let swRegistration: ServiceWorkerRegistration | undefined;
-      try {
-        swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-        await navigator.serviceWorker.ready;
-      } catch (e) {
-        console.warn('Service worker registration failed:', e);
-      }
-
-      try {
-        const token = await getToken(messaging, {
-          vapidKey,
-          serviceWorkerRegistration: swRegistration
-        });
-
-        if (token) {
-          if (userProfile.push_token !== token) {
-            try {
-              await invokeFunction('updateUserProfile', {
-                push_token: token
-              });
+            if (error) {
+              console.warn('Failed to save push token:', error);
+            } else {
               console.log('Push token saved successfully');
-            } catch (e) {
-              console.warn('Failed to save push token:', e);
             }
+          } catch (e) {
+            console.warn('Failed to save push token:', e);
           }
         }
-      } catch (tokenError) {
-        console.warn('Failed to get FCM token:', tokenError);
-      }
+      });
 
-      onMessage(messaging, (payload: any) => {
-        console.log('Foreground message received:', payload);
-        
-        if (Notification.permission === 'granted') {
-          const notification = new Notification(
-            payload.notification?.title || 'Afrinnect',
-            {
-              body: payload.notification?.body || '',
-              icon: '/pwa-192x192.png',
-              badge: '/pwa-192x192.png',
-              tag: payload.data?.type || 'default',
-              data: payload.data,
-              requireInteraction: payload.data?.type === 'match' || payload.data?.type === 'super_like'
-            }
-          );
+      // Listen for registration errors
+      PushNotifications.addListener('registrationError', (err) => {
+        console.error('Push registration error:', err.error);
+      });
 
-          notification.onclick = () => {
-            window.focus();
-            if (payload.data?.link) {
-              window.location.href = payload.data.link;
-            }
-            notification.close();
-          };
+      // Handle received notifications when app is in foreground
+      PushNotifications.addListener('pushNotificationReceived', (notification) => {
+        console.log('Push notification received:', notification);
+        // The notification is automatically shown on native platforms
+        // You can add custom in-app handling here if needed
+      });
+
+      // Handle notification tap (app opened from notification)
+      PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
+        console.log('Push notification action performed:', notification);
+
+        const data = notification.notification?.data;
+        if (data?.link) {
+          window.location.href = data.link;
+        } else if (data?.type === 'match') {
+          window.location.href = '/matches';
+        } else if (data?.type === 'message') {
+          window.location.href = data.chatId ? `/chat/${data.chatId}` : '/matches';
+        } else if (data?.type === 'like' || data?.type === 'super_like') {
+          window.location.href = '/who-likes-you';
         }
       });
 
@@ -113,6 +91,12 @@ export default function PushNotificationSetup({ userProfile }: { userProfile: an
 
   useEffect(() => {
     setupPushNotifications();
+
+    return () => {
+      if (Capacitor.isNativePlatform()) {
+        PushNotifications.removeAllListeners();
+      }
+    };
   }, [setupPushNotifications]);
 
   return null;
