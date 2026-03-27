@@ -12,6 +12,7 @@ import NotificationBell from '@/components/shared/NotificationBell';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '@/components/i18n/LanguageContext';
 import ActivityDrawer from '@/components/home/ActivityDrawer';
+import BoostButton from '@/components/monetization/BoostButton';
 
 interface HomeHeaderProps {
   discoveryMode: string;
@@ -23,13 +24,14 @@ interface HomeHeaderProps {
   myProfile: any;
   isAdmin: boolean;
   activityCounts: { likes: number; views: number } | undefined;
+  onBoostActivated?: () => void;
 }
 
 export default function HomeHeader({
   discoveryMode, setDiscoveryMode,
   viewMode, setViewMode,
   filters, setFilters,
-  myProfile, isAdmin, activityCounts,
+  myProfile, isAdmin, activityCounts, onBoostActivated,
 }: HomeHeaderProps) {
   const { t } = useLanguage();
 
@@ -80,6 +82,7 @@ export default function HomeHeader({
 
             <NotificationBell />
             <ActivityDrawer userProfile={myProfile} />
+            <BoostButton userProfile={myProfile} onBoostActivated={onBoostActivated} compact />
 
             {isAdmin && (
               <Link to={createPageUrl('AdminDashboard')}>
