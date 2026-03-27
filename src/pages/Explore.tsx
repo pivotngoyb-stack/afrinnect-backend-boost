@@ -60,10 +60,16 @@ export default function Explore() {
     enabled: !!currentUser?.id,
   });
 
-  // Split into local (USA/Canada) and global
-  const LOCAL_COUNTRIES = ['United States', 'USA', 'US', 'Canada', 'CA'];
-  const localProfiles = useMemo(() => allProfiles.filter(p => LOCAL_COUNTRIES.some(c => c.toLowerCase() === (p.current_country || '').toLowerCase())), [allProfiles]);
-  const globalProfiles = useMemo(() => allProfiles.filter(p => !LOCAL_COUNTRIES.some(c => c.toLowerCase() === (p.current_country || '').toLowerCase())), [allProfiles]);
+  // Normalize country for comparison
+  const canonicalize = (c: string) => {
+    const n = (c || '').trim().toLowerCase();
+    if (['united states', 'usa', 'us'].includes(n)) return 'united states';
+    if (['canada', 'ca'].includes(n)) return 'canada';
+    return n;
+  };
+  const myCanonicalCountry = canonicalize(currentProfile?.current_country || '');
+  const localProfiles = useMemo(() => allProfiles.filter(p => canonicalize(p.current_country) === myCanonicalCountry), [allProfiles, myCanonicalCountry]);
+  const globalProfiles = useMemo(() => allProfiles.filter(p => canonicalize(p.current_country) !== myCanonicalCountry), [allProfiles, myCanonicalCountry]);
 
   const hasGlobalProfiles = globalProfiles.length > 0;
   const hasLocalProfiles = localProfiles.length > 0;
