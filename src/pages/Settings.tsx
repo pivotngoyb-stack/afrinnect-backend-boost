@@ -27,8 +27,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useLanguage } from '@/components/i18n/LanguageContext';
+import LanguageSelector from '@/components/i18n/LanguageSelector';
 
 export default function Settings() {
+  const { t } = useLanguage();
   const [myProfile, setMyProfile] = useState(null);
   const [userEmail, setUserEmail] = useState('');
   
