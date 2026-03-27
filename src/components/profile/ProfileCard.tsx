@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import ProgressiveImage from '../shared/ProgressiveImage';
 import { MapPin, Briefcase, GraduationCap, Heart, ChevronLeft, ChevronRight, Languages, Book, Sparkles, Mic, Loader2 } from 'lucide-react';
 import { KenteDivider } from '../shared/AfricanPattern';
 import { Badge } from "@/components/ui/badge";
