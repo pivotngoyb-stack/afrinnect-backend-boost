@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Eye, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+// @ts-ignore - LanguageContext uses @ts-nocheck
 import { useLanguage } from '@/components/i18n/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 

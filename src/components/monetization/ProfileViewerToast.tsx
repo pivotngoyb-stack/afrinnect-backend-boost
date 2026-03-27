@@ -37,11 +37,11 @@ export default function ProfileViewerToast({ userProfile }: { userProfile: any }
         if (isPaid && views[0]) {
           const { data: viewerProfile } = await supabase
             .from('user_profiles')
-            .select('full_name')
+            .select('display_name')
             .eq('id', views[0].viewer_profile_id)
             .maybeSingle();
 
-          setViewerName(viewerProfile?.full_name || 'Someone');
+          setViewerName(viewerProfile?.display_name || 'Someone');
         } else {
           setViewerName('Someone');
         }
