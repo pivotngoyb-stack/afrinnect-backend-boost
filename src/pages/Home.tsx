@@ -28,6 +28,7 @@ import GridView from '@/components/home/GridView';
 import HomeModals from '@/components/home/HomeModals';
 import ProfileCompletionBar from '@/components/engagement/ProfileCompletionBar';
 import LiveActivityFeed from '@/components/engagement/LiveActivityFeed';
+import ProfileViewsNudge from '@/components/engagement/ProfileViewsNudge';
 import DailyReturnBanner from '@/components/engagement/DailyReturnBanner';
 import PeopleLikeYouTeaser from '@/components/engagement/PeopleLikeYouTeaser';
 import NewMatchToast from '@/components/engagement/NewMatchToast';
@@ -273,9 +274,10 @@ export default function Home() {
 
       let mutualLikes = await filterRecords('likes', { liker_id: likedId, liked_id: myProfile.id });
 
-      // Guaranteed first match: 100% chance if user has never matched before, 70% for subsequent seed likes
+      // Variable reward: guaranteed first match, then 30-80% probability for seed profiles
       const isFirstMatch = !myProfile.has_matched_before;
-      if (mutualLikes.length === 0 && likedProfile.is_seed && (isFirstMatch || Math.random() < 0.7)) {
+      const sessionSeedChance = 0.3 + Math.random() * 0.5; // 30-80% per session
+      if (mutualLikes.length === 0 && likedProfile.is_seed && (isFirstMatch || Math.random() < sessionSeedChance)) {
         await createRecord('likes', {
           liker_id: likedId, liked_id: myProfile.id,
           liker_user_id: likedProfile.user_id, liked_user_id: myProfile.user_id,
@@ -459,9 +461,10 @@ export default function Home() {
 
         <main className="flex-1 flex flex-col overflow-hidden px-4" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
           <DailyReturnBanner userProfile={myProfile} />
-          <LiveActivityFeed />
+          <LiveActivityFeed userProfile={myProfile} />
           <ProfileCompletionBar userProfile={myProfile} />
           <PeopleLikeYouTeaser userProfile={myProfile} />
+          <ProfileViewsNudge userProfile={myProfile} />
           <ActivitySummaryBanner userProfile={myProfile} />
           <div className="mb-3">
             <BoostButton userProfile={myProfile} onBoostActivated={() => refetch()} />

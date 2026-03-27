@@ -23,6 +23,8 @@ import MatchCountdownBanner from '@/components/monetization/MatchCountdownBanner
 import BlurredLikesTeaser from '@/components/monetization/BlurredLikesTeaser';
 import SocialProofPaywall from '@/components/monetization/SocialProofPaywall';
 import PremiumBadgeOnProfile from '@/components/monetization/PremiumBadgeOnProfile';
+import MatchUrgencyPrompt from '@/components/engagement/MatchUrgencyPrompt';
+import ChatReminderBanner from '@/components/engagement/ChatReminderBanner';
 
 export default function Matches() {
   
@@ -368,6 +370,10 @@ export default function Matches() {
 
           {/* Conversations Tab - MERGED Matches + Messages */}
           <TabsContent value="matches" className="flex-1 overflow-y-auto space-y-4">
+            {/* Urgency prompts for unmessaged matches */}
+            <MatchUrgencyPrompt unmessagedMatches={matchedProfiles} conversationData={conversationData} />
+            {/* Dead chat reminders */}
+            <ChatReminderBanner staleConversations={matchedProfiles} conversationData={conversationData} />
             {/* New Matches Row */}
             {newMatches.length > 0 && (
               <div>
