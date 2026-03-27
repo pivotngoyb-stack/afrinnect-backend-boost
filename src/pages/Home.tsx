@@ -13,32 +13,21 @@ import { useTierConfig, getTierLimit, isUnlimited } from '@/components/shared/us
 import { useUpgradePrompts } from '@/components/monetization/UpgradePrompts';
 import { useVerificationGate } from '@/hooks/useVerificationGate';
 import { useLanguage } from '@/components/i18n/LanguageContext';
-import AfricanPattern from '@/components/shared/AfricanPattern';
-import { AfricanProverbLoader, CulturalGreeting } from '@/components/shared/AfricanCulture';
 import PullToRefresh from '@/components/shared/PullToRefresh';
 import BannedScreen from '@/components/auth/BannedScreen';
 import FoundingMemberBanner from '@/components/founding/FoundingMemberBanner';
 import VerificationGateBanner from '@/components/shared/VerificationGateBanner';
-import ActivitySummaryBanner from '@/components/monetization/ActivitySummaryBanner';
-import WeeklyTopPicks from '@/components/monetization/WeeklyTopPicks';
-import VIPEventsPromo from '@/components/monetization/VIPEventsPromo';
 import BoostButton from '@/components/monetization/BoostButton';
 import HomeHeader from '@/components/home/HomeHeader';
 import SwipeView from '@/components/home/SwipeView';
 import GridView from '@/components/home/GridView';
 import HomeModals from '@/components/home/HomeModals';
-import ProfileCompletionBar from '@/components/engagement/ProfileCompletionBar';
-import LiveActivityFeed from '@/components/engagement/LiveActivityFeed';
-import ProfileViewsNudge from '@/components/engagement/ProfileViewsNudge';
-import DailyReturnBanner from '@/components/engagement/DailyReturnBanner';
-import PeopleLikeYouTeaser from '@/components/engagement/PeopleLikeYouTeaser';
 import NewMatchToast from '@/components/engagement/NewMatchToast';
 import ContextualUpgradeBanner from '@/components/monetization/ContextualUpgradeBanner';
 import BlurredLikesTeaser from '@/components/monetization/BlurredLikesTeaser';
 import ProfileViewerToast from '@/components/monetization/ProfileViewerToast';
 import FreeTrialCountdown from '@/components/monetization/FreeTrialCountdown';
 import MissedMatchRegret from '@/components/monetization/MissedMatchRegret';
-import { Loader2 } from 'lucide-react';
 
 export default function Home() {
   usePerformanceMonitor('Home');
