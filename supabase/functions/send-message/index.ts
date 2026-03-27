@@ -243,7 +243,27 @@ Allow: flirting, compliments, date planning, personal questions, humor.`,
       message: `${senderProfile.display_name} sent you a message`,
       link_to: `/chat?match=${matchId}`,
       is_read: false,
-    }).catch(() => {}); // Don't fail if notification insert fails
+    }).catch(() => {});
+
+    // Send push notification to receiver
+    try {
+      await fetch(`${supabaseUrl}/functions/v1/send-push-notification`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${Deno.env.get('SUPABASE_ANON_KEY')}`,
+        },
+        body: JSON.stringify({
+          userId: receiverUserId,
+          title: `${senderProfile.display_name}`,
+          body: content?.substring(0, 100) || 'Sent you a message',
+          type: 'message',
+          data: { chatId: matchId },
+        }),
+      });
+    } catch (pushErr) {
+      console.warn('Push notification failed (message):', pushErr);
+    }
 
     return new Response(
       JSON.stringify(message),

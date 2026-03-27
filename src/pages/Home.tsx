@@ -449,6 +449,19 @@ export default function Home() {
             });
           } catch (e) { console.warn('Notification skipped (match→self):', e); }
 
+          // Send push notifications for the match to both users
+          try {
+            await supabase.functions.invoke('send-push-notification', {
+              body: {
+                userId: likedProfile.user_id,
+                title: "It's a Match! 💕",
+                body: `You and ${myProfile.display_name} liked each other!`,
+                type: 'match',
+                data: { link: '/matches' },
+              },
+            });
+          } catch (e) { console.warn('Push skipped (match→liked):', e); }
+
           return { isMatch: true };
         }
         return { isMatch: true };
