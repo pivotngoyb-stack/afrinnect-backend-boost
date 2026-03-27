@@ -413,14 +413,24 @@ export default function Home() {
       if (error.message === 'verification_required') return;
       if (error.message === 'daily_limit_reached') {
         setShowLimitPaywall(true);
-        // Show missed match regret after closing the paywall
         setTimeout(() => setShowMissedMatch(true), 500);
+        return;
       }
+      // For any other error, still advance to next profile so the card doesn't get stuck
+      console.error('Like mutation error:', error);
+      toast.error('Something went wrong. Moving to next profile.');
+      setCurrentIndex(prev => prev + 1);
+      setProfileViewStartTime(Date.now());
+      setPhotosViewedCount(0);
     }
   });
 
   const handleLike = (profile) => {
-    if (!profile || likeMutation.isPending || passMutation.isPending) return;
+    if (!profile) return;
+    if (likeMutation.isPending || passMutation.isPending) {
+      console.log('Mutation already pending, ignoring tap');
+      return;
+    }
     if (navigator.vibrate) navigator.vibrate(50);
     setPendingLikeProfile(profile);
     setSwipeHistory(prev => [...prev, { profile, action: 'like', index: currentIndex }]);
