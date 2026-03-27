@@ -58,12 +58,13 @@ Deno.serve(async (req) => {
     // Build exclusion set — includes passes so swiped-left profiles don't reappear
     const excludeSet = new Set([profileId, ...blockedUsers, ...likedIds, ...passedIds, ...matchedIds, ...excludeIds]);
 
-    // Build query
+    // Build query — order by heat_score for quality-based discovery
     let query = supabase
       .from('user_profiles')
-      .select('id,user_id,display_name,primary_photo,photos,birth_date,gender,current_city,current_country,country_of_origin,bio,interests,subscription_tier,is_photo_verified,is_id_verified,verification_status,last_active')
+      .select('id,user_id,display_name,primary_photo,photos,birth_date,gender,current_city,current_country,country_of_origin,bio,interests,subscription_tier,is_photo_verified,is_id_verified,verification_status,last_active,heat_score,opening_move,profile_prompts')
       .eq('is_active', true)
       .not('id', 'in', `(${Array.from(excludeSet).join(',')})`)
+      .order('heat_score', { ascending: false, nullsFirst: false })
       .order('last_active', { ascending: false })
       .limit(Math.min(limit, 100));
 
@@ -124,6 +125,7 @@ Deno.serve(async (req) => {
     finalProfiles = finalProfiles.map((p: any) => ({
       ...p,
       is_verified: p.verification_status === 'verified' || p.is_photo_verified || p.is_id_verified,
+      heat_score: undefined, // strip internal score from client response
     }));
 
     return new Response(JSON.stringify({ profiles: finalProfiles, count: finalProfiles.length }), {

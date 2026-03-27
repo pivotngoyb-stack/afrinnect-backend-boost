@@ -257,6 +257,8 @@ const functionNameMap: Record<string, string> = {
   checkExpiredSubscriptions: 'check-expired-subscriptions',
   sendWinbackEmail: 'send-winback-email',
   boostProfile: 'boost-profile',
+  updateHeatScore: 'update-heat-score',
+  checkSwipeLimit: 'check-swipe-limit',
 };
 
 /**

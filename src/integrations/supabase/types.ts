@@ -3330,10 +3330,14 @@ export type Database = {
         Row: {
           compatibility_weights: Json | null
           created_at: string | null
+          heat_score: number | null
           id: string
           interaction_history: Json | null
           last_calculated_at: string | null
           preferences: Json | null
+          profile_completeness: number | null
+          response_rate: number | null
+          swipe_right_rate: number | null
           updated_at: string | null
           user_id: string
           user_profile_id: string | null
@@ -3341,10 +3345,14 @@ export type Database = {
         Insert: {
           compatibility_weights?: Json | null
           created_at?: string | null
+          heat_score?: number | null
           id?: string
           interaction_history?: Json | null
           last_calculated_at?: string | null
           preferences?: Json | null
+          profile_completeness?: number | null
+          response_rate?: number | null
+          swipe_right_rate?: number | null
           updated_at?: string | null
           user_id: string
           user_profile_id?: string | null
@@ -3352,10 +3360,14 @@ export type Database = {
         Update: {
           compatibility_weights?: Json | null
           created_at?: string | null
+          heat_score?: number | null
           id?: string
           interaction_history?: Json | null
           last_calculated_at?: string | null
           preferences?: Json | null
+          profile_completeness?: number | null
+          response_rate?: number | null
+          swipe_right_rate?: number | null
           updated_at?: string | null
           user_id?: string
           user_profile_id?: string | null
@@ -3398,6 +3410,7 @@ export type Database = {
           founding_trial_consumed: boolean | null
           gender: Database["public"]["Enums"]["gender_type"]
           has_matched_before: boolean | null
+          heat_score: number | null
           height_cm: number | null
           id: string
           interests: string[] | null
@@ -3417,6 +3430,7 @@ export type Database = {
           location: Json | null
           login_streak: number | null
           looking_for: string[] | null
+          opening_move: string | null
           phone_number: string | null
           photos: string[] | null
           preferred_language:
@@ -3488,6 +3502,7 @@ export type Database = {
           founding_trial_consumed?: boolean | null
           gender: Database["public"]["Enums"]["gender_type"]
           has_matched_before?: boolean | null
+          heat_score?: number | null
           height_cm?: number | null
           id?: string
           interests?: string[] | null
@@ -3507,6 +3522,7 @@ export type Database = {
           location?: Json | null
           login_streak?: number | null
           looking_for?: string[] | null
+          opening_move?: string | null
           phone_number?: string | null
           photos?: string[] | null
           preferred_language?:
@@ -3578,6 +3594,7 @@ export type Database = {
           founding_trial_consumed?: boolean | null
           gender?: Database["public"]["Enums"]["gender_type"]
           has_matched_before?: boolean | null
+          heat_score?: number | null
           height_cm?: number | null
           id?: string
           interests?: string[] | null
@@ -3597,6 +3614,7 @@ export type Database = {
           location?: Json | null
           login_streak?: number | null
           looking_for?: string[] | null
+          opening_move?: string | null
           phone_number?: string | null
           photos?: string[] | null
           preferred_language?:

@@ -382,7 +382,7 @@ export default function Matches() {
             {/* Urgency prompts for unmessaged matches */}
             <MatchUrgencyPrompt unmessagedMatches={matchedProfiles} conversationData={conversationData} />
             {/* Dead chat reminders */}
-            <ChatReminderBanner staleConversations={matchedProfiles} conversationData={conversationData} />
+            <ChatReminderBanner staleConversations={matchedProfiles} conversationData={conversationData} myProfile={myProfile} />
             {/* New Matches Row */}
             {newMatches.length > 0 && (
               <div>
