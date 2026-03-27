@@ -93,8 +93,8 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
   return (
     <ProfileTierDecoration tier={profile?.subscription_tier}>
       <motion.div
-        className="relative w-full max-w-[90vw] sm:max-w-md mx-auto bg-card rounded-2xl shadow-2xl overflow-hidden cursor-grab active:cursor-grabbing"
-        style={{ x, rotate, maxHeight: 'calc(100dvh - 120px)', borderColor, borderWidth: expanded ? 0 : 2 }}
+        className="relative w-full max-w-[92vw] sm:max-w-md mx-auto bg-card rounded-2xl shadow-2xl overflow-hidden cursor-grab active:cursor-grabbing"
+        style={{ x, rotate, maxHeight: 'calc(100dvh - 140px)', borderColor, borderWidth: expanded ? 0 : 2 }}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
@@ -118,7 +118,7 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
           </>
         )}
 
-        <div className="relative aspect-[4/5] overflow-hidden cursor-pointer group" style={{ maxHeight: 'calc(100dvh - 220px)' }} onClick={() => setShowDetails(!showDetails)}>
+        <div className="relative aspect-[3/4] overflow-hidden cursor-pointer group" style={{ maxHeight: 'calc(100dvh - 200px)' }} onClick={() => setShowDetails(!showDetails)}>
           <AnimatePresence mode="wait">
             <motion.div key={currentPhotoIndex} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="w-full h-full">
               <img src={photos[currentPhotoIndex]} alt={profile?.display_name} className="w-full h-full object-cover object-[50%_35%]" />
@@ -228,15 +228,15 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
         </AnimatePresence>
 
         {showActions && (
-          <div className="flex items-center justify-center gap-5 p-4 bg-gradient-to-t from-muted/50">
-            <motion.button whileTap={{ scale: 0.85 }} onClick={() => { if (navigator.vibrate) navigator.vibrate(30); onPass(); }} disabled={isPassing || isLiking || isSuperLiking} className="w-14 h-14 rounded-full bg-card shadow-xl flex items-center justify-center border-2 border-border active:bg-muted transition-all touch-manipulation disabled:opacity-50">
-              {isPassing ? <Loader2 size={26} className="animate-spin text-muted-foreground" /> : <span className="text-2xl text-muted-foreground">✕</span>}
+          <div className="flex items-center justify-center gap-6 py-3 px-4 bg-gradient-to-t from-muted/50">
+            <motion.button whileTap={{ scale: 0.85 }} onClick={() => { if (navigator.vibrate) navigator.vibrate(30); onPass(); }} disabled={isPassing || isLiking || isSuperLiking} className="w-16 h-16 rounded-full bg-card shadow-xl flex items-center justify-center border-2 border-destructive/30 active:bg-muted transition-all touch-manipulation disabled:opacity-50">
+              {isPassing ? <Loader2 size={28} className="animate-spin text-muted-foreground" /> : <span className="text-3xl text-destructive/70">✕</span>}
             </motion.button>
             <motion.button whileTap={{ scale: 0.85 }} onClick={() => { if (navigator.vibrate) navigator.vibrate([30, 30, 30]); onSuperLike(); }} disabled={isPassing || isLiking || isSuperLiking} className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 shadow-xl flex items-center justify-center transition-all touch-manipulation disabled:opacity-50">
               {isSuperLiking ? <Loader2 size={20} className="animate-spin text-white" /> : <Sparkles className="text-white" size={20} />}
             </motion.button>
-            <motion.button whileTap={{ scale: 0.85 }} onClick={() => { if (navigator.vibrate) navigator.vibrate(50); onLike(); }} disabled={isPassing || isLiking || isSuperLiking} className="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary/80 shadow-xl flex items-center justify-center transition-all touch-manipulation disabled:opacity-50">
-              {isLiking ? <Loader2 size={26} className="animate-spin text-white" /> : <Heart className="text-white fill-white" size={26} />}
+            <motion.button whileTap={{ scale: 0.85 }} onClick={() => { if (navigator.vibrate) navigator.vibrate(50); onLike(); }} disabled={isPassing || isLiking || isSuperLiking} className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-green-600 shadow-xl flex items-center justify-center transition-all touch-manipulation disabled:opacity-50">
+              {isLiking ? <Loader2 size={28} className="animate-spin text-white" /> : <Heart className="text-white fill-white" size={28} />}
             </motion.button>
           </div>
         )}
