@@ -4,7 +4,7 @@ const DEFAULT_TIERS: Record<string, any> = {
   free: {
     tier_id: 'free',
     display_name: 'Free',
-    limits: { daily_likes: 15, daily_messages: 20, daily_rewinds: 0, daily_super_likes: 1, monthly_boosts: 0 },
+    limits: { daily_likes: 10, daily_messages: 50, daily_rewinds: 0, daily_super_likes: 1, monthly_boosts: 0 },
     features: []
   },
   premium: {
