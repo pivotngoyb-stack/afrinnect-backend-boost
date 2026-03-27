@@ -498,6 +498,8 @@ export default function Home() {
       return;
     }
     if (navigator.vibrate) navigator.vibrate(50);
+    // Immediately mark as swiped locally so it never reappears
+    localSwipedIds.current.add(profile.id);
     setPendingLikeProfile(profile);
     setSwipeHistory(prev => [...prev, { profile, action: 'like', index: currentIndex }]);
     likeMutation.mutate({ likedId: profile.id, profile });
@@ -505,6 +507,7 @@ export default function Home() {
   const handleLikeWithMessage = async (message) => {
     if (navigator.vibrate) navigator.vibrate(50);
     if (!pendingLikeProfile) return;
+    localSwipedIds.current.add(pendingLikeProfile.id);
     setSwipeHistory(prev => [...prev, { profile: pendingLikeProfile, action: 'like', index: currentIndex }]);
     likeMutation.mutate({ likedId: pendingLikeProfile.id, likeNote: message, profile: pendingLikeProfile });
     setShowMessageModal(false); setPendingLikeProfile(null);
@@ -520,6 +523,7 @@ export default function Home() {
         return;
       }
     }
+    localSwipedIds.current.add(profile.id);
     setPendingLikeProfile(profile);
     if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
     setSwipeHistory(prev => [...prev, { profile, action: 'superlike', index: currentIndex }]);
@@ -532,10 +536,14 @@ export default function Home() {
       const targetProfile = profileToPass || currentProfile;
       if (!targetProfile?.id) return;
       if (navigator.vibrate) navigator.vibrate(30);
-      await createRecord('passes', {
+      // Immediately mark as swiped locally
+      localSwipedIds.current.add(targetProfile.id);
+      // Use upsert to handle duplicate pass gracefully
+      const { error } = await supabase.from('passes').upsert({
         passer_id: myProfile.id, passed_id: targetProfile.id,
         passer_user_id: myProfile.user_id, is_rewindable: true
-      });
+      }, { onConflict: 'passer_id,passed_id' });
+      if (error) throw error;
     },
     onSuccess: (_data, passedProfile) => {
       const targetProfile = passedProfile || currentProfile;
@@ -551,6 +559,7 @@ export default function Home() {
       if (targetProfile) {
         setSwipeHistory(prev => [...prev, { profile: targetProfile, action: 'pass', index: currentIndex }]);
       }
+      // Still advance — localSwipedIds already prevents reappearance
       setCurrentIndex(prev => prev + 1);
     }
   });
@@ -600,12 +609,14 @@ export default function Home() {
   }, [discoveryMode, myProfile?.id, filtersKey]);
 
   useEffect(() => {
+    // Don't reset to 0 when exhausted — that causes infinite cycling
+    // Only reset if profiles array changed (e.g. new fetch with different data)
     if (profiles.length === 0) {
       if (currentIndex !== 0) setCurrentIndex(0);
       return;
     }
-    if (currentIndex >= profiles.length) setCurrentIndex(0);
-  }, [profiles.length, currentIndex]);
+    // If currentIndex is beyond profiles, cap it at the end (shows empty state)
+  }, [profiles.length]);
 
   if (isCheckingAuth) {
     return (
