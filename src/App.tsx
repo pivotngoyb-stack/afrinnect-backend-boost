@@ -86,6 +86,7 @@ const ProfileOptimization = lazy(() => import("./pages/ProfileOptimization"));
 const DeleteAccount = lazy(() => import("./pages/DeleteAccount"));
 const Waitlist = lazy(() => import("./pages/Waitlist"));
 const Unsubscribe = lazy(() => import("./pages/Unsubscribe"));
+const EmailUnsubscribe = lazy(() => import("./pages/EmailUnsubscribe"));
 const PasswordReset = lazy(() => import("./pages/PasswordReset"));
 const LegalAcceptance = lazy(() => import("./pages/LegalAcceptance"));
 const Terms = lazy(() => import("./pages/Terms"));
@@ -137,6 +138,7 @@ const App = () => (
             <Route path="/communityguidelines" element={<CommunityGuidelines />} />
             <Route path="/success-stories" element={<SuccessStories />} />
             <Route path="/unsubscribe" element={<Unsubscribe />} />
+            <Route path="/email-unsubscribe" element={<EmailUnsubscribe />} />
             <Route path="/password-reset" element={<PasswordReset />} />
             <Route path="/error" element={<ErrorPage />} />
             <Route path="/auth-flow-test" element={<AuthFlowTest />} />
