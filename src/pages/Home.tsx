@@ -571,9 +571,10 @@ export default function Home() {
   const currentProfile = profiles[currentIndex];
   const hasMoreProfiles = currentIndex < profiles.length;
 
+  const filtersKey = JSON.stringify(filters);
   useEffect(() => {
     setCurrentIndex(0);
-  }, [discoveryMode, myProfile?.id, JSON.stringify(filters)]);
+  }, [discoveryMode, myProfile?.id, filtersKey]);
 
   useEffect(() => {
     if (profiles.length === 0) {
