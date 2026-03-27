@@ -468,7 +468,7 @@ export default function Home() {
         {isVerificationGated && <VerificationGateBanner matchCount={gateMatchCount} />}
 
         <main className="flex-1 flex flex-col overflow-hidden px-4" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
-          <CulturalGreeting userName={myProfile?.display_name?.split(' ')[0]} className="mb-2 mt-1" />
+          <CulturalGreeting userName={myProfile?.display_name?.split(' ')[0]} countryOfOrigin={myProfile?.country_of_origin} className="mb-2 mt-1" />
           <FreeTrialCountdown userProfile={myProfile} />
           <ContextualUpgradeBanner userProfile={myProfile} />
           {!['premium', 'elite', 'vip'].includes(myProfile?.subscription_tier) && (
