@@ -597,11 +597,6 @@ export default function Home() {
             )}
           </div>
 
-          {/* Floating action: Boost button */}
-          <div className="absolute bottom-20 right-4 z-30">
-            <BoostButton userProfile={myProfile} onBoostActivated={() => refetch()} />
-          </div>
-
           {/* All modals and toasts — render but don't take layout space */}
           <HomeModals
             showLimitPaywall={showLimitPaywall} setShowLimitPaywall={setShowLimitPaywall}
