@@ -77,10 +77,14 @@ Deno.serve(async (req) => {
       query = query.eq('gender', filters.gender);
     }
     if (filters.minAge) {
-      query = query.gte('age', filters.minAge);
+      const maxBirthDate = new Date();
+      maxBirthDate.setFullYear(maxBirthDate.getFullYear() - filters.minAge);
+      query = query.lte('birth_date', maxBirthDate.toISOString().split('T')[0]);
     }
     if (filters.maxAge) {
-      query = query.lte('age', filters.maxAge);
+      const minBirthDate = new Date();
+      minBirthDate.setFullYear(minBirthDate.getFullYear() - filters.maxAge - 1);
+      query = query.gte('birth_date', minBirthDate.toISOString().split('T')[0]);
     }
     if (filters.country) {
       query = query.eq('current_country', filters.country);
