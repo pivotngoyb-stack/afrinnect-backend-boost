@@ -239,7 +239,6 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
               <div className="mt-3 flex flex-wrap gap-2">
                 {interestChips.map((interest: string, idx: number) => (
                   <span key={`${interest}-${idx}`} className="rounded-full border border-background/30 bg-background/20 px-2.5 py-1 text-xs text-primary-foreground backdrop-blur-sm">
-                  <span key={`${interest}-${idx}`} className="rounded-full border border-background/30 bg-foreground/20 px-2.5 py-1 text-xs text-primary-foreground">
                     {addInterestEmoji(interest)}
                   </span>
                 ))}
