@@ -136,6 +136,7 @@ export default function EditProfile() {
           lifestyle: p.lifestyle || {},
           cultural_values: Array.isArray(p.cultural_values) ? p.cultural_values : [],
           interests: Array.isArray(p.interests) ? p.interests : [],
+          opening_move: p.opening_move || '',
           });
         
         // Set measurement system based on country
@@ -185,7 +186,8 @@ export default function EditProfile() {
       interests: formData.interests || [],
       looking_for: formData.looking_for || ['woman'],
       video_profile_url: formData.video_profile_url || null,
-      voice_intro_url: formData.voice_intro_url || null
+      voice_intro_url: formData.voice_intro_url || null,
+      opening_move: formData.opening_move?.trim() || null,
     };
 
     setSaving(true);
