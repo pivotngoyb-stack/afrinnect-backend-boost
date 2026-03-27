@@ -66,4 +66,6 @@ const GridView = React.forwardRef<HTMLDivElement, GridViewProps>(function GridVi
       </AnimatePresence>
     </>
   );
-}
+});
+
+export default GridView;
