@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, RotateCcw, Users } from 'lucide-react';
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import ProfileCard from '@/components/profile/ProfileCard';
 import { ProfileCardSkeleton } from '@/components/shared/SkeletonLoader';
 import { useLanguage } from '@/components/i18n/LanguageContext';
+import { toast } from 'sonner';
 
 interface SwipeViewProps {
   isLoading: boolean;
@@ -27,11 +28,23 @@ interface SwipeViewProps {
 export default function SwipeView({
   isLoading, currentProfile, hasMoreProfiles, myProfile,
   swipeHistory, likeMutation, passMutation,
-  handleLike, handlePass, handleSuperLike, handleRewind, setFilters,
+  handleLike, handlePass: originalHandlePass, handleSuperLike, handleRewind, setFilters,
   setDiscoveryMode,
 }: SwipeViewProps) {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const [nearMissCount, setNearMissCount] = useState(0);
+
+  const handlePass = () => {
+    // 1 in 5 passes on seed profiles triggers "Almost matched!" near-miss
+    if (currentProfile?.is_seed && Math.random() < 0.2) {
+      toast('You almost matched with someone! Keep swiping ✨', {
+        icon: '💫',
+        duration: 3000,
+      });
+    }
+    originalHandlePass();
+  };
 
   if (isLoading) {
     return (
