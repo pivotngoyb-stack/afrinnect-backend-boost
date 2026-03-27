@@ -1,0 +1,17 @@
+
+-- Schedule daily win-back notification cron job at 9:00 AM UTC
+-- Reuse the email_queue_service_role_key vault secret already provisioned by email infra
+SELECT cron.schedule(
+  'daily-winback-notifications',
+  '0 9 * * *',
+  $$
+  SELECT net.http_post(
+    url := (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'supabase_url' LIMIT 1) || '/functions/v1/send-winback-email',
+    headers := jsonb_build_object(
+      'Content-Type', 'application/json',
+      'Authorization', 'Bearer ' || (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'email_queue_service_role_key' LIMIT 1)
+    ),
+    body := '{}'::jsonb
+  );
+  $$
+);
