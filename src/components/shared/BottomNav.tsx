@@ -2,17 +2,19 @@
 import { Heart, Compass, CalendarDays, UserRound, Users } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-
-const navItems = [
-  { icon: Compass, label: 'Discover', path: '/home' },
-  { icon: Heart, label: 'Matches', path: '/matches' },
-  { icon: Users, label: 'Community', path: '/communities' },
-  { icon: CalendarDays, label: 'Events', path: '/events' },
-  { icon: UserRound, label: 'Profile', path: '/profile' },
-];
+import { useLanguage } from '@/components/i18n/LanguageContext';
 
 export default function BottomNav() {
   const location = useLocation();
+  const { t } = useLanguage();
+
+  const navItems = [
+    { icon: Compass, label: t('nav.discover'), path: '/home' },
+    { icon: Heart, label: t('nav.matches'), path: '/matches' },
+    { icon: Users, label: t('nav.community'), path: '/communities' },
+    { icon: CalendarDays, label: t('nav.events'), path: '/events' },
+    { icon: UserRound, label: t('nav.profile'), path: '/profile' },
+  ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-xl border-t border-border safe-bottom">
