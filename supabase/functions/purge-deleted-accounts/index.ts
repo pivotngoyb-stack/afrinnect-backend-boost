@@ -129,7 +129,7 @@ Deno.serve(async (req) => {
         // 4. Delete profile
         await supabase.from('user_profiles').delete().eq('user_id', userId);
 
-        // 4. Ambassador data
+        // 5. Ambassador data
         const { data: ambassador } = await supabase
           .from('ambassadors')
           .select('id')
@@ -146,7 +146,7 @@ Deno.serve(async (req) => {
           await supabase.from('ambassadors').delete().eq('user_id', userId);
         }
 
-        // 5. Delete auth user permanently
+        // 6. Delete auth user permanently
         const { error: deleteAuthError } = await supabase.auth.admin.deleteUser(userId);
         if (deleteAuthError) {
           console.error(`Failed to delete auth user ${userId}:`, deleteAuthError);
