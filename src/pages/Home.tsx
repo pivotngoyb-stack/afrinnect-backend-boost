@@ -15,9 +15,7 @@ import { useVerificationGate } from '@/hooks/useVerificationGate';
 import { useLanguage } from '@/components/i18n/LanguageContext';
 import AfricanPattern from '@/components/shared/AfricanPattern';
 import { AfricanProverbLoader } from '@/components/shared/AfricanCulture';
-import PullToRefresh from '@/components/shared/PullToRefresh';
 import BannedScreen from '@/components/auth/BannedScreen';
-import FoundingMemberBanner from '@/components/founding/FoundingMemberBanner';
 import VerificationGateBanner from '@/components/shared/VerificationGateBanner';
 import BoostButton from '@/components/monetization/BoostButton';
 import HomeHeader from '@/components/home/HomeHeader';
@@ -25,10 +23,7 @@ import SwipeView from '@/components/home/SwipeView';
 import GridView from '@/components/home/GridView';
 import HomeModals from '@/components/home/HomeModals';
 import NewMatchToast from '@/components/engagement/NewMatchToast';
-import ContextualUpgradeBanner from '@/components/monetization/ContextualUpgradeBanner';
-import BlurredLikesTeaser from '@/components/monetization/BlurredLikesTeaser';
 import ProfileViewerToast from '@/components/monetization/ProfileViewerToast';
-import FreeTrialCountdown from '@/components/monetization/FreeTrialCountdown';
 import MissedMatchRegret from '@/components/monetization/MissedMatchRegret';
 
 export default function Home() {
@@ -502,9 +497,8 @@ export default function Home() {
   }
 
   return (
-    <PullToRefresh onRefresh={refetch}>
       <div className="h-[100dvh] flex flex-col bg-background relative overflow-hidden">
-        <AfricanPattern className="text-primary" opacity={0.03} variant="adinkra" />
+        <AfricanPattern className="text-primary" opacity={0.02} variant="adinkra" />
 
         <HomeHeader
           discoveryMode={discoveryMode} setDiscoveryMode={setDiscoveryMode}
@@ -576,10 +570,7 @@ export default function Home() {
             onClose={() => setShowMissedMatch(false)}
             matchScore={Math.floor(Math.random() * 10) + 90}
           />
-          <FreeTrialCountdown userProfile={myProfile} />
-          <ContextualUpgradeBanner userProfile={myProfile} />
         </main>
       </div>
-    </PullToRefresh>
   );
 }

@@ -1,8 +1,7 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, RotateCcw, Users } from 'lucide-react';
+import { Globe, RotateCcw } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import ProfileCard from '@/components/profile/ProfileCard';
 import { ProfileCardSkeleton } from '@/components/shared/SkeletonLoader';
@@ -49,10 +48,7 @@ export default function SwipeView({
   if (isLoading) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <div className="text-center">
-          <ProfileCardSkeleton />
-          <p className="mt-4 text-sm text-muted-foreground animate-pulse">Finding amazing people for you...</p>
-        </div>
+        <ProfileCardSkeleton />
       </div>
     );
   }
@@ -73,7 +69,7 @@ export default function SwipeView({
         </Button>
       )}
 
-      <AnimatePresence mode="wait">
+      <div className="flex-1 flex items-center justify-center w-full">
         {hasMoreProfiles && currentProfile ? (
           <ProfileCard
             key={currentProfile.id}
@@ -90,37 +86,26 @@ export default function SwipeView({
             matchBreakdown={currentProfile.matchBreakdown || {}}
           />
         ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center justify-center h-full max-w-md mx-auto text-center px-4"
-          >
-            <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ repeat: Infinity, duration: 2 }}
-              className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6"
-            >
-              <span className="text-5xl">💫</span>
-            </motion.div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">You're getting noticed!</h2>
-            <p className="text-muted-foreground mb-2">
-              You've seen everyone here — but new people are joining every day.
-            </p>
-            <p className="text-sm text-primary font-medium mb-6">
-              Your next match could be one swipe away ✨
+          <div className="flex flex-col items-center justify-center h-full max-w-md mx-auto text-center px-4">
+            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-5">
+              <span className="text-4xl">💫</span>
+            </div>
+            <h2 className="text-xl font-bold text-foreground mb-2">You've seen everyone nearby</h2>
+            <p className="text-muted-foreground text-sm mb-6">
+              New people join every day. Try expanding your search.
             </p>
             <div className="space-y-3 w-full">
-              <Button onClick={() => { setDiscoveryMode?.('global'); setFilters({}); }} className="w-full h-12 text-base gradient-hero text-primary-foreground">
-                <Globe size={18} className="mr-2" />
+              <Button onClick={() => { setDiscoveryMode?.('global'); setFilters({}); }} className="w-full h-11 text-sm gradient-hero text-primary-foreground">
+                <Globe size={16} className="mr-2" />
                 Explore Globally
               </Button>
-              <Button onClick={() => setFilters({})} variant="outline" className="w-full h-11">
+              <Button onClick={() => setFilters({})} variant="outline" className="w-full h-10 text-sm">
                 Reset Filters
               </Button>
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
+      </div>
     </div>
   );
 }
