@@ -223,40 +223,50 @@ export default function Matches() {
     retryDelay: 5000
   });
 
-  // Fetch messages and unread counts for each match
+  // Fetch messages and unread counts — OPTIMIZED: 2 batch queries instead of N*2
   const { data: conversationData = {} } = useQuery({
     queryKey: ['conversations-data', matchesData.map(m => m.id).join(',')],
     queryFn: async () => {
       try {
-        const data = {};
-        // Batch fetch messages to reduce API calls
-        await Promise.all(
-          matchesData.slice(0, 50).map(async (match) => {
-            try {
-              // Get last message
-              const messages = await filterRecords('messages', 
-                { match_id: match.id },
-                '-created_date',
-                1
-              );
-              
-              // Count unread messages
-              const unreadMessages = await filterRecords('messages', {
-                match_id: match.id,
-                receiver_id: myProfile.id,
-                is_read: false
-              });
-              
-              data[match.id] = {
-                lastMessage: messages[0] || null,
-                unreadCount: unreadMessages.length
-              };
-            } catch (error) {
-              console.error(`Failed to fetch data for match ${match.id}:`, error);
-            }
-          })
-        );
-        
+        const matchIds = matchesData.slice(0, 50).map(m => m.id);
+        if (!matchIds.length) return {};
+
+        // Batch fetch: last message per match + unread counts in 2 queries
+        const [lastMsgsResult, unreadResult] = await Promise.all([
+          // Get recent messages for all matches at once
+          supabase
+            .from('messages')
+            .select('id,match_id,content,message_type,sender_id,created_at')
+            .in('match_id', matchIds)
+            .order('created_at', { ascending: false })
+            .limit(matchIds.length * 2), // rough: 2 per match to dedupe
+          // Get unread messages for current user
+          supabase
+            .from('messages')
+            .select('id,match_id')
+            .in('match_id', matchIds)
+            .eq('receiver_id', myProfile.id)
+            .eq('is_read', false)
+        ]);
+
+        const data: Record<string, any> = {};
+        // Initialize all matches
+        matchIds.forEach(id => { data[id] = { lastMessage: null, unreadCount: 0 }; });
+
+        // Process last messages — pick the latest per match
+        (lastMsgsResult.data || []).forEach(msg => {
+          if (!data[msg.match_id]?.lastMessage) {
+            data[msg.match_id] = { ...data[msg.match_id], lastMessage: { ...msg, created_date: msg.created_at } };
+          }
+        });
+
+        // Count unreads per match
+        (unreadResult.data || []).forEach(msg => {
+          if (data[msg.match_id]) {
+            data[msg.match_id].unreadCount = (data[msg.match_id].unreadCount || 0) + 1;
+          }
+        });
+
         return data;
       } catch (error) {
         console.error('Failed to fetch conversation data:', error);
@@ -264,7 +274,7 @@ export default function Matches() {
       }
     },
     enabled: matchesData.length > 0 && !!myProfile,
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 30000,
     staleTime: 15000,
     retry: 1,
     retryDelay: 5000
