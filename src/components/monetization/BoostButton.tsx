@@ -14,6 +14,7 @@ interface BoostButtonProps {
   onBoostActivated?: () => void;
   onBoostSuccess?: () => void;
   variant?: 'full' | 'compact';
+  compact?: boolean;
 }
 
 const TIER_LABELS: Record<string, string> = {
@@ -23,7 +24,7 @@ const TIER_LABELS: Record<string, string> = {
   vip: 'Unlimited boosts (120 min)',
 };
 
-export default function BoostButton({ userProfile, onBoostActivated, onBoostSuccess, variant = 'full' }: BoostButtonProps) {
+export default function BoostButton({ userProfile, onBoostActivated, onBoostSuccess, variant = 'full', compact = false }: BoostButtonProps) {
   const [isBoostActive, setIsBoostActive] = useState(false);
   const [boostTimeLeft, setBoostTimeLeft] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -247,14 +248,26 @@ export default function BoostButton({ userProfile, onBoostActivated, onBoostSucc
             </div>
           </motion.div>
         ) : (
-          <Button
-            onClick={() => setShowModal(true)}
-            className="w-full h-14 bg-gradient-to-r from-primary via-accent to-primary hover:opacity-90 text-primary-foreground font-bold text-lg shadow-lg"
-          >
-            <Zap size={22} className="mr-2" />
-            Boost Your Profile
-            <Badge className="ml-2 bg-background/20 border-0 text-primary-foreground">10x visibility</Badge>
-          </Button>
+          compact ? (
+            <Button
+              onClick={() => setShowModal(true)}
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 border-border flex-shrink-0"
+              title="Boost Your Profile"
+            >
+              <Zap size={16} className="text-primary" />
+            </Button>
+          ) : (
+            <Button
+              onClick={() => setShowModal(true)}
+              className="w-full h-14 bg-gradient-to-r from-primary via-accent to-primary hover:opacity-90 text-primary-foreground font-bold text-lg shadow-lg"
+            >
+              <Zap size={22} className="mr-2" />
+              Boost Your Profile
+              <Badge className="ml-2 bg-background/20 border-0 text-primary-foreground">10x visibility</Badge>
+            </Button>
+          )
         )}
       </motion.div>
       {modal}

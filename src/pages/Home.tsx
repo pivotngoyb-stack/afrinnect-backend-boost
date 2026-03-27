@@ -562,6 +562,7 @@ export default function Home() {
           filters={filters} setFilters={setFilters}
           myProfile={myProfile} isAdmin={isAdmin}
           activityCounts={activityCounts}
+          onBoostActivated={() => refetch()}
         />
 
         {isVerificationGated && <VerificationGateBanner matchCount={gateMatchCount} />}
