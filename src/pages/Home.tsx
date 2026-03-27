@@ -200,6 +200,12 @@ export default function Home() {
         const passedIds = new Set(myPasses.map(p => p.passed_id));
         const likedIds = new Set(myLikes.map(l => l.liked_id));
         const myBlockedUsers = new Set(myProfile?.blocked_users || []);
+        // Bidirectional block: also exclude users who have blocked ME
+        const blockedByOthers = new Set(
+          allProfiles
+            .filter(p => Array.isArray(p.blocked_users) && p.blocked_users.includes(myProfile.id))
+            .map(p => p.id)
+        );
         const normalize = (value) => String(value || '').trim().toLowerCase();
         const myCountry = normalize(myProfile.current_country);
         // Normalize country aliases to canonical names
@@ -216,6 +222,7 @@ export default function Home() {
           if (p.id === myProfile.id) return false;
           if (p.user_id === myProfile.user_id && !p.is_seed) return false;
           if (myBlockedUsers.has(p.id)) return false;
+          if (blockedByOthers.has(p.id)) return false; // They blocked me
           if (myProfile.looking_for?.length && !myProfile.looking_for.some((g) => normalize(g) === normalize(p.gender))) return false;
           if (filters.age_min || filters.age_max) {
             const age = p.age || calculateAge(p.birth_date);

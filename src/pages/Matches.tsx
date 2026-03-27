@@ -59,13 +59,18 @@ export default function Matches() {
     queryFn: async () => {
       try {
         if (!myProfile) return [];
-        // OPTIMIZED: Fetch with limits
+        // OPTIMIZED: Fetch with limits, filter out blocked matches
         const [matches1, matches2] = await Promise.all([
           filterRecords('matches', { user1_id: myProfile.id, is_match: true, status: 'active' }, '-matched_at', 50),
           filterRecords('matches', { user2_id: myProfile.id, is_match: true, status: 'active' }, '-matched_at', 50)
         ]);
         
-        const rawMatches = [...matches1, ...matches2];
+        // Filter out matches with blocked users (bidirectional)
+        const myBlockedUsers = new Set(myProfile.blocked_users || []);
+        const rawMatches = [...matches1, ...matches2].filter(m => {
+          const partnerId = m.user1_id === myProfile.id ? m.user2_id : m.user1_id;
+          return !myBlockedUsers.has(partnerId);
+        });
         
         // DEDUPLICATE: Ensure only one match per partner is shown
         const uniqueMatches = new Map();
