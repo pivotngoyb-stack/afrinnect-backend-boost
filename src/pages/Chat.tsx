@@ -195,23 +195,41 @@ export default function Chat() {
       }
       
       // Call secure backend function
-      const response = await invokeFunction('sendMessage', {
-        matchId,
-        content,
-        type,
-        mediaUrl
+      const response = await supabase.functions.invoke('send-message', {
+        body: {
+          matchId,
+          content,
+          type,
+          mediaUrl
+        }
       });
 
       // Handle backend errors
-      if (response.data.error) {
-        if (response.data.error === 'upgrade_required') {
-          localStorage.setItem('message_limit_hit', 'true');
-          throw new Error('upgrade_required');
+      if (response.error) {
+        // Try to parse error body
+        try {
+          const errBody = typeof response.error.message === 'string' ? JSON.parse(response.error.message) : {};
+          if (errBody.error === 'upgrade_required') {
+            localStorage.setItem('message_limit_hit', 'true');
+            throw new Error('upgrade_required');
+          }
+          throw new Error(errBody.error || response.error.message || 'Failed to send message');
+        } catch (e) {
+          if (e.message === 'upgrade_required') throw e;
+          throw new Error(response.error.message || 'Failed to send message');
         }
-        throw new Error(response.data.error);
       }
 
       const message = response.data;
+      
+      // Check for error in response data
+      if (message?.error) {
+        if (message.error === 'upgrade_required') {
+          localStorage.setItem('message_limit_hit', 'true');
+          throw new Error('upgrade_required');
+        }
+        throw new Error(message.error);
+      }
 
       // Notify via WebSocket for immediate local echo
       notifyNewMessage(message);
@@ -411,9 +429,9 @@ export default function Chat() {
 
   if (!otherProfile) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col">
-        <header className="bg-white border-b px-4 py-3">
-          <div className="h-6 bg-gray-200 rounded animate-pulse w-32" />
+      <div className="min-h-screen bg-background flex flex-col">
+        <header className="bg-card border-b border-border px-4 py-3">
+          <div className="h-6 bg-muted rounded animate-pulse w-32" />
         </header>
         <ChatSkeleton />
       </div>
@@ -421,7 +439,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header - Native App Bar */}
       <header className="bg-white/95 backdrop-blur-lg border-b border-gray-100/50 px-4 py-3 flex items-center justify-between sticky top-0 z-10" style={{ paddingTop: 'max(12px, env(safe-area-inset-top))' }}>
         <div className="flex items-center gap-3">
