@@ -27,6 +27,8 @@ project_id = "uadeiglyltniknemagpk"
     verify_jwt = false
   [functions.delete-account]
     verify_jwt = false
+  [functions.purge-deleted-accounts]
+    verify_jwt = false
   [functions.generate-daily-matches]
     verify_jwt = false
   [functions.get-founder-stats]
