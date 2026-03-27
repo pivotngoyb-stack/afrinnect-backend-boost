@@ -100,10 +100,36 @@ Deno.serve(async (req) => {
           ]);
         }
 
-        // 3. Delete profile
+        // 3. Cancel Stripe subscription if exists
+        if (profileId) {
+          const { data: activeSubs } = await supabase
+            .from('subscriptions')
+            .select('external_id, payment_provider')
+            .eq('user_profile_id', profileId)
+            .in('status', ['active', 'paused', 'cancelled']);
+
+          if (activeSubs?.length) {
+            const stripeKey = Deno.env.get('STRIPE_SECRET_KEY');
+            if (stripeKey) {
+              for (const sub of activeSubs) {
+                if (sub.payment_provider === 'stripe' && sub.external_id) {
+                  try {
+                    await fetch(`https://api.stripe.com/v1/subscriptions/${sub.external_id}`, {
+                      method: 'DELETE',
+                      headers: { 'Authorization': `Bearer ${stripeKey}` },
+                    });
+                  } catch (e) { console.error(`Failed to cancel Stripe sub ${sub.external_id}:`, e); }
+                }
+              }
+            }
+          }
+          await supabase.from('subscriptions').delete().eq('user_profile_id', profileId);
+        }
+
+        // 4. Delete profile
         await supabase.from('user_profiles').delete().eq('user_id', userId);
 
-        // 4. Ambassador data
+        // 5. Ambassador data
         const { data: ambassador } = await supabase
           .from('ambassadors')
           .select('id')
@@ -120,7 +146,7 @@ Deno.serve(async (req) => {
           await supabase.from('ambassadors').delete().eq('user_id', userId);
         }
 
-        // 5. Delete auth user permanently
+        // 6. Delete auth user permanently
         const { error: deleteAuthError } = await supabase.auth.admin.deleteUser(userId);
         if (deleteAuthError) {
           console.error(`Failed to delete auth user ${userId}:`, deleteAuthError);
