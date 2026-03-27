@@ -13,6 +13,8 @@ import { useTierConfig, getTierLimit, isUnlimited } from '@/components/shared/us
 import { useUpgradePrompts } from '@/components/monetization/UpgradePrompts';
 import { useVerificationGate } from '@/hooks/useVerificationGate';
 import { useLanguage } from '@/components/i18n/LanguageContext';
+import AfricanPattern from '@/components/shared/AfricanPattern';
+import { AfricanProverbLoader } from '@/components/shared/AfricanCulture';
 import PullToRefresh from '@/components/shared/PullToRefresh';
 import BannedScreen from '@/components/auth/BannedScreen';
 import FoundingMemberBanner from '@/components/founding/FoundingMemberBanner';
