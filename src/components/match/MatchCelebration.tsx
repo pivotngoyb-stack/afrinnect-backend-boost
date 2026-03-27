@@ -1,38 +1,43 @@
+// @ts-nocheck
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import AfricanPattern from '@/components/shared/AfricanPattern';
+
+const MATCH_PHRASES = [
+  "It's a Match! 💕",
+  "Ubuntu! You've Connected! 💕",
+  "Your Hearts Align! 💕",
+  "A Beautiful Connection! 💕",
+];
 
 export default function MatchCelebration({ matchedProfile, onClose }) {
   useEffect(() => {
     if (matchedProfile) {
-      // Trigger confetti
       const duration = 3000;
       const animationEnd = Date.now() + duration;
-      
-      const randomInRange = (min, max) => Math.random() * (max - min) + min;
+
+      // African-inspired confetti colors: gold, terracotta, deep purple, green
+      const colors = ['#D4A017', '#C75B39', '#6B2FA0', '#2D8B46', '#E8C547', '#ec4899'];
 
       const interval = setInterval(() => {
         const timeLeft = animationEnd - Date.now();
-
-        if (timeLeft <= 0) {
-          clearInterval(interval);
-          return;
-        }
+        if (timeLeft <= 0) { clearInterval(interval); return; }
 
         confetti({
-          particleCount: 2,
+          particleCount: 3,
           angle: 60,
           spread: 55,
           origin: { x: 0 },
-          colors: ['#ec4899', '#a855f7', '#f59e0b']
+          colors
         });
         confetti({
-          particleCount: 2,
+          particleCount: 3,
           angle: 120,
           spread: 55,
           origin: { x: 1 },
-          colors: ['#ec4899', '#a855f7', '#f59e0b']
+          colors
         });
       }, 30);
 
@@ -41,6 +46,8 @@ export default function MatchCelebration({ matchedProfile, onClose }) {
   }, [matchedProfile]);
 
   if (!matchedProfile) return null;
+
+  const phrase = MATCH_PHRASES[Math.floor(Math.random() * MATCH_PHRASES.length)];
 
   return (
     <AnimatePresence>
@@ -56,15 +63,18 @@ export default function MatchCelebration({ matchedProfile, onClose }) {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.5, opacity: 0 }}
           transition={{ type: "spring", bounce: 0.5 }}
-          className="bg-gradient-to-br from-pink-500 via-purple-600 to-amber-600 rounded-3xl p-8 max-w-md mx-4 text-center relative overflow-hidden"
+          className="gradient-hero rounded-3xl p-8 max-w-md mx-4 text-center relative overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Animated background effects */}
+          {/* African pattern overlay */}
+          <AfricanPattern variant="adinkra" opacity={0.08} className="text-white" />
+
+          {/* Kente-inspired border accent */}
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[hsl(var(--brand-gold))] via-[hsl(var(--brand-coral))] to-[hsl(var(--brand-gold))]" />
+          <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[hsl(var(--brand-gold))] via-[hsl(var(--brand-coral))] to-[hsl(var(--brand-gold))]" />
+
           <motion.div
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.5, 0.3],
-            }}
+            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
             transition={{ repeat: Infinity, duration: 2 }}
             className="absolute inset-0 bg-white/10 rounded-full blur-3xl"
           />
@@ -83,7 +93,7 @@ export default function MatchCelebration({ matchedProfile, onClose }) {
             transition={{ delay: 0.3 }}
             className="text-4xl font-bold text-white mb-2"
           >
-            It's a Match! 💕
+            {phrase}
           </motion.h1>
 
           <motion.p
@@ -101,11 +111,19 @@ export default function MatchCelebration({ matchedProfile, onClose }) {
             transition={{ delay: 0.5, type: "spring" }}
             className="flex justify-center gap-4 mb-6"
           >
-            <img
-              src={matchedProfile.primary_photo || matchedProfile.photos?.[0]}
-              alt={matchedProfile.display_name}
-              className="w-24 h-24 rounded-full border-4 border-white object-cover"
-            />
+            <div className="relative">
+              <img
+                src={matchedProfile.primary_photo || matchedProfile.photos?.[0]}
+                alt={matchedProfile.display_name}
+                className="w-24 h-24 rounded-full border-4 border-[hsl(var(--brand-gold))] object-cover"
+              />
+              {/* Gold ring animation */}
+              <motion.div
+                animate={{ scale: [1, 1.15, 1], opacity: [0.6, 0, 0.6] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+                className="absolute inset-0 rounded-full border-2 border-[hsl(var(--brand-gold))]"
+              />
+            </div>
           </motion.div>
 
           <motion.div

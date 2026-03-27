@@ -140,11 +140,40 @@
   .gradient-gold {
     background: linear-gradient(135deg, hsl(var(--brand-gold)), hsl(var(--accent)));
   }
+  .gradient-kente {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--brand-gold)) 0%,
+      hsl(var(--brand-coral)) 25%,
+      hsl(var(--primary)) 50%,
+      hsl(var(--brand-sage)) 75%,
+      hsl(var(--brand-gold)) 100%
+    );
+  }
+  .border-kente {
+    border-image: linear-gradient(
+      90deg,
+      hsl(var(--brand-gold)),
+      hsl(var(--brand-coral)),
+      hsl(var(--primary)),
+      hsl(var(--brand-sage)),
+      hsl(var(--brand-gold))
+    ) 1;
+  }
   .shadow-card {
     box-shadow: var(--shadow-card);
   }
   .shadow-elevated {
     box-shadow: var(--shadow-elevated);
+  }
+  .text-gold {
+    color: hsl(var(--brand-gold));
+  }
+  .text-coral {
+    color: hsl(var(--brand-coral));
+  }
+  .text-earth {
+    color: hsl(var(--brand-earth));
   }
 }
 
