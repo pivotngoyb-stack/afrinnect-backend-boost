@@ -197,11 +197,14 @@ export default function Home() {
         const passedIds = new Set(myPasses.map(p => p.passed_id));
         const likedIds = new Set(myLikes.map(l => l.liked_id));
         const myBlockedUsers = new Set(myProfile?.blocked_users || []);
+        const normalize = (value) => String(value || '').trim().toLowerCase();
+        const localCountries = ['united states', 'usa', 'us', 'canada', 'ca'];
+        const myCountry = normalize(myProfile.current_country);
 
-        let filtered = allProfiles.filter(p => {
+        const passesBaseFilters = (p) => {
           if (p.user_id === myProfile.user_id) return false;
-          if (myBlockedUsers.has(p.id) || passedIds.has(p.id) || likedIds.has(p.id)) return false;
-          if (myProfile.looking_for?.length && !myProfile.looking_for.includes(p.gender)) return false;
+          if (myBlockedUsers.has(p.id)) return false;
+          if (myProfile.looking_for?.length && !myProfile.looking_for.some((g) => normalize(g) === normalize(p.gender))) return false;
           if (filters.age_min || filters.age_max) {
             const age = p.age || calculateAge(p.birth_date);
             if (age && ((filters.age_min && age < filters.age_min) || (filters.age_max && age > filters.age_max))) return false;
@@ -210,18 +213,30 @@ export default function Home() {
           if (filters.religions?.length > 0 && !filters.religions.includes(p.religion)) return false;
           if (filters.relationship_goals?.length > 0 && !filters.relationship_goals.includes(p.relationship_goal)) return false;
           if (filters.verified_only && !p.is_verified) return false;
-          if (discoveryMode === 'local' && myProfile.current_country && p.current_country !== myProfile.current_country) return false;
           return true;
-        });
+        };
 
-        // Auto-fallback: if local mode returns 0 results, expand to global
+        const matchesMode = (p) => {
+          if (discoveryMode !== 'local') return true;
+          const candidateCountry = normalize(p.current_country);
+          if (!candidateCountry) return false;
+          if (localCountries.includes(myCountry)) return localCountries.includes(candidateCountry);
+          if (myCountry) return candidateCountry === myCountry;
+          return true;
+        };
+
+        const withoutSwipeExclusions = allProfiles.filter((p) => passesBaseFilters(p) && matchesMode(p));
+        let filtered = withoutSwipeExclusions.filter((p) => !passedIds.has(p.id) && !likedIds.has(p.id));
+
+        // Auto-fallback: if local mode returns 0 results, expand to global before showing empty state
         if (filtered.length === 0 && discoveryMode === 'local') {
-          filtered = allProfiles.filter(p => {
-            if (p.user_id === myProfile.user_id) return false;
-            if (myBlockedUsers.has(p.id) || passedIds.has(p.id) || likedIds.has(p.id)) return false;
-            if (myProfile.looking_for?.length && !myProfile.looking_for.includes(p.gender)) return false;
-            return true;
-          });
+          const globalNoSwipes = allProfiles.filter((p) => passesBaseFilters(p));
+          filtered = globalNoSwipes.filter((p) => !passedIds.has(p.id) && !likedIds.has(p.id));
+        }
+
+        // Recovery fallback: if user exhausted candidates, resurface existing candidates instead of dead-end empty state
+        if (filtered.length === 0) {
+          filtered = withoutSwipeExclusions;
         }
 
         return filtered;
@@ -451,6 +466,18 @@ export default function Home() {
 
   const currentProfile = profiles[currentIndex];
   const hasMoreProfiles = currentIndex < profiles.length;
+
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [discoveryMode, myProfile?.id, JSON.stringify(filters)]);
+
+  useEffect(() => {
+    if (profiles.length === 0) {
+      if (currentIndex !== 0) setCurrentIndex(0);
+      return;
+    }
+    if (currentIndex >= profiles.length) setCurrentIndex(0);
+  }, [profiles.length, currentIndex]);
 
   if (isCheckingAuth) {
     return (
