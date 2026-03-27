@@ -116,8 +116,12 @@ export default function Chat() {
         if (matches.length > 0) {
           const m = matches[0];
           const otherId = m.user1_id === myProfile?.id ? m.user2_id : m.user1_id;
-          const otherProfiles = await filterRecords('user_profiles', { id: otherId });
-          if (otherProfiles.length > 0) {
+          const { data: otherProfiles } = await supabase
+            .from('user_profiles')
+            .select('id,user_id,display_name,primary_photo,photos,subscription_tier,current_city,current_country,country_of_origin,interests,opening_move,bio,blocked_users')
+            .eq('id', otherId)
+            .limit(1);
+          if (otherProfiles?.length > 0) {
             setOtherProfile(otherProfiles[0]);
           }
           return m;
