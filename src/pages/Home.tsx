@@ -190,7 +190,7 @@ export default function Home() {
 
   // Discovery profiles query
   const { data: profiles = [], isLoading, refetch } = useQuery({
-    queryKey: ['discovery-profiles', filters, discoveryMode, myProfile?.id],
+    queryKey: ['discovery-profiles-v2', filters, discoveryMode, myProfile?.id],
     queryFn: async () => {
       try {
         // OPTIMIZED: Select only fields needed for discovery cards
@@ -216,7 +216,7 @@ export default function Home() {
 
         if (profilesError || !allProfiles) {
           console.error('Discovery profiles fetch error:', profilesError);
-          return [];
+          throw profilesError || new Error('Failed to load discovery profiles');
         }
 
         const [myPasses, myLikes] = await Promise.all([
@@ -294,7 +294,7 @@ export default function Home() {
       } catch (err) { console.error('Discovery query failed:', err); return []; }
     },
     enabled: !!myProfile?.id,
-    staleTime: 300000,
+    staleTime: 60000,
     retry: 1
   });
 
