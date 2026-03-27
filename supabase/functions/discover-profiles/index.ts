@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
     // Build query
     let query = supabase
       .from('user_profiles')
-      .select('id,user_id,display_name,primary_photo,photos,birth_date,gender,current_city,current_country,country_of_origin,bio,interests,subscription_tier,is_verified,verification_status,last_active')
+      .select('id,user_id,display_name,primary_photo,photos,birth_date,gender,current_city,current_country,country_of_origin,bio,interests,subscription_tier,is_photo_verified,is_id_verified,verification_status,last_active')
       .eq('is_active', true)
       .not('id', 'in', `(${Array.from(excludeSet).join(',')})`)
       .order('last_active', { ascending: false })
@@ -90,7 +90,7 @@ Deno.serve(async (req) => {
       query = query.eq('current_country', filters.country);
     }
     if (filters.verified) {
-      query = query.eq('is_verified', true);
+      query = query.or('verification_status.eq.verified,is_photo_verified.eq.true,is_id_verified.eq.true');
     }
 
     const { data: profiles, error } = await query;
@@ -105,7 +105,7 @@ Deno.serve(async (req) => {
     if (discoveryMode === 'local' && finalProfiles.length < 5 && currentCountry) {
       const { data: countryProfiles } = await supabase
         .from('user_profiles')
-        .select('id,user_id,display_name,primary_photo,photos,birth_date,gender,current_city,current_country,country_of_origin,bio,interests,subscription_tier,is_verified,verification_status,last_active')
+        .select('id,user_id,display_name,primary_photo,photos,birth_date,gender,current_city,current_country,country_of_origin,bio,interests,subscription_tier,is_photo_verified,is_id_verified,verification_status,last_active')
         .eq('is_active', true)
         .eq('current_country', currentCountry)
         .not('id', 'in', `(${Array.from(excludeSet).join(',')})`)
@@ -118,6 +118,11 @@ Deno.serve(async (req) => {
         if (!existingIds.has(p.id)) finalProfiles.push(p);
       });
     }
+
+    finalProfiles = finalProfiles.map((p: any) => ({
+      ...p,
+      is_verified: p.verification_status === 'verified' || p.is_photo_verified || p.is_id_verified,
+    }));
 
     return new Response(JSON.stringify({ profiles: finalProfiles, count: finalProfiles.length }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
