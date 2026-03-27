@@ -190,22 +190,33 @@ export default function Home() {
 
   // Discovery profiles query
   const { data: profiles = [], isLoading, refetch } = useQuery({
-    queryKey: ['discovery-profiles', filters, discoveryMode, myProfile?.id],
+    queryKey: ['discovery-profiles-v2', filters, discoveryMode, myProfile?.id],
     queryFn: async () => {
       try {
         // OPTIMIZED: Select only fields needed for discovery cards
-        const DISCOVERY_FIELDS = 'id,user_id,display_name,primary_photo,photos,birth_date,gender,current_country,current_city,country_of_origin,tribe,ethnicity,ethnic_group,culture,bio,about_me,interests,cultural_values,relationship_goal,religion,profession,education,languages,location,is_active,is_banned,is_seed,is_verified,is_premium,subscription_tier,verification_status,blocked_users,looking_for,last_active,liked_by_count,likes_count,profile_views_count,voice_intro_url,prompts,community_name';
-        const { data: allProfiles, error: profilesError } = await supabase
+        const DISCOVERY_FIELDS = 'id,user_id,display_name,primary_photo,photos,birth_date,gender,current_country,current_state,current_city,country_of_origin,tribe_ethnicity,ethnicity,bio,interests,cultural_values,relationship_goal,religion,profession,education,languages,location,is_active,is_banned,is_seed,is_photo_verified,is_id_verified,is_premium,subscription_tier,verification_status,blocked_users,looking_for,last_active,daily_likes_count,daily_likes_reset_date,voice_intro_url,prompts,profile_prompts';
+        const SAFE_DISCOVERY_FIELDS = 'id,user_id,display_name,primary_photo,photos,birth_date,gender,current_country,current_city,country_of_origin,bio,interests,relationship_goal,religion,profession,education,languages,location,is_active,is_banned,is_seed,is_photo_verified,is_id_verified,is_premium,subscription_tier,verification_status,blocked_users,looking_for,last_active,daily_likes_count,daily_likes_reset_date,voice_intro_url,prompts,profile_prompts';
+
+        const runDiscoveryQuery = async (fields) => supabase
           .from('user_profiles')
-          .select(DISCOVERY_FIELDS)
+          .select(fields)
           .eq('is_active', true)
           .eq('is_banned', false)
           .order('created_at', { ascending: false })
           .limit(500);
 
+        let { data: allProfiles, error: profilesError } = await runDiscoveryQuery(DISCOVERY_FIELDS);
+
         if (profilesError) {
+          console.warn('Primary discovery field set failed; retrying with safe field set:', profilesError);
+          const fallback = await runDiscoveryQuery(SAFE_DISCOVERY_FIELDS);
+          allProfiles = fallback.data;
+          profilesError = fallback.error;
+        }
+
+        if (profilesError || !allProfiles) {
           console.error('Discovery profiles fetch error:', profilesError);
-          return [];
+          throw profilesError || new Error('Failed to load discovery profiles');
         }
 
         const [myPasses, myLikes] = await Promise.all([
@@ -241,13 +252,16 @@ export default function Home() {
           if (blockedByOthers.has(p.id)) return false; // They blocked me
           if (myProfile.looking_for?.length && !myProfile.looking_for.some((g) => normalize(g) === normalize(p.gender))) return false;
           if (filters.age_min || filters.age_max) {
-            const age = p.age || calculateAge(p.birth_date);
+            const age = calculateAge(p.birth_date);
             if (age && ((filters.age_min && age < filters.age_min) || (filters.age_max && age > filters.age_max))) return false;
           }
           if (filters.countries_of_origin?.length > 0 && !filters.countries_of_origin.includes(p.country_of_origin)) return false;
           if (filters.religions?.length > 0 && !filters.religions.includes(p.religion)) return false;
           if (filters.relationship_goals?.length > 0 && !filters.relationship_goals.includes(p.relationship_goal)) return false;
-          if (filters.verified_only && !p.is_verified) return false;
+          if (filters.verified_only) {
+            const isVerified = p.verification_status === 'verified' || p.is_photo_verified || p.is_id_verified;
+            if (!isVerified) return false;
+          }
           return true;
         };
 
@@ -280,7 +294,7 @@ export default function Home() {
       } catch (err) { console.error('Discovery query failed:', err); return []; }
     },
     enabled: !!myProfile?.id,
-    staleTime: 300000,
+    staleTime: 60000,
     retry: 1
   });
 
