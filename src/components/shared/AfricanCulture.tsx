@@ -24,6 +24,54 @@ const GREETINGS = [
   { greeting: "Habari", language: "Swahili", meaning: "How are you" },
 ];
 
+// Map countries to their primary greeting
+const COUNTRY_GREETINGS: Record<string, { greeting: string; language: string; meaning: string }> = {
+  'Nigeria': { greeting: "Bawo ni", language: "Yoruba", meaning: "How are you" },
+  'Ghana': { greeting: "Akwaaba", language: "Akan", meaning: "Welcome" },
+  'Kenya': { greeting: "Jambo", language: "Swahili", meaning: "Hello" },
+  'Tanzania': { greeting: "Habari", language: "Swahili", meaning: "How are you" },
+  'Uganda': { greeting: "Oli otya", language: "Luganda", meaning: "How are you" },
+  'South Africa': { greeting: "Sawubona", language: "Zulu", meaning: "I see you" },
+  'Ethiopia': { greeting: "Selam", language: "Amharic", meaning: "Peace" },
+  'Cameroon': { greeting: "Mbolo", language: "Douala", meaning: "Hello" },
+  'Senegal': { greeting: "Nanga def", language: "Wolof", meaning: "How are you" },
+  'DR Congo': { greeting: "Mbote", language: "Lingala", meaning: "Hello" },
+  'Congo': { greeting: "Mbote", language: "Lingala", meaning: "Hello" },
+  'Ivory Coast': { greeting: "Aw ni sogoma", language: "Dioula", meaning: "Good morning" },
+  'Mali': { greeting: "I ni ce", language: "Bambara", meaning: "Hello" },
+  'Somalia': { greeting: "Iska warran", language: "Somali", meaning: "How are you" },
+  'Zimbabwe': { greeting: "Mhoro", language: "Shona", meaning: "Hello" },
+  'Zambia': { greeting: "Muli bwanji", language: "Chewa", meaning: "How are you" },
+  'Rwanda': { greeting: "Muraho", language: "Kinyarwanda", meaning: "Hello" },
+  'Mozambique': { greeting: "Olá", language: "Portuguese", meaning: "Hello" },
+  'Madagascar': { greeting: "Manao ahoana", language: "Malagasy", meaning: "How are you" },
+  'Angola': { greeting: "Olá", language: "Portuguese", meaning: "Hello" },
+  'Sudan': { greeting: "Salaam", language: "Arabic", meaning: "Peace" },
+  'Egypt': { greeting: "Ahlan", language: "Arabic", meaning: "Welcome" },
+  'Morocco': { greeting: "Ahlan", language: "Darija", meaning: "Welcome" },
+  'Tunisia': { greeting: "Aslema", language: "Tunisian Arabic", meaning: "Hello" },
+  'Algeria': { greeting: "Salam", language: "Algerian Arabic", meaning: "Peace" },
+  'Eritrea': { greeting: "Selam", language: "Tigrinya", meaning: "Peace" },
+  'Burundi': { greeting: "Amahoro", language: "Kirundi", meaning: "Peace" },
+  'Togo': { greeting: "Alafia", language: "Ewe", meaning: "Peace" },
+  'Benin': { greeting: "Kú àbọ̀", language: "Fon", meaning: "Welcome" },
+  'Sierra Leone': { greeting: "Kushe", language: "Krio", meaning: "Hello" },
+  'Liberia': { greeting: "How de body", language: "Liberian English", meaning: "How are you" },
+  'Malawi': { greeting: "Moni", language: "Chichewa", meaning: "Hello" },
+  'Namibia': { greeting: "Wa lalapo", language: "Oshiwambo", meaning: "Hello" },
+  'Botswana': { greeting: "Dumela", language: "Setswana", meaning: "Hello" },
+  'Gambia': { greeting: "Nanga def", language: "Wolof", meaning: "How are you" },
+  'Guinea': { greeting: "I ni ce", language: "Susu", meaning: "Hello" },
+  'Lesotho': { greeting: "Lumela", language: "Sesotho", meaning: "Hello" },
+  'Eswatini': { greeting: "Sawubona", language: "Siswati", meaning: "I see you" },
+  // Diaspora countries — default to a pan-African greeting
+  'United States': { greeting: "Habari", language: "Swahili", meaning: "Hello" },
+  'USA': { greeting: "Habari", language: "Swahili", meaning: "Hello" },
+  'Canada': { greeting: "Akwaaba", language: "Akan", meaning: "Welcome" },
+  'United Kingdom': { greeting: "Jambo", language: "Swahili", meaning: "Hello" },
+  'France': { greeting: "Nanga def", language: "Wolof", meaning: "How are you" },
+};
+
 /**
  * African proverb loading screen — replaces generic spinners
  */
@@ -68,11 +116,13 @@ export function AfricanProverbLoader({ className = "" }: { className?: string })
 /**
  * Cultural greeting banner for home page
  */
-export function CulturalGreeting({ userName, className = "" }: { userName?: string; className?: string }) {
+export function CulturalGreeting({ userName, countryOfOrigin, className = "" }: { userName?: string; countryOfOrigin?: string; className?: string }) {
   const [greeting] = useState(() => {
-    const hour = new Date().getHours();
-    const greetingPool = GREETINGS;
-    return greetingPool[Math.floor(Math.random() * greetingPool.length)];
+    // Use heritage country greeting if available, otherwise random
+    if (countryOfOrigin && COUNTRY_GREETINGS[countryOfOrigin]) {
+      return COUNTRY_GREETINGS[countryOfOrigin];
+    }
+    return GREETINGS[Math.floor(Math.random() * GREETINGS.length)];
   });
 
   return (
