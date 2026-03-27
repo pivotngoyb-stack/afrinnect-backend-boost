@@ -75,6 +75,7 @@ export default function EditProfile() {
   const [showPhotoReorder, setShowPhotoReorder] = useState(false);
   const [showCropper, setShowCropper] = useState(false);
   const [imageToCrop, setImageToCrop] = useState(null);
+  const [qualitySuggestions, setQualitySuggestions] = useState<string[]>([]);
   const [profile, setProfile] = useState(null);
   const [formData, setFormData] = useState({
     display_name: '',
@@ -225,6 +226,12 @@ export default function EditProfile() {
 
     try {
       validateImageFile(file);
+
+      // Analyze quality in background
+      const { analyzeImageQuality } = await import('@/components/shared/ImageCompressor');
+      const report = await analyzeImageQuality(file);
+      setQualitySuggestions(report.suggestions);
+
       setImageToCrop(file);
       setShowCropper(true);
     } catch (error) {
@@ -236,8 +243,10 @@ export default function EditProfile() {
   const handleCropComplete = async (croppedFile) => {
     setUploading(true);
     setShowCropper(false);
+    setQualitySuggestions([]);
     try {
-      const { file_url } = await uploadFile({ file: croppedFile });
+      const compressed = await compressImage(croppedFile, 1080, 0.85);
+      const { file_url } = await uploadFile(compressed);
       const newPhotos = [...(formData.photos || []), file_url];
       setFormData({
         ...formData,
@@ -407,9 +416,11 @@ export default function EditProfile() {
           <ImageCropper
             imageFile={imageToCrop}
             onCrop={handleCropComplete}
+            qualitySuggestions={qualitySuggestions}
             onCancel={() => {
               setShowCropper(false);
               setImageToCrop(null);
+              setQualitySuggestions([]);
             }}
           />
         )}
