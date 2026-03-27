@@ -330,23 +330,10 @@ export default function Home() {
         }
       }
 
-      let mutualLikes = await filterRecords('likes', { liker_id: likedId, liked_id: myProfile.id });
+      const mutualLikes = await filterRecords('likes', { liker_id: likedId, liked_id: myProfile.id });
 
-      // Variable reward: guaranteed first match, then 30-80% probability for seed profiles
-      const isFirstMatch = !myProfile.has_matched_before;
-      const sessionSeedChance = 0.3 + Math.random() * 0.5; // 30-80% per session
-      if (mutualLikes.length === 0 && likedProfile.is_seed && (isFirstMatch || Math.random() < sessionSeedChance)) {
-        try {
-          await createRecord('likes', {
-            liker_id: likedId, liked_id: myProfile.id,
-            liker_user_id: likedProfile.user_id, liked_user_id: myProfile.user_id,
-            is_super_like: false, is_seen: true,
-          });
-          mutualLikes = [{ id: 'seed-auto' }];
-        } catch (seedErr) {
-          console.warn('Seed auto-like skipped (RLS):', seedErr);
-        }
-      }
+      // Seed matching is now handled server-side by the seed-user-engine
+      // for more realistic delayed behavior. Only check existing mutual likes here.
 
       if (mutualLikes.length > 0) {
         const { data: existingMatches } = await supabase.from('matches').select('id')

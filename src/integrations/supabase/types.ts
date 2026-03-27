@@ -2871,6 +2871,45 @@ export type Database = {
         }
         Relationships: []
       }
+      seed_interaction_log: {
+        Row: {
+          created_at: string | null
+          delay_minutes: number | null
+          executed_at: string | null
+          id: string
+          interaction_type: string
+          message_content: string | null
+          personality: string | null
+          seed_profile_id: string
+          status: string | null
+          target_profile_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          delay_minutes?: number | null
+          executed_at?: string | null
+          id?: string
+          interaction_type: string
+          message_content?: string | null
+          personality?: string | null
+          seed_profile_id: string
+          status?: string | null
+          target_profile_id: string
+        }
+        Update: {
+          created_at?: string | null
+          delay_minutes?: number | null
+          executed_at?: string | null
+          id?: string
+          interaction_type?: string
+          message_content?: string | null
+          personality?: string | null
+          seed_profile_id?: string
+          status?: string | null
+          target_profile_id?: string
+        }
+        Relationships: []
+      }
       speed_dating_sessions: {
         Row: {
           created_at: string | null
@@ -3382,6 +3421,9 @@ export type Database = {
             | Database["public"]["Enums"]["relationship_goal_type"]
             | null
           religion: Database["public"]["Enums"]["religion_type"] | null
+          seed_interaction_count: number | null
+          seed_last_action_at: string | null
+          seed_personality: string | null
           stripe_customer_id: string | null
           subscription_tier:
             | Database["public"]["Enums"]["subscription_tier_type"]
@@ -3469,6 +3511,9 @@ export type Database = {
             | Database["public"]["Enums"]["relationship_goal_type"]
             | null
           religion?: Database["public"]["Enums"]["religion_type"] | null
+          seed_interaction_count?: number | null
+          seed_last_action_at?: string | null
+          seed_personality?: string | null
           stripe_customer_id?: string | null
           subscription_tier?:
             | Database["public"]["Enums"]["subscription_tier_type"]
@@ -3556,6 +3601,9 @@ export type Database = {
             | Database["public"]["Enums"]["relationship_goal_type"]
             | null
           religion?: Database["public"]["Enums"]["religion_type"] | null
+          seed_interaction_count?: number | null
+          seed_last_action_at?: string | null
+          seed_personality?: string | null
           stripe_customer_id?: string | null
           subscription_tier?:
             | Database["public"]["Enums"]["subscription_tier_type"]
