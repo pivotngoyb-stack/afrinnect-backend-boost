@@ -183,7 +183,7 @@ export default function Settings() {
               <ArrowLeft size={24} />
             </Button>
           </Link>
-          <h1 className="text-lg font-bold">Settings</h1>
+          <h1 className="text-lg font-bold">{t('settingsPage.title')}</h1>
         </div>
       </header>
 
@@ -198,12 +198,12 @@ export default function Settings() {
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
               <Lock size={18} className="text-purple-600" />
-              Account
+              {t('settingsPage.account')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <Link to={createPageUrl('EditProfile')} className="flex items-center justify-between py-2">
-              <span className="text-gray-700">Edit Profile</span>
+              <span className="text-gray-700">{t('settingsPage.editProfile')}</span>
               <ChevronRight size={20} className="text-gray-400" />
             </Link>
             
@@ -211,9 +211,9 @@ export default function Settings() {
 
             <Link to={createPageUrl('PhoneVerification')} className="flex items-center justify-between py-2">
               <div>
-                <span className="text-gray-700 block">Phone Number</span>
+                <span className="text-gray-700 block">{t('settingsPage.phoneNumber')}</span>
                 <span className="text-sm text-gray-500">
-                  {myProfile?.verification_status?.phone_verified ? 'Verified' : 'Not Verified'}
+                  {myProfile?.verification_status?.phone_verified ? t('settingsPage.verified') : t('settingsPage.notVerified')}
                 </span>
               </div>
               {myProfile?.verification_status?.phone_verified ? (
@@ -229,9 +229,9 @@ export default function Settings() {
             <div className="py-2">
               <div className="flex items-center justify-between mb-2">
                 <div>
-                  <span className="text-gray-700 block">Active Devices</span>
+                  <span className="text-gray-700 block">{t('settingsPage.activeDevices')}</span>
                   <span className="text-sm text-gray-500">
-                    {myProfile?.device_ids?.length || 0} / 4 devices used
+                    {myProfile?.device_ids?.length || 0} / 4 {t('settingsPage.devicesUsed')}
                   </span>
                 </div>
                 <Smartphone size={18} className="text-purple-600" />
@@ -246,17 +246,17 @@ export default function Settings() {
                         <div className="overflow-hidden">
                           <p className="font-medium truncate pr-2">
                             {device.device_name}
-                            {isCurrentDevice && <span className="text-purple-600 ml-1">(Current)</span>}
+                            {isCurrentDevice && <span className="text-purple-600 ml-1">({t('settingsPage.current')})</span>}
                           </p>
                           <p className="text-xs text-gray-400">
-                            Last login: {new Date(device.last_login).toLocaleDateString()}
+                            {t('settingsPage.lastLogin')}: {new Date(device.last_login).toLocaleDateString()}
                           </p>
                         </div>
                         <button 
                           onClick={() => setDeviceToRemove(device)}
                           className="text-red-500 text-xs hover:underline whitespace-nowrap ml-2"
                         >
-                          Remove
+                          {t('common.remove')}
                         </button>
                       </div>
                     );
@@ -286,9 +286,9 @@ export default function Settings() {
               }
             }} className="flex items-center justify-between py-2 w-full text-left" disabled={isSendingCode || myProfile?.verification_status?.email_verified}>
               <div>
-                <span className="text-gray-700 block">Email</span>
+                <span className="text-gray-700 block">{t('settingsPage.emailLabel')}</span>
                 <span className="text-sm text-gray-500">
-                  {myProfile?.verification_status?.email_verified ? 'Verified' : isSendingCode ? 'Sending Code...' : 'Verify Now'}
+                  {myProfile?.verification_status?.email_verified ? t('settingsPage.verified') : isSendingCode ? t('settingsPage.sendingCode') : t('settingsPage.verifyNow')}
                 </span>
               </div>
               {myProfile?.verification_status?.email_verified ? (
@@ -300,17 +300,33 @@ export default function Settings() {
           </CardContent>
         </Card>
 
+        {/* Language */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Globe size={18} className="text-purple-600" />
+              {t('settingsPage.language')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <Label className="text-gray-700">{t('settingsPage.changeLanguage')}</Label>
+              <LanguageSelector />
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Notifications */}
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
               <Bell size={18} className="text-purple-600" />
-              Notifications
+              {t('settingsPage.notifications')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
-              <Label htmlFor="push" className="text-gray-700">Push Notifications</Label>
+              <Label htmlFor="push" className="text-gray-700">{t('settingsPage.pushNotifications')}</Label>
               <Switch
                 id="push"
                 checked={settings.notifications}
@@ -322,8 +338,8 @@ export default function Settings() {
 
             <div className="flex items-center justify-between">
               <div>
-                <Label htmlFor="email" className="text-gray-700 block">Email Notifications</Label>
-                <span className="text-xs text-gray-500">Get notified about matches and messages</span>
+                <Label htmlFor="email" className="text-gray-700 block">{t('settingsPage.emailNotifications')}</Label>
+                <span className="text-xs text-gray-500">{t('settingsPage.emailNotificationsDesc')}</span>
               </div>
               <Switch
                 id="email"
@@ -339,14 +355,14 @@ export default function Settings() {
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
               <Eye size={18} className="text-purple-600" />
-              Privacy
+              {t('settingsPage.privacy')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <Label htmlFor="distance" className="text-gray-700 block">Show Distance</Label>
-                <span className="text-xs text-gray-500">Let others see how far you are</span>
+                <Label htmlFor="distance" className="text-gray-700 block">{t('settingsPage.showDistance')}</Label>
+                <span className="text-xs text-gray-500">{t('settingsPage.showDistanceDesc')}</span>
               </div>
               <Switch
                 id="distance"
@@ -359,8 +375,8 @@ export default function Settings() {
 
             <div className="flex items-center justify-between">
               <div>
-                <Label htmlFor="lastActive" className="text-gray-700 block">Show Last Active</Label>
-                <span className="text-xs text-gray-500">Let others see when you were online</span>
+                <Label htmlFor="lastActive" className="text-gray-700 block">{t('settingsPage.showLastActive')}</Label>
+                <span className="text-xs text-gray-500">{t('settingsPage.showLastActiveDesc')}</span>
               </div>
               <Switch
                 id="lastActive"
@@ -372,7 +388,7 @@ export default function Settings() {
             <Separator />
 
             <Link to={createPageUrl('BlockedUsers')} className="flex items-center justify-between py-2">
-              <span className="text-gray-700">Blocked Users</span>
+              <span className="text-gray-700">{t('settingsPage.blockedUsers')}</span>
               <ChevronRight size={20} className="text-gray-400" />
             </Link>
 
@@ -395,8 +411,8 @@ export default function Settings() {
                   <ShoppingBag size={20} className="text-white" />
                 </div>
                 <div>
-                  <span className="font-bold text-gray-900 block">Shop</span>
-                  <span className="text-xs text-gray-500">Boosts, Super Likes & more</span>
+                  <span className="font-bold text-gray-900 block">{t('settingsPage.shop')}</span>
+                  <span className="text-xs text-gray-500">{t('settingsPage.shopDesc')}</span>
                 </div>
               </div>
               <ChevronRight size={20} className="text-purple-600" />
@@ -409,12 +425,12 @@ export default function Settings() {
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
               {settings.darkMode ? <Moon size={18} className="text-purple-600" /> : <Sun size={18} className="text-purple-600" />}
-              Appearance
+              {t('settingsPage.appearance')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <Label htmlFor="darkMode" className="text-gray-700">Dark Mode</Label>
+              <Label htmlFor="darkMode" className="text-gray-700">{t('settingsPage.darkMode')}</Label>
               <Switch
                 id="darkMode"
                 checked={settings.darkMode}
@@ -429,14 +445,14 @@ export default function Settings() {
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
               <Globe size={18} className="text-purple-600" />
-              Discovery
+              {t('settingsPage.discovery')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <Link to={createPageUrl('Home')} className="flex items-center justify-between py-2">
               <div>
-                <span className="text-gray-700 block">Discovery Preferences</span>
-                <span className="text-xs text-gray-500">Age range, distance, and more</span>
+                <span className="text-gray-700 block">{t('settingsPage.discoveryPreferences')}</span>
+                <span className="text-xs text-gray-500">{t('settingsPage.discoveryPreferencesDesc')}</span>
               </div>
               <ChevronRight size={20} className="text-gray-400" />
             </Link>
@@ -445,8 +461,8 @@ export default function Settings() {
             
             <Link to={createPageUrl('PricingPlans')} className="flex items-center justify-between py-2">
               <div>
-                <span className="text-gray-700 block">Subscription & Pricing</span>
-                <span className="text-xs text-gray-500">Manage your plan</span>
+                <span className="text-gray-700 block">{t('settingsPage.subscriptionPricing')}</span>
+                <span className="text-xs text-gray-500">{t('settingsPage.managePlan')}</span>
               </div>
               <ChevronRight size={20} className="text-gray-400" />
             </Link>
@@ -457,24 +473,24 @@ export default function Settings() {
                 <Separator />
                 <button
                   onClick={async () => {
-                    if (!confirm('Are you sure you want to cancel your subscription? You will keep access until the end of your billing period.')) return;
+                  if (!confirm(t('settingsPage.cancelSubConfirm'))) return;
                     
                     try {
                       const res = await invokeFunction('cancelSubscription', { immediate: false });
                       if (res.data.success) {
-                        toast({ title: 'Subscription cancelled successfully.' });
+                        toast({ title: t('settingsPage.cancelSubscription') });
                       } else {
-                        toast({ title: res.data.error || 'Failed to cancel subscription', variant: 'destructive' });
+                        toast({ title: res.data.error || t('settingsPage.cancelSubscription'), variant: 'destructive' });
                       }
                     } catch (e) {
-                      toast({ title: 'Failed to cancel subscription. Please contact support.', variant: 'destructive' });
+                      toast({ title: t('settingsPage.cancelSubscription'), variant: 'destructive' });
                     }
                   }}
                   className="flex items-center justify-between py-2 w-full text-left text-red-600"
                 >
                   <div>
-                    <span className="block">Cancel Subscription</span>
-                    <span className="text-xs text-red-400">Keep access until end of billing period</span>
+                    <span className="block">{t('settingsPage.cancelSubscription')}</span>
+                    <span className="text-xs text-red-400">{t('settingsPage.cancelSubDesc')}</span>
                   </div>
                   <ChevronRight size={20} className="text-red-400" />
                 </button>
@@ -488,7 +504,7 @@ export default function Settings() {
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
               <HelpCircle size={18} className="text-purple-600" />
-              Support
+              {t('settingsPage.support')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -498,8 +514,8 @@ export default function Settings() {
                   <span className="text-white text-sm">✨</span>
                 </div>
                 <div>
-                  <span className="text-gray-900 font-medium block">Chat with Afrinnect AI</span>
-                  <span className="text-xs text-purple-600">Get instant help & advice</span>
+                  <span className="text-gray-900 font-medium block">{t('settingsPage.chatWithAI')}</span>
+                  <span className="text-xs text-purple-600">{t('settingsPage.getInstantHelp')}</span>
                 </div>
               </div>
               <ChevronRight size={20} className="text-purple-600" />
@@ -508,21 +524,21 @@ export default function Settings() {
             <Separator />
 
             <Link to={createPageUrl('Support')} className="flex items-center justify-between py-2">
-              <span className="text-gray-700">Support Tickets</span>
+              <span className="text-gray-700">{t('settingsPage.supportTickets')}</span>
               <ChevronRight size={20} className="text-gray-400" />
             </Link>
 
             <Separator />
 
             <a href="mailto:support@afrinnect.com" className="flex items-center justify-between py-2">
-              <span className="text-gray-700">Contact Us</span>
+              <span className="text-gray-700">{t('settingsPage.contactUs')}</span>
               <ChevronRight size={20} className="text-gray-400" />
             </a>
 
             <Separator />
 
             <Link to={createPageUrl('CommunityGuidelines')} className="flex items-center justify-between py-2">
-              <span className="text-gray-700">Safety Tips</span>
+              <span className="text-gray-700">{t('settingsPage.safetyTips')}</span>
               <ChevronRight size={20} className="text-gray-400" />
             </Link>
           </CardContent>
@@ -533,26 +549,26 @@ export default function Settings() {
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
               <FileText size={18} className="text-purple-600" />
-              Legal
+              {t('settingsPage.legal')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <Link to={createPageUrl('Privacy')} className="flex items-center justify-between py-2">
-              <span className="text-gray-700">Privacy Policy</span>
+              <span className="text-gray-700">{t('settingsPage.privacyPolicy')}</span>
               <ChevronRight size={20} className="text-gray-400" />
             </Link>
 
             <Separator />
 
             <Link to={createPageUrl('Terms')} className="flex items-center justify-between py-2">
-              <span className="text-gray-700">Terms of Service</span>
+              <span className="text-gray-700">{t('settingsPage.termsOfService')}</span>
               <ChevronRight size={20} className="text-gray-400" />
             </Link>
 
             <Separator />
 
             <Link to={createPageUrl('CommunityGuidelines')} className="flex items-center justify-between py-2">
-              <span className="text-gray-700">Community Guidelines</span>
+              <span className="text-gray-700">{t('settingsPage.communityGuidelines')}</span>
               <ChevronRight size={20} className="text-gray-400" />
             </Link>
 
@@ -564,9 +580,9 @@ export default function Settings() {
               className="flex items-center justify-between py-2 w-full text-left"
             >
               <div>
-                <span className="text-gray-700 block">Download My Data</span>
+                <span className="text-gray-700 block">{t('settingsPage.downloadMyData')}</span>
                 <span className="text-xs text-gray-500">
-                  {exportDataMutation.isPending ? 'Preparing download...' : 'GDPR compliant data export'}
+                  {exportDataMutation.isPending ? t('settingsPage.preparingDownload') : t('settingsPage.gdprExport')}
                 </span>
               </div>
               {exportDataMutation.isPending ? (
@@ -583,20 +599,17 @@ export default function Settings() {
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2 text-red-700">
               <Trash2 size={18} />
-              Account Deletion
+              {t('settingsPage.accountDeletion')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-red-600 mb-4">
-              Permanently delete your account and all associated data. This action cannot be undone.
+              {t('settingsPage.deleteAccountDesc')}
             </p>
             <Link to={createPageUrl('DeleteAccount')}>
-              <Button
-                variant="destructive"
-                className="w-full"
-              >
+              <Button variant="destructive" className="w-full">
                 <Trash2 size={18} className="mr-2" />
-                Delete My Account
+                {t('settingsPage.deleteMyAccount')}
               </Button>
             </Link>
           </CardContent>
@@ -604,13 +617,9 @@ export default function Settings() {
 
         {/* Logout */}
         <div className="space-y-3">
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            className="w-full"
-          >
+          <Button onClick={handleLogout} variant="outline" className="w-full">
             <LogOut size={18} className="mr-2" />
-            Log Out
+            {t('settingsPage.logOut')}
           </Button>
         </div>
 
@@ -624,9 +633,9 @@ export default function Settings() {
       <AlertDialog open={showEmailVerifyDialog} onOpenChange={setShowEmailVerifyDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Verify Email</AlertDialogTitle>
+            <AlertDialogTitle>{t('settingsPage.verifyEmail')}</AlertDialogTitle>
             <AlertDialogDescription>
-              We sent a 6-digit code to {userEmail}. Please enter it below.
+              {t('settingsPage.verifyEmailDesc')} {userEmail}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="py-4">
@@ -640,7 +649,7 @@ export default function Settings() {
             />
           </div>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => {
+            <AlertDialogCancel onClick={() => { setShowEmailVerifyDialog(false); setInputCode(""); }}>{t('common.cancel')}</AlertDialogCancel>
               setShowEmailVerifyDialog(false);
               setInputCode("");
             }}>Cancel</AlertDialogCancel>
