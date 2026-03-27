@@ -463,7 +463,9 @@ export default function Home() {
 
         <main className="flex-1 flex flex-col overflow-hidden px-4" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
           <ContextualUpgradeBanner userProfile={myProfile} />
-          <BlurredLikesTeaser likesCount={activityCounts?.likes || 0} />
+          {!['premium', 'elite', 'vip'].includes(myProfile?.subscription_tier) && (
+            <BlurredLikesTeaser likesCount={activityCounts?.likes || 0} className="mb-3" />
+          )}
           <DailyReturnBanner userProfile={myProfile} />
           <LiveActivityFeed userProfile={myProfile} />
           <ProfileCompletionBar userProfile={myProfile} />
