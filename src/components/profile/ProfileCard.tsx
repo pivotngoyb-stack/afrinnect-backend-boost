@@ -259,7 +259,9 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: '100%', opacity: 0 }}
               transition={{ type: 'spring', damping: 24, stiffness: 220 }}
-              className="absolute inset-x-0 bottom-0 z-40 max-h-[72%] overflow-y-auto rounded-t-[1.6rem] border-t border-border/60 bg-card"
+              className="absolute inset-x-0 bottom-0 z-40 max-h-[72%] overflow-y-auto rounded-t-[1.6rem] border-t border-border/60 bg-card touch-pan-y"
+              onPointerDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
             >
               <div className="p-5 space-y-4">
                 <div className="mx-auto h-1.5 w-12 rounded-full bg-muted" />
