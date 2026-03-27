@@ -316,17 +316,17 @@ export default function Matches() {
     });
 
   return (
-    <div className="h-[100dvh] flex flex-col bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 overflow-hidden">
+    <div className="h-[100dvh] flex flex-col bg-gradient-to-br from-background via-accent/30 to-secondary/20 overflow-hidden">
       {/* Header */}
-      <header className="flex-shrink-0 z-40 bg-white/80 backdrop-blur-lg border-b border-gray-100" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+      <header className="flex-shrink-0 z-40 bg-card/80 backdrop-blur-lg border-b border-border" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         <div className="max-w-4xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-700 to-amber-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 {t('matchesPage.connections')}
               </h1>
               {matchedProfiles.length > 0 && (
-                <p className="text-xs text-gray-500 mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {matchedProfiles.length} match{matchedProfiles.length !== 1 ? 'es' : ''} • {conversations.length} conversation{conversations.length !== 1 ? 's' : ''}
                 </p>
               )}
@@ -342,17 +342,17 @@ export default function Matches() {
         {/* Search Bar */}
         <div className="flex-shrink-0 py-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
             <Input
               placeholder={t('matchesPage.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-white border-gray-200"
+              className="pl-10 bg-card border-border"
             />
             {searchQuery && (
               <button 
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               >
                 <X size={16} />
               </button>
@@ -386,8 +386,8 @@ export default function Matches() {
             {/* New Matches Row */}
             {newMatches.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-2 mb-3">
-                  <Sparkles size={14} className="text-amber-500" />
+                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-2 mb-3">
+                  <Sparkles size={14} className="text-accent" />
                   {t('matchesPage.newMatches')}
                 </h3>
                 <div className="flex gap-3 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-hide">
@@ -398,13 +398,13 @@ export default function Matches() {
                           <img
                             src={profile.primary_photo || profile.photos?.[0]}
                             alt={profile.display_name}
-                            className="w-20 h-20 object-cover rounded-full border-3 border-purple-500 shadow-lg"
+                            className="w-20 h-20 object-cover rounded-full border-3 border-primary shadow-lg"
                           />
-                          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-pink-500 rounded-full flex items-center justify-center">
-                            <Heart size={12} className="text-white fill-white" />
+                          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-destructive rounded-full flex items-center justify-center">
+                            <Heart size={12} className="text-destructive-foreground fill-destructive-foreground" />
                           </div>
                         </div>
-                        <p className="text-xs font-medium text-gray-700 mt-1 truncate">{profile.display_name?.split(' ')[0]}</p>
+                        <p className="text-xs font-medium text-foreground mt-1 truncate">{profile.display_name?.split(' ')[0]}</p>
                       </motion.div>
                     </Link>
                   ))}
@@ -414,8 +414,8 @@ export default function Matches() {
 
             {/* Conversations List */}
             {conversations.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="divide-y divide-gray-100">
+              <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
+                <div className="divide-y divide-border">
                   {conversations.map(profile => {
                     const convData = conversationData[profile.match?.id] || {};
                     return (
@@ -446,9 +446,9 @@ export default function Matches() {
                 <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center">
                   <span className="text-4xl">💕</span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{t('matchesPage.noMatchesYet')}</h3>
-                <p className="text-gray-500 mb-4 max-w-sm mx-auto">{t('matchesPage.noMatchesDesc')}</p>
-                <Button onClick={() => window.location.href = createPageUrl('Home')} className="bg-gradient-to-r from-purple-600 to-pink-600">
+                <h3 className="text-xl font-bold text-foreground mb-2">{t('matchesPage.noMatchesYet')}</h3>
+                <p className="text-muted-foreground mb-4 max-w-sm mx-auto">{t('matchesPage.noMatchesDesc')}</p>
+                <Button onClick={() => window.location.href = createPageUrl('Home')} className="bg-gradient-to-r from-primary to-destructive">
                   <Heart size={16} className="mr-2" />
                   {t('matchesPage.startDiscovering')}
                 </Button>
@@ -488,15 +488,15 @@ export default function Matches() {
                       <div className="w-16 h-16 mx-auto mb-4 bg-pink-100 rounded-full flex items-center justify-center">
                         <Heart size={28} className="text-pink-500" />
                       </div>
-                       <h3 className="text-lg font-bold text-gray-900 mb-2">{t('matchesPage.noNewLikes')}</h3>
-                       <p className="text-gray-500 mb-4 text-sm">
-                         {t('matchesPage.noNewLikesDesc')}
-                       </p>
-                       <Button 
-                         onClick={() => window.location.href = createPageUrl('PricingPlans')}
-                         variant="outline"
-                         className="border-purple-300 text-purple-600 hover:bg-purple-50"
-                       >
+                       <h3 className="text-lg font-bold text-foreground mb-2">{t('matchesPage.noNewLikes')}</h3>
+                       <p className="text-muted-foreground mb-4 text-sm">
+                          {t('matchesPage.noNewLikesDesc')}
+                        </p>
+                        <Button 
+                          onClick={() => window.location.href = createPageUrl('PricingPlans')}
+                          variant="outline"
+                          className="border-primary/30 text-primary hover:bg-primary/5"
+                        >
                          <Sparkles size={16} className="mr-2" />
                          {t('matchesPage.boostProfile')}
                        </Button>

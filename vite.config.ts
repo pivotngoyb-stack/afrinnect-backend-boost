@@ -33,6 +33,8 @@ export default defineConfig(({ mode }) => ({
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-popover', '@radix-ui/react-tooltip'],
           query: ['@tanstack/react-query'],
           motion: ['framer-motion'],
+          charts: ['recharts'],
+          pdf: ['html2canvas', 'jspdf'],
         },
       },
     },
