@@ -521,17 +521,33 @@ export default function Chat() {
 
         {messages.length === 0 && !messagesLoading && (
           <div className="flex flex-col items-center justify-center h-full text-center py-12">
-            <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-              <Sparkles size={32} className="text-purple-600" />
-            </div>
-            <h3 className="text-lg font-bold text-foreground mb-2">Start a Conversation!</h3>
-            <p className="text-muted-foreground text-sm mb-4">
-              Say hello to {otherProfile.display_name}
-            </p>
+            {/* Opening Move prompt */}
+            {otherProfile.opening_move ? (
+              <>
+                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                  <Sparkles size={32} className="text-primary" />
+                </div>
+                <h3 className="text-lg font-bold text-foreground mb-2">{otherProfile.display_name}'s Opening Move</h3>
+                <div className="bg-accent/50 border border-accent rounded-2xl px-5 py-4 mb-4 max-w-xs">
+                  <p className="text-foreground text-sm italic">"{otherProfile.opening_move}"</p>
+                </div>
+                <p className="text-muted-foreground text-xs mb-4">Answer their prompt to start the conversation!</p>
+              </>
+            ) : (
+              <>
+                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                  <Sparkles size={32} className="text-primary" />
+                </div>
+                <h3 className="text-lg font-bold text-foreground mb-2">Start a Conversation!</h3>
+                <p className="text-muted-foreground text-sm mb-4">
+                  Say hello to {otherProfile.display_name}
+                </p>
+              </>
+            )}
             <div className="flex gap-3">
               <Button
                 onClick={() => setShowAIStarters(true)}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
               >
                 <Sparkles size={16} className="mr-2" />
                 AI Suggestions
@@ -539,7 +555,6 @@ export default function Chat() {
               <Button
                 onClick={() => setShowIceBreakers(true)}
                 variant="outline"
-                className="border-purple-600 text-purple-600 hover:bg-purple-50"
               >
                 Ice Breakers
               </Button>
