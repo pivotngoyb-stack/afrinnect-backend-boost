@@ -132,12 +132,27 @@ export default function Home() {
             deviceId = navigator.userAgent + '_' + Math.random().toString(36).substring(2, 15);
             localStorage.setItem('device_id', deviceId);
           }
-          const existingDeviceIds = profile.device_ids || [];
+          const existingDeviceIds = Array.isArray(profile.device_ids) ? profile.device_ids : [];
           if (!existingDeviceIds.includes(deviceId)) {
             if (existingDeviceIds.length >= 4) { navigate(createPageUrl('Settings')); return; }
+
+            const existingDeviceInfoRaw = profile.device_info;
+            const existingDeviceInfo = Array.isArray(existingDeviceInfoRaw)
+              ? existingDeviceInfoRaw
+              : existingDeviceInfoRaw && typeof existingDeviceInfoRaw === 'object'
+                ? [existingDeviceInfoRaw]
+                : [];
+
             await updateRecord('user_profiles', profile.id, {
               device_ids: [...existingDeviceIds, deviceId],
-              device_info: [...(profile.device_info || []), { device_id: deviceId, device_name: navigator.userAgent.substring(0, 50), last_login: new Date().toISOString() }]
+              device_info: [
+                ...existingDeviceInfo,
+                {
+                  device_id: deviceId,
+                  device_name: navigator.userAgent.substring(0, 50),
+                  last_login: new Date().toISOString()
+                }
+              ]
             });
           }
           setMyProfile(profile);
@@ -154,7 +169,9 @@ export default function Home() {
             } catch {}
           }
         } else { navigate(createPageUrl('Onboarding')); }
-      } catch {}
+      } catch (error) {
+        console.error('Failed to load current profile for discovery:', error);
+      }
     };
     fetchMyProfile();
   }, [isCheckingAuth]);
@@ -202,7 +219,9 @@ export default function Home() {
         const myCountry = normalize(myProfile.current_country);
 
         const passesBaseFilters = (p) => {
-          if (p.user_id === myProfile.user_id) return false;
+          // Hide only the exact current profile; allow seed/test profiles even if they share user_id
+          if (p.id === myProfile.id) return false;
+          if (p.user_id === myProfile.user_id && !p.is_seed) return false;
           if (myBlockedUsers.has(p.id)) return false;
           if (myProfile.looking_for?.length && !myProfile.looking_for.some((g) => normalize(g) === normalize(p.gender))) return false;
           if (filters.age_min || filters.age_max) {
