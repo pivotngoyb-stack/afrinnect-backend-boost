@@ -42,19 +42,21 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: 'profileId is required' }), { status: 400, headers: corsHeaders });
     }
 
-    // Get the user's blocked list, existing likes, and matches in parallel
-    const [blockedRes, likesRes, matchesRes] = await Promise.all([
+    // Get the user's blocked list, existing likes, passes, and matches in parallel
+    const [blockedRes, likesRes, passesRes, matchesRes] = await Promise.all([
       supabase.from('user_profiles').select('blocked_users').eq('id', profileId).single(),
       supabase.from('likes').select('liked_id').eq('liker_id', profileId),
+      supabase.from('passes').select('passed_id').eq('passer_id', profileId),
       supabase.rpc('get_matched_partner_ids', { p_profile_id: profileId }).catch(() => ({ data: [] })),
     ]);
 
     const blockedUsers: string[] = blockedRes.data?.blocked_users || [];
     const likedIds: string[] = (likesRes.data || []).map((l: any) => l.liked_id);
+    const passedIds: string[] = (passesRes.data || []).map((p: any) => p.passed_id);
     const matchedIds: string[] = (matchesRes.data || []).map((m: any) => m.partner_id || m);
 
-    // Build exclusion set
-    const excludeSet = new Set([profileId, ...blockedUsers, ...likedIds, ...matchedIds, ...excludeIds]);
+    // Build exclusion set — includes passes so swiped-left profiles don't reappear
+    const excludeSet = new Set([profileId, ...blockedUsers, ...likedIds, ...passedIds, ...matchedIds, ...excludeIds]);
 
     // Build query
     let query = supabase

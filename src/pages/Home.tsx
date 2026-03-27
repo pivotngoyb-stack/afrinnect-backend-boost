@@ -54,6 +54,8 @@ export default function Home() {
   const [matchCount, setMatchCount] = useState(0);
   const [showNewMatchToast, setShowNewMatchToast] = useState(false);
   const [lastMatchedProfile, setLastMatchedProfile] = useState(null);
+  // Local set of profile IDs swiped this session — ensures immediate exclusion even before DB confirms
+  const localSwipedIds = useRef<Set<string>>(new Set());
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { prompt: upgradePrompt, dismissPrompt } = useUpgradePrompts(myProfile);
@@ -219,13 +221,20 @@ export default function Home() {
           throw profilesError || new Error('Failed to load discovery profiles');
         }
 
-        const [myPasses, myLikes] = await Promise.all([
-          filterRecords('passes', { passer_id: myProfile.id }, '-created_at', 500, 'id,passed_id').catch((e) => { console.warn('Passes fetch failed:', e); return []; }),
-          filterRecords('likes', { liker_id: myProfile.id }, '-created_at', 500, 'id,liked_id').catch((e) => { console.warn('Likes fetch failed:', e); return []; }),
+        // Fetch ALL swipe history (no limit) so older swipes are excluded too
+        const [passesRes, likesRes, matchesRes] = await Promise.all([
+          supabase.from('passes').select('passed_id').eq('passer_id', myProfile.id).then(r => r.data || []),
+          supabase.from('likes').select('liked_id').eq('liker_id', myProfile.id).then(r => r.data || []),
+          supabase.from('matches').select('user1_id,user2_id')
+            .or(`user1_id.eq.${myProfile.id},user2_id.eq.${myProfile.id}`)
+            .then(r => r.data || []),
         ]);
 
-        const passedIds = new Set(myPasses.map(p => p.passed_id));
-        const likedIds = new Set(myLikes.map(l => l.liked_id));
+        const passedIds = new Set(passesRes.map((p: any) => p.passed_id));
+        const likedIds = new Set(likesRes.map((l: any) => l.liked_id));
+        const matchedIds = new Set(matchesRes.flatMap((m: any) =>
+          [m.user1_id, m.user2_id].filter(id => id !== myProfile.id)
+        ));
         const myBlockedUsers = new Set(myProfile?.blocked_users || []);
         // Bidirectional block: also exclude users who have blocked ME
         const blockedByOthers = new Set(
@@ -276,20 +285,20 @@ export default function Home() {
           return candidateCanonical !== myCanonicalCountry;
         };
 
+        // Combine all exclusion sets: DB records + local session swipes
+        const isExcluded = (id: string) =>
+          passedIds.has(id) || likedIds.has(id) || matchedIds.has(id) || localSwipedIds.current.has(id);
+
         const withoutSwipeExclusions = allProfiles.filter((p) => passesBaseFilters(p) && matchesMode(p));
-        let filtered = withoutSwipeExclusions.filter((p) => !passedIds.has(p.id) && !likedIds.has(p.id));
+        let filtered = withoutSwipeExclusions.filter((p) => !isExcluded(p.id));
 
         // Auto-fallback: if local mode returns 0 results, expand to global before showing empty state
         if (filtered.length === 0 && discoveryMode === 'local') {
           const globalNoSwipes = allProfiles.filter((p) => passesBaseFilters(p));
-          filtered = globalNoSwipes.filter((p) => !passedIds.has(p.id) && !likedIds.has(p.id));
+          filtered = globalNoSwipes.filter((p) => !isExcluded(p.id));
         }
 
-        // Recovery fallback: if user exhausted candidates, resurface existing candidates instead of dead-end empty state
-        if (filtered.length === 0) {
-          filtered = withoutSwipeExclusions;
-        }
-
+        // NO recovery fallback — never resurface swiped profiles
         return filtered;
       } catch (err) { console.error('Discovery query failed:', err); return []; }
     },
@@ -489,6 +498,8 @@ export default function Home() {
       return;
     }
     if (navigator.vibrate) navigator.vibrate(50);
+    // Immediately mark as swiped locally so it never reappears
+    localSwipedIds.current.add(profile.id);
     setPendingLikeProfile(profile);
     setSwipeHistory(prev => [...prev, { profile, action: 'like', index: currentIndex }]);
     likeMutation.mutate({ likedId: profile.id, profile });
@@ -496,6 +507,7 @@ export default function Home() {
   const handleLikeWithMessage = async (message) => {
     if (navigator.vibrate) navigator.vibrate(50);
     if (!pendingLikeProfile) return;
+    localSwipedIds.current.add(pendingLikeProfile.id);
     setSwipeHistory(prev => [...prev, { profile: pendingLikeProfile, action: 'like', index: currentIndex }]);
     likeMutation.mutate({ likedId: pendingLikeProfile.id, likeNote: message, profile: pendingLikeProfile });
     setShowMessageModal(false); setPendingLikeProfile(null);
@@ -511,6 +523,7 @@ export default function Home() {
         return;
       }
     }
+    localSwipedIds.current.add(profile.id);
     setPendingLikeProfile(profile);
     if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
     setSwipeHistory(prev => [...prev, { profile, action: 'superlike', index: currentIndex }]);
@@ -523,10 +536,14 @@ export default function Home() {
       const targetProfile = profileToPass || currentProfile;
       if (!targetProfile?.id) return;
       if (navigator.vibrate) navigator.vibrate(30);
-      await createRecord('passes', {
+      // Immediately mark as swiped locally
+      localSwipedIds.current.add(targetProfile.id);
+      // Use upsert to handle duplicate pass gracefully
+      const { error } = await supabase.from('passes').upsert({
         passer_id: myProfile.id, passed_id: targetProfile.id,
         passer_user_id: myProfile.user_id, is_rewindable: true
-      });
+      }, { onConflict: 'passer_id,passed_id' });
+      if (error) throw error;
     },
     onSuccess: (_data, passedProfile) => {
       const targetProfile = passedProfile || currentProfile;
@@ -542,6 +559,7 @@ export default function Home() {
       if (targetProfile) {
         setSwipeHistory(prev => [...prev, { profile: targetProfile, action: 'pass', index: currentIndex }]);
       }
+      // Still advance — localSwipedIds already prevents reappearance
       setCurrentIndex(prev => prev + 1);
     }
   });
@@ -558,6 +576,8 @@ export default function Home() {
     if (swipeHistory.length === 0) return;
 
     const lastAction = swipeHistory[swipeHistory.length - 1];
+    // Remove from local exclusion set so the profile can reappear
+    localSwipedIds.current.delete(lastAction.profile.id);
     if (lastAction.action === 'like' || lastAction.action === 'superlike') {
       const existing = await filterRecords('likes', { liker_id: myProfile.id, liked_id: lastAction.profile.id });
       for (const l of existing) await deleteRecord('likes', l.id);
@@ -591,12 +611,14 @@ export default function Home() {
   }, [discoveryMode, myProfile?.id, filtersKey]);
 
   useEffect(() => {
+    // Don't reset to 0 when exhausted — that causes infinite cycling
+    // Only reset if profiles array changed (e.g. new fetch with different data)
     if (profiles.length === 0) {
       if (currentIndex !== 0) setCurrentIndex(0);
       return;
     }
-    if (currentIndex >= profiles.length) setCurrentIndex(0);
-  }, [profiles.length, currentIndex]);
+    // If currentIndex is beyond profiles, cap it at the end (shows empty state)
+  }, [profiles.length]);
 
   if (isCheckingAuth) {
     return (
