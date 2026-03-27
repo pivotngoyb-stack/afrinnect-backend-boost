@@ -5,14 +5,10 @@ import { MessageCircle, Crown, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from "@/components/ui/button";
+import { useLanguage } from '@/components/i18n/LanguageContext';
 
-export default function MessagePreviewTeaser({ 
-  message, 
-  senderName,
-  senderPhoto,
-  isPremium = false,
-  className = "" 
-}) {
+export default function MessagePreviewTeaser({ message, senderName, senderPhoto, isPremium = false, className = "" }) {
+  const { t } = useLanguage();
   if (isPremium || !message) return null;
 
   const words = message.split(' ');
@@ -20,26 +16,19 @@ export default function MessagePreviewTeaser({
   const hasMore = words.length > 3;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      className={`bg-background rounded-xl border shadow-sm overflow-hidden ${className}`}
-    >
+    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+      className={`bg-background rounded-xl border shadow-sm overflow-hidden ${className}`}>
       <div className="p-4">
         <div className="flex items-center gap-3 mb-3">
           <div className="relative">
-            <img 
-              src={senderPhoto || '/default-avatar.png'}
-              alt={senderName}
-              className="w-12 h-12 rounded-full object-cover"
-            />
+            <img src={senderPhoto || '/default-avatar.png'} alt={senderName} className="w-12 h-12 rounded-full object-cover" />
             <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
               <MessageCircle size={10} className="text-primary-foreground" />
             </div>
           </div>
           <div className="flex-1">
             <h4 className="font-semibold">{senderName}</h4>
-            <p className="text-xs text-primary">New message</p>
+            <p className="text-xs text-primary">{t('monetization.messagePreview.newMessage')}</p>
           </div>
         </div>
 
@@ -48,9 +37,7 @@ export default function MessagePreviewTeaser({
             {visibleWords}
             {hasMore && (
               <span className="relative inline-block ml-1">
-                <span className="blur-sm select-none">
-                  {words.slice(3, 8).join(' ')}...
-                </span>
+                <span className="blur-sm select-none">{words.slice(3, 8).join(' ')}...</span>
                 <span className="absolute inset-0 flex items-center justify-center">
                   <Lock size={14} className="text-primary" />
                 </span>
@@ -61,12 +48,9 @@ export default function MessagePreviewTeaser({
 
         {hasMore && (
           <Link to={createPageUrl('PricingPlans')}>
-            <Button 
-              size="sm" 
-              className="w-full mt-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-            >
+            <Button size="sm" className="w-full mt-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
               <Crown size={14} className="mr-2" />
-              Upgrade to Read Full Message
+              {t('monetization.messagePreview.upgradeToRead')}
             </Button>
           </Link>
         )}
