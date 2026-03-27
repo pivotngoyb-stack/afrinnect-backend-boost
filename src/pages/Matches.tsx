@@ -162,7 +162,7 @@ export default function Matches() {
         
         // Get all likes and matches in parallel (only 2 API calls)
         const [allLikes, allMatches] = await Promise.all([
-          filterRecords('likes', { liked_id: myProfile.id }, '-created_date', 50),
+          filterRecords('likes', { liked_id: myProfile.id }, '-created_date', 50, 'id,liker_id,is_super_like,created_at'),
           (async () => {
             // Use direct Supabase query with proper OR grouping
             const { data } = await supabase
