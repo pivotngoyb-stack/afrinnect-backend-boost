@@ -191,12 +191,13 @@ export default function MarketplaceTab({ currentUser }: MarketplaceTabProps) {
   const featuredBusinesses = filteredBusinesses.filter(b => b.is_featured);
   const regularBusinesses = filteredBusinesses.filter(b => !b.is_featured);
 
-  const BusinessCard = ({ business }: { business: any }) => {
+  const renderBusinessCard = (business: any) => {
     const catInfo = getCategoryInfo(business.category);
     const isFav = favorites.includes(business.id);
 
     return (
       <Card 
+        key={business.id}
         className="hover:shadow-md transition-all border-border cursor-pointer active:scale-[0.98]"
         onClick={() => setSelectedBusiness(business)}
       >
