@@ -25,6 +25,7 @@ import HomeModals from '@/components/home/HomeModals';
 import NewMatchToast from '@/components/engagement/NewMatchToast';
 import ProfileViewerToast from '@/components/monetization/ProfileViewerToast';
 import MissedMatchRegret from '@/components/monetization/MissedMatchRegret';
+import { toast } from 'sonner';
 
 export default function Home() {
   usePerformanceMonitor('Home');
@@ -276,29 +277,47 @@ export default function Home() {
     mutationFn: async ({ likedId, isSuperLike = false, likeNote = null }) => {
       if (!myProfile) return;
       if (isVerificationGated) throw new Error('verification_required');
-      if (!canLike()) throw new Error('daily_limit_reached');
-
-      const today = new Date().toISOString().split('T')[0];
-      const shouldReset = myProfile.daily_likes_reset_date !== today;
-      await updateRecord('user_profiles', myProfile.id, {
-        daily_likes_count: shouldReset ? 1 : (myProfile.daily_likes_count || 0) + 1,
-        daily_likes_reset_date: today
-      });
 
       const likedProfiles = await filterRecords('user_profiles', { id: likedId });
       if (!likedProfiles.length) throw new Error('Profile not found');
       const likedProfile = likedProfiles[0];
 
+      const { data: existingLike, error: existingLikeError } = await supabase
+        .from('likes')
+        .select('id')
+        .eq('liker_id', myProfile.id)
+        .eq('liked_id', likedId)
+        .maybeSingle();
+
+      if (existingLikeError && existingLikeError.code !== 'PGRST116') {
+        throw existingLikeError;
+      }
+
+      const alreadyLiked = !!existingLike;
+
+      if (!alreadyLiked) {
+        if (!canLike()) throw new Error('daily_limit_reached');
+
+        const today = new Date().toISOString().split('T')[0];
+        const shouldReset = myProfile.daily_likes_reset_date !== today;
+        await updateRecord('user_profiles', myProfile.id, {
+          daily_likes_count: shouldReset ? 1 : (myProfile.daily_likes_count || 0) + 1,
+          daily_likes_reset_date: today
+        });
+      }
+
       const tier = myProfile.subscription_tier || 'free';
       const isPriorityLike = tier === 'elite' || tier === 'vip';
 
-      await createRecord('likes', {
-        liker_id: myProfile.id, liked_id: likedId,
-        liker_user_id: myProfile.user_id, liked_user_id: likedProfile.user_id,
-        is_super_like: isSuperLike, is_seen: false,
-        is_priority: isPriorityLike,
-        priority_boost_expires: isPriorityLike ? new Date(Date.now() + 86400000).toISOString() : null
-      });
+      if (!alreadyLiked) {
+        await createRecord('likes', {
+          liker_id: myProfile.id, liked_id: likedId,
+          liker_user_id: myProfile.user_id, liked_user_id: likedProfile.user_id,
+          is_super_like: isSuperLike, is_seen: false,
+          is_priority: isPriorityLike,
+          priority_boost_expires: isPriorityLike ? new Date(Date.now() + 86400000).toISOString() : null
+        });
+      }
 
       if (likeNote) {
         const { data: existingMatch } = await supabase.from('matches').select('id')
@@ -359,7 +378,7 @@ export default function Home() {
           return { isMatch: true };
         }
         return { isMatch: true };
-      } else {
+      } else if (!alreadyLiked) {
         await createRecord('notifications', {
           user_profile_id: likedId, user_id: likedProfile.user_id,
           type: isSuperLike ? 'super_like' : 'like',
@@ -368,7 +387,7 @@ export default function Home() {
           from_profile_id: myProfile.id, link_to: createPageUrl('Matches')
         });
       }
-      return { isMatch: false };
+      return { isMatch: false, alreadyLiked };
     },
     onSuccess: (data, variables) => {
       if (data?.isMatch) {
@@ -382,6 +401,9 @@ export default function Home() {
           setShowNewMatchToast(true);
           setTimeout(() => setShowNewMatchToast(false), 8000);
         }, 3000);
+      }
+      if (data?.alreadyLiked) {
+        toast('Already liked — moving to next profile');
       }
       setCurrentIndex(prev => prev + 1);
       setProfileViewStartTime(Date.now());
@@ -417,7 +439,10 @@ export default function Home() {
     if (tier === 'free') {
       const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
       const weekly = await filterRecords('likes', { liker_id: myProfile.id, is_super_like: true, created_date: { $gte: weekAgo } });
-      if (weekly.length >= 1) return;
+      if (weekly.length >= 1) {
+        toast('You have used your weekly Super Like');
+        return;
+      }
     }
     setPendingLikeProfile(profile);
     if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
