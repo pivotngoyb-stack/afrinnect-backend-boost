@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Crown, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';

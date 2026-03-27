@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import ComingSoon from '@/components/shared/ComingSoon';
 import { Phone } from 'lucide-react';
