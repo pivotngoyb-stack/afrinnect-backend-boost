@@ -69,9 +69,10 @@ const ChatReminderBanner = forwardRef<HTMLDivElement, ChatReminderBannerProps>((
     return Date.now() - lastMsgTime > 24 * 60 * 60 * 1000;
   }).slice(0, 1), [staleConversations, conversationData]);
 
-  if (stale.length === 0) return null;
-  const profile = stale[0];
-  const nudge = useMemo(() => generateContextualNudge(myProfile, profile, language), [myProfile, profile, language]);
+  const profile = stale[0] || null;
+  const nudge = useMemo(() => profile ? generateContextualNudge(myProfile, profile, language) : '', [myProfile, profile, language]);
+
+  if (!profile) return null;
 
   return (
     <motion.div
