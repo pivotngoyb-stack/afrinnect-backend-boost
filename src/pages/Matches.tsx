@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '@/components/i18n/LanguageContext';
 import { filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -27,6 +28,7 @@ import MatchUrgencyPrompt from '@/components/engagement/MatchUrgencyPrompt';
 import ChatReminderBanner from '@/components/engagement/ChatReminderBanner';
 
 export default function Matches() {
+  const { t } = useLanguage();
   
   const [myProfile, setMyProfile] = useState(null);
   const [selectedProfile, setSelectedProfile] = useState(null);
@@ -314,7 +316,7 @@ export default function Matches() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-700 to-amber-600 bg-clip-text text-transparent">
-                Connections
+                {t('matchesPage.connections')}
               </h1>
               {matchedProfiles.length > 0 && (
                 <p className="text-xs text-gray-500 mt-0.5">
@@ -335,7 +337,7 @@ export default function Matches() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
             <Input
-              placeholder="Search matches & conversations..."
+              placeholder={t('matchesPage.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 bg-white border-gray-200"
@@ -355,11 +357,11 @@ export default function Matches() {
           <TabsList className="w-full grid grid-cols-2 mb-4 flex-shrink-0">
             <TabsTrigger value="matches" className="gap-2">
               <MessageCircle size={16} />
-              Conversations
+              {t('matchesPage.conversations')}
             </TabsTrigger>
             <TabsTrigger value="likes" className="gap-2 relative">
               <Heart size={16} />
-              Likes You
+              {t('matchesPage.likesYou')}
               {likesReceived.length > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 text-white text-xs rounded-full flex items-center justify-center">
                   {likesReceived.length}
@@ -379,7 +381,7 @@ export default function Matches() {
               <div>
                 <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-2 mb-3">
                   <Sparkles size={14} className="text-amber-500" />
-                  New Matches
+                  {t('matchesPage.newMatches')}
                 </h3>
                 <div className="flex gap-3 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-hide">
                   {newMatches.map(profile => (
@@ -437,11 +439,11 @@ export default function Matches() {
                 <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center">
                   <span className="text-4xl">💕</span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">No matches yet</h3>
-                <p className="text-gray-500 mb-4 max-w-sm mx-auto">Start swiping to find your perfect match!</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{t('matchesPage.noMatchesYet')}</h3>
+                <p className="text-gray-500 mb-4 max-w-sm mx-auto">{t('matchesPage.noMatchesDesc')}</p>
                 <Button onClick={() => window.location.href = createPageUrl('Home')} className="bg-gradient-to-r from-purple-600 to-pink-600">
                   <Heart size={16} className="mr-2" />
-                  Start Discovering
+                  {t('matchesPage.startDiscovering')}
                 </Button>
               </motion.div>
             )}
@@ -479,18 +481,18 @@ export default function Matches() {
                       <div className="w-16 h-16 mx-auto mb-4 bg-pink-100 rounded-full flex items-center justify-center">
                         <Heart size={28} className="text-pink-500" />
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 mb-2">No new likes yet</h3>
-                      <p className="text-gray-500 mb-4 text-sm">
-                        Boost your profile to appear first and get up to 10x more visibility!
-                      </p>
-                      <Button 
-                        onClick={() => window.location.href = createPageUrl('PricingPlans')}
-                        variant="outline"
-                        className="border-purple-300 text-purple-600 hover:bg-purple-50"
-                      >
-                        <Sparkles size={16} className="mr-2" />
-                        Boost Profile
-                      </Button>
+                       <h3 className="text-lg font-bold text-gray-900 mb-2">{t('matchesPage.noNewLikes')}</h3>
+                       <p className="text-gray-500 mb-4 text-sm">
+                         {t('matchesPage.noNewLikesDesc')}
+                       </p>
+                       <Button 
+                         onClick={() => window.location.href = createPageUrl('PricingPlans')}
+                         variant="outline"
+                         className="border-purple-300 text-purple-600 hover:bg-purple-50"
+                       >
+                         <Sparkles size={16} className="mr-2" />
+                         {t('matchesPage.boostProfile')}
+                       </Button>
                     </motion.div>
                   </div>
                 )}
