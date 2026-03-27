@@ -387,17 +387,17 @@ export default function Home() {
           });
 
           try {
-            await createRecord('notifications', {
-              user_profile_id: likedId, user_id: likedProfile.user_id, type: 'match',
-              title: "It's a Match! 💕", message: `You and ${myProfile.display_name} liked each other!`,
-              from_profile_id: myProfile.id, link_to: createPageUrl('Matches')
+            await supabase.rpc('create_notification', {
+              p_user_profile_id: likedId, p_user_id: likedProfile.user_id, p_type: 'match',
+              p_title: "It's a Match! 💕", p_message: `You and ${myProfile.display_name} liked each other!`,
+              p_from_profile_id: myProfile.id, p_link_to: createPageUrl('Matches')
             });
           } catch (e) { console.warn('Notification skipped (match→liked):', e); }
           try {
-            await createRecord('notifications', {
-              user_profile_id: myProfile.id, user_id: myProfile.user_id, type: 'match',
-              title: "It's a Match! 💕", message: `You and ${likedProfile.display_name} liked each other!`,
-              from_profile_id: likedId, link_to: createPageUrl('Matches')
+            await supabase.rpc('create_notification', {
+              p_user_profile_id: myProfile.id, p_user_id: myProfile.user_id, p_type: 'match',
+              p_title: "It's a Match! 💕", p_message: `You and ${likedProfile.display_name} liked each other!`,
+              p_from_profile_id: likedId, p_link_to: createPageUrl('Matches')
             });
           } catch (e) { console.warn('Notification skipped (match→self):', e); }
 
@@ -406,12 +406,12 @@ export default function Home() {
         return { isMatch: true };
       } else if (!alreadyLiked) {
         try {
-          await createRecord('notifications', {
-            user_profile_id: likedId, user_id: likedProfile.user_id,
-            type: isSuperLike ? 'super_like' : 'like',
-            title: isSuperLike ? "You got a Super Like! ⭐" : "Someone likes you!",
-            message: `${myProfile.display_name} ${isSuperLike ? 'super liked' : 'liked'} your profile`,
-            from_profile_id: myProfile.id, link_to: createPageUrl('Matches')
+          await supabase.rpc('create_notification', {
+            p_user_profile_id: likedId, p_user_id: likedProfile.user_id,
+            p_type: isSuperLike ? 'super_like' : 'like',
+            p_title: isSuperLike ? "You got a Super Like! ⭐" : "Someone likes you!",
+            p_message: `${myProfile.display_name} ${isSuperLike ? 'super liked' : 'liked'} your profile`,
+            p_from_profile_id: myProfile.id, p_link_to: createPageUrl('Matches')
           });
         } catch (e) { console.warn('Notification skipped (like):', e); }
       }

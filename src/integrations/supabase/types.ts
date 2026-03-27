@@ -3986,6 +3986,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_notification: {
+        Args: {
+          p_from_profile_id?: string
+          p_link_to?: string
+          p_message: string
+          p_title: string
+          p_type: string
+          p_user_id: string
+          p_user_profile_id: string
+        }
+        Returns: undefined
+      }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
