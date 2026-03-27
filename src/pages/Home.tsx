@@ -17,7 +17,6 @@ import AfricanPattern from '@/components/shared/AfricanPattern';
 import { AfricanProverbLoader } from '@/components/shared/AfricanCulture';
 import BannedScreen from '@/components/auth/BannedScreen';
 import VerificationGateBanner from '@/components/shared/VerificationGateBanner';
-import BoostButton from '@/components/monetization/BoostButton';
 import HomeHeader from '@/components/home/HomeHeader';
 import SwipeView from '@/components/home/SwipeView';
 import GridView from '@/components/home/GridView';
