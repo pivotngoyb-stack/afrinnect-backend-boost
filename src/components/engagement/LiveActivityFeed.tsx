@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Zap, MapPin, Heart, TrendingUp, Trophy } from 'lucide-react';
 
-const CITIES = ['Nairobi', 'Lagos', 'Accra', 'Johannesburg', 'Addis Ababa', 'Dar es Salaam', 'Kampala', 'Kigali', 'Dakar', 'Abidjan', 'New York', 'London', 'Toronto', 'Paris', 'Houston', 'Atlanta'];
+const CITIES = ['New York', 'Toronto', 'Houston', 'Atlanta', 'Chicago', 'Vancouver', 'Montreal', 'Miami', 'Los Angeles', 'Dallas', 'Washington DC', 'Calgary', 'Ottawa', 'Philadelphia', 'San Francisco', 'Boston'];
 const NAMES_M = ['Kwame', 'Chidi', 'Amari', 'Kofi', 'Jabari', 'Tendai', 'Emeka', 'Sekou'];
 const NAMES_F = ['Amina', 'Zuri', 'Nia', 'Aisha', 'Fatou', 'Adama', 'Nala', 'Sade'];
 
@@ -17,7 +17,6 @@ function getTemplates(userCity?: string) {
     () => ({ icon: Users, text: `Someone just joined from ${randomItem(CITIES)}`, color: 'text-primary' }),
     () => ({ icon: Zap, text: `${randomNum(3, 12)} people online near you`, color: 'text-amber-500' }),
     () => ({ icon: MapPin, text: `New match happening in ${randomItem(CITIES)} right now`, color: 'text-emerald-500' }),
-    // Social pressure templates
     () => ({ icon: TrendingUp, text: `People in ${city} got ${randomNum(8, 25)} matches today`, color: 'text-primary' }),
     () => ({ icon: Trophy, text: `${randomItem(NAMES_M)} got ${randomNum(2, 5)} matches this hour`, color: 'text-amber-500' }),
     () => ({ icon: Zap, text: `Users who complete profiles get 5x more matches`, color: 'text-emerald-500' }),
