@@ -642,12 +642,12 @@ export default function Landing() {
           </h2>
           <div className="grid md:grid-cols-3 gap-6 mb-10">
             {[
-              "Unlimited Likes",
-              "See Who Likes You",
-              "Advanced Filters",
-              "Read Receipts",
-              "Rewind Last Swipe",
-              "Profile Boosts"
+              t('monetization.premiumFeatures.unlimitedLikes'),
+              t('monetization.premiumFeatures.seeWhoLikes'),
+              t('monetization.premiumFeatures.advancedFilters'),
+              t('monetization.premiumFeatures.readReceipts'),
+              t('monetization.premiumFeatures.rewindSwipe'),
+              t('monetization.premiumFeatures.profileBoosts')
             ].map((feature, idx) => (
               <div key={idx} className="flex items-center justify-center gap-2 text-gray-700">
                 <CheckCircle size={20} className="text-green-600" />
@@ -670,13 +670,13 @@ export default function Landing() {
           >
             {/* Emotional Hook */}
             <p className="text-amber-300 text-lg mb-4 font-medium">
-              Somewhere out there, someone is waiting to meet you
+              {t('landingExtra.ctaEmotional')}
             </p>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Your People Are Waiting
+              {t('landingExtra.ctaTitle')}
             </h2>
             <p className="text-xl text-white/90 mb-4 max-w-2xl mx-auto">
-              Every day you wait is a day you could be connecting with people who share your culture, heritage, and vision for the future.
+              {t('landingExtra.ctaDesc')}
             </p>
             
             {/* Scarcity/Urgency */}
@@ -685,7 +685,7 @@ export default function Landing() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
               </span>
-              <span className="text-white/90 text-sm">{liveCount} members active now</span>
+              <span className="text-white/90 text-sm">{t('landingExtra.ctaLive').replace('{count}', String(liveCount))}</span>
             </div>
             
             <div className="flex flex-col items-center gap-4">
@@ -694,13 +694,13 @@ export default function Landing() {
                 size="lg" 
                 className="bg-white text-purple-900 hover:bg-gray-100 px-12 py-7 text-xl rounded-full shadow-2xl transform hover:scale-105 transition-all font-bold"
               >
-                Join Afrinnect — Free
+                {t('landingExtra.joinAfrinnect')}
                 <ArrowRight size={24} className="ml-2" />
               </Button>
               <div className="flex items-center gap-4 text-white/70 text-sm mt-2">
-                <span>✓ 100% Free</span>
-                <span>✓ 2 min signup</span>
-                <span>✓ Cancel anytime</span>
+                <span>{t('landingExtra.free')}</span>
+                <span>{t('landingExtra.twoMinSignup')}</span>
+                <span>{t('landingExtra.cancelAnytime')}</span>
               </div>
             </div>
           </motion.div>
@@ -712,7 +712,7 @@ export default function Landing() {
         {isLoggedIn ? (
           <Link to={createPageUrl('Home')} className="block">
             <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white rounded-full py-6 text-base font-bold">
-              Open Afrinnect
+              {t('landingExtra.openAfrinnect')}
             </Button>
           </Link>
         ) : (
@@ -721,11 +721,11 @@ export default function Landing() {
               onClick={handleGetStarted}
               className="w-full bg-gradient-to-r from-purple-600 to-amber-600 text-white rounded-full py-6 text-base font-bold shadow-lg"
             >
-              Join the Community — Free
+              {t('landingExtra.testimonials.joinFree')}
               <ArrowRight size={18} className="ml-2" />
             </Button>
             <p className="text-center text-xs text-gray-500">
-              Join {liveCount}+ members • Takes 2 minutes
+              {t('landingExtra.joinMembers').replace('{count}', String(liveCount))}
             </p>
           </div>
         )}
@@ -739,18 +739,18 @@ export default function Landing() {
             {t('landing.footer.tagline')}
           </p>
           <div className="flex justify-center gap-6 mt-6 text-sm text-gray-400">
-            <Link to={createPageUrl('Privacy')} className="hover:text-white" id="privacy-policy">Privacy Policy</Link>
-            <Link to={createPageUrl('Terms')} className="hover:text-white">Terms of Service</Link>
+            <Link to={createPageUrl('Privacy')} className="hover:text-white" id="privacy-policy">{t('landingExtra.footerPrivacy')}</Link>
+            <Link to={createPageUrl('Terms')} className="hover:text-white">{t('landingExtra.footerTerms')}</Link>
             <Link to={createPageUrl('CommunityGuidelines')} className="hover:text-white">{t('landing.footer.guidelines')}</Link>
           </div>
           {/* Contact & Copyright */}
           <div className="mt-8 pt-8 border-t border-gray-800">
             <p className="text-sm text-gray-400 mb-2">
-              Contact us: <a href="mailto:Support@afrinnect.com" className="text-amber-400 hover:text-amber-300">Support@afrinnect.com</a>
+              {t('landingExtra.footerContact')} <a href="mailto:Support@afrinnect.com" className="text-amber-400 hover:text-amber-300">Support@afrinnect.com</a>
             </p>
-            <p className="text-sm text-gray-400">© {new Date().getFullYear()} Afrinnect. All rights reserved.</p>
+            <p className="text-sm text-gray-400">© {new Date().getFullYear()} Afrinnect. {t('landingExtra.footerRights')}</p>
             <p className="text-xs text-gray-500 mt-2">
-              Afrinnect and the Afrinnect logo are trademarks of Afrinnect. Unauthorized use is prohibited.
+              {t('landingExtra.footerTrademark')}
             </p>
           </div>
         </div>
