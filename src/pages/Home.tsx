@@ -370,13 +370,13 @@ export default function Home() {
       }
       return { isMatch: false };
     },
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       if (data?.isMatch) {
         confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 }, colors: ['#ff6b9d', '#c084fc', '#f59e0b', '#ef4444'] });
         if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
         setShowMatchCelebration(true);
         setMatchCount(prev => prev + 1);
-        setLastMatchedProfile(pendingLikeProfile);
+        setLastMatchedProfile(variables?.profile || pendingLikeProfile);
         setTimeout(() => {
           setShowMatchCelebration(false);
           setShowNewMatchToast(true);
@@ -384,6 +384,8 @@ export default function Home() {
         }, 3000);
       }
       setCurrentIndex(prev => prev + 1);
+      setProfileViewStartTime(Date.now());
+      setPhotosViewedCount(0);
     },
     onError: (error) => {
       if (error.message === 'verification_required') return;
@@ -395,11 +397,18 @@ export default function Home() {
     }
   });
 
-  const handleLike = (profile) => { setPendingLikeProfile(profile); setShowMessageModal(true); };
+  const handleLike = (profile) => {
+    if (!profile || likeMutation.isPending || passMutation.isPending) return;
+    if (navigator.vibrate) navigator.vibrate(50);
+    setPendingLikeProfile(profile);
+    setSwipeHistory(prev => [...prev, { profile, action: 'like', index: currentIndex }]);
+    likeMutation.mutate({ likedId: profile.id, profile });
+  };
   const handleLikeWithMessage = async (message) => {
     if (navigator.vibrate) navigator.vibrate(50);
-    setSwipeHistory([...swipeHistory, { profile: pendingLikeProfile, action: 'like', index: currentIndex }]);
-    likeMutation.mutate({ likedId: pendingLikeProfile.id, likeNote: message });
+    if (!pendingLikeProfile) return;
+    setSwipeHistory(prev => [...prev, { profile: pendingLikeProfile, action: 'like', index: currentIndex }]);
+    likeMutation.mutate({ likedId: pendingLikeProfile.id, likeNote: message, profile: pendingLikeProfile });
     setShowMessageModal(false); setPendingLikeProfile(null);
   };
 
@@ -410,33 +419,45 @@ export default function Home() {
       const weekly = await filterRecords('likes', { liker_id: myProfile.id, is_super_like: true, created_date: { $gte: weekAgo } });
       if (weekly.length >= 1) return;
     }
+    setPendingLikeProfile(profile);
     if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
-    setSwipeHistory([...swipeHistory, { profile, action: 'superlike', index: currentIndex }]);
-    likeMutation.mutate({ likedId: profile.id, isSuperLike: true });
+    setSwipeHistory(prev => [...prev, { profile, action: 'superlike', index: currentIndex }]);
+    likeMutation.mutate({ likedId: profile.id, isSuperLike: true, profile });
   };
 
   // Pass mutation
   const passMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (profileToPass) => {
+      const targetProfile = profileToPass || currentProfile;
+      if (!targetProfile?.id) return;
       if (navigator.vibrate) navigator.vibrate(30);
       await createRecord('passes', {
-        passer_id: myProfile.id, passed_id: currentProfile.id,
+        passer_id: myProfile.id, passed_id: targetProfile.id,
         passer_user_id: myProfile.user_id, is_rewindable: true
       });
     },
-    onSuccess: () => {
-      setSwipeHistory([...swipeHistory, { profile: currentProfile, action: 'pass', index: currentIndex }]);
+    onSuccess: (_data, passedProfile) => {
+      const targetProfile = passedProfile || currentProfile;
+      if (targetProfile) {
+        setSwipeHistory(prev => [...prev, { profile: targetProfile, action: 'pass', index: currentIndex }]);
+      }
       setCurrentIndex(prev => prev + 1);
       setProfileViewStartTime(Date.now());
       setPhotosViewedCount(0);
     },
-    onError: () => {
-      setSwipeHistory([...swipeHistory, { profile: currentProfile, action: 'pass', index: currentIndex }]);
+    onError: (_error, passedProfile) => {
+      const targetProfile = passedProfile || currentProfile;
+      if (targetProfile) {
+        setSwipeHistory(prev => [...prev, { profile: targetProfile, action: 'pass', index: currentIndex }]);
+      }
       setCurrentIndex(prev => prev + 1);
     }
   });
 
-  const handlePass = () => passMutation.mutate();
+  const handlePass = (profile = currentProfile) => {
+    if (!profile || passMutation.isPending || likeMutation.isPending) return;
+    passMutation.mutate(profile);
+  };
 
   const handleRewind = async () => {
     const tier = myProfile?.subscription_tier || 'free';

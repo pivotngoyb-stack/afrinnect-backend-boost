@@ -2,12 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import { MapPin, Briefcase, GraduationCap, Heart, ChevronLeft, ChevronRight, Languages, Book, Sparkles, Mic, Loader2, Crown } from 'lucide-react';
+import { MapPin, Briefcase, GraduationCap, Heart, ChevronLeft, ChevronRight, Languages, Book, Sparkles, Mic, Loader2 } from 'lucide-react';
 import { KenteDivider } from '../shared/AfricanPattern';
 import { Badge } from "@/components/ui/badge";
 import VerificationBadge from '../shared/VerificationBadge';
 import CountryFlag from '../shared/CountryFlag';
-import ProfileBadges from './ProfileBadges';
 import ProfileTierDecoration from './ProfileTierDecoration';
 import { useLanguage } from '@/components/i18n/LanguageContext';
 import MatchExplanation from '../matching/MatchExplanation';
@@ -16,16 +15,33 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
   const { t } = useLanguage();
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const x = useMotionValue(0);
-  const rotate = useTransform(x, [-200, 200], [-15, 15]);
-  const likeOpacity = useTransform(x, [50, 150], [0, 1]);
-  const nopeOpacity = useTransform(x, [-50, -150], [0, 1]);
-  const borderColor = useTransform(x, [-150, 0, 150], ['#ef4444', 'rgba(0,0,0,0)', '#22c55e']);
+  const y = useMotionValue(0);
+  const rotate = useTransform(x, [-220, 220], [-12, 12]);
+  const cardScale = useTransform(y, [-220, 0, 120], [1.03, 1, 0.98]);
+  const photoScale = useTransform(y, [-220, 0, 120], [1.08, 1, 0.98]);
+  const photoOffsetY = useTransform(y, [-220, 0, 120], [-8, 0, 6]);
+  const likeOpacity = useTransform(x, [40, 150], [0, 1]);
+  const nopeOpacity = useTransform(x, [-40, -150], [0, 1]);
+  const superOpacity = useTransform(y, [-40, -180], [0, 1]);
 
   const handleDragEnd = React.useCallback((event: any, info: any) => {
-    const threshold = 100;
-    if (info.offset.x > threshold && onLike) onLike();
-    else if (info.offset.x < -threshold && onPass) onPass();
-  }, [onLike, onPass]);
+    const xThreshold = 110;
+    const yThreshold = -120;
+
+    if (info.offset.y < yThreshold && onSuperLike) {
+      onSuperLike();
+      return;
+    }
+
+    if (info.offset.x > xThreshold && onLike) {
+      onLike();
+      return;
+    }
+
+    if (info.offset.x < -xThreshold && onPass) {
+      onPass();
+    }
+  }, [onLike, onPass, onSuperLike]);
 
   const [showDetails, setShowDetails] = useState(expanded);
   const [viewLogged, setViewLogged] = useState(false);
@@ -51,7 +67,7 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
     return () => clearTimeout(timer);
   }, [profile?.id, viewLogged]);
 
-  const photos = profile?.photos?.length > 0 ? profile.photos : [profile?.primary_photo || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400'];
+  const photos = profile?.photos?.length > 0 ? profile.photos : [profile?.primary_photo || '/placeholder.svg'];
 
   const calculateAge = (birthDate: string) => {
     if (!birthDate) return null;
@@ -76,6 +92,19 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
 
   const nextPhoto = (e?: React.MouseEvent) => { e?.stopPropagation(); setCurrentPhotoIndex((prev) => (prev + 1) % photos.length); };
   const prevPhoto = (e?: React.MouseEvent) => { e?.stopPropagation(); setCurrentPhotoIndex((prev) => (prev - 1 + photos.length) % photos.length); };
+  const toggleDetails = () => {
+    if (expanded) return;
+    setShowDetails((prev) => !prev);
+  };
+
+  const culturalCountry = profile?.country_of_origin || profile?.current_country;
+  const culturalIdentity = profile?.tribe || profile?.ethnicity || profile?.ethnic_group || profile?.culture;
+  const lastActiveDate = profile?.last_active ? new Date(profile.last_active) : null;
+  const isActiveNow = !!lastActiveDate && (Date.now() - lastActiveDate.getTime()) < 10 * 60 * 1000;
+  const bioPreview = profile?.bio || profile?.about_me || '';
+  const interestChips = (profile?.interests || []).slice(0, 5);
+  const socialProofCount = profile?.liked_by_count || profile?.likes_count || profile?.profile_views_count || 0;
+  const socialProof = socialProofCount > 0 ? `Liked by ${socialProofCount} people 👀` : 'Trending in your area 🔥';
 
   const relationshipLabels: Record<string, string> = {
     dating: t('onboarding.goal.dating.label'),
@@ -90,153 +119,227 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
     spiritual: 'Spiritual', agnostic: 'Agnostic', atheist: 'Atheist', prefer_not_say: 'Prefer not to say'
   };
 
+  const addInterestEmoji = (interest: string) => {
+    const key = String(interest || '').toLowerCase();
+    if (key.includes('travel')) return `✈️ ${interest}`;
+    if (key.includes('music')) return `🎵 ${interest}`;
+    if (key.includes('food') || key.includes('cook')) return `🍲 ${interest}`;
+    if (key.includes('fitness') || key.includes('gym')) return `💪 ${interest}`;
+    if (key.includes('movie') || key.includes('film')) return `🎬 ${interest}`;
+    if (key.includes('book') || key.includes('read')) return `📚 ${interest}`;
+    if (key.includes('dance')) return `💃 ${interest}`;
+    if (key.includes('faith') || key.includes('church') || key.includes('prayer')) return `🙏 ${interest}`;
+    return `✨ ${interest}`;
+  };
+
   return (
     <ProfileTierDecoration tier={profile?.subscription_tier}>
       <motion.div
-        className="relative w-full max-w-[92vw] sm:max-w-md mx-auto bg-card rounded-2xl shadow-2xl overflow-hidden cursor-grab active:cursor-grabbing"
-        style={{ x, rotate, maxHeight: 'calc(100dvh - 140px)', borderColor, borderWidth: expanded ? 0 : 2 }}
+        className={`relative mx-auto overflow-hidden border border-border/50 bg-card shadow-elevated ${expanded ? 'w-full max-w-xl max-h-[90dvh] rounded-3xl' : 'h-full w-full rounded-[1.75rem] cursor-grab active:cursor-grabbing'}`}
+        style={{ x, y, rotate, scale: cardScale }}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-        drag={!expanded && showActions ? "x" : false}
+        drag={!expanded && showActions ? true : false}
         dragConstraints={{ left: 0, right: 0 }}
-        dragElastic={0.7}
+        dragElastic={0.14}
+        dragTransition={{ bounceStiffness: 420, bounceDamping: 24 }}
         onDragEnd={handleDragEnd}
       >
         {!expanded && showActions && (
           <>
-            <motion.div style={{ opacity: likeOpacity }} className="absolute top-10 left-8 z-50 pointer-events-none transform -rotate-12">
-              <div className="border-4 border-green-500 rounded-xl px-4 py-2 bg-black/20 backdrop-blur-sm">
-                <span className="text-4xl font-extrabold text-green-500 tracking-widest">{t('admin.common.like').toUpperCase()}</span>
+            <motion.div style={{ opacity: likeOpacity }} className="absolute top-12 left-7 z-50 pointer-events-none -rotate-12">
+              <div className="rounded-xl border-[3px] border-brand-sage bg-background/20 px-4 py-2 backdrop-blur-sm">
+                <span className="text-3xl font-extrabold tracking-widest text-brand-sage">LIKE</span>
               </div>
             </motion.div>
-            <motion.div style={{ opacity: nopeOpacity }} className="absolute top-10 right-8 z-50 pointer-events-none transform rotate-12">
-              <div className="border-4 border-destructive rounded-xl px-4 py-2 bg-black/20 backdrop-blur-sm">
-                <span className="text-4xl font-extrabold text-destructive tracking-widest">{t('admin.common.pass').toUpperCase()}</span>
+            <motion.div style={{ opacity: nopeOpacity }} className="absolute top-12 right-7 z-50 pointer-events-none rotate-12">
+              <div className="rounded-xl border-[3px] border-destructive bg-background/20 px-4 py-2 backdrop-blur-sm">
+                <span className="text-3xl font-extrabold tracking-widest text-destructive">NOPE</span>
+              </div>
+            </motion.div>
+            <motion.div style={{ opacity: superOpacity }} className="absolute top-16 left-1/2 z-50 -translate-x-1/2 pointer-events-none">
+              <div className="rounded-xl border-[3px] border-brand-gold bg-background/20 px-4 py-2 backdrop-blur-sm">
+                <span className="text-2xl font-extrabold tracking-widest text-brand-gold">SUPER</span>
               </div>
             </motion.div>
           </>
         )}
 
-        <div className="relative aspect-[3/4] overflow-hidden cursor-pointer group" style={{ maxHeight: 'calc(100dvh - 200px)' }} onClick={() => setShowDetails(!showDetails)}>
+        <div className={`relative h-full overflow-hidden group ${expanded ? 'min-h-[70dvh]' : 'cursor-pointer'}`} onClick={toggleDetails}>
           <AnimatePresence mode="wait">
-            <motion.div key={currentPhotoIndex} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="w-full h-full">
-              <img src={photos[currentPhotoIndex]} alt={profile?.display_name} className="w-full h-full object-cover object-[50%_35%]" />
+            <motion.div key={currentPhotoIndex} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="absolute inset-0">
+              <motion.img
+                src={photos[currentPhotoIndex]}
+                alt={profile?.display_name}
+                className="h-full w-full object-cover object-center"
+                style={{ scale: photoScale, y: photoOffsetY }}
+                loading="lazy"
+              />
             </motion.div>
           </AnimatePresence>
 
+          <div className="absolute inset-0 bg-gradient-to-t from-foreground/95 via-primary/35 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-background/5 backdrop-blur-[2px]" />
+
           {photos.length > 1 && (
             <>
-              <div className="absolute top-3 left-0 right-0 flex justify-center gap-1.5 px-4 z-10">
+              <div className="absolute top-3 left-0 right-0 z-10 flex justify-center gap-1 px-4">
                 {photos.map((_: any, idx: number) => (
-                  <button key={idx} onClick={(e) => { e.stopPropagation(); setCurrentPhotoIndex(idx); }} className={`h-1 rounded-full transition-all ${idx === currentPhotoIndex ? 'bg-white w-6' : 'bg-white/40 w-4'}`} />
+                  <button
+                    key={idx}
+                    onClick={(e) => { e.stopPropagation(); setCurrentPhotoIndex(idx); }}
+                    className={`h-1.5 rounded-full transition-all ${idx === currentPhotoIndex ? 'w-7 bg-primary-foreground' : 'w-4 bg-primary-foreground/40'}`}
+                  />
                 ))}
               </div>
               <div className="absolute left-0 top-0 w-1/3 h-full z-10" onClick={prevPhoto} />
               <div className="absolute right-0 top-0 w-1/3 h-full z-10" onClick={nextPhoto} />
-              <button onClick={prevPhoto} className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 sm:flex hidden items-center justify-center bg-black/30 rounded-full backdrop-blur-sm hover:bg-black/50 transition opacity-0 group-hover:opacity-100">
-                <ChevronLeft className="text-white" size={24} />
+              <button onClick={prevPhoto} className="absolute left-3 top-1/2 z-20 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/20 backdrop-blur-sm transition hover:bg-background/30 sm:flex">
+                <ChevronLeft className="text-primary-foreground" size={20} />
               </button>
-              <button onClick={nextPhoto} className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 sm:flex hidden items-center justify-center bg-black/30 rounded-full backdrop-blur-sm hover:bg-black/50 transition opacity-0 group-hover:opacity-100">
-                <ChevronRight className="text-white" size={24} />
+              <button onClick={nextPhoto} className="absolute right-3 top-1/2 z-20 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/20 backdrop-blur-sm transition hover:bg-background/30 sm:flex">
+                <ChevronRight className="text-primary-foreground" size={20} />
               </button>
             </>
           )}
 
-          {/* Kente accent stripe */}
-          <div className="absolute bottom-0 left-0 right-0 h-1 gradient-kente opacity-60 z-10" />
-          <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 z-10 h-1 gradient-kente opacity-80" />
 
-          <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-            <div className="flex items-center gap-2 mb-1">
-              <h2 className="text-2xl font-bold">{profile?.display_name}</h2>
-              {age && <span className="text-xl font-light">{age}</span>}
+          <div className="absolute inset-x-0 bottom-0 z-20 p-5 pb-24 text-primary-foreground">
+            <div className="mb-1 flex items-center gap-2">
+              <h2 className="text-3xl font-bold leading-none">{profile?.display_name}</h2>
+              {age && <span className="text-2xl font-semibold leading-none">{age}</span>}
+              <span className="text-xl">🔥</span>
               <VerificationBadge verification={profile?.verification_status} />
             </div>
-            <div className="flex items-center gap-1 text-white/90 text-sm">
+
+            {(culturalCountry || culturalIdentity) && (
+              <div className="mb-1 flex items-center gap-2 text-sm text-primary-foreground/90">
+                {culturalCountry && <CountryFlag country={culturalCountry} showName={false} size="small" />}
+                <span>{culturalCountry || ''}{culturalIdentity ? ` • ${culturalIdentity}` : ''}</span>
+              </div>
+            )}
+
+            <div className="mb-2 flex items-center gap-2 text-xs text-primary-foreground/85">
+              <span className={`inline-block h-2 w-2 rounded-full ${isActiveNow ? 'bg-brand-sage' : 'bg-muted-foreground'}`} />
+              <span>{isActiveNow ? 'Active now' : 'Recently active'}</span>
+            </div>
+
+            <div className="flex items-center gap-1 text-sm text-primary-foreground/90">
               <MapPin size={14} />
               <span>{profile?.current_city}{distance !== null && ` • ${distance} mi`}</span>
             </div>
+
             {profile?.relationship_goal && (
-              <Badge className="mt-2 bg-white/20 backdrop-blur-sm text-white border-0 text-xs">
+              <Badge className="mt-2 border-0 bg-background/20 text-primary-foreground backdrop-blur-sm text-xs">
                 {relationshipLabels[profile.relationship_goal]}
               </Badge>
             )}
-            {profile?.prompts?.[0] && (
-              <div className="mt-3 bg-white/10 backdrop-blur-sm rounded-lg p-3">
-                <p className="text-xs text-white/70 mb-1">{profile.prompts[0].question}</p>
-                <p className="text-sm text-white font-medium line-clamp-2">{profile.prompts[0].answer}</p>
+
+            {bioPreview && (
+              <p className="mt-3 line-clamp-2 text-sm text-primary-foreground/95">{bioPreview}</p>
+            )}
+
+            {interestChips.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {interestChips.map((interest: string, idx: number) => (
+                  <span key={`${interest}-${idx}`} className="rounded-full border border-background/30 bg-background/20 px-2.5 py-1 text-xs text-primary-foreground backdrop-blur-sm">
+                    {addInterestEmoji(interest)}
+                  </span>
+                ))}
               </div>
             )}
+
+            <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-background/20 px-3 py-1.5 text-xs text-primary-foreground/95 backdrop-blur-sm">
+              <Sparkles size={12} />
+              <span>{socialProof}</span>
+            </div>
           </div>
         </div>
 
         <AnimatePresence>
           {showDetails && (
-            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-              <div className="p-6 space-y-4">
-                <KenteDivider className="mb-2" />
+            <motion.div
+              initial={{ y: '100%', opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: '100%', opacity: 0 }}
+              transition={{ type: 'spring', damping: 24, stiffness: 220 }}
+              className="absolute inset-x-0 bottom-0 z-40 max-h-[72%] overflow-y-auto rounded-t-[1.6rem] border-t border-border/60 bg-card/95 backdrop-blur-xl"
+            >
+              <div className="p-5 space-y-4">
+                <div className="mx-auto h-1.5 w-12 rounded-full bg-muted" />
+                <KenteDivider className="mb-1" />
                 {(matchScore || profile?.matchScore) && (
                   <MatchExplanation score={matchScore || profile?.matchScore || 0} reasons={matchReasons || profile?.matchReasons || []} breakdown={matchBreakdown || profile?.matchBreakdown || {}} confidence="good" />
                 )}
                 {profile?.bio && (
                   <div>
-                    <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">About</h3>
-                    <p className="text-foreground">{profile.bio}</p>
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">About</h3>
+                    <p className="text-foreground leading-relaxed">{profile.bio}</p>
                   </div>
                 )}
                 {profile?.voice_intro_url && (
-                  <div className="bg-primary/5 rounded-xl p-4 flex items-center gap-3 border border-primary/10">
-                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary"><Mic size={20} /></div>
+                  <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary"><Mic size={20} /></div>
                     <div className="flex-1">
                       <p className="text-xs font-semibold mb-1">{t('editProfile.voiceIntro')}</p>
                       <audio controls src={profile.voice_intro_url} className="w-full h-8" />
                     </div>
                   </div>
                 )}
-                <div className="grid grid-cols-2 gap-3">
-                  {profile?.profession && (<div className="flex items-center gap-2 text-muted-foreground"><Briefcase size={16} className="text-primary" /><span className="text-sm">{profile.profession}</span></div>)}
-                  {profile?.education && (<div className="flex items-center gap-2 text-muted-foreground"><GraduationCap size={16} className="text-primary" /><span className="text-sm capitalize">{profile.education?.replace('_', ' ')}</span></div>)}
-                  {profile?.religion && (<div className="flex items-center gap-2 text-muted-foreground"><Book size={16} className="text-primary" /><span className="text-sm">{religionLabels[profile.religion]}</span></div>)}
-                  {profile?.languages?.length > 0 && (<div className="flex items-center gap-2 text-muted-foreground"><Languages size={16} className="text-primary" /><span className="text-sm">{profile.languages.slice(0, 2).join(', ')}</span></div>)}
+                <div>
+                  <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Lifestyle</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    {profile?.profession && (<div className="flex items-center gap-2 text-muted-foreground"><Briefcase size={16} className="text-primary" /><span className="text-sm">{profile.profession}</span></div>)}
+                    {profile?.education && (<div className="flex items-center gap-2 text-muted-foreground"><GraduationCap size={16} className="text-primary" /><span className="text-sm capitalize">{profile.education?.replace('_', ' ')}</span></div>)}
+                    {profile?.religion && (<div className="flex items-center gap-2 text-muted-foreground"><Book size={16} className="text-primary" /><span className="text-sm">{religionLabels[profile.religion]}</span></div>)}
+                    {profile?.languages?.length > 0 && (<div className="flex items-center gap-2 text-muted-foreground"><Languages size={16} className="text-primary" /><span className="text-sm">{profile.languages.slice(0, 3).join(', ')}</span></div>)}
+                  </div>
                 </div>
                 {profile?.cultural_values?.length > 0 && (
                   <div>
-                    <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">{t('editProfile.culturalValues')}</h3>
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">{t('editProfile.culturalValues')}</h3>
                     <div className="flex flex-wrap gap-2">{profile.cultural_values.map((value: string, idx: number) => (<Badge key={idx} variant="outline" className="border-accent/30 text-accent bg-accent/10">{value}</Badge>))}</div>
                   </div>
                 )}
                 {profile?.interests?.length > 0 && (
                   <div>
-                    <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">{t('profile.interests')}</h3>
-                    <div className="flex flex-wrap gap-2">{profile.interests.map((interest: string, idx: number) => (<Badge key={idx} variant="secondary">{interest}</Badge>))}</div>
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">{t('profile.interests')}</h3>
+                    <div className="flex flex-wrap gap-2">{profile.interests.map((interest: string, idx: number) => (<Badge key={idx} variant="secondary">{addInterestEmoji(interest)}</Badge>))}</div>
+                  </div>
+                )}
+                {profile?.community_name && (
+                  <div>
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Community</h3>
+                    <p className="text-sm text-foreground">{profile.community_name}</p>
                   </div>
                 )}
                 {profile?.prompts?.length > 0 && (
                   <div className="space-y-3">
                     {profile.prompts.map((prompt: any, idx: number) => (
-                      <div key={idx} className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-xl p-4">
-                        <p className="text-sm font-medium text-primary mb-1">{prompt.question}</p>
+                      <div key={idx} className="rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 p-4">
+                        <p className="mb-1 text-sm font-medium text-primary">{prompt.question}</p>
                         <p className="text-foreground">{prompt.answer}</p>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
-            </motion.div>
-          )}
+            )}
+          </div>
         </AnimatePresence>
 
         {showActions && (
-          <div className="flex items-center justify-center gap-6 py-3 px-4 bg-gradient-to-t from-muted/50">
-            <motion.button whileTap={{ scale: 0.85 }} onClick={() => { if (navigator.vibrate) navigator.vibrate(30); onPass(); }} disabled={isPassing || isLiking || isSuperLiking} className="w-16 h-16 rounded-full bg-card shadow-xl flex items-center justify-center border-2 border-destructive/30 active:bg-muted transition-all touch-manipulation disabled:opacity-50">
+          <div className="absolute bottom-4 left-1/2 z-50 flex -translate-x-1/2 items-center justify-center gap-4">
+            <motion.button whileTap={{ scale: 0.85 }} transition={{ type: 'spring', stiffness: 400, damping: 16 }} onClick={() => { if (navigator.vibrate) navigator.vibrate(30); onPass?.(); }} disabled={isPassing || isLiking || isSuperLiking} className="h-14 w-14 rounded-full bg-muted text-muted-foreground shadow-card flex items-center justify-center border border-border active:bg-muted/80 transition-all touch-manipulation disabled:opacity-50">
               {isPassing ? <Loader2 size={28} className="animate-spin text-muted-foreground" /> : <span className="text-3xl text-destructive/70">✕</span>}
             </motion.button>
-            <motion.button whileTap={{ scale: 0.85 }} onClick={() => { if (navigator.vibrate) navigator.vibrate([30, 30, 30]); onSuperLike(); }} disabled={isPassing || isLiking || isSuperLiking} className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 shadow-xl flex items-center justify-center transition-all touch-manipulation disabled:opacity-50">
-              {isSuperLiking ? <Loader2 size={20} className="animate-spin text-white" /> : <Sparkles className="text-white" size={20} />}
+            <motion.button whileTap={{ scale: 0.82 }} transition={{ type: 'spring', stiffness: 420, damping: 14 }} onClick={() => { if (navigator.vibrate) navigator.vibrate([30, 30, 30]); onSuperLike?.(); }} disabled={isPassing || isLiking || isSuperLiking} className="h-12 w-12 rounded-full bg-[linear-gradient(135deg,hsl(var(--brand-gold)),hsl(var(--accent)))] text-primary-foreground shadow-elevated flex items-center justify-center transition-all touch-manipulation disabled:opacity-50">
+              {isSuperLiking ? <Loader2 size={20} className="animate-spin text-primary-foreground" /> : <Sparkles className="text-primary-foreground" size={20} />}
             </motion.button>
-            <motion.button whileTap={{ scale: 0.85 }} onClick={() => { if (navigator.vibrate) navigator.vibrate(50); onLike(); }} disabled={isPassing || isLiking || isSuperLiking} className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-green-600 shadow-xl flex items-center justify-center transition-all touch-manipulation disabled:opacity-50">
-              {isLiking ? <Loader2 size={28} className="animate-spin text-white" /> : <Heart className="text-white fill-white" size={28} />}
+            <motion.button whileTap={{ scale: 0.82 }} transition={{ type: 'spring', stiffness: 420, damping: 14 }} onClick={() => { if (navigator.vibrate) navigator.vibrate(50); onLike?.(); }} disabled={isPassing || isLiking || isSuperLiking} className="h-16 w-16 rounded-full bg-[linear-gradient(135deg,hsl(var(--primary)),hsl(var(--brand-coral)))] text-primary-foreground shadow-elevated flex items-center justify-center transition-all touch-manipulation disabled:opacity-50">
+              {isLiking ? <Loader2 size={28} className="animate-spin text-primary-foreground" /> : <Heart className="fill-primary-foreground text-primary-foreground" size={28} />}
             </motion.button>
           </div>
         )}
