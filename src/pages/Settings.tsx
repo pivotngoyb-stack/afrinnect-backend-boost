@@ -650,9 +650,6 @@ export default function Settings() {
           </div>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => { setShowEmailVerifyDialog(false); setInputCode(""); }}>{t('common.cancel')}</AlertDialogCancel>
-              setShowEmailVerifyDialog(false);
-              setInputCode("");
-            }}>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={async (e) => {
               e.preventDefault(); // Prevent auto-close
               try {
