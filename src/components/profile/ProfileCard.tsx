@@ -175,6 +175,7 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
           {showDetails && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
               <div className="p-6 space-y-4">
+                <KenteDivider className="mb-2" />
                 {(matchScore || profile?.matchScore) && (
                   <MatchExplanation score={matchScore || profile?.matchScore || 0} reasons={matchReasons || profile?.matchReasons || []} breakdown={matchBreakdown || profile?.matchBreakdown || {}} confidence="good" />
                 )}
