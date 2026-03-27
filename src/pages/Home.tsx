@@ -32,6 +32,8 @@ import ProfileViewsNudge from '@/components/engagement/ProfileViewsNudge';
 import DailyReturnBanner from '@/components/engagement/DailyReturnBanner';
 import PeopleLikeYouTeaser from '@/components/engagement/PeopleLikeYouTeaser';
 import NewMatchToast from '@/components/engagement/NewMatchToast';
+import ContextualUpgradeBanner from '@/components/monetization/ContextualUpgradeBanner';
+import BlurredLikesTeaser from '@/components/monetization/BlurredLikesTeaser';
 import { Loader2 } from 'lucide-react';
 
 export default function Home() {
