@@ -91,10 +91,16 @@ export default function DailyMatches() {
       const profileIds = dailyMatches.map(m => m.suggested_profile_id);
       if (profileIds.length === 0) return [];
       const { data } = await supabase.from('user_profiles').select('*').in('id', profileIds);
+      const LOCAL_COUNTRIES = ['United States', 'USA', 'US', 'Canada', 'CA'];
       return (data || []).map((p, idx) => ({
         ...p,
         dailyMatch: dailyMatches.find(dm => dm.suggested_profile_id === p.id) || dailyMatches[idx]
-      }));
+      })).sort((a, b) => {
+        const aLocal = LOCAL_COUNTRIES.some(c => c.toLowerCase() === (a.current_country || '').toLowerCase()) ? 1 : 0;
+        const bLocal = LOCAL_COUNTRIES.some(c => c.toLowerCase() === (b.current_country || '').toLowerCase()) ? 1 : 0;
+        if (aLocal !== bLocal) return bLocal - aLocal;
+        return (b.dailyMatch?.match_score || 0) - (a.dailyMatch?.match_score || 0);
+      });
     },
     enabled: dailyMatches.length > 0
   });
