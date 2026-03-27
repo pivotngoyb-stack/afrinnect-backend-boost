@@ -1,12 +1,11 @@
-
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getMessaging } from 'firebase/messaging';
+import { getMessaging, isSupported as isMessagingSupported } from 'firebase/messaging';
+import { getAnalytics, isSupported as isAnalyticsSupported } from 'firebase/analytics';
 
 // Firebase config - public keys are safe to expose (Firebase docs confirm this)
-// Only private keys (FCM_SERVER_KEY) should be kept secret in backend
 const firebaseConfig = {
-  apiKey: "AIzaSyDFfrqew9sH07QgTT3yc0glYfuDWdW1Hyg", // Safe - client-side API key
+  apiKey: "AIzaSyDFfrqew9sH07QgTT3yc0glYfuDWdW1Hyg",
   authDomain: "afrinnect.firebaseapp.com",
   projectId: "afrinnect",
   storageBucket: "afrinnect.firebasestorage.app",
@@ -18,11 +17,23 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-let messaging = null;
-try {
-  messaging = getMessaging(app);
-} catch (error) {
-  console.warn('Firebase Messaging not supported:', error);
-}
+
+// Analytics — only initialize where supported (not in SSR/workers)
+let analytics: ReturnType<typeof getAnalytics> | null = null;
+isAnalyticsSupported().then((supported) => {
+  if (supported) {
+    analytics = getAnalytics(app);
+  }
+}).catch(() => {});
+export { analytics };
+
+// Cloud Messaging — only initialize where supported
+let messaging: ReturnType<typeof getMessaging> | null = null;
+isMessagingSupported().then((supported) => {
+  if (supported) {
+    messaging = getMessaging(app);
+  }
+}).catch(() => {});
 export { messaging };
+
 export { app };

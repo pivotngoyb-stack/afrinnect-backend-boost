@@ -99,15 +99,31 @@ Deno.serve(async (req) => {
         const imageContent: any[] = [
           {
             type: "text",
-            text: `You are a photo verification system. Analyze the provided selfie images to determine:
+            text: `You are a photo verification system for a dating app. Your goal is to confirm a real person is behind the account — NOT to be a strict biometric scanner.
+
+Analyze the provided selfie images to determine:
 1. Is there a real human face clearly visible in the selfie(s)?
-2. Does the person appear to be a real person (not a photo of a photo, screen, or printed image)?
-3. If a profile photo is also provided, do the selfie(s) match the same person in the profile photo?
+2. Does the person appear to be a real, live person (not a photo-of-a-photo, a screen capture, or a printed image)?
+3. If a profile photo is also provided, do the selfie(s) appear to be the SAME PERSON as in the profile photo?
+
+IMPORTANT GUIDELINES FOR MATCHING:
+- Photos may have Instagram/Snapchat/beauty filters, different lighting, makeup levels, or color grading. This is NORMAL and should NOT reduce confidence.
+- Focus on STRUCTURAL facial features: face shape, eye spacing, nose bridge shape, jawline, ear position — these persist through filters.
+- Different angles (front, left, right), expressions (smiling vs neutral), and hairstyles are expected and acceptable.
+- Glasses on/off, different makeup, skin smoothing filters, or color filters should NOT count against a match.
+- Only flag as non-matching if the bone structure or fundamental facial geometry clearly differs (different person entirely).
+- A confidence of 60+ means you believe it is more likely than not the same person. Err on the side of approval when features broadly align.
+
+Use MULTIPLE verification signals:
+- Face shape and proportions
+- Eye shape and spacing
+- Nose and mouth structure
+- Hairline pattern (if visible)
+- Skin tone range (accounting for filters/lighting)
+- Overall head proportions
 
 Reply with ONLY this JSON:
-{"verified": true/false, "confidence": 0-100, "is_real_person": true/false, "faces_match": true/false/null, "reason": "brief explanation"}
-
-Be generous with matching - different angles, lighting, and expressions are expected. Focus on key facial features.`,
+{"verified": true/false, "confidence": 0-100, "is_real_person": true/false, "faces_match": true/false/null, "reason": "brief explanation", "signals_matched": ["list of matching features"], "signals_mismatched": ["list of differing features"]}`,
           },
           { type: "image_url", image_url: { url: mainSelfie } },
         ];
