@@ -442,7 +442,7 @@ export default function Chat() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header - Native App Bar */}
-      <header className="bg-white/95 backdrop-blur-lg border-b border-gray-100/50 px-4 py-3 flex items-center justify-between sticky top-0 z-10" style={{ paddingTop: 'max(12px, env(safe-area-inset-top))' }}>
+      <header className="bg-card/95 backdrop-blur-lg border-b border-border/50 px-4 py-3 flex items-center justify-between sticky top-0 z-10" style={{ paddingTop: 'max(12px, env(safe-area-inset-top))' }}>
         <div className="flex items-center gap-3">
           <Link to={createPageUrl('Matches')}>
             <Button variant="ghost" size="icon">
@@ -455,7 +455,7 @@ export default function Chat() {
           </Avatar>
           <div>
             <h2 className="font-semibold">{otherProfile.display_name}</h2>
-            <p className="text-xs text-gray-500">Active now</p>
+            <p className="text-xs text-muted-foreground">Active now</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -524,8 +524,8 @@ export default function Chat() {
             <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mb-4">
               <Sparkles size={32} className="text-purple-600" />
             </div>
-            <h3 className="text-lg font-bold text-gray-800 mb-2">Start a Conversation!</h3>
-            <p className="text-gray-500 text-sm mb-4">
+            <h3 className="text-lg font-bold text-foreground mb-2">Start a Conversation!</h3>
+            <p className="text-muted-foreground text-sm mb-4">
               Say hello to {otherProfile.display_name}
             </p>
             <div className="flex gap-3">
@@ -568,7 +568,7 @@ export default function Chat() {
               <div className={`max-w-xs md:max-w-md ${
                 isMine 
                   ? 'bg-gradient-to-br from-purple-600 to-purple-700 text-white' 
-                  : 'bg-gradient-to-br from-gray-100 to-gray-50 text-gray-900'
+                  : 'bg-secondary text-secondary-foreground'
               } rounded-2xl ${isMine ? 'rounded-br-md' : 'rounded-bl-md'} px-4 py-2.5 shadow-sm`}>
                 {msg.message_type === 'voice_note' ? (
                   <audio controls src={msg.media_url} className="w-full" preload="metadata" />
@@ -578,7 +578,7 @@ export default function Chat() {
                   <p className="text-sm break-words">{msg.content}</p>
                 )}
                 <div className="flex items-center gap-2 mt-1">
-                  <p className={`text-xs ${isMine ? 'text-white/70' : 'text-gray-400'}`}>
+                  <p className={`text-xs ${isMine ? 'text-white/70' : 'text-muted-foreground'}`}>
                     {new Date(msg.created_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
                   {isMine && (
@@ -627,7 +627,7 @@ export default function Chat() {
       {isVerificationGated && <VerificationGateBanner matchCount={gateMatchCount} />}
 
       {/* Input - Native Keyboard Optimized */}
-      <div className="bg-white border-t border-gray-100" style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))', padding: '12px 16px' }}>
+      <div className="bg-card border-t border-border" style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))', padding: '12px 16px' }}>
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
@@ -700,7 +700,7 @@ export default function Chat() {
             <DialogTitle>Report User</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Please describe why you're reporting {otherProfile.display_name}
             </p>
             <Textarea
@@ -753,7 +753,7 @@ export default function Chat() {
         {/* Virtual Gifts Modal */}
         {showVirtualGifts && (
           <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => setShowVirtualGifts(false)}>
-            <div className="bg-white rounded-2xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-card rounded-2xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
               <h2 className="text-xl font-bold mb-4">Send a Virtual Gift 🎁</h2>
               <div className="grid grid-cols-3 gap-4 mb-6">
                 {['🌹', '💎', '🍫', '🎂', '💐', '🎁', '⭐', '💝', '👑'].map((gift, idx) => (
@@ -786,13 +786,13 @@ export default function Chat() {
         {/* Upgrade Prompt Modal */}
         {showUpgradePrompt && (
           <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => setShowUpgradePrompt(false)}>
-            <div className="bg-white rounded-2xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-card rounded-2xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
               <div className="text-center">
                 <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-100 to-amber-100 flex items-center justify-center">
-                  <Sparkles size={40} className="text-purple-600" />
+                  <Sparkles size={40} className="text-primary" />
                 </div>
                 <h2 className="text-2xl font-bold mb-2">{upgradeFeature} are Exclusive!</h2>
-                <p className="text-gray-600 mb-6">
+                <p className="text-muted-foreground mb-6">
                   Upgrade to Elite or VIP to unlock {upgradeFeature.toLowerCase()} and connect in new ways!
                 </p>
                 <div className="space-y-3">
