@@ -74,7 +74,7 @@ const PRICING_TIERS = {
     icon: Crown,
     color: 'text-slate-900',
     bgColor: 'bg-slate-50',
-    buttonColor: 'bg-slate-900 hover:bg-black',
+    buttonColor: 'bg-slate-900 hover:bg-foreground',
     prices: {
       monthly: { amount: 49.99, period: 'month', total: 49.99 },
       quarterly: { amount: 39.99, period: 'month', total: 119.99, save: '20%', label: '3 Months' },

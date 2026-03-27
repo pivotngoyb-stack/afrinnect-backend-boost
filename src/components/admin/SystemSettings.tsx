@@ -97,7 +97,7 @@ export default function SystemSettings() {
       </div>
 
       <Tabs defaultValue="platform" className="w-full">
-        <TabsList className="bg-white/10">
+        <TabsList className="bg-card/10">
           <TabsTrigger value="platform">Platform</TabsTrigger>
           <TabsTrigger value="limits">Limits</TabsTrigger>
           <TabsTrigger value="safety">Safety</TabsTrigger>
@@ -106,7 +106,7 @@ export default function SystemSettings() {
         </TabsList>
 
         <TabsContent value="platform" className="space-y-4">
-          <Card className="bg-white/5 border-white/10">
+          <Card className="bg-card/5 border-card/10">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Globe size={20} />
@@ -119,7 +119,7 @@ export default function SystemSettings() {
                 <Input
                   value={settings.platformName}
                   onChange={(e) => setSettings({...settings, platformName: e.target.value})}
-                  className="bg-white/10 border-white/20 text-white"
+                  className="bg-card/10 border-card/20 text-white"
                 />
               </div>
 
@@ -176,7 +176,7 @@ export default function SystemSettings() {
         </TabsContent>
 
         <TabsContent value="limits" className="space-y-4">
-          <Card className="bg-white/5 border-white/10">
+          <Card className="bg-card/5 border-card/10">
             <CardHeader>
               <CardTitle className="text-white">User Limits</CardTitle>
             </CardHeader>
@@ -187,7 +187,7 @@ export default function SystemSettings() {
                   type="number"
                   value={settings.freeDailyLikes}
                   onChange={(e) => setSettings({...settings, freeDailyLikes: parseInt(e.target.value)})}
-                  className="bg-white/10 border-white/20 text-white"
+                  className="bg-card/10 border-card/20 text-white"
                 />
               </div>
 
@@ -197,7 +197,7 @@ export default function SystemSettings() {
                   type="number"
                   value={settings.premiumDailyLikes}
                   onChange={(e) => setSettings({...settings, premiumDailyLikes: parseInt(e.target.value)})}
-                  className="bg-white/10 border-white/20 text-white"
+                  className="bg-card/10 border-card/20 text-white"
                 />
               </div>
 
@@ -207,7 +207,7 @@ export default function SystemSettings() {
                   type="number"
                   value={settings.maxProfilePhotos}
                   onChange={(e) => setSettings({...settings, maxProfilePhotos: parseInt(e.target.value)})}
-                  className="bg-white/10 border-white/20 text-white"
+                  className="bg-card/10 border-card/20 text-white"
                 />
               </div>
 
@@ -217,7 +217,7 @@ export default function SystemSettings() {
                   type="number"
                   value={settings.maxBio}
                   onChange={(e) => setSettings({...settings, maxBio: parseInt(e.target.value)})}
-                  className="bg-white/10 border-white/20 text-white"
+                  className="bg-card/10 border-card/20 text-white"
                 />
               </div>
             </CardContent>
@@ -225,7 +225,7 @@ export default function SystemSettings() {
         </TabsContent>
 
         <TabsContent value="safety" className="space-y-4">
-          <Card className="bg-white/5 border-white/10">
+          <Card className="bg-card/5 border-card/10">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Shield size={20} />
@@ -261,7 +261,7 @@ export default function SystemSettings() {
                   type="number"
                   value={settings.minAgeRequirement}
                   onChange={(e) => setSettings({...settings, minAgeRequirement: parseInt(e.target.value)})}
-                  className="bg-white/10 border-white/20 text-white"
+                  className="bg-card/10 border-card/20 text-white"
                 />
               </div>
 
@@ -271,7 +271,7 @@ export default function SystemSettings() {
                   type="number"
                   value={settings.maxAgeAllowed}
                   onChange={(e) => setSettings({...settings, maxAgeAllowed: parseInt(e.target.value)})}
-                  className="bg-white/10 border-white/20 text-white"
+                  className="bg-card/10 border-card/20 text-white"
                 />
               </div>
             </CardContent>
@@ -279,7 +279,7 @@ export default function SystemSettings() {
         </TabsContent>
 
         <TabsContent value="pricing" className="space-y-4">
-          <Card className="bg-white/5 border-white/10">
+          <Card className="bg-card/5 border-card/10">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <DollarSign size={20} />
@@ -304,7 +304,7 @@ export default function SystemSettings() {
                   type="number"
                   value={settings.africanDiscount}
                   onChange={(e) => setSettings({...settings, africanDiscount: parseInt(e.target.value)})}
-                  className="bg-white/10 border-white/20 text-white"
+                  className="bg-card/10 border-card/20 text-white"
                 />
               </div>
             </CardContent>
@@ -312,7 +312,7 @@ export default function SystemSettings() {
         </TabsContent>
 
         <TabsContent value="features" className="space-y-4">
-          <Card className="bg-white/5 border-white/10">
+          <Card className="bg-card/5 border-card/10">
             <CardHeader>
               <CardTitle className="text-white">Feature Toggles</CardTitle>
             </CardHeader>

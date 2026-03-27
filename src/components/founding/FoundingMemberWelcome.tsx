@@ -110,7 +110,7 @@ export default function FoundingMemberWelcome({ isOpen, onClose, profile }) {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: idx * 0.1 }}
-            className="flex items-center gap-4 bg-white rounded-xl p-4 border border-border shadow-sm"
+            className="flex items-center gap-4 bg-card rounded-xl p-4 border border-border shadow-sm"
           >
             <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
               <benefit.icon size={20} className={benefit.color} />

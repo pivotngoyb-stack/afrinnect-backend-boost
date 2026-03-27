@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 export default function Privacy() {
   return (
     <div className="min-h-screen bg-muted pb-24">
-      <header className="bg-white border-b sticky top-0 z-40">
+      <header className="bg-card border-b sticky top-0 z-40">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link to={createPageUrl('Landing')}>
             <Button variant="ghost" size="icon">
@@ -20,7 +20,7 @@ export default function Privacy() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl p-8 shadow-sm space-y-6">
+        <div className="bg-card rounded-xl p-8 shadow-sm space-y-6">
           <div>
             <h2 className="text-2xl font-bold mb-2">Afrinnect Privacy Policy</h2>
             <p className="text-sm text-muted-foreground">Last Updated: March 1, 2026</p>

@@ -42,7 +42,7 @@ export default function AdminLaunchChecklist() {
                 <p className="text-amber-900 text-sm font-medium">Action Required:</p>
                 <p className="text-amber-900 text-sm mt-1">
                   Tell the AI Agent: 
-                  <code className="bg-white px-2 py-1 rounded border border-amber-300 block mt-2 font-mono text-xs sm:text-sm">
+                  <code className="bg-card px-2 py-1 rounded border border-amber-300 block mt-2 font-mono text-xs sm:text-sm">
                     "Launch the app and remove waitlist restrictions."
                   </code>
                 </p>
@@ -94,21 +94,21 @@ export default function AdminLaunchChecklist() {
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-3 gap-4 pl-2">
-              <div className="bg-white border p-4 rounded-lg text-center space-y-2 hover:shadow-md transition-shadow">
+              <div className="bg-card border p-4 rounded-lg text-center space-y-2 hover:shadow-md transition-shadow">
                 <div className="mx-auto w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                   <CheckCircle className="text-blue-600" size={20} />
                 </div>
                 <h3 className="font-medium">User Growth</h3>
                 <p className="text-xs text-muted-foreground">Watch the "Users" tab for new signups</p>
               </div>
-              <div className="bg-white border p-4 rounded-lg text-center space-y-2 hover:shadow-md transition-shadow">
+              <div className="bg-card border p-4 rounded-lg text-center space-y-2 hover:shadow-md transition-shadow">
                 <div className="mx-auto w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                   <Shield className="text-green-600" size={20} />
                 </div>
                 <h3 className="font-medium">Safety</h3>
                 <p className="text-xs text-muted-foreground">Monitor "Moderation" for reports</p>
               </div>
-              <div className="bg-white border p-4 rounded-lg text-center space-y-2 hover:shadow-md transition-shadow">
+              <div className="bg-card border p-4 rounded-lg text-center space-y-2 hover:shadow-md transition-shadow">
                 <div className="mx-auto w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
                   <AlertTriangle className="text-red-600" size={20} />
                 </div>

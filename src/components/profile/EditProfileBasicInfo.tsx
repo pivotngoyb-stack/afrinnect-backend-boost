@@ -12,7 +12,7 @@ export default function EditProfileBasicInfo({ formData, onChange }: { formData:
     <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
       <div className="bg-gradient-to-r from-pink-500 to-primary p-6">
         <div className="flex items-center gap-3 text-primary-foreground">
-          <div className="p-3 bg-white/20 rounded-xl backdrop-blur">
+          <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
             <Heart size={24} />
           </div>
           <div>

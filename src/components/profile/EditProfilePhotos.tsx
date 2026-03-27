@@ -27,7 +27,7 @@ export default function EditProfilePhotos({
     <Card className="overflow-hidden border-0 shadow-xl bg-card/80 backdrop-blur">
       <div className="bg-gradient-to-r from-primary to-accent p-6">
         <div className="flex items-center gap-3 text-primary-foreground">
-          <div className="p-3 bg-white/20 rounded-xl backdrop-blur">
+          <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
             <Camera size={24} />
           </div>
           <div>
@@ -50,7 +50,7 @@ export default function EditProfilePhotos({
                 className="relative aspect-[3/4] rounded-2xl overflow-hidden group shadow-lg"
               >
                 <img src={photo} alt="" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-black/40 md:bg-black/50 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 flex items-center justify-center gap-2">
+                <div className="absolute inset-0 bg-foreground/40 md:bg-foreground/50 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 flex items-center justify-center gap-2">
                   <Button size="sm" variant="secondary" onClick={() => onSetPrimary(photo)} className="rounded-full h-8 px-3 text-xs">
                     <Sparkles size={12} className="mr-1" /> Main
                   </Button>

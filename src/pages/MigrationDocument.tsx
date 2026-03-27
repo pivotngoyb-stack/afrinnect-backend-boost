@@ -559,7 +559,7 @@ export default function MigrationDocument() {
   return (
     <div className="min-h-screen bg-muted">
       {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-10">
+      <div className="bg-card border-b sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to={createPageUrl('AdminDashboard')}>
@@ -589,7 +589,7 @@ export default function MigrationDocument() {
           </div>
           <div className="space-y-2">
             {SECRETS.map(s => (
-              <div key={s.name} className="bg-white border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div key={s.name} className="bg-card border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
                   <code className="text-sm font-mono font-bold text-purple-700">{s.name}</code>
                   <p className="text-xs text-muted-foreground mt-1">{s.source}</p>
@@ -613,7 +613,7 @@ export default function MigrationDocument() {
           </div>
           <div className="space-y-4">
             {SCHEMAS.map((s, i) => (
-              <div key={s.name} className="bg-white border rounded-lg overflow-hidden">
+              <div key={s.name} className="bg-card border rounded-lg overflow-hidden">
                 <div className="bg-muted px-4 py-3 border-b flex items-center gap-2">
                   <span className="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-1 rounded">{i + 1}</span>
                   <h3 className="font-bold text-foreground">{s.name}</h3>

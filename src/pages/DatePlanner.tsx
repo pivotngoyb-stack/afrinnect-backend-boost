@@ -147,7 +147,7 @@ Return JSON array:
                         You and {matchProfile?.display_name} are going to <span className="font-bold">{existingPlan.venue_name}</span>.
                     </p>
                     
-                    <div className="bg-white/60 rounded-xl p-4 text-left space-y-2">
+                    <div className="bg-card/60 rounded-xl p-4 text-left space-y-2">
                         <div className="flex items-center gap-2 text-foreground">
                             <MapPin size={18} className="text-green-600" />
                             {existingPlan.venue_address}
@@ -297,7 +297,7 @@ Return JSON array:
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 pb-24">
-      <header className="bg-white/80 backdrop-blur-lg border-b sticky top-0 z-40">
+      <header className="bg-card/80 backdrop-blur-lg border-b sticky top-0 z-40">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center gap-3">
           <Link to={createPageUrl(`Chat?matchId=${matchId}`)}>
             <Button variant="ghost" size="icon">

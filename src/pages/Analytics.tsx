@@ -224,7 +224,7 @@ export default function Analytics() {
     <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative pb-24">
       <AfricanPattern className="text-purple-600" opacity={0.03} />
 
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b">
+      <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-lg border-b">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to={createPageUrl('Profile')}>

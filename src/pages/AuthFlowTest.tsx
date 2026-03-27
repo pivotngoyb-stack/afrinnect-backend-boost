@@ -175,7 +175,7 @@ export default function AuthFlowTest() {
             {Object.keys(testResults).length > 0 && (
               <div className="space-y-2">
                 {Object.entries(testResults).map(([name, result]) => (
-                  <div key={name} className="flex items-center justify-between p-4 bg-white border rounded-lg">
+                  <div key={name} className="flex items-center justify-between p-4 bg-card border rounded-lg">
                     <div className="flex items-center gap-3">
                       {result.pass ? (
                         <CheckCircle size={20} className="text-green-600" />

@@ -35,7 +35,7 @@ export default function DateFeedbackReview() {
                 Met in person: {feedback.met_in_person ? 'Yes' : 'No'}
               </p>
               {feedback.feedback_notes && (
-                <p className="text-sm text-foreground bg-white p-2 rounded">
+                <p className="text-sm text-foreground bg-card p-2 rounded">
                   "{feedback.feedback_notes}"
                 </p>
               )}

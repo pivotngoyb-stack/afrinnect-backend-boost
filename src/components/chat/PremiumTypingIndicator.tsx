@@ -67,7 +67,7 @@ export default function PremiumTypingIndicator({
         exit={{ opacity: 0, y: 10 }}
         className="flex items-center gap-2 px-4 py-2 mb-2"
       >
-        <div className="bg-white border border-border rounded-2xl px-4 py-2 flex items-center gap-3 shadow-sm">
+        <div className="bg-card border border-border rounded-2xl px-4 py-2 flex items-center gap-3 shadow-sm">
           <div className="flex gap-1">
             <motion.div
               animate={{ scale: [1, 1.2, 1] }}

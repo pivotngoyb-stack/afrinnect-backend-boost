@@ -161,14 +161,14 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black z-50 select-none"
+      className="fixed inset-0 bg-foreground z-50 select-none"
     >
       {/* Progress bars */}
       <div className="absolute top-0 left-0 right-0 flex gap-1 p-2 z-30" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         {stories.map((_, i) => (
-          <div key={i} className="flex-1 h-[3px] bg-white/30 rounded-full overflow-hidden">
+          <div key={i} className="flex-1 h-[3px] bg-card/30 rounded-full overflow-hidden">
             <div
-              className="h-full bg-white rounded-full transition-all duration-75"
+              className="h-full bg-card rounded-full transition-all duration-75"
               style={{ width: i === currentIndex ? `${progress}%` : i < currentIndex ? '100%' : '0%' }}
             />
           </div>
@@ -197,14 +197,14 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
           {isMyStory && (
             <button
               onClick={() => setShowMenu(!showMenu)}
-              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10"
+              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-card/10"
             >
               <MoreHorizontal size={22} className="text-white" />
             </button>
           )}
           <button
             onClick={onClose}
-            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10"
+            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-card/10"
           >
             <X size={24} className="text-white" />
           </button>
@@ -222,7 +222,7 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
           >
             <button
               onClick={handleDelete}
-              className="flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-white/10 w-full"
+              className="flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-card/10 w-full"
             >
               <Trash2 size={18} />
               <span>Delete Story</span>
@@ -281,7 +281,7 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.5, opacity: 0 }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 bg-black/60 p-5 rounded-full pointer-events-none"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 bg-foreground/60 p-5 rounded-full pointer-events-none"
           >
             <Pause size={32} className="text-white" fill="white" />
           </motion.div>
@@ -291,7 +291,7 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
       {/* Caption */}
       {story.caption && (
         <div className="absolute bottom-28 left-4 right-4 z-30">
-          <div className="bg-black/50 backdrop-blur px-4 py-3 rounded-2xl">
+          <div className="bg-foreground/50 backdrop-blur px-4 py-3 rounded-2xl">
             <p className="text-white">{story.caption}</p>
           </div>
         </div>
@@ -304,7 +304,7 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
             e.stopPropagation();
             setIsMuted(!isMuted);
           }}
-          className="absolute top-24 right-4 z-40 w-10 h-10 bg-black/50 rounded-full flex items-center justify-center"
+          className="absolute top-24 right-4 z-40 w-10 h-10 bg-foreground/50 rounded-full flex items-center justify-center"
         >
           {isMuted ? <VolumeX size={20} className="text-white" /> : <Volume2 size={20} className="text-white" />}
         </button>
@@ -313,20 +313,20 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
       {/* Desktop nav arrows */}
       <button
         onClick={onPrev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 hidden md:flex items-center justify-center bg-black/40 rounded-full hover:bg-black/60"
+        className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 hidden md:flex items-center justify-center bg-foreground/40 rounded-full hover:bg-foreground/60"
       >
         <ChevronLeft size={28} className="text-white" />
       </button>
       <button
         onClick={onNext}
-        className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 hidden md:flex items-center justify-center bg-black/40 rounded-full hover:bg-black/60"
+        className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 hidden md:flex items-center justify-center bg-foreground/40 rounded-full hover:bg-foreground/60"
       >
         <ChevronRight size={28} className="text-white" />
       </button>
 
       {/* View count for own stories */}
       {isMyStory && (
-        <div className="absolute bottom-20 left-4 z-30 flex items-center gap-2 bg-black/50 px-3 py-2 rounded-full">
+        <div className="absolute bottom-20 left-4 z-30 flex items-center gap-2 bg-foreground/50 px-3 py-2 rounded-full">
           <span className="text-white text-sm">{story.views?.length || 0} views</span>
         </div>
       )}
@@ -339,7 +339,7 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
               value={replyText}
               onChange={(e) => setReplyText(e.target.value)}
               placeholder="Send a message..."
-              className="flex-1 bg-white/10 border-white/20 text-white placeholder:text-white/50 rounded-full h-11"
+              className="flex-1 bg-card/10 border-card/20 text-white placeholder:text-white/50 rounded-full h-11"
               onClick={(e) => e.stopPropagation()}
             />
             {replyText && (

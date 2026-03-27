@@ -252,7 +252,7 @@ export default function UserManagement({
                     {/* Tier Selector */}
                     <div className="relative">
                       {processingAction?.id === profile.id && processingAction?.type === 'tier' && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
+                        <div className="absolute inset-0 flex items-center justify-center bg-card/50 z-10">
                           <Loader2 size={16} className="animate-spin text-purple-600" />
                         </div>
                       )}

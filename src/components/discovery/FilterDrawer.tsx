@@ -562,7 +562,7 @@ export default function FilterDrawer({ filters, onFiltersChange, isPremium = fal
           </div>
         </ScrollArea>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-white">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-card">
           <Button 
             onClick={applyFilters}
             className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"

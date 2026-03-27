@@ -95,7 +95,7 @@ export default function SuccessStoryContest() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 pb-24">
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b">
+      <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-lg border-b">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link to={createPageUrl('SuccessStories')}>
             <Button variant="ghost" size="icon">

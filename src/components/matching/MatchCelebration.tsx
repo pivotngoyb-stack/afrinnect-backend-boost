@@ -49,7 +49,7 @@ export default function MatchCelebration({ matchedProfile, onClose }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/70 backdrop-blur-sm"
         onClick={onClose}
       >
         <motion.div
@@ -67,7 +67,7 @@ export default function MatchCelebration({ matchedProfile, onClose }) {
               opacity: [0.3, 0.5, 0.3],
             }}
             transition={{ repeat: Infinity, duration: 2 }}
-            className="absolute inset-0 bg-white/10 rounded-full blur-3xl"
+            className="absolute inset-0 bg-card/10 rounded-full blur-3xl"
           />
 
           <motion.div
@@ -105,7 +105,7 @@ export default function MatchCelebration({ matchedProfile, onClose }) {
             <img
               src={matchedProfile.primary_photo || matchedProfile.photos?.[0]}
               alt={matchedProfile.display_name}
-              className="w-24 h-24 rounded-full border-4 border-white object-cover"
+              className="w-24 h-24 rounded-full border-4 border-card object-cover"
             />
           </motion.div>
 

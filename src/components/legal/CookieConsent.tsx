@@ -30,7 +30,7 @@ export default function CookieConsent() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 p-4 pb-20 md:pb-4">
-      <Card className="max-w-4xl mx-auto bg-white shadow-2xl border-2">
+      <Card className="max-w-4xl mx-auto bg-card shadow-2xl border-2">
         <div className="p-6">
           <div className="flex items-start gap-4">
             <div className="p-3 bg-amber-100 rounded-lg">

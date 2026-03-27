@@ -402,19 +402,19 @@ export default function Onboarding() {
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="text-center p-3 bg-white rounded-xl shadow-sm">
+        <div className="text-center p-3 bg-card rounded-xl shadow-sm">
           <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-purple-100 flex items-center justify-center">
             <Globe size={20} className="text-purple-600" />
           </div>
           <p className="text-xs text-muted-foreground font-medium">{t('onboarding.welcome.global')}</p>
         </div>
-        <div className="text-center p-3 bg-white rounded-xl shadow-sm">
+        <div className="text-center p-3 bg-card rounded-xl shadow-sm">
           <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-amber-100 flex items-center justify-center">
             <Users size={20} className="text-amber-600" />
           </div>
           <p className="text-xs text-muted-foreground font-medium">{t('onboarding.welcome.cultural')}</p>
         </div>
-        <div className="text-center p-3 bg-white rounded-xl shadow-sm">
+        <div className="text-center p-3 bg-card rounded-xl shadow-sm">
           <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-green-100 flex items-center justify-center">
             <Shield size={20} className="text-green-600" />
           </div>
@@ -601,7 +601,7 @@ export default function Onboarding() {
             <div className="space-y-2 pt-2 border-t border-amber-200">
               <p className="text-xs text-amber-700">Or select manually:</p>
               <Select value={formData.current_country} onValueChange={(v) => updateField('current_country', v)}>
-                <SelectTrigger className="h-10 bg-white"><SelectValue placeholder="Country of residence" /></SelectTrigger>
+                <SelectTrigger className="h-10 bg-card"><SelectValue placeholder="Country of residence" /></SelectTrigger>
                 <SelectContent>
                   {ALLOWED_RESIDENCE_COUNTRIES.map(c => (
                     <SelectItem key={c} value={c}>{c}</SelectItem>
@@ -612,7 +612,7 @@ export default function Onboarding() {
                 value={formData.current_city || ''}
                 onChange={(e) => updateField('current_city', e.target.value)}
                 placeholder="City (e.g. Houston, Toronto)"
-                className="h-10 bg-white"
+                className="h-10 bg-card"
               />
             </div>
           </div>
@@ -729,7 +729,7 @@ export default function Onboarding() {
       <AfricanPattern className="text-purple-600" opacity={0.03} />
 
       {/* Progress Bar - Enhanced with motivation */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-lg">
         {step > 0 && (
           <div className="relative">
             <Progress value={progress} className="h-2 rounded-none" />
@@ -785,7 +785,7 @@ export default function Onboarding() {
       </main>
 
       {/* Bottom Navigation - Enhanced */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-lg">
+      <div className="fixed bottom-0 left-0 right-0 bg-card border-t p-4 shadow-lg">
         <div className="max-w-lg mx-auto">
           {/* Social proof ticker */}
           {step > 0 && step < 6 && (

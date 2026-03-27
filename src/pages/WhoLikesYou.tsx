@@ -192,7 +192,7 @@ export default function WhoLikesYou() {
       />
       
       <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 pb-24">
-      <header className="bg-white border-b sticky top-0 z-10">
+      <header className="bg-card border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-foreground">Activity</h1>
@@ -272,7 +272,7 @@ export default function WhoLikesYou() {
                             </Badge>
                           )}
                           {showBlurred && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                            <div className="absolute inset-0 flex items-center justify-center bg-foreground/40">
                               <div className="text-center">
                                 <Lock size={48} className="text-white mx-auto mb-2" />
                                 <p className="text-white font-semibold">Upgrade to See</p>
@@ -370,7 +370,7 @@ export default function WhoLikesYou() {
                             className={`w-full h-64 object-cover ${showBlurred ? 'blur-2xl' : ''}`}
                           />
                           {showBlurred && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                            <div className="absolute inset-0 flex items-center justify-center bg-foreground/40">
                               <div className="text-center">
                                 <Lock size={48} className="text-white mx-auto mb-2" />
                                 <p className="text-white font-semibold">Upgrade to See</p>

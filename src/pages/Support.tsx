@@ -121,7 +121,7 @@ export default function Support() {
 
   return (
     <div className="min-h-screen bg-muted pb-24">
-      <header className="sticky top-0 z-40 bg-white border-b">
+      <header className="sticky top-0 z-40 bg-card border-b">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to={createPageUrl('Settings')}>

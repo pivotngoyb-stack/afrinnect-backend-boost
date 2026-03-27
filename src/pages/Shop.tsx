@@ -111,7 +111,7 @@ export default function Shop() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 pb-24">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-lg border-b border-border sticky top-0 z-40">
+      <header className="bg-card/80 backdrop-blur-lg border-b border-border sticky top-0 z-40">
         <div className="max-w-lg mx-auto px-4 h-14 flex items-center justify-between">
           <Link to={createPageUrl('Home')}>
             <Button variant="ghost" size="icon">
@@ -166,7 +166,7 @@ export default function Shop() {
 
         {/* Current Balance */}
         {(myProfile?.purchased_boosts > 0 || myProfile?.purchased_super_likes > 0) && (
-          <div className="bg-white rounded-xl p-4 mb-6 border border-border shadow-sm">
+          <div className="bg-card rounded-xl p-4 mb-6 border border-border shadow-sm">
             <h3 className="text-sm font-semibold text-muted-foreground uppercase mb-3">Your Balance</h3>
             <div className="flex gap-4">
               {myProfile?.purchased_boosts > 0 && (

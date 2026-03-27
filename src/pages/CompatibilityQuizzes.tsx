@@ -139,7 +139,7 @@ export default function CompatibilityQuizzes() {
     <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative pb-24">
       <AfricanPattern className="text-purple-600" opacity={0.03} />
 
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b">
+      <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-lg border-b">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link to={createPageUrl('Home')}>
             <Button variant="ghost" size="icon">
@@ -158,12 +158,12 @@ export default function CompatibilityQuizzes() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Couples Comparison Card */}
-          <Card className="bg-white/70 backdrop-blur-md border-2 border-purple-200 shadow-lg hover:shadow-xl transition-all cursor-pointer transform hover:scale-105" onClick={() => setShowCouplesComparison(true)}>
+          <Card className="bg-card/70 backdrop-blur-md border-2 border-purple-200 shadow-lg hover:shadow-xl transition-all cursor-pointer transform hover:scale-105" onClick={() => setShowCouplesComparison(true)}>
             <CardHeader className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-t-lg pb-10 mb-[-2rem]">
                <div className="flex justify-between items-start">
                  <div className="flex -space-x-2">
-                   <div className="w-8 h-8 rounded-full bg-white/30 border-2 border-white flex items-center justify-center">You</div>
-                   <div className="w-8 h-8 rounded-full bg-white/30 border-2 border-white flex items-center justify-center">?</div>
+                   <div className="w-8 h-8 rounded-full bg-card/30 border-2 border-card flex items-center justify-center">You</div>
+                   <div className="w-8 h-8 rounded-full bg-card/30 border-2 border-card flex items-center justify-center">?</div>
                  </div>
                  <Badge className="bg-amber-400 text-black border-none font-bold">Premium</Badge>
                </div>
@@ -180,7 +180,7 @@ export default function CompatibilityQuizzes() {
           {quizzes?.map(quiz => {
             const userResult = getResultForQuiz(quiz.id);
             return (
-              <Card key={quiz.id} className="bg-white/70 backdrop-blur-md border border-border shadow-lg hover:shadow-xl transition-all">
+              <Card key={quiz.id} className="bg-card/70 backdrop-blur-md border border-border shadow-lg hover:shadow-xl transition-all">
                 <CardHeader>
                   <img src={quiz.image_url || 'https://images.unsplash.com/photo-1517457210338-f00f72676767?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'} alt={quiz.title} className="rounded-lg mb-4 object-cover h-40 w-full" />
                   <CardTitle className="text-xl font-bold text-foreground">{quiz.title}</CardTitle>
@@ -217,7 +217,7 @@ export default function CompatibilityQuizzes() {
       </main>
 
       <Dialog open={!!activeQuiz} onOpenChange={() => setActiveQuiz(null)}>
-        <DialogContent className="max-w-2xl p-6 bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl">
+        <DialogContent className="max-w-2xl p-6 bg-card/90 backdrop-blur-lg rounded-2xl shadow-2xl">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-foreground">{activeQuiz?.title}</DialogTitle>
           </DialogHeader>

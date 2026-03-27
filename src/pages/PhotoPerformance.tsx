@@ -100,7 +100,7 @@ export default function PhotoPerformance() {
       <AfricanPattern className="text-purple-600" opacity={0.03} />
 
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b border-border">
+      <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-lg border-b border-border">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -233,7 +233,7 @@ export default function PhotoPerformance() {
             </Card>
 
             {/* Optimize Button */}
-            <div className="fixed bottom-20 left-0 right-0 p-4 bg-white border-t">
+            <div className="fixed bottom-20 left-0 right-0 p-4 bg-card border-t">
               <Button 
                 onClick={() => optimizeMutation.mutate()}
                 disabled={optimizeMutation.isPending}

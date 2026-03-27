@@ -1307,7 +1307,7 @@ export default function AdminManual() {
   return (
     <div className="min-h-screen bg-muted">
       {/* Header */}
-      <header className="sticky top-0 bg-white border-b z-40">
+      <header className="sticky top-0 bg-card border-b z-40">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">

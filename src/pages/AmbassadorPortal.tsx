@@ -75,7 +75,7 @@ export default function AmbassadorPortal() {
         <div className="max-w-6xl mx-auto px-4 py-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+              <div className="w-16 h-16 bg-card/20 rounded-full flex items-center justify-center">
                 <Crown size={32} />
               </div>
               <div>
@@ -99,7 +99,7 @@ export default function AmbassadorPortal() {
       {/* Stats Cards */}
       <div className="max-w-6xl mx-auto px-4 -mt-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card className="bg-white shadow-lg">
+          <Card className="bg-card shadow-lg">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -110,7 +110,7 @@ export default function AmbassadorPortal() {
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-white shadow-lg">
+          <Card className="bg-card shadow-lg">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -121,7 +121,7 @@ export default function AmbassadorPortal() {
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-white shadow-lg">
+          <Card className="bg-card shadow-lg">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -132,7 +132,7 @@ export default function AmbassadorPortal() {
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-white shadow-lg">
+          <Card className="bg-card shadow-lg">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -269,7 +269,7 @@ export default function AmbassadorPortal() {
                 <CardContent>
                   <div className="grid md:grid-cols-2 gap-4">
                     {active_campaigns.map(campaign => (
-                      <div key={campaign.id} className="p-4 bg-white rounded-lg border border-amber-200">
+                      <div key={campaign.id} className="p-4 bg-card rounded-lg border border-amber-200">
                         <h4 className="font-bold text-amber-900">{campaign.name}</h4>
                         <p className="text-sm text-muted-foreground mt-1">{campaign.description}</p>
                         {campaign.bonus_multiplier && (

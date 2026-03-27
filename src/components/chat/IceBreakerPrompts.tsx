@@ -27,7 +27,7 @@ export default function IceBreakerPrompts({ onSelectQuestion, onClose }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end md:items-center justify-center p-4"
+      className="fixed inset-0 z-50 bg-foreground/60 backdrop-blur-sm flex items-end md:items-center justify-center p-4"
       onClick={onClose}
     >
       <motion.div
@@ -37,7 +37,7 @@ export default function IceBreakerPrompts({ onSelectQuestion, onClose }) {
         className="w-full max-w-2xl max-h-[80vh] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <Card className="bg-white">
+        <Card className="bg-card">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">

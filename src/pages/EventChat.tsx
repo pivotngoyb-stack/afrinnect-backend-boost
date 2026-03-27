@@ -129,7 +129,7 @@ export default function EventChat() {
 
   return (
     <div className="min-h-screen bg-muted flex flex-col">
-      <header className="bg-white border-b sticky top-0 z-40">
+      <header className="bg-card border-b sticky top-0 z-40">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to={createPageUrl(`EventDetails?id=${eventId}`)}>
@@ -189,7 +189,7 @@ export default function EventChat() {
                         className={`rounded-2xl px-4 py-2 max-w-xs ${
                           isMyMessage
                             ? 'bg-purple-600 text-white'
-                            : 'bg-white border border-border'
+                            : 'bg-card border border-border'
                         }`}
                       >
                         <p className="text-sm">{msg.content}</p>
@@ -207,7 +207,7 @@ export default function EventChat() {
       </ScrollArea>
 
       {isAttending && (
-        <div className="bg-white border-t p-4 safe-area-inset-bottom">
+        <div className="bg-card border-t p-4 safe-area-inset-bottom">
           <div className="max-w-4xl mx-auto flex gap-2">
             <Input
               value={message}

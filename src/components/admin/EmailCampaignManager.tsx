@@ -248,7 +248,7 @@ export default function EmailCampaignManager() {
                 <Mail size={12} /> Preview
               </p>
               <p className="font-medium text-foreground mb-2">{campaign.subject || 'No subject'}</p>
-              <div className="text-sm text-foreground whitespace-pre-wrap bg-white p-3 rounded border">
+              <div className="text-sm text-foreground whitespace-pre-wrap bg-card p-3 rounded border">
                 {campaign.body.replace('{name}', 'John')}
               </div>
             </div>

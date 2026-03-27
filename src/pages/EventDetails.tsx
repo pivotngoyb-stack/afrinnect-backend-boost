@@ -141,7 +141,7 @@ export default function EventDetails() {
     <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative pb-24">
       <AfricanPattern className="text-purple-600" opacity={0.03} />
 
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b">
+      <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-lg border-b">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link to={createPageUrl('Events')}>
             <Button variant="ghost" size="icon">
@@ -166,7 +166,7 @@ export default function EventDetails() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             <div className="absolute bottom-6 left-6 right-6">
               <div className="flex items-center gap-2 mb-2">
-                <Badge className="bg-white/20 backdrop-blur text-white">
+                <Badge className="bg-card/20 backdrop-blur text-white">
                   {formatEventType(event.event_type)}
                 </Badge>
                 {event.is_featured && <Badge className="bg-amber-500">Featured</Badge>}
@@ -287,7 +287,7 @@ export default function EventDetails() {
 
         {/* RSVP Button */}
         {!isPast && (
-          <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t p-4 safe-area-inset-bottom z-30">
+          <div className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-lg border-t p-4 safe-area-inset-bottom z-30">
             <div className="max-w-4xl mx-auto">
               {isAttending ? (
                 <div className="space-y-2">

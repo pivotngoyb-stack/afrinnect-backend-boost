@@ -327,7 +327,7 @@ export default function EditProfile() {
       <AfricanPattern className="text-purple-600" opacity={0.03} />
 
       {/* Sticky Header */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-border shadow-sm">
+      <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -349,7 +349,7 @@ export default function EditProfile() {
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-md p-0 overflow-hidden bg-transparent border-0 shadow-none">
-                <div className="bg-white rounded-3xl overflow-hidden h-[600px] overflow-y-auto">
+                <div className="bg-card rounded-3xl overflow-hidden h-[600px] overflow-y-auto">
                   <ProfileCard 
                     profile={{ ...formData, id: 'preview', matchScore: 95 }} 
                     previewMode 
@@ -446,10 +446,10 @@ export default function EditProfile() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.15 }}
         >
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur">
+          <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
             <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-6">
               <div className="flex items-center gap-3 text-white">
-                <div className="p-3 bg-white/20 rounded-xl backdrop-blur">
+                <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Sparkles size={24} />
                 </div>
                 <div>
@@ -494,10 +494,10 @@ export default function EditProfile() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur">
+          <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
             <div className="bg-gradient-to-r from-green-500 to-teal-600 p-6">
               <div className="flex items-center gap-3 text-white">
-                <div className="p-3 bg-white/20 rounded-xl backdrop-blur">
+                <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Globe size={24} />
                 </div>
                 <div>
@@ -575,10 +575,10 @@ export default function EditProfile() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
         >
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur">
+          <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
             <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
               <div className="flex items-center gap-3 text-white">
-                <div className="p-3 bg-white/20 rounded-xl backdrop-blur">
+                <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Briefcase size={24} />
                 </div>
                 <div>
@@ -649,13 +649,13 @@ export default function EditProfile() {
                     <div className="flex bg-muted rounded-lg p-1">
                       <button
                         onClick={() => setMeasurementSystem('imperial')}
-                        className={`text-xs px-2 py-1 rounded-md transition ${measurementSystem === 'imperial' ? 'bg-white shadow text-purple-600 font-medium' : 'text-muted-foreground'}`}
+                        className={`text-xs px-2 py-1 rounded-md transition ${measurementSystem === 'imperial' ? 'bg-card shadow text-purple-600 font-medium' : 'text-muted-foreground'}`}
                       >
                         {t('editProfile.ft_in')}
                       </button>
                       <button
                         onClick={() => setMeasurementSystem('metric')}
-                        className={`text-xs px-2 py-1 rounded-md transition ${measurementSystem === 'metric' ? 'bg-white shadow text-purple-600 font-medium' : 'text-muted-foreground'}`}
+                        className={`text-xs px-2 py-1 rounded-md transition ${measurementSystem === 'metric' ? 'bg-card shadow text-purple-600 font-medium' : 'text-muted-foreground'}`}
                       >
                         {t('editProfile.cm_short')}
                       </button>
@@ -715,10 +715,10 @@ export default function EditProfile() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.4 }}
         >
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur">
+          <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
             <div className="bg-gradient-to-r from-amber-500 to-orange-600 p-6">
               <div className="flex items-center gap-3 text-white">
-                <div className="p-3 bg-white/20 rounded-xl backdrop-blur">
+                <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Globe size={24} />
                 </div>
                 <div>
@@ -756,10 +756,10 @@ export default function EditProfile() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.5 }}
         >
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur">
+          <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
             <div className="bg-gradient-to-r from-purple-500 to-pink-600 p-6">
               <div className="flex items-center gap-3 text-white">
-                <div className="p-3 bg-white/20 rounded-xl backdrop-blur">
+                <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Award size={24} />
                 </div>
                 <div>
@@ -797,10 +797,10 @@ export default function EditProfile() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.6 }}
         >
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur">
+          <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
             <div className="bg-gradient-to-r from-teal-500 to-cyan-600 p-6">
               <div className="flex items-center gap-3 text-white">
-                <div className="p-3 bg-white/20 rounded-xl backdrop-blur">
+                <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Sparkles size={24} />
                 </div>
                 <div>

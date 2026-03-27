@@ -771,7 +771,7 @@ export default function Chat() {
 
         {/* Virtual Gifts Modal */}
         {showVirtualGifts && (
-          <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => setShowVirtualGifts(false)}>
+          <div className="fixed inset-0 z-50 bg-foreground/50 flex items-center justify-center p-4" onClick={() => setShowVirtualGifts(false)}>
             <div className="bg-card rounded-2xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
               <h2 className="text-xl font-bold mb-4">Send a Virtual Gift 🎁</h2>
               <div className="grid grid-cols-3 gap-4 mb-6">
@@ -804,7 +804,7 @@ export default function Chat() {
 
         {/* Upgrade Prompt Modal */}
         {showUpgradePrompt && (
-          <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => setShowUpgradePrompt(false)}>
+          <div className="fixed inset-0 z-50 bg-foreground/50 flex items-center justify-center p-4" onClick={() => setShowUpgradePrompt(false)}>
             <div className="bg-card rounded-2xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
               <div className="text-center">
                 <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-100 to-amber-100 flex items-center justify-center">

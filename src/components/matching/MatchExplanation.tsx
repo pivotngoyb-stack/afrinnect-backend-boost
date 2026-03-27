@@ -99,7 +99,7 @@ export default function MatchExplanation({ score, reasons = [], breakdown = {}, 
                 <Badge 
                   key={idx}
                   variant="outline" 
-                  className="bg-white border-purple-200 text-purple-700 py-1.5 px-3"
+                  className="bg-card border-purple-200 text-purple-700 py-1.5 px-3"
                 >
                   <Icon size={12} className="mr-1.5" />
                   {reason}

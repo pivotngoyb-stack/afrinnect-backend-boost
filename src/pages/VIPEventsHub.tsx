@@ -147,7 +147,7 @@ export default function VIPEventsHub() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl p-8 max-w-md text-center shadow-2xl"
+          className="bg-card rounded-3xl p-8 max-w-md text-center shadow-2xl"
         >
           <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
             <Lock size={40} className="text-white" />
@@ -187,7 +187,7 @@ export default function VIPEventsHub() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 pb-24">
-      <header className="bg-white/80 backdrop-blur-lg border-b border-border sticky top-0 z-40">
+      <header className="bg-card/80 backdrop-blur-lg border-b border-border sticky top-0 z-40">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link to={createPageUrl('Home')}>
             <Button variant="ghost" size="icon">

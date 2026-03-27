@@ -66,7 +66,7 @@ export default function SuccessStories() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50/30 to-amber-50/20 pb-24">
-      <header className="bg-white/80 backdrop-blur-lg border-b sticky top-0 z-40">
+      <header className="bg-card/80 backdrop-blur-lg border-b sticky top-0 z-40">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link to={createPageUrl('Home')}>
             <Button variant="ghost" size="icon">

@@ -155,12 +155,12 @@ export default function DisputeManagement({ disputes, currentUser }) {
                   {getStatusBadge(dispute.status)}
                 </div>
 
-                <div className="bg-white p-3 rounded border border-border mb-3">
+                <div className="bg-card p-3 rounded border border-border mb-3">
                   <p className="text-xs text-muted-foreground mb-1">Original Ban Reason:</p>
                   <p className="text-sm text-foreground">{dispute.original_ban_reason}</p>
                 </div>
 
-                <div className="bg-white p-3 rounded border border-border mb-3">
+                <div className="bg-card p-3 rounded border border-border mb-3">
                   <p className="text-xs text-muted-foreground mb-1">User's Appeal:</p>
                   <p className="text-sm text-foreground">{dispute.reason}</p>
                 </div>

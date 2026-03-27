@@ -25,7 +25,7 @@ export default function BlurredLikesTeaser({ likesCount = 0, className = "" }) {
           {[...Array(Math.min(likesCount, 5))].map((_, i) => (
             <motion.div key={i} initial={{ scale: 0, rotate: -10 }} animate={{ scale: 1, rotate: 0 }} transition={{ delay: i * 0.1 }} className="relative">
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-300 to-purple-400 border-3 border-background shadow-lg overflow-hidden">
-                <div className="w-full h-full backdrop-blur-xl bg-white/40 flex items-center justify-center">
+                <div className="w-full h-full backdrop-blur-xl bg-card/40 flex items-center justify-center">
                   <Heart className="text-pink-500/60" size={20} fill="currentColor" />
                 </div>
               </div>

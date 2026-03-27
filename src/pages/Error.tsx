@@ -22,7 +22,7 @@ export default function Error() {
           <Button
             onClick={() => window.location.reload()}
             variant="outline"
-            className="bg-white/20 text-white border-white/30 hover:bg-white/30"
+            className="bg-card/20 text-white border-card/30 hover:bg-card/30"
           >
             <RefreshCw size={18} className="mr-2" />
             Reload Page

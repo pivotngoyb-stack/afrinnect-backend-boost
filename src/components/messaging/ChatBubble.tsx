@@ -39,12 +39,12 @@ export default function ChatBubble({ message, isOwn, senderPhoto }) {
             </div>
           ) : message.message_type === 'voice_note' ? (
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-full ${isOwn ? 'bg-white/20' : 'bg-purple-100'}`}>
+              <div className={`p-2 rounded-full ${isOwn ? 'bg-card/20' : 'bg-purple-100'}`}>
                 <Mic size={18} className={isOwn ? 'text-white' : 'text-purple-600'} />
               </div>
               <div className="flex-1">
-                <div className={`h-1 rounded-full ${isOwn ? 'bg-white/30' : 'bg-muted'}`}>
-                  <div className={`h-full w-1/2 rounded-full ${isOwn ? 'bg-white' : 'bg-purple-600'}`} />
+                <div className={`h-1 rounded-full ${isOwn ? 'bg-card/30' : 'bg-muted'}`}>
+                  <div className={`h-full w-1/2 rounded-full ${isOwn ? 'bg-card' : 'bg-purple-600'}`} />
                 </div>
                 <span className={`text-xs mt-1 block ${isOwn ? 'text-white/70' : 'text-muted-foreground'}`}>
                   0:15

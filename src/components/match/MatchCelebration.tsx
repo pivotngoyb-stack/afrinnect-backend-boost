@@ -55,7 +55,7 @@ export default function MatchCelebration({ matchedProfile, onClose }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/70 backdrop-blur-sm"
         onClick={onClose}
       >
         <motion.div
@@ -76,7 +76,7 @@ export default function MatchCelebration({ matchedProfile, onClose }) {
           <motion.div
             animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
             transition={{ repeat: Infinity, duration: 2 }}
-            className="absolute inset-0 bg-white/10 rounded-full blur-3xl"
+            className="absolute inset-0 bg-card/10 rounded-full blur-3xl"
           />
 
           <motion.div

@@ -63,7 +63,7 @@ export default function ReferralProgram() {
           <p className="text-muted-foreground">Earn 3 days of Premium for every friend who joins!</p>
         </header>
 
-        <Card className="border-purple-200 shadow-lg bg-white/80 backdrop-blur-sm">
+        <Card className="border-purple-200 shadow-lg bg-card/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-lg">Your Unique Link</CardTitle>
             <CardDescription>Share this link to start earning</CardDescription>

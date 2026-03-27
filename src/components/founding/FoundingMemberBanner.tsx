@@ -51,13 +51,13 @@ export default function FoundingMemberBanner({ profile, onDismiss }) {
         <div className="bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 rounded-2xl shadow-xl p-4 border-2 border-amber-300">
           <button 
             onClick={handleDismiss}
-            className="absolute top-2 right-2 p-1 rounded-full bg-white/20 hover:bg-white/30 transition"
+            className="absolute top-2 right-2 p-1 rounded-full bg-card/20 hover:bg-card/30 transition"
           >
             <X size={16} className="text-white" />
           </button>
           
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-white/20 rounded-xl">
+            <div className="p-3 bg-card/20 rounded-xl">
               <Crown size={28} className="text-white" />
             </div>
             
@@ -73,14 +73,14 @@ export default function FoundingMemberBanner({ profile, onDismiss }) {
             </div>
           </div>
           
-          <div className="mt-3 pt-3 border-t border-white/20 flex items-center justify-between">
+          <div className="mt-3 pt-3 border-t border-card/20 flex items-center justify-between">
             <p className="text-white/80 text-xs">
               ✨ Unlimited likes • See who likes you • Super likes & more!
             </p>
             <Button 
               onClick={handleDismiss}
               size="sm" 
-              className="bg-white text-amber-600 hover:bg-white/90 text-xs h-7"
+              className="bg-card text-amber-600 hover:bg-card/90 text-xs h-7"
             >
               Got it!
             </Button>

@@ -47,7 +47,7 @@ export default function MatchMilestones({ userProfile, newMatchCount }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground/70 backdrop-blur-sm"
           onClick={dismissCelebration}
         >
           <motion.div
@@ -61,7 +61,7 @@ export default function MatchMilestones({ userProfile, newMatchCount }) {
               {[...Array(20)].map((_, i) => (
                 <motion.div
                   key={i}
-                  className="absolute w-2 h-2 bg-white/30 rounded-full"
+                  className="absolute w-2 h-2 bg-card/30 rounded-full"
                   style={{
                     left: `${Math.random() * 100}%`,
                     top: `${Math.random() * 100}%`,
@@ -103,7 +103,7 @@ export default function MatchMilestones({ userProfile, newMatchCount }) {
               
               <p className="text-white/90 mb-6 text-lg">{celebration.message}</p>
               
-              <div className="bg-white/20 rounded-xl p-4 mb-6">
+              <div className="bg-card/20 rounded-xl p-4 mb-6">
                 <div className="flex items-center justify-center gap-2">
                   <Heart className="text-pink-300 fill-pink-300" size={20} />
                   <span className="text-2xl font-bold text-white">{celebration.count}</span>
@@ -113,7 +113,7 @@ export default function MatchMilestones({ userProfile, newMatchCount }) {
               
               <Button
                 onClick={dismissCelebration}
-                className="w-full bg-white text-purple-600 hover:bg-muted font-bold py-3"
+                className="w-full bg-card text-purple-600 hover:bg-muted font-bold py-3"
               >
                 <PartyPopper size={18} className="mr-2" />
                 Keep Going!

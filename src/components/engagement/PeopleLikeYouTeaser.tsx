@@ -50,7 +50,7 @@ export default function PeopleLikeYouTeaser({ userProfile, className = '' }: Peo
                 {Array.from({ length: Math.min(count, 4) }).map((_, i) => (
                   <motion.div key={i} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: i * 0.1 }}
                     className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-300 to-purple-400 border-2 border-background flex items-center justify-center">
-                    <div className="w-full h-full rounded-full backdrop-blur-sm bg-white/30 flex items-center justify-center">
+                    <div className="w-full h-full rounded-full backdrop-blur-sm bg-card/30 flex items-center justify-center">
                       <Heart size={14} className="text-pink-500/70" fill="currentColor" />
                     </div>
                   </motion.div>

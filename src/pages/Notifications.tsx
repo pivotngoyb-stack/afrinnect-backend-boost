@@ -119,7 +119,7 @@ export default function Notifications() {
 
   return (
     <div className="min-h-screen bg-muted pb-24">
-      <header className="sticky top-0 z-40 bg-white border-b">
+      <header className="sticky top-0 z-40 bg-card border-b">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to={createPageUrl('Home')}>
@@ -173,7 +173,7 @@ export default function Notifications() {
                   onClick={() => handleNotificationClick(notif)}
                   className={`p-4 rounded-xl border cursor-pointer transition-all hover:shadow-md ${
                     notif.is_read
-                      ? 'bg-white border-border'
+                      ? 'bg-card border-border'
                       : isLikeNotif ? 'bg-gradient-to-r from-purple-50 to-pink-50 border-purple-300 border-2' : 'bg-purple-50 border-purple-200'
                   } ${notif.is_admin ? 'border-l-4 border-l-red-500' : ''} ${needsPremium ? 'opacity-75' : ''}`}
                 >

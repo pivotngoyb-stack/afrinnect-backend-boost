@@ -67,7 +67,7 @@ export default function CustomerView() {
   return (
     <div className="min-h-screen bg-muted">
       {/* Header */}
-      <header className="bg-white border-b shadow-sm sticky top-0 z-50">
+      <header className="bg-card border-b shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
@@ -106,7 +106,7 @@ export default function CustomerView() {
                     Impersonate User (Optional)
                   </Label>
                   <Select value={impersonateUserId || 'none'} onValueChange={(val) => setImpersonateUserId(val === 'none' ? null : val)}>
-                    <SelectTrigger className="bg-white">
+                    <SelectTrigger className="bg-card">
                       <SelectValue placeholder="View as admin (no user selected)" />
                     </SelectTrigger>
                     <SelectContent>
@@ -151,7 +151,7 @@ export default function CustomerView() {
             >
               <div
                 onClick={() => setSelectedPage(page)}
-                className="bg-white rounded-xl border-2 border-border hover:border-purple-400 hover:shadow-lg transition-all p-4 cursor-pointer group h-full"
+                className="bg-card rounded-xl border-2 border-border hover:border-purple-400 hover:shadow-lg transition-all p-4 cursor-pointer group h-full"
               >
                 <div className="flex flex-col items-center text-center gap-2">
                   <div className="text-3xl">{page.icon}</div>
@@ -196,11 +196,11 @@ export default function CustomerView() {
 
       {/* Page Preview Modal */}
       {selectedPage && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-foreground/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className={`bg-white rounded-2xl shadow-2xl overflow-hidden ${
+            className={`bg-card rounded-2xl shadow-2xl overflow-hidden ${
               viewMode === 'mobile' ? 'w-[375px] h-[667px]' : 'w-full max-w-6xl h-[80vh]'
             }`}
           >

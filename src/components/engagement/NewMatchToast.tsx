@@ -31,7 +31,7 @@ export default function NewMatchToast({ matchedProfile, show, onDismiss }: NewMa
           </button>
           <div className="flex items-center gap-3">
             <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1.5 }}
-              className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+              className="w-12 h-12 bg-card/20 rounded-full flex items-center justify-center">
               <Heart size={24} className="text-white" fill="white" />
             </motion.div>
             <div className="flex-1">
@@ -45,7 +45,7 @@ export default function NewMatchToast({ matchedProfile, show, onDismiss }: NewMa
           </div>
           <div className="flex gap-2 mt-3">
             <Button size="sm" onClick={() => { navigate('/matches'); onDismiss(); }}
-              className="flex-1 bg-white text-pink-600 hover:bg-white/90 text-xs font-semibold">
+              className="flex-1 bg-card text-pink-600 hover:bg-card/90 text-xs font-semibold">
               <MessageCircle size={14} className="mr-1" />
               {t('engagement.newMatchToast.sayHi')}
             </Button>

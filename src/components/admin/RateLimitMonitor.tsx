@@ -96,7 +96,7 @@ export default function RateLimitMonitor({ violations, currentUser }) {
                     <Button
                       onClick={runAIAnalysis}
                       disabled={isRunningAI}
-                      className="bg-white text-red-900 hover:bg-muted"
+                      className="bg-card text-red-900 hover:bg-muted"
                     >
                       {isRunningAI ? (
                         <>
@@ -164,7 +164,7 @@ export default function RateLimitMonitor({ violations, currentUser }) {
                 <div className="mt-4">
                   <p className="font-semibold text-green-900 mb-2">Banned Users:</p>
                   {aiResult.details.map((user, idx) => (
-                    <div key={idx} className="bg-white p-3 rounded border border-green-200 mb-2">
+                    <div key={idx} className="bg-card p-3 rounded border border-green-200 mb-2">
                       <p className="font-medium">{user.email}</p>
                       <p className="text-sm text-muted-foreground">
                         {user.violations} violations • {user.analysis.confidence}% confidence

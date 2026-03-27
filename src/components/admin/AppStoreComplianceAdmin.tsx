@@ -184,7 +184,7 @@ export default function AppStoreComplianceAdmin() {
             Both Apple (30%) and Google (15-30%) require their payment systems for digital subscriptions sold within apps.
           </p>
           
-          <div className="bg-white/70 p-4 rounded-lg">
+          <div className="bg-card/70 p-4 rounded-lg">
             <h4 className="font-semibold mb-2">Recommended Launch Strategy:</h4>
             <ol className="space-y-2 text-sm list-decimal list-inside">
               <li><strong>Phase 1 (Launch):</strong> Web-only subscriptions via Stripe. App users are directed to web to subscribe.</li>

@@ -95,7 +95,7 @@ export default function Waitlist() {
           animate={{ opacity: 1, scale: 1 }}
           className="max-w-md w-full relative z-10"
         >
-          <Card className="border-none shadow-2xl bg-white/90 backdrop-blur-sm overflow-hidden">
+          <Card className="border-none shadow-2xl bg-card/90 backdrop-blur-sm overflow-hidden">
             <CardContent className="p-8 text-center space-y-6">
               <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
                 <CheckCircle size={40} className="text-green-600" />
@@ -164,7 +164,7 @@ export default function Waitlist() {
             </p>
           </div>
 
-          <Card className="border-purple-100 shadow-xl bg-white/90 backdrop-blur-sm">
+          <Card className="border-purple-100 shadow-xl bg-card/90 backdrop-blur-sm">
             <CardContent className="p-8">
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">

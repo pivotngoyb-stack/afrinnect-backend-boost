@@ -309,7 +309,7 @@ export default function Stories() {
                         <img
                           src={group.profile?.primary_photo}
                           alt=""
-                          className="w-7 h-7 rounded-full border-2 border-white object-cover"
+                          className="w-7 h-7 rounded-full border-2 border-card object-cover"
                           onError={e => { e.target.style.display = 'none'; }}
                         />
                         <span className="text-white text-xs font-medium truncate">
@@ -317,7 +317,7 @@ export default function Stories() {
                         </span>
                       </div>
                       {group.stories.length > 1 && (
-                        <div className="absolute top-2 right-2 bg-black/50 px-2 py-0.5 rounded-full text-white text-xs">
+                        <div className="absolute top-2 right-2 bg-foreground/50 px-2 py-0.5 rounded-full text-white text-xs">
                           {group.stories.length}
                         </div>
                       )}
@@ -337,7 +337,7 @@ export default function Stories() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black z-50 flex flex-col"
+            className="fixed inset-0 bg-foreground z-50 flex flex-col"
             style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}
           >
             <div className="flex items-center justify-between p-4">

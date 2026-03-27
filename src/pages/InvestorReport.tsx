@@ -94,7 +94,7 @@ export default function InvestorReport() {
   const COLORS = ['#7c3aed', '#db2777', '#f59e0b', '#10b981', '#3b82f6'];
 
   return (
-    <div className="min-h-screen bg-muted p-8 print:p-0 print:bg-white font-sans">
+    <div className="min-h-screen bg-muted p-8 print:p-0 print:bg-card font-sans">
       
       {/* Controls */}
       <div className="max-w-[210mm] mx-auto mb-8 flex justify-between items-center print:hidden">
@@ -111,7 +111,7 @@ export default function InvestorReport() {
       </div>
 
       {/* Report Container (A4 Width) */}
-      <div id="report-content" className="max-w-[210mm] mx-auto bg-white shadow-xl print:shadow-none p-12 rounded-xl text-foreground min-h-[297mm]">
+      <div id="report-content" className="max-w-[210mm] mx-auto bg-card shadow-xl print:shadow-none p-12 rounded-xl text-foreground min-h-[297mm]">
         
         {/* 1. Header */}
         <header className="border-b-2 border-border pb-8 mb-10 flex justify-between items-end">
@@ -290,9 +290,9 @@ export default function InvestorReport() {
             <div>
               <h3 className="text-xs font-semibold text-muted-foreground mb-2">Systems Active</h3>
               <div className="flex flex-wrap gap-2">
-                <Badge className="bg-white border-green-200 text-green-700">AI Scam Detection</Badge>
-                <Badge className="bg-white border-green-200 text-green-700">Video Verification</Badge>
-                <Badge className="bg-white border-green-200 text-green-700">Auto-Moderation</Badge>
+                <Badge className="bg-card border-green-200 text-green-700">AI Scam Detection</Badge>
+                <Badge className="bg-card border-green-200 text-green-700">Video Verification</Badge>
+                <Badge className="bg-card border-green-200 text-green-700">Auto-Moderation</Badge>
               </div>
             </div>
           </div>

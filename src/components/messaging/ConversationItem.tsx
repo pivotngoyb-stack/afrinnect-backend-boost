@@ -43,7 +43,7 @@ export default function ConversationItem({ match, profile, lastMessage, unreadCo
           className="w-16 h-16 rounded-full object-cover"
         />
         {profile?.is_active && (
-          <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white" />
+          <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-card" />
         )}
       </div>
       

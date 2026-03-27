@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 export function ProfileCardSkeleton() {
   return (
-    <div className="w-full max-w-sm mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
+    <div className="w-full max-w-sm mx-auto bg-card rounded-3xl shadow-2xl overflow-hidden">
       <div className="relative h-[500px] bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse" />
       <div className="p-6 space-y-3">
         <div className="h-6 bg-muted rounded animate-pulse w-3/4" />

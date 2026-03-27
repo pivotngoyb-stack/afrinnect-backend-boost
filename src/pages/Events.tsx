@@ -134,7 +134,7 @@ export default function Events() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 pb-24">
-      <header className="bg-white border-b sticky top-0 z-10">
+      <header className="bg-card border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-2xl font-bold text-foreground">Community Events</h1>
@@ -360,7 +360,7 @@ export default function Events() {
                             </div>
                           </div>
                           
-                          <Button className="w-full mt-4 bg-white text-purple-600 border border-purple-200 hover:bg-purple-50">
+                          <Button className="w-full mt-4 bg-card text-purple-600 border border-purple-200 hover:bg-purple-50">
                             View Details
                           </Button>
                         </CardContent>

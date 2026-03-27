@@ -248,7 +248,7 @@ export default function SafetyMonitorDashboard() {
                     </div>
 
                     {check.panic_location && (
-                      <div className="bg-white rounded-lg p-3 border border-red-200">
+                      <div className="bg-card rounded-lg p-3 border border-red-200">
                         <p className="text-xs text-muted-foreground font-medium mb-1">Live Location</p>
                         <a
                           href={`https://maps.google.com/?q=${check.panic_location.lat},${check.panic_location.lng}`}
@@ -262,7 +262,7 @@ export default function SafetyMonitorDashboard() {
                       </div>
                     )}
 
-                    <div className="bg-white rounded-lg p-3 border border-red-200">
+                    <div className="bg-card rounded-lg p-3 border border-red-200">
                       <p className="text-xs text-muted-foreground font-medium mb-1">Emergency Contact</p>
                       <p className="text-sm font-medium">{check.emergency_contact_name}</p>
                       <p className="text-sm text-muted-foreground">{check.emergency_contact_phone}</p>

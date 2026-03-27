@@ -220,7 +220,7 @@ export default function ErrorLogsDashboard() {
 
       {/* Detail View Drawer */}
       <Sheet open={!!selectedError} onOpenChange={() => setSelectedError(null)}>
-        <SheetContent className="w-[90%] sm:w-[540px] bg-background border-l border-white/10 text-white overflow-y-auto">
+        <SheetContent className="w-[90%] sm:w-[540px] bg-background border-l border-card/10 text-white overflow-y-auto">
           {selectedError && (
             <div className="space-y-6 pt-6">
               <SheetHeader>
@@ -269,7 +269,7 @@ export default function ErrorLogsDashboard() {
                         </div>
                         <div>
                           <p className="text-xs text-purple-200/60 uppercase font-bold">Suggested Fix</p>
-                          <p className="text-sm text-purple-100 font-mono bg-black/30 p-2 rounded mt-1">
+                          <p className="text-sm text-purple-100 font-mono bg-foreground/30 p-2 rounded mt-1">
                             {aiAnalysis.fix_suggestion}
                           </p>
                         </div>
@@ -297,7 +297,7 @@ export default function ErrorLogsDashboard() {
                 )}
                 <Button 
                   variant="outline" 
-                  className="flex-1 border-white/20 text-white hover:bg-white/10"
+                  className="flex-1 border-card/20 text-white hover:bg-card/10"
                   onClick={() => updateStatusMutation.mutate({ id: selectedError.id, status: 'ignored' })}
                 >
                   Ignore
@@ -312,11 +312,11 @@ export default function ErrorLogsDashboard() {
                 </TabsList>
 
                 <TabsContent value="stack" className="mt-4 space-y-4">
-                  <div className="bg-black/50 p-4 rounded-lg font-mono text-xs text-red-300 overflow-x-auto whitespace-pre-wrap border border-white/10">
+                  <div className="bg-foreground/50 p-4 rounded-lg font-mono text-xs text-red-300 overflow-x-auto whitespace-pre-wrap border border-card/10">
                     {selectedError.stack || 'No stack trace available'}
                   </div>
                   {selectedError.component_stack && (
-                    <div className="bg-black/50 p-4 rounded-lg font-mono text-xs text-muted-foreground overflow-x-auto whitespace-pre-wrap border border-white/10">
+                    <div className="bg-foreground/50 p-4 rounded-lg font-mono text-xs text-muted-foreground overflow-x-auto whitespace-pre-wrap border border-card/10">
                       <p className="text-muted-foreground mb-2">// Component Stack</p>
                       {selectedError.component_stack}
                     </div>
@@ -324,7 +324,7 @@ export default function ErrorLogsDashboard() {
                 </TabsContent>
 
                 <TabsContent value="breadcrumbs" className="mt-4">
-                  <div className="relative pl-4 border-l border-white/10 space-y-6">
+                  <div className="relative pl-4 border-l border-card/10 space-y-6">
                     {selectedError.breadcrumbs?.map((crumb, i) => (
                       <div key={i} className="relative">
                         <div className="absolute -left-[21px] top-1 w-3 h-3 rounded-full bg-blue-500 ring-4 ring-gray-900" />
@@ -333,7 +333,7 @@ export default function ErrorLogsDashboard() {
                           {new Date(crumb.timestamp).toLocaleTimeString()} • {crumb.category}
                         </p>
                         {crumb.data && (
-                          <pre className="mt-1 text-[10px] text-muted-foreground bg-black/30 p-1 rounded">
+                          <pre className="mt-1 text-[10px] text-muted-foreground bg-foreground/30 p-1 rounded">
                             {JSON.stringify(crumb.data, null, 2)}
                           </pre>
                         )}
@@ -347,7 +347,7 @@ export default function ErrorLogsDashboard() {
                 </TabsContent>
 
                 <TabsContent value="context" className="mt-4 space-y-4">
-                  <Card className="bg-secondary border-white/10">
+                  <Card className="bg-secondary border-card/10">
                     <CardContent className="p-4 space-y-4">
                       <div className="flex items-center gap-3">
                         <User className="text-muted-foreground" size={16} />

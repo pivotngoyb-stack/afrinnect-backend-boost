@@ -169,7 +169,7 @@ export default function AppStoreCompliance() {
                   return (
                     <div 
                       key={key}
-                      className="flex items-center justify-between p-4 bg-white border rounded-lg"
+                      className="flex items-center justify-between p-4 bg-card border rounded-lg"
                     >
                       <div className="flex items-center gap-4">
                         {getStatusIcon(check.status)}
@@ -203,7 +203,7 @@ export default function AppStoreCompliance() {
               Apple requires all digital subscriptions sold within iOS apps to use Apple's 
               In-App Purchase system. Apple takes a 15-30% commission on all transactions.
             </p>
-            <div className="bg-white/50 p-4 rounded-lg">
+            <div className="bg-card/50 p-4 rounded-lg">
               <h4 className="font-semibold mb-2">Options:</h4>
               <ul className="space-y-2 text-sm">
                 <li>1. <strong>Implement Apple IAP</strong> - Full native experience, Apple takes 30%</li>

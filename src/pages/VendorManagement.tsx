@@ -104,7 +104,7 @@ export default function VendorManagement() {
     <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative pb-24">
       <AfricanPattern className="text-purple-600" opacity={0.03} />
 
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b">
+      <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-lg border-b">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link to={createPageUrl('Home')}>
             <Button variant="ghost" size="icon">
@@ -127,7 +127,7 @@ export default function VendorManagement() {
         {vendors.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {vendors.map(vendor => (
-              <Card key={vendor.id} className="bg-white/70 backdrop-blur-md border border-border shadow-lg">
+              <Card key={vendor.id} className="bg-card/70 backdrop-blur-md border border-border shadow-lg">
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
                     <div className="flex items-center gap-2">

@@ -188,9 +188,9 @@ export default function VerifyPhoto() {
               {step === 'left' && "Turn Head Left ←"}
               {step === 'right' && "Turn Head Right →"}
             </h2>
-            <div className="relative w-64 h-80 bg-black rounded-3xl overflow-hidden shadow-xl mb-8 border-4 border-primary">
+            <div className="relative w-64 h-80 bg-foreground rounded-3xl overflow-hidden shadow-xl mb-8 border-4 border-primary">
               <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover transform -scale-x-100" />
-              <div className="absolute inset-0 border-2 border-white/50 rounded-full m-8 pointer-events-none" />
+              <div className="absolute inset-0 border-2 border-card/50 rounded-full m-8 pointer-events-none" />
             </div>
             <Button onClick={() => captureAndAdvance(step as Pose)} disabled={capturing} className="w-full max-w-xs py-6 text-lg">
               {capturing ? <Loader2 className="mr-2 animate-spin" /> : <Camera className="mr-2" />}

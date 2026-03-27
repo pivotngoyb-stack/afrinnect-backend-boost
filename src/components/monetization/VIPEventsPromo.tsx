@@ -21,7 +21,7 @@ export default function VIPEventsPromo({ userProfile, nextEvent }) {
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
         <div className="bg-gradient-to-r from-purple-900/80 to-pink-900/80 rounded-2xl p-4 border border-purple-500/30">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0"><Lock size={24} className="text-primary-foreground" /></div>
+            <div className="w-12 h-12 bg-card/20 rounded-xl flex items-center justify-center flex-shrink-0"><Lock size={24} className="text-primary-foreground" /></div>
             <div className="flex-1 min-w-0">
               <p className="text-xs text-purple-200 uppercase tracking-wide font-semibold">VIP Exclusive</p>
               <h3 className="text-primary-foreground font-bold truncate">{eventTypeEmoji[nextEvent.event_type]} {nextEvent.title}</h3>
@@ -39,10 +39,10 @@ export default function VIPEventsPromo({ userProfile, nextEvent }) {
       <Link to={createPageUrl('VIPEventsHub')}>
         <div className="bg-gradient-to-r from-primary to-pink-600 rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0 text-2xl">{eventTypeEmoji[nextEvent.event_type]}</div>
+            <div className="w-12 h-12 bg-card/20 rounded-xl flex items-center justify-center flex-shrink-0 text-2xl">{eventTypeEmoji[nextEvent.event_type]}</div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-0.5">
-                <Badge className="bg-white/20 text-primary-foreground text-[10px] capitalize">{nextEvent.event_type?.replace('_', ' ')}</Badge>
+                <Badge className="bg-card/20 text-primary-foreground text-[10px] capitalize">{nextEvent.event_type?.replace('_', ' ')}</Badge>
                 {tier === 'vip' && <Badge className="bg-amber-500 text-primary-foreground text-[10px]"><Crown size={10} className="mr-0.5" /> VIP</Badge>}
               </div>
               <h3 className="text-primary-foreground font-bold truncate">{nextEvent.title}</h3>

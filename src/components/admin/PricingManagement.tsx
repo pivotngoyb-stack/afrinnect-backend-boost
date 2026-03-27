@@ -121,7 +121,7 @@ export default function PricingManagement({ plans: initialPlans }) {
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-white/5 border-white/10">
+        <Card className="bg-card/5 border-card/10">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -133,7 +133,7 @@ export default function PricingManagement({ plans: initialPlans }) {
           </CardContent>
         </Card>
 
-        <Card className="bg-white/5 border-white/10">
+        <Card className="bg-card/5 border-card/10">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -145,7 +145,7 @@ export default function PricingManagement({ plans: initialPlans }) {
           </CardContent>
         </Card>
 
-        <Card className="bg-white/5 border-white/10">
+        <Card className="bg-card/5 border-card/10">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -157,7 +157,7 @@ export default function PricingManagement({ plans: initialPlans }) {
           </CardContent>
         </Card>
 
-        <Card className="bg-white/5 border-white/10">
+        <Card className="bg-card/5 border-card/10">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -171,7 +171,7 @@ export default function PricingManagement({ plans: initialPlans }) {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="bg-white/10">
+        <TabsList className="bg-card/10">
           <TabsTrigger value="plans">Pricing Plans</TabsTrigger>
           <TabsTrigger value="promotions">Promotions</TabsTrigger>
           <TabsTrigger value="abtests">A/B Tests</TabsTrigger>
@@ -188,7 +188,7 @@ export default function PricingManagement({ plans: initialPlans }) {
           </Button>
 
           {plans.map(plan => (
-            <Card key={plan.id} className="bg-white/5 border-white/10">
+            <Card key={plan.id} className="bg-card/5 border-card/10">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -239,7 +239,7 @@ export default function PricingManagement({ plans: initialPlans }) {
           </Button>
 
           {promotions.map(promo => (
-            <Card key={promo.id} className="bg-white/5 border-white/10">
+            <Card key={promo.id} className="bg-card/5 border-card/10">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -299,7 +299,7 @@ export default function PricingManagement({ plans: initialPlans }) {
               : 0;
 
             return (
-              <Card key={test.id} className="bg-white/5 border-white/10">
+              <Card key={test.id} className="bg-card/5 border-card/10">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div>
@@ -316,7 +316,7 @@ export default function PricingManagement({ plans: initialPlans }) {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white/5 p-4 rounded-lg">
+                    <div className="bg-card/5 p-4 rounded-lg">
                       <h4 className="text-white font-semibold mb-2">Variant A (Control)</h4>
                       <div className="space-y-1 text-sm text-muted-foreground">
                         <p>Views: {test.metrics?.variant_a_views || 0}</p>
@@ -325,7 +325,7 @@ export default function PricingManagement({ plans: initialPlans }) {
                       </div>
                     </div>
 
-                    <div className="bg-white/5 p-4 rounded-lg">
+                    <div className="bg-card/5 p-4 rounded-lg">
                       <h4 className="text-white font-semibold mb-2">Variant B (Test)</h4>
                       <div className="space-y-1 text-sm text-muted-foreground">
                         <p>Views: {test.metrics?.variant_b_views || 0}</p>
@@ -341,14 +341,14 @@ export default function PricingManagement({ plans: initialPlans }) {
         </TabsContent>
 
         <TabsContent value="referrals" className="space-y-4">
-          <Card className="bg-white/5 border-white/10 mb-4">
+          <Card className="bg-card/5 border-card/10 mb-4">
             <CardContent className="p-6">
               <h3 className="text-lg font-bold text-white mb-4">Referral Program Settings</h3>
               <div className="space-y-4">
                 <div>
                   <Label className="text-muted-foreground">Reward for Referrer</Label>
                   <Select defaultValue="free_week">
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                    <SelectTrigger className="bg-card/10 border-card/20 text-white">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -361,7 +361,7 @@ export default function PricingManagement({ plans: initialPlans }) {
                 <div>
                   <Label className="text-muted-foreground">Reward for New User</Label>
                   <Select defaultValue="discount">
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                    <SelectTrigger className="bg-card/10 border-card/20 text-white">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -376,19 +376,19 @@ export default function PricingManagement({ plans: initialPlans }) {
           </Card>
 
           <div className="grid grid-cols-3 gap-4 text-sm">
-            <Card className="bg-white/5 border-white/10">
+            <Card className="bg-card/5 border-card/10">
               <CardContent className="p-4">
                 <p className="text-muted-foreground">Total Referrals</p>
                 <p className="text-2xl font-bold text-white">{referrals.length}</p>
               </CardContent>
             </Card>
-            <Card className="bg-white/5 border-white/10">
+            <Card className="bg-card/5 border-card/10">
               <CardContent className="p-4">
                 <p className="text-muted-foreground">Completed</p>
                 <p className="text-2xl font-bold text-green-400">{completedReferrals.length}</p>
               </CardContent>
             </Card>
-            <Card className="bg-white/5 border-white/10">
+            <Card className="bg-card/5 border-card/10">
               <CardContent className="p-4">
                 <p className="text-muted-foreground">Conversion Rate</p>
                 <p className="text-2xl font-bold text-white">
@@ -402,7 +402,7 @@ export default function PricingManagement({ plans: initialPlans }) {
 
       {/* Edit/Create Dialogs */}
       <Dialog open={editDialog.open} onOpenChange={(open) => setEditDialog({ ...editDialog, open })}>
-        <DialogContent className="bg-background border-white/20 text-white max-w-2xl">
+        <DialogContent className="bg-background border-card/20 text-white max-w-2xl">
           <DialogHeader>
             <DialogTitle>
               {editDialog.type === 'plan' && (editDialog.item ? 'Edit Plan' : 'Create Plan')}
@@ -459,14 +459,14 @@ function PlanForm({ plan, onSubmit }) {
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           placeholder="Premium Monthly"
-          className="bg-white/10 border-white/20 text-white"
+          className="bg-card/10 border-card/20 text-white"
         />
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label className="text-muted-foreground">Tier</Label>
           <Select value={formData.tier} onValueChange={(v) => setFormData({ ...formData, tier: v })}>
-            <SelectTrigger className="bg-white/10 border-white/20 text-white">
+            <SelectTrigger className="bg-card/10 border-card/20 text-white">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -479,7 +479,7 @@ function PlanForm({ plan, onSubmit }) {
         <div>
           <Label className="text-muted-foreground">Billing Period</Label>
           <Select value={formData.billing_period} onValueChange={(v) => setFormData({ ...formData, billing_period: v })}>
-            <SelectTrigger className="bg-white/10 border-white/20 text-white">
+            <SelectTrigger className="bg-card/10 border-card/20 text-white">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -498,7 +498,7 @@ function PlanForm({ plan, onSubmit }) {
           step="0.01"
           value={formData.price_usd}
           onChange={(e) => setFormData({ ...formData, price_usd: parseFloat(e.target.value) })}
-          className="bg-white/10 border-white/20 text-white"
+          className="bg-card/10 border-card/20 text-white"
         />
       </div>
       <div className="flex items-center gap-4">
@@ -542,13 +542,13 @@ function PromoForm({ onSubmit }) {
           value={formData.promo_code}
           onChange={(e) => setFormData({ ...formData, promo_code: e.target.value.toUpperCase() })}
           placeholder="SUMMER2025"
-          className="bg-white/10 border-white/20"
+          className="bg-card/10 border-card/20"
         />
       </div>
       <div>
         <Label>Type</Label>
         <Select value={formData.promo_type} onValueChange={(v) => setFormData({ ...formData, promo_type: v })}>
-          <SelectTrigger className="bg-white/10 border-white/20">
+          <SelectTrigger className="bg-card/10 border-card/20">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -565,7 +565,7 @@ function PromoForm({ onSubmit }) {
             type="number"
             value={formData.discount_percentage}
             onChange={(e) => setFormData({ ...formData, discount_percentage: Number(e.target.value) })}
-            className="bg-white/10 border-white/20"
+            className="bg-card/10 border-card/20"
           />
         </div>
       )}
@@ -591,13 +591,13 @@ function ABTestForm({ onSubmit }) {
           value={formData.test_name}
           onChange={(e) => setFormData({ ...formData, test_name: e.target.value })}
           placeholder="Premium Pricing Test"
-          className="bg-white/10 border-white/20"
+          className="bg-card/10 border-card/20"
         />
       </div>
       <div>
         <Label>Test Type</Label>
         <Select value={formData.test_type} onValueChange={(v) => setFormData({ ...formData, test_type: v })}>
-          <SelectTrigger className="bg-white/10 border-white/20">
+          <SelectTrigger className="bg-card/10 border-card/20">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -613,7 +613,7 @@ function ABTestForm({ onSubmit }) {
           <Input
             type="number"
             placeholder="9.99"
-            className="bg-white/10 border-white/20"
+            className="bg-card/10 border-card/20"
           />
         </div>
         <div>
@@ -621,7 +621,7 @@ function ABTestForm({ onSubmit }) {
           <Input
             type="number"
             placeholder="7.99"
-            className="bg-white/10 border-white/20"
+            className="bg-card/10 border-card/20"
           />
         </div>
       </div>
