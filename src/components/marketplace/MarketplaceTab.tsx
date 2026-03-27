@@ -350,7 +350,7 @@ export default function MarketplaceTab({ currentUser }: MarketplaceTabProps) {
           {featuredBusinesses.length > 0 && (
             <>
               <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Featured</h3>
-              {featuredBusinesses.map(b => <BusinessCard key={b.id} business={b} />)}
+              {featuredBusinesses.map(b => renderBusinessCard(b))}
             </>
           )}
           {regularBusinesses.length > 0 && (
@@ -358,7 +358,7 @@ export default function MarketplaceTab({ currentUser }: MarketplaceTabProps) {
               {featuredBusinesses.length > 0 && (
                 <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-4">All Businesses</h3>
               )}
-              {regularBusinesses.map(b => <BusinessCard key={b.id} business={b} />)}
+              {regularBusinesses.map(b => renderBusinessCard(b))}
             </>
           )}
         </div>
