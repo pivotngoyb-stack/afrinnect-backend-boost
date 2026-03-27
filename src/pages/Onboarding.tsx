@@ -160,15 +160,30 @@ export default function Onboarding() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate max size (10MB)
-    if (file.size > 10 * 1024 * 1024) {
+    if (file.size > 15 * 1024 * 1024) {
       toast({ title: t('errors.photoSize'), variant: 'destructive' });
       return;
     }
 
+    // Analyze quality (non-blocking suggestion)
+    try {
+      const { analyzeImageQuality } = await import('@/components/shared/ImageCompressor');
+      const report = await analyzeImageQuality(file);
+      if (report.isLowQuality && report.suggestions.length > 0) {
+        toast({
+          title: '📸 ' + report.suggestions[0],
+          description: 'Clear photos get more matches',
+          duration: 4000,
+        });
+      }
+    } catch {}
+
+    // Compress and upload directly (no cropper in onboarding for speed)
     setIsUploading(true);
     try {
-      const { file_url } = await uploadFile({ file });
+      const { compressImage } = await import('@/components/shared/ImageCompressor');
+      const compressed = await compressImage(file, 1080, 0.85);
+      const { file_url } = await uploadFile(compressed);
       updateField('photos', [...formData.photos, file_url]);
       if (!formData.primary_photo) {
         updateField('primary_photo', file_url);

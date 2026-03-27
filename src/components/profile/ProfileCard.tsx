@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import ProgressiveImage from '../shared/ProgressiveImage';
 import { MapPin, Briefcase, GraduationCap, Heart, ChevronLeft, ChevronRight, Languages, Book, Sparkles, Mic, Loader2 } from 'lucide-react';
 import { KenteDivider } from '../shared/AfricanPattern';
 import { Badge } from "@/components/ui/badge";
@@ -165,11 +166,11 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
 
         <div className={`relative overflow-hidden group ${expanded ? 'min-h-[70dvh] h-full' : 'h-full min-h-[500px] cursor-pointer'}`} onClick={toggleDetails}>
           <div className="absolute inset-0">
-            <img
+            <ProgressiveImage
               src={photos[currentPhotoIndex]}
-              alt={profile?.display_name}
-              className="h-full w-full object-cover object-center"
-              loading="lazy"
+              alt={profile?.display_name || 'Profile'}
+              className="h-full w-full"
+              priority={currentPhotoIndex === 0}
               draggable={false}
             />
           </div>
