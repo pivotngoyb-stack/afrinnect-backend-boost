@@ -65,7 +65,7 @@ export default function SwipeView({
         </Button>
       )}
 
-      <div className="w-full h-full max-w-2xl px-2 pb-1">
+      <div className="w-full h-full max-w-2xl px-2 pb-1 min-h-0">
         {hasMoreProfiles && currentProfile ? (
           <ProfileCard
             key={currentProfile.id}

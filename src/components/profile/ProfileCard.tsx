@@ -135,7 +135,7 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
   return (
     <ProfileTierDecoration tier={profile?.subscription_tier}>
       <motion.div
-        className={`relative mx-auto overflow-hidden border border-border/50 bg-card shadow-elevated ${expanded ? 'w-full max-w-xl max-h-[90dvh] rounded-3xl' : 'h-full w-full rounded-[1.75rem] cursor-grab active:cursor-grabbing'}`}
+        className={`relative mx-auto overflow-hidden border border-border/50 bg-card shadow-elevated ${expanded ? 'w-full max-w-xl max-h-[90dvh] rounded-3xl' : 'h-full min-h-[500px] w-full rounded-[1.75rem] cursor-grab active:cursor-grabbing'}`}
         style={{ x, y, rotate, scale: cardScale }}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -166,7 +166,7 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
           </>
         )}
 
-        <div className={`relative h-full overflow-hidden group ${expanded ? 'min-h-[70dvh]' : 'cursor-pointer'}`} onClick={toggleDetails}>
+        <div className={`relative overflow-hidden group ${expanded ? 'min-h-[70dvh] h-full' : 'h-full min-h-[500px] cursor-pointer'}`} onClick={toggleDetails}>
           <AnimatePresence mode="wait">
             <motion.div key={currentPhotoIndex} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="absolute inset-0">
               <motion.img
