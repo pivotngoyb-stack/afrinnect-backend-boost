@@ -5,7 +5,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import confetti from 'canvas-confetti';
+// Lazy-load confetti to reduce initial bundle
+const lazyConfetti = () => import('canvas-confetti').then(m => m.default);
 import { usePerformanceMonitor } from '@/components/shared/usePerformanceMonitor';
 import { useConversionTracker, CONVERSION_EVENTS } from '@/components/shared/ConversionTracker';
 import { hasAccess } from '@/components/shared/TierGate';
@@ -183,10 +184,11 @@ export default function Home() {
     queryKey: ['discovery-profiles', filters, discoveryMode, myProfile?.id],
     queryFn: async () => {
       try {
-        // Use direct Supabase query for reliable profile fetching
+        // OPTIMIZED: Select only fields needed for discovery cards
+        const DISCOVERY_FIELDS = 'id,user_id,display_name,primary_photo,photos,birth_date,age,gender,current_country,current_city,country_of_origin,tribe,ethnicity,ethnic_group,culture,bio,about_me,interests,cultural_values,relationship_goal,religion,profession,education,languages,location,is_active,is_banned,is_seed,is_verified,is_premium,subscription_tier,verification_status,blocked_users,looking_for,last_active,liked_by_count,likes_count,profile_views_count,voice_intro_url,prompts,community_name';
         const { data: allProfiles, error: profilesError } = await supabase
           .from('user_profiles')
-          .select('*')
+          .select(DISCOVERY_FIELDS)
           .eq('is_active', true)
           .eq('is_banned', false)
           .order('created_at', { ascending: false })
@@ -198,8 +200,8 @@ export default function Home() {
         }
 
         const [myPasses, myLikes] = await Promise.all([
-          filterRecords('passes', { passer_id: myProfile.id }, '-created_at', 500).catch((e) => { console.warn('Passes fetch failed:', e); return []; }),
-          filterRecords('likes', { liker_id: myProfile.id }, '-created_at', 500).catch((e) => { console.warn('Likes fetch failed:', e); return []; }),
+          filterRecords('passes', { passer_id: myProfile.id }, '-created_at', 500, 'id,passed_id').catch((e) => { console.warn('Passes fetch failed:', e); return []; }),
+          filterRecords('likes', { liker_id: myProfile.id }, '-created_at', 500, 'id,liked_id').catch((e) => { console.warn('Likes fetch failed:', e); return []; }),
         ]);
 
         const passedIds = new Set(myPasses.map(p => p.passed_id));
