@@ -459,13 +459,13 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <span className="inline-block bg-purple-100 text-purple-700 text-sm font-semibold px-4 py-1 rounded-full mb-4">
-              Real Stories, Real Couples
+              {t('landingExtra.testimonials.badge')}
             </span>
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              They Almost Didn't Sign Up...
+              {t('landingExtra.testimonials.title')}
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Every love story starts with a single decision. These couples took the leap.
+              {t('landingExtra.testimonials.subtitle')}
             </p>
           </div>
 
@@ -539,13 +539,13 @@ export default function Landing() {
             
             {/* CTA after testimonials */}
             <div className="text-center mt-10">
-              <p className="text-gray-600 mb-4">Your story could be next...</p>
+              <p className="text-gray-600 mb-4">{t('landingExtra.testimonials.yourStory')}</p>
               <Button 
                 onClick={handleGetStarted}
                 size="lg" 
                 className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-8 py-6 rounded-full shadow-xl"
               >
-                Join the Community — Free
+                {t('landingExtra.testimonials.joinFree')}
                 <ArrowRight size={18} className="ml-2" />
               </Button>
             </div>
