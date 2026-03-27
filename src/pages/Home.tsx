@@ -336,12 +336,16 @@ export default function Home() {
       const isFirstMatch = !myProfile.has_matched_before;
       const sessionSeedChance = 0.3 + Math.random() * 0.5; // 30-80% per session
       if (mutualLikes.length === 0 && likedProfile.is_seed && (isFirstMatch || Math.random() < sessionSeedChance)) {
-        await createRecord('likes', {
-          liker_id: likedId, liked_id: myProfile.id,
-          liker_user_id: likedProfile.user_id, liked_user_id: myProfile.user_id,
-          is_super_like: false, is_seen: true,
-        });
-        mutualLikes = [{ id: 'seed-auto' }];
+        try {
+          await createRecord('likes', {
+            liker_id: likedId, liked_id: myProfile.id,
+            liker_user_id: likedProfile.user_id, liked_user_id: myProfile.user_id,
+            is_super_like: false, is_seen: true,
+          });
+          mutualLikes = [{ id: 'seed-auto' }];
+        } catch (seedErr) {
+          console.warn('Seed auto-like skipped (RLS):', seedErr);
+        }
       }
 
       if (mutualLikes.length > 0) {
