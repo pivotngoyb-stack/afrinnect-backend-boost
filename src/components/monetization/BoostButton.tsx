@@ -115,26 +115,22 @@ export default function BoostButton({ userProfile, onBoostActivated, onBoostSucc
     }
   };
 
-  // Compact variant (for Profile page)
-  if (variant === 'compact') {
-    return (
-      <Button
-        onClick={() => setShowModal(true)}
-        variant={isBoostActive ? "outline" : "default"}
-        className={isBoostActive ? "border-primary text-primary" : ""}
-        size="lg"
-      >
-        <Zap size={20} className={isBoostActive ? "fill-primary" : "fill-primary-foreground"} />
-        <span className="ml-2">
-          {isBoostActive ? `Boosted (${boostTimeLeft})` : 'Boost Profile'}
-        </span>
-      </Button>
-    );
-  }
+  const compactButton = (
+    <Button
+      onClick={() => setShowModal(true)}
+      variant={isBoostActive ? "outline" : "default"}
+      className={isBoostActive ? "border-primary text-primary" : ""}
+      size="lg"
+    >
+      <Zap size={20} className={isBoostActive ? "fill-primary" : "fill-primary-foreground"} />
+      <span className="ml-2">
+        {isBoostActive ? `Boosted (${boostTimeLeft})` : 'Boost Profile'}
+      </span>
+    </Button>
+  );
 
-  return (
-    <>
-      <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative">
+  const fullButton = (
+    <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative">
         {isBoostActive ? (
           <motion.div
             animate={{ boxShadow: ['0 0 20px hsl(var(--primary) / 0.4)', '0 0 40px hsl(var(--primary) / 0.6)', '0 0 20px hsl(var(--primary) / 0.4)'] }}
