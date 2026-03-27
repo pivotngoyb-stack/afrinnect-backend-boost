@@ -576,6 +576,8 @@ export default function Home() {
     if (swipeHistory.length === 0) return;
 
     const lastAction = swipeHistory[swipeHistory.length - 1];
+    // Remove from local exclusion set so the profile can reappear
+    localSwipedIds.current.delete(lastAction.profile.id);
     if (lastAction.action === 'like' || lastAction.action === 'superlike') {
       const existing = await filterRecords('likes', { liker_id: myProfile.id, liked_id: lastAction.profile.id });
       for (const l of existing) await deleteRecord('likes', l.id);
