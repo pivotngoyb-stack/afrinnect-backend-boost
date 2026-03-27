@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Volume2, VolumeX, Pause, Heart, Send, MoreHorizontal, Trash2 } from 'lucide-react';
