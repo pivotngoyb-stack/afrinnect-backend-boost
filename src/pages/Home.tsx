@@ -78,7 +78,12 @@ export default function Home() {
       if (!myProfile?.id) return { likes: 0, views: 0 };
       try {
         const likes = await filterRecords('likes', { liked_id: myProfile.id, is_seen: false });
-        return { likes: likes.length, views: 0 };
+        let views = 0;
+        try {
+          const viewData = await filterRecords('profile_views', { viewed_profile_id: myProfile.id, is_seen: false });
+          views = viewData?.length || 0;
+        } catch { /* table may not exist yet */ }
+        return { likes: likes.length, views };
       } catch { return { likes: 0, views: 0 }; }
     },
     enabled: !!myProfile?.id,
@@ -287,11 +292,22 @@ export default function Home() {
     return (myProfile?.daily_likes_count || 0) < limit;
   };
 
+  // Client-side rate limit for likes (max 3 per second to prevent spam taps)
+  const likeTimestamps = useRef<number[]>([]);
+
   // Like mutation
   const likeMutation = useMutation({
     mutationFn: async ({ likedId, isSuperLike = false, likeNote = null }) => {
       if (!myProfile) return;
       if (isVerificationGated) throw new Error('verification_required');
+
+      // Client-side burst rate limit
+      const now = Date.now();
+      likeTimestamps.current = likeTimestamps.current.filter(t => now - t < 1000);
+      if (likeTimestamps.current.length >= 3) {
+        throw new Error('slow_down');
+      }
+      likeTimestamps.current.push(now);
 
       const likedProfiles = await filterRecords('user_profiles', { id: likedId });
       if (!likedProfiles.length) throw new Error('Profile not found');
