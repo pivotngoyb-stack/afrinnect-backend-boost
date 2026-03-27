@@ -562,7 +562,7 @@ export default function Landing() {
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
               {t('landing.howItWorks')}
             </h2>
-            <p className="text-xl text-gray-600">Getting started is simple</p>
+            <p className="text-xl text-gray-600">{t('landingExtra.howItWorksSubtitle')}</p>
           </div>
 
           <div className="grid md:grid-cols-4 gap-8">
