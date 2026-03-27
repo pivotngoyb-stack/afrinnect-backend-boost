@@ -201,8 +201,15 @@ export default function Home() {
         const likedIds = new Set(myLikes.map(l => l.liked_id));
         const myBlockedUsers = new Set(myProfile?.blocked_users || []);
         const normalize = (value) => String(value || '').trim().toLowerCase();
-        const localCountries = ['united states', 'usa', 'us', 'canada', 'ca'];
         const myCountry = normalize(myProfile.current_country);
+        // Normalize country aliases to canonical names
+        const canonicalize = (c) => {
+          const n = normalize(c);
+          if (['united states', 'usa', 'us'].includes(n)) return 'united states';
+          if (['canada', 'ca'].includes(n)) return 'canada';
+          return n;
+        };
+        const myCanonicalCountry = canonicalize(myProfile.current_country);
 
         const passesBaseFilters = (p) => {
           // Hide only the exact current profile; allow seed/test profiles even if they share user_id
@@ -222,12 +229,14 @@ export default function Home() {
         };
 
         const matchesMode = (p) => {
-          if (discoveryMode !== 'local') return true;
-          const candidateCountry = normalize(p.current_country);
-          if (!candidateCountry) return false;
-          if (localCountries.includes(myCountry)) return localCountries.includes(candidateCountry);
-          if (myCountry) return candidateCountry === myCountry;
-          return true;
+          const candidateCanonical = canonicalize(p.current_country);
+          if (!candidateCanonical) return discoveryMode === 'global';
+          if (discoveryMode === 'local') {
+            // Local = same country as the current user
+            return candidateCanonical === myCanonicalCountry;
+          }
+          // Global = different country than the current user
+          return candidateCanonical !== myCanonicalCountry;
         };
 
         const withoutSwipeExclusions = allProfiles.filter((p) => passesBaseFilters(p) && matchesMode(p));
