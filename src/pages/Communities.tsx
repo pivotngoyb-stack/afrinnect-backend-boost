@@ -259,36 +259,6 @@ export default function Communities() {
             Connect beyond dating — find your people, share culture, and build lasting bonds.
           </p>
 
-          {/* Quick action pills */}
-          <div className="flex gap-2 mt-4 overflow-x-auto scrollbar-hide -mx-1 px-1">
-            <Button
-              variant="outline"
-              size="sm"
-              className="shrink-0 gap-1.5 rounded-full h-9 text-xs"
-              onClick={() => navigate('/explore')}
-            >
-              <MapPin size={14} />
-              Explore Globally
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="shrink-0 gap-1.5 rounded-full h-9 text-xs"
-              onClick={() => navigate('/events')}
-            >
-              <CalendarDays size={14} />
-              Upcoming Events
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="shrink-0 gap-1.5 rounded-full h-9 text-xs"
-              onClick={() => navigate('/home')}
-            >
-              <Heart size={14} />
-              Find Matches
-            </Button>
-          </div>
         </div>
       </div>
 

@@ -514,12 +514,11 @@ export default function Home() {
           activityCounts={activityCounts}
         />
 
-        <FoundingMemberBanner profile={myProfile} />
         {isVerificationGated && <VerificationGateBanner matchCount={gateMatchCount} />}
 
-        <main className="flex-1 flex flex-col overflow-hidden" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+        <main className="flex-1 flex flex-col overflow-hidden pb-16">
           {/* Profile cards take priority — full remaining space */}
-          <div className="flex-1 flex flex-col min-h-0 px-4">
+          <div className="flex-1 flex flex-col min-h-0 px-2">
             {viewMode === 'swipe' ? (
               <SwipeView
                 isLoading={isLoading}
@@ -549,7 +548,7 @@ export default function Home() {
           </div>
 
           {/* Floating action: Boost button */}
-          <div className="absolute bottom-24 right-4 z-30">
+          <div className="absolute bottom-20 right-4 z-30">
             <BoostButton userProfile={myProfile} onBoostActivated={() => refetch()} />
           </div>
 
@@ -579,10 +578,6 @@ export default function Home() {
           />
           <FreeTrialCountdown userProfile={myProfile} />
           <ContextualUpgradeBanner userProfile={myProfile} />
-          {!['premium', 'elite', 'vip'].includes(myProfile?.subscription_tier) && (
-            <BlurredLikesTeaser likesCount={activityCounts?.likes || 0} className="mb-3" />
-          )}
-          <div className="h-20" />
         </main>
       </div>
     </PullToRefresh>

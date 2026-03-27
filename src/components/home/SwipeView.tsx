@@ -58,7 +58,7 @@ export default function SwipeView({
   }
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center relative">
+    <div className="flex-1 flex flex-col items-center justify-start pt-1 relative">
       {swipeHistory.length > 0 && (
         <Button
           onClick={handleRewind}
