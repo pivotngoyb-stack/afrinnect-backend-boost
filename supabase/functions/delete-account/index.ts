@@ -103,6 +103,14 @@ Deno.serve(async (req) => {
       }
     });
 
+    // Cancel auto-renew on active subscriptions immediately
+    if (profile) {
+      await supabase.from('subscriptions').update({ 
+        auto_renew: false,
+        status: 'cancelled',
+      }).eq('user_profile_id', profile.id).eq('status', 'active');
+    }
+
     // Hide profile immediately (soft-delete)
     if (profile) {
       await supabase.from('user_profiles').update({ 
