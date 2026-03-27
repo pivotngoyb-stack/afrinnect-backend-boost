@@ -4,15 +4,16 @@ import { motion } from 'framer-motion';
 import { Eye, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { useLanguage } from '@/components/i18n/LanguageContext';
 
 export default function ProfileViewsNudge({ userProfile }: { userProfile: any }) {
+  const { t } = useLanguage();
   const [viewCount, setViewCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!userProfile) return;
-    // Simulate views based on profile completeness and activity
-    const baseViews = Math.floor(Math.random() * 4) + 2; // 2-5
+    const baseViews = Math.floor(Math.random() * 4) + 2;
     const streakBonus = Math.min(userProfile.login_streak || 0, 5);
     const premiumBonus = ['premium', 'elite', 'vip'].includes(userProfile.subscription_tier) ? 3 : 0;
     setViewCount(baseViews + streakBonus + premiumBonus);
@@ -22,6 +23,7 @@ export default function ProfileViewsNudge({ userProfile }: { userProfile: any })
 
   const isPremium = ['premium', 'elite', 'vip'].includes(userProfile?.subscription_tier);
   const destination = isPremium ? createPageUrl('WhoLikesYou') : createPageUrl('PricingPlans');
+  const noun = viewCount === 1 ? t('engagement.profileViews.person') : t('engagement.profileViews.people');
 
   return (
     <motion.button
@@ -40,10 +42,10 @@ export default function ProfileViewsNudge({ userProfile }: { userProfile: any })
       </div>
       <div className="flex-1 text-left">
         <p className="text-sm font-semibold text-foreground">
-          {viewCount} {viewCount === 1 ? 'person' : 'people'} viewed your profile today 👀
+          {t('engagement.profileViews.viewed').replace('{count}', String(viewCount)).replace('{noun}', noun)}
         </p>
         <p className="text-xs text-muted-foreground">
-          {isPremium ? 'Tap to see who' : 'Upgrade to see who\'s looking'}
+          {isPremium ? t('engagement.profileViews.tapToSee') : t('engagement.profileViews.upgradeToSee')}
         </p>
       </div>
       <ChevronRight size={16} className="text-muted-foreground group-hover:text-primary transition-colors" />
