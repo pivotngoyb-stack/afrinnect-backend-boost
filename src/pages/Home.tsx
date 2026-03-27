@@ -17,7 +17,6 @@ import AfricanPattern from '@/components/shared/AfricanPattern';
 import { AfricanProverbLoader } from '@/components/shared/AfricanCulture';
 import BannedScreen from '@/components/auth/BannedScreen';
 import VerificationGateBanner from '@/components/shared/VerificationGateBanner';
-import BoostButton from '@/components/monetization/BoostButton';
 import HomeHeader from '@/components/home/HomeHeader';
 import SwipeView from '@/components/home/SwipeView';
 import GridView from '@/components/home/GridView';
@@ -562,6 +561,7 @@ export default function Home() {
           filters={filters} setFilters={setFilters}
           myProfile={myProfile} isAdmin={isAdmin}
           activityCounts={activityCounts}
+          onBoostActivated={() => refetch()}
         />
 
         {isVerificationGated && <VerificationGateBanner matchCount={gateMatchCount} />}
@@ -595,11 +595,6 @@ export default function Home() {
                 handleSuperLike={handleSuperLike}
               />
             )}
-          </div>
-
-          {/* Floating action: Boost button */}
-          <div className="absolute bottom-20 right-4 z-30">
-            <BoostButton userProfile={myProfile} onBoostActivated={() => refetch()} />
           </div>
 
           {/* All modals and toasts — render but don't take layout space */}
