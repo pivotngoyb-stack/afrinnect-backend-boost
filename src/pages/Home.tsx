@@ -175,10 +175,23 @@ export default function Home() {
     queryKey: ['discovery-profiles', filters, discoveryMode, myProfile?.id],
     queryFn: async () => {
       try {
-        const [allProfiles, myPasses, myLikes] = await Promise.all([
-          filterRecords('user_profiles', { is_active: true, is_banned: false }, '-created_at', 200),
-          filterRecords('passes', { passer_id: myProfile.id }, '-created_at', 500).catch(() => []),
-          filterRecords('likes', { liker_id: myProfile.id }, '-created_at', 500).catch(() => []),
+        // Use direct Supabase query for reliable profile fetching
+        const { data: allProfiles, error: profilesError } = await supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('is_active', true)
+          .eq('is_banned', false)
+          .order('created_at', { ascending: false })
+          .limit(500);
+
+        if (profilesError) {
+          console.error('Discovery profiles fetch error:', profilesError);
+          return [];
+        }
+
+        const [myPasses, myLikes] = await Promise.all([
+          filterRecords('passes', { passer_id: myProfile.id }, '-created_at', 500).catch((e) => { console.warn('Passes fetch failed:', e); return []; }),
+          filterRecords('likes', { liker_id: myProfile.id }, '-created_at', 500).catch((e) => { console.warn('Likes fetch failed:', e); return []; }),
         ]);
 
         const passedIds = new Set(myPasses.map(p => p.passed_id));
@@ -212,7 +225,7 @@ export default function Home() {
         }
 
         return filtered;
-      } catch { return []; }
+      } catch (err) { console.error('Discovery query failed:', err); return []; }
     },
     enabled: !!myProfile?.id,
     staleTime: 300000,
