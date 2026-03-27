@@ -97,6 +97,7 @@ export default function EditProfile() {
     lifestyle: {},
     cultural_values: [],
     interests: [],
+    opening_move: '',
   });
   const [heightFeet, setHeightFeet] = useState('');
   const [heightInches, setHeightInches] = useState('');
