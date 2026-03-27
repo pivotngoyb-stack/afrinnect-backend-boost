@@ -71,15 +71,6 @@ export default function HomeHeader({
             <LikesCounter userProfile={myProfile} />
             <SuperLikeCounter userProfile={myProfile} />
 
-            <Link to={createPageUrl('WhoLikesYou')}>
-              <Button variant="outline" size="icon" className="h-8 w-8 relative border-border flex-shrink-0">
-                <HeartIcon size={16} className="text-destructive" />
-                {(activityCounts?.likes > 0 || activityCounts?.views > 0) && (
-                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-destructive rounded-full border-2 border-card" />
-                )}
-              </Button>
-            </Link>
-
             <NotificationBell />
             <ActivityDrawer userProfile={myProfile} />
             <BoostButton userProfile={myProfile} onBoostActivated={onBoostActivated} compact />
