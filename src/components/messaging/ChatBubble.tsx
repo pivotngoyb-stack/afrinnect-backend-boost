@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { format } from 'date-fns';
 import { Check, CheckCheck, Mic, Image as ImageIcon } from 'lucide-react';

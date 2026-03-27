@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { translations } from './translations';

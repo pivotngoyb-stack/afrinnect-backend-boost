@@ -1,5 +1,4 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
-import Stripe from 'https://esm.sh/stripe@13.10.0';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4';
 
 const corsHeaders = {
@@ -13,14 +12,6 @@ serve(async (req) => {
   }
 
   try {
-    const stripeKey = Deno.env.get('STRIPE_SECRET_KEY');
-    if (!stripeKey) {
-      return new Response(JSON.stringify({ error: 'Stripe not configured' }), {
-        status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    const stripe = new Stripe(stripeKey, { apiVersion: '2023-10-16' });
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
@@ -32,6 +23,7 @@ serve(async (req) => {
         status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+    
     const { data: { user } } = await supabase.auth.getUser(authHeader.replace('Bearer ', ''));
     if (!user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
@@ -43,39 +35,41 @@ serve(async (req) => {
 
     const { data: profile } = await supabase
       .from('user_profiles')
-      .select('id, stripe_customer_id')
+      .select('id, subscription_tier')
       .eq('user_id', user.id)
       .single();
 
-    if (!profile?.stripe_customer_id) {
-      return new Response(JSON.stringify({ error: 'No billing account found' }), {
+    if (!profile) {
+      return new Response(JSON.stringify({ error: 'Profile not found' }), {
         status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    if (action === 'portal') {
-      // Create Stripe customer portal session
-      const portalSession = await stripe.billingPortal.sessions.create({
-        customer: profile.stripe_customer_id,
-        return_url: `${req.headers.get('origin')}/settings`,
-      });
-      return new Response(JSON.stringify({ url: portalSession.url }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
     if (action === 'status') {
-      // Get current subscription status
       const { data: sub } = await supabase
         .from('subscriptions')
         .select('*')
         .eq('user_profile_id', profile.id)
-        .in('status', ['active', 'cancelled'])
+        .in('status', ['active', 'cancelled', 'billing_issue'])
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle();
 
-      return new Response(JSON.stringify({ subscription: sub }), {
+      return new Response(JSON.stringify({ 
+        subscription: sub,
+        current_tier: profile.subscription_tier,
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (action === 'manage') {
+      // For IAP, management happens in device settings
+      return new Response(JSON.stringify({ 
+        message: 'To manage your subscription, go to your device Settings > Subscriptions',
+        ios_url: 'https://apps.apple.com/account/subscriptions',
+        android_url: 'https://play.google.com/store/account/subscriptions',
+      }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }

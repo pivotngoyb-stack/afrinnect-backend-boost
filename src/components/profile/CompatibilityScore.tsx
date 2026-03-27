@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { Sparkles } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";

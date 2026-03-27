@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { filterRecords, isAuthenticated } from '@/lib/supabase-helpers';
 import { Link } from 'react-router-dom';

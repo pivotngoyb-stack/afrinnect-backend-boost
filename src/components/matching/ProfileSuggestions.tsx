@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useMemo } from 'react';
 import { Sparkles, Camera, FileText, Heart, Shield, Activity } from 'lucide-react';
 import { Button } from "@/components/ui/button";

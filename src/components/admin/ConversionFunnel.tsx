@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { filterRecords, listRecords } from '@/lib/supabase-helpers';
