@@ -117,16 +117,47 @@ export default function PricingPlans() {
     init();
   }, []);
 
-  const handleSubscribe = (tierKey: string) => {
+  const [subscribing, setSubscribing] = useState(false);
+
+  const handleSubscribe = async (tierKey: string) => {
     if (!myProfile) {
       navigate('/login?next=/pricingplans');
       return;
     }
-    if (myProfile?.subscription_tier === tierKey) {
+    if ((myProfile as any)?.subscription_tier === tierKey) {
       toast.info('You are already on this plan.');
       return;
     }
-    toast.info('Subscriptions launching very soon! Join the waitlist to get early access pricing.');
+
+    setSubscribing(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate('/login?next=/pricingplans');
+        return;
+      }
+
+      const planKey = `${tierKey}_${billingCycle}`;
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: {
+          plan_key: planKey,
+          success_url: `${window.location.origin}/pricingplans?success=true`,
+          cancel_url: `${window.location.origin}/pricingplans?cancelled=true`,
+        },
+      });
+
+      if (error || !data?.url) {
+        toast.error(data?.error || 'Could not start checkout. Please try again.');
+        return;
+      }
+
+      window.location.href = data.url;
+    } catch (e: any) {
+      toast.error('Something went wrong. Please try again.');
+      console.error('Checkout error:', e);
+    } finally {
+      setSubscribing(false);
+    }
   };
 
   const handleRestorePurchases = () => {
