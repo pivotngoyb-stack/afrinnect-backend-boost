@@ -7,6 +7,7 @@ export function useRealtimeMessages(matchId: string | null, myProfileId: string 
   const [isConnected, setIsConnected] = useState(false);
   const [otherUserTyping, setOtherUserTyping] = useState(false);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const channelRef = useRef<any>(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -17,14 +18,16 @@ export function useRealtimeMessages(matchId: string | null, myProfileId: string 
       .on(
         'postgres_changes',
         {
-          event: 'INSERT',
+          event: '*',
           schema: 'public',
-          table: 'community_messages',
-          filter: `community_id=eq.${matchId}`,
+          table: 'messages',
+          filter: `match_id=eq.${matchId}`,
         },
         (payload) => {
-          if (payload.new && (payload.new as any).sender_id !== myProfileId) {
+          const senderId = (payload.new as any)?.sender_id;
+          if (!senderId || senderId !== myProfileId || payload.eventType === 'UPDATE') {
             queryClient.invalidateQueries({ queryKey: ['messages', matchId] });
+            queryClient.invalidateQueries({ queryKey: ['conversations-data'] });
           }
         }
       )
@@ -39,17 +42,19 @@ export function useRealtimeMessages(matchId: string | null, myProfileId: string 
         setIsConnected(status === 'SUBSCRIBED');
       });
 
+    channelRef.current = channel;
+
     return () => {
       setIsConnected(false);
       supabase.removeChannel(channel);
+      channelRef.current = null;
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     };
   }, [matchId, myProfileId, enabled, queryClient]);
 
   const sendTypingIndicator = useCallback(async (isTyping: boolean) => {
-    if (!matchId || !myProfileId || !isTyping) return;
-    const channel = supabase.channel(`chat-${matchId}`);
-    channel.send({ type: 'broadcast', event: 'typing', payload: { user_id: myProfileId } });
+    if (!matchId || !myProfileId || !isTyping || !channelRef.current) return;
+    channelRef.current.send({ type: 'broadcast', event: 'typing', payload: { user_id: myProfileId } });
   }, [matchId, myProfileId]);
 
   const notifyNewMessage = useCallback((_message: any) => {
@@ -60,8 +65,8 @@ export function useRealtimeMessages(matchId: string | null, myProfileId: string 
     if (!messageId) return;
     try {
       await supabase
-        .from('community_messages')
-        .update({ media_url: 'read' } as any)
+        .from('messages')
+        .update({ is_read: true, read_at: new Date().toISOString() } as any)
         .eq('id', messageId);
     } catch (e) {
       console.debug('Read receipt failed:', e);
