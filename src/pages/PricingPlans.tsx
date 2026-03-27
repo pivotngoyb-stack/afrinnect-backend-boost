@@ -127,7 +127,7 @@ export default function PricingPlans() {
       toast.info('You are already on this plan.');
       return;
     }
-    toast.info('Subscriptions will be available soon. Join our waitlist to be notified!');
+    toast.info('Subscriptions launching very soon! Join the waitlist to get early access pricing.');
   };
 
   const handleRestorePurchases = () => {
@@ -262,7 +262,7 @@ export default function PricingPlans() {
                     disabled={myProfile?.subscription_tier === key}
                     className={`w-full py-5 text-base font-semibold rounded-xl shadow-lg transition-all active:scale-95 ${tier.buttonColor}`}
                   >
-                    {myProfile?.subscription_tier === key ? 'Current Plan' : 'Coming Soon'}
+                    {myProfile?.subscription_tier === key ? 'Current Plan' : `Get ${tier.name}`}
                   </Button>
 
                   {/* Billing details with auto-renewal disclosure */}
