@@ -54,6 +54,8 @@ export default function Home() {
   const [matchCount, setMatchCount] = useState(0);
   const [showNewMatchToast, setShowNewMatchToast] = useState(false);
   const [lastMatchedProfile, setLastMatchedProfile] = useState(null);
+  // Local set of profile IDs swiped this session — ensures immediate exclusion even before DB confirms
+  const localSwipedIds = useRef<Set<string>>(new Set());
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { prompt: upgradePrompt, dismissPrompt } = useUpgradePrompts(myProfile);
@@ -219,13 +221,20 @@ export default function Home() {
           throw profilesError || new Error('Failed to load discovery profiles');
         }
 
-        const [myPasses, myLikes] = await Promise.all([
-          filterRecords('passes', { passer_id: myProfile.id }, '-created_at', 500, 'id,passed_id').catch((e) => { console.warn('Passes fetch failed:', e); return []; }),
-          filterRecords('likes', { liker_id: myProfile.id }, '-created_at', 500, 'id,liked_id').catch((e) => { console.warn('Likes fetch failed:', e); return []; }),
+        // Fetch ALL swipe history (no limit) so older swipes are excluded too
+        const [passesRes, likesRes, matchesRes] = await Promise.all([
+          supabase.from('passes').select('passed_id').eq('passer_id', myProfile.id).then(r => r.data || []),
+          supabase.from('likes').select('liked_id').eq('liker_id', myProfile.id).then(r => r.data || []),
+          supabase.from('matches').select('user1_id,user2_id')
+            .or(`user1_id.eq.${myProfile.id},user2_id.eq.${myProfile.id}`)
+            .then(r => r.data || []),
         ]);
 
-        const passedIds = new Set(myPasses.map(p => p.passed_id));
-        const likedIds = new Set(myLikes.map(l => l.liked_id));
+        const passedIds = new Set(passesRes.map((p: any) => p.passed_id));
+        const likedIds = new Set(likesRes.map((l: any) => l.liked_id));
+        const matchedIds = new Set(matchesRes.flatMap((m: any) =>
+          [m.user1_id, m.user2_id].filter(id => id !== myProfile.id)
+        ));
         const myBlockedUsers = new Set(myProfile?.blocked_users || []);
         // Bidirectional block: also exclude users who have blocked ME
         const blockedByOthers = new Set(
@@ -276,20 +285,20 @@ export default function Home() {
           return candidateCanonical !== myCanonicalCountry;
         };
 
+        // Combine all exclusion sets: DB records + local session swipes
+        const isExcluded = (id: string) =>
+          passedIds.has(id) || likedIds.has(id) || matchedIds.has(id) || localSwipedIds.current.has(id);
+
         const withoutSwipeExclusions = allProfiles.filter((p) => passesBaseFilters(p) && matchesMode(p));
-        let filtered = withoutSwipeExclusions.filter((p) => !passedIds.has(p.id) && !likedIds.has(p.id));
+        let filtered = withoutSwipeExclusions.filter((p) => !isExcluded(p.id));
 
         // Auto-fallback: if local mode returns 0 results, expand to global before showing empty state
         if (filtered.length === 0 && discoveryMode === 'local') {
           const globalNoSwipes = allProfiles.filter((p) => passesBaseFilters(p));
-          filtered = globalNoSwipes.filter((p) => !passedIds.has(p.id) && !likedIds.has(p.id));
+          filtered = globalNoSwipes.filter((p) => !isExcluded(p.id));
         }
 
-        // Recovery fallback: if user exhausted candidates, resurface existing candidates instead of dead-end empty state
-        if (filtered.length === 0) {
-          filtered = withoutSwipeExclusions;
-        }
-
+        // NO recovery fallback — never resurface swiped profiles
         return filtered;
       } catch (err) { console.error('Discovery query failed:', err); return []; }
     },
