@@ -211,12 +211,12 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 relative pb-24">
-      <AfricanPattern className="text-purple-600" opacity={0.03} />
+      <AfricanPattern className="text-primary" opacity={0.03} />
 
       {/* Header */}
       <header className="relative">
         {/* Cover Photo */}
-        <div className="h-32 bg-gradient-to-br from-purple-600 via-purple-700 to-amber-600 relative overflow-hidden">
+        <div className="h-32 bg-gradient-to-br from-primary via-purple-700 to-amber-600 relative overflow-hidden">
           <AfricanPattern className="text-white" opacity={0.1} />
         </div>
 
@@ -230,7 +230,7 @@ export default function Profile() {
             />
             {isOwnProfile && (
               <Link to={createPageUrl('EditProfile')}>
-                <button className="absolute bottom-0 right-0 w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center shadow-lg hover:bg-purple-700 transition">
+                <button className="absolute bottom-0 right-0 w-10 h-10 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition">
                   <Camera size={18} className="text-white" />
                 </button>
               </Link>
@@ -255,20 +255,20 @@ export default function Profile() {
         {/* Name & Basic Info */}
         <div className="text-center mb-6">
           <div className="flex items-center justify-center gap-2 mb-1">
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-foreground">
               {profile?.display_name}{age && `, ${age}`}
             </h1>
             <VerificationBadge verification={profile?.verification_status} />
           </div>
           
-          <div className="flex items-center justify-center gap-2 text-gray-600 text-sm">
+          <div className="flex items-center justify-center gap-2 text-muted-foreground text-sm">
             <CountryFlag country={profile?.country_of_origin} size="small" />
             {profile?.tribe_ethnicity && (
               <span>• {profile.tribe_ethnicity}</span>
             )}
           </div>
 
-          <div className="flex items-center justify-center gap-1 text-gray-500 text-sm mt-1">
+          <div className="flex items-center justify-center gap-1 text-muted-foreground text-sm mt-1">
             <MapPin size={14} />
             <span>{profile?.current_city}, {profile?.current_country}</span>
           </div>
@@ -277,7 +277,7 @@ export default function Profile() {
             profile?.subscription_tier === 'vip' ? 'bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 border-0' :
             profile?.subscription_tier === 'elite' ? 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 border-0' :
             profile?.subscription_tier === 'premium' ? 'bg-gradient-to-r from-purple-500 to-purple-600 border-0' :
-            'bg-gray-500 border-0'
+            'bg-muted0 border-0'
           }`}>
             {profile?.subscription_tier === 'vip' ? <Crown size={12} className="mr-1" /> :
              profile?.subscription_tier === 'elite' ? <Zap size={12} className="mr-1" /> :
@@ -309,7 +309,7 @@ export default function Profile() {
             <div className="flex flex-col gap-2 mt-3">
               {activeMatch && (
                 <Link to={createPageUrl(`Chat?matchId=${activeMatch.id}`)} className="w-full">
-                  <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-md">
+                  <Button className="w-full bg-gradient-to-r from-primary to-accent hover:from-purple-700 hover:to-pink-700 shadow-md">
                     <MessageCircle size={18} className="mr-2" />
                     Message {profile.display_name.split(' ')[0]}
                   </Button>
@@ -347,15 +347,15 @@ export default function Profile() {
           <Card className="mb-6 border-amber-200 bg-gradient-to-r from-amber-50 to-purple-50">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-700">{t('admin.home.profileCompletion')}</span>
-                <span className="text-sm font-bold text-purple-600">{completion}%</span>
+                <span className="text-sm font-medium text-foreground">{t('admin.home.profileCompletion')}</span>
+                <span className="text-sm font-bold text-primary">{completion}%</span>
               </div>
               <Progress value={completion} className="h-2 mb-3" />
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 {t('profile.completeProfile')}
               </p>
               <Link to={createPageUrl('EditProfile')}>
-                <Button size="sm" className="mt-3 w-full bg-purple-600 hover:bg-purple-700">
+                <Button size="sm" className="mt-3 w-full bg-primary hover:bg-primary/90">
                   {t('admin.home.completeProfileBtn')}
                 </Button>
               </Link>
@@ -384,7 +384,7 @@ export default function Profile() {
         {profile?.bio && (
           <Card className="mb-4">
             <CardContent className="p-4">
-              <p className="text-gray-700 italic text-center">"{profile.bio}"</p>
+              <p className="text-foreground italic text-center">"{profile.bio}"</p>
             </CardContent>
           </Card>
         )}
@@ -394,7 +394,7 @@ export default function Profile() {
         {/* Photo Gallery */}
         {profile?.photos?.length > 0 && (
           <div className="mb-6">
-            <h3 className="text-sm font-bold text-gray-900 mb-3 px-1">Photos</h3>
+            <h3 className="text-sm font-bold text-foreground mb-3 px-1">Photos</h3>
             <MobilePhotoGallery photos={profile.photos} />
           </div>
         )}
@@ -402,7 +402,7 @@ export default function Profile() {
         {/* Mutual Interests (For Other Profiles) */}
         {!isOwnProfile && myProfile && (
           <div className="mb-6">
-            <h3 className="text-sm font-bold text-gray-900 mb-3 px-1">You Both Like</h3>
+            <h3 className="text-sm font-bold text-foreground mb-3 px-1">You Both Like</h3>
             <div className="flex flex-wrap gap-2">
               {profile.interests?.filter(i => myProfile.interests?.includes(i)).map((interest, idx) => (
                 <Badge key={idx} className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 py-1.5 px-3">
@@ -411,7 +411,7 @@ export default function Profile() {
                 </Badge>
               ))}
               {profile.interests?.filter(i => myProfile.interests?.includes(i)).length === 0 && (
-                <p className="text-sm text-gray-500 italic">No common interests yet. Be the first to introduce something new!</p>
+                <p className="text-sm text-muted-foreground italic">No common interests yet. Be the first to introduce something new!</p>
               )}
             </div>
           </div>
@@ -424,12 +424,12 @@ export default function Profile() {
           {profile?.profession && (
             <Card>
               <CardContent className="p-3 flex items-center gap-3">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Briefcase size={16} className="text-purple-600" />
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <Briefcase size={16} className="text-primary" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500">{t('profile.work')}</p>
-                  <p className="text-sm font-medium text-gray-800">{profile.profession}</p>
+                  <p className="text-xs text-muted-foreground">{t('profile.work')}</p>
+                  <p className="text-sm font-medium text-foreground">{profile.profession}</p>
                 </div>
               </CardContent>
             </Card>
@@ -442,8 +442,8 @@ export default function Profile() {
                   <GraduationCap size={16} className="text-amber-600" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500">{t('profile.education')}</p>
-                  <p className="text-sm font-medium text-gray-800 capitalize">{profile.education?.replace('_', ' ')}</p>
+                  <p className="text-xs text-muted-foreground">{t('profile.education')}</p>
+                  <p className="text-sm font-medium text-foreground capitalize">{profile.education?.replace('_', ' ')}</p>
                 </div>
               </CardContent>
             </Card>
@@ -456,8 +456,8 @@ export default function Profile() {
                   <Book size={16} className="text-green-600" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500">{t('profile.religion')}</p>
-                  <p className="text-sm font-medium text-gray-800 capitalize">{profile.religion?.replace('_', ' ')}</p>
+                  <p className="text-xs text-muted-foreground">{t('profile.religion')}</p>
+                  <p className="text-sm font-medium text-foreground capitalize">{profile.religion?.replace('_', ' ')}</p>
                 </div>
               </CardContent>
             </Card>
@@ -470,8 +470,8 @@ export default function Profile() {
                   <Heart size={16} className="text-pink-600" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500">{t('profile.lookingFor')}</p>
-                  <p className="text-sm font-medium text-gray-800 capitalize">{profile.relationship_goal?.replace('_', ' ')}</p>
+                  <p className="text-xs text-muted-foreground">{t('profile.lookingFor')}</p>
+                  <p className="text-sm font-medium text-foreground capitalize">{profile.relationship_goal?.replace('_', ' ')}</p>
                 </div>
               </CardContent>
             </Card>
@@ -483,7 +483,7 @@ export default function Profile() {
           <Card className="mb-4">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <Languages size={16} className="text-purple-600" />
+                <Languages size={16} className="text-primary" />
                 Languages
               </CardTitle>
             </CardHeader>
@@ -498,7 +498,7 @@ export default function Profile() {
                 </div>
               ) : (
                 <Link to={createPageUrl('EditProfile')}>
-                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-gray-200 text-gray-400 hover:text-purple-600 hover:border-purple-200">
+                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-gray-200 text-muted-foreground hover:text-primary hover:border-purple-200">
                     + Add Languages
                   </Button>
                 </Link>
@@ -520,14 +520,14 @@ export default function Profile() {
               {profile?.interests?.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {profile.interests.map((interest, idx) => (
-                    <Badge key={idx} variant="secondary" className="bg-purple-100 text-purple-700">
+                    <Badge key={idx} variant="secondary" className="bg-primary/10 text-purple-700">
                       {interest}
                     </Badge>
                   ))}
                 </div>
               ) : (
                 <Link to={createPageUrl('EditProfile')}>
-                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-gray-200 text-gray-400 hover:text-amber-600 hover:border-amber-200">
+                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-gray-200 text-muted-foreground hover:text-amber-600 hover:border-amber-200">
                     + Add Interests
                   </Button>
                 </Link>
@@ -556,7 +556,7 @@ export default function Profile() {
                 </div>
               ) : (
                 <Link to={createPageUrl('EditProfile')}>
-                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-gray-200 text-gray-400 hover:text-green-600 hover:border-green-200">
+                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-gray-200 text-muted-foreground hover:text-green-600 hover:border-green-200">
                     + Add Cultural Values
                   </Button>
                 </Link>
@@ -572,7 +572,7 @@ export default function Profile() {
               <Card key={idx} className="bg-gradient-to-br from-purple-50 to-amber-50">
                 <CardContent className="p-4">
                   <p className="text-sm font-medium text-purple-700 mb-2">{prompt.question}</p>
-                  <p className="text-gray-700">{prompt.answer}</p>
+                  <p className="text-foreground">{prompt.answer}</p>
                 </CardContent>
               </Card>
             ))}
@@ -584,7 +584,7 @@ export default function Profile() {
           <div className="space-y-3 mt-8">
             {/* Primary Action */}
             <Link to={createPageUrl('EditProfile')}>
-              <Button className="w-full bg-purple-600 hover:bg-purple-700 h-14" size="lg">
+              <Button className="w-full bg-primary hover:bg-primary/90 h-14" size="lg">
                 <Edit2 size={20} className="mr-2" />
                 {t('profile.editProfile')}
               </Button>
@@ -617,7 +617,7 @@ export default function Profile() {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to={createPageUrl('ProfileOptimization')} className="flex items-center">
-                        <Sparkles size={16} className="mr-2 text-purple-600" />
+                        <Sparkles size={16} className="mr-2 text-primary" />
                         {t('profile.optimizeProfile')}
                       </Link>
                     </DropdownMenuItem>

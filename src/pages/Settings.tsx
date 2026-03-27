@@ -174,9 +174,9 @@ export default function Settings() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
+    <div className="min-h-screen bg-background pb-24">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white border-b">
+      <header className="sticky top-0 z-40 bg-card border-b border-border">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link to={createPageUrl('Profile')}>
             <Button variant="ghost" size="icon">
@@ -197,29 +197,29 @@ export default function Settings() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <Lock size={18} className="text-purple-600" />
+              <Lock size={18} className="text-primary" />
               {t('settingsPage.account')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <Link to={createPageUrl('EditProfile')} className="flex items-center justify-between py-2">
-              <span className="text-gray-700">{t('settingsPage.editProfile')}</span>
-              <ChevronRight size={20} className="text-gray-400" />
+              <span className="text-foreground">{t('settingsPage.editProfile')}</span>
+              <ChevronRight size={20} className="text-muted-foreground" />
             </Link>
             
             <Separator />
 
             <Link to={createPageUrl('PhoneVerification')} className="flex items-center justify-between py-2">
               <div>
-                <span className="text-gray-700 block">{t('settingsPage.phoneNumber')}</span>
-                <span className="text-sm text-gray-500">
+                <span className="text-foreground block">{t('settingsPage.phoneNumber')}</span>
+                <span className="text-sm text-muted-foreground">
                   {myProfile?.verification_status?.phone_verified ? t('settingsPage.verified') : t('settingsPage.notVerified')}
                 </span>
               </div>
               {myProfile?.verification_status?.phone_verified ? (
                 <Shield size={18} className="text-green-500" />
               ) : (
-                <ChevronRight size={20} className="text-gray-400" />
+                <ChevronRight size={20} className="text-muted-foreground" />
               )}
             </Link>
 
@@ -229,12 +229,12 @@ export default function Settings() {
             <div className="py-2">
               <div className="flex items-center justify-between mb-2">
                 <div>
-                  <span className="text-gray-700 block">{t('settingsPage.activeDevices')}</span>
-                  <span className="text-sm text-gray-500">
+                  <span className="text-foreground block">{t('settingsPage.activeDevices')}</span>
+                  <span className="text-sm text-muted-foreground">
                     {myProfile?.device_ids?.length || 0} / 4 {t('settingsPage.devicesUsed')}
                   </span>
                 </div>
-                <Smartphone size={18} className="text-purple-600" />
+                <Smartphone size={18} className="text-primary" />
               </div>
               
               {myProfile?.device_info?.length > 0 && (
@@ -242,13 +242,13 @@ export default function Settings() {
                   {myProfile.device_info.map((device, idx) => {
                     const isCurrentDevice = localStorage.getItem('device_id') === device.device_id;
                     return (
-                      <div key={idx} className="flex items-center justify-between bg-gray-50 p-2 rounded text-sm">
+                      <div key={idx} className="flex items-center justify-between bg-muted p-2 rounded text-sm">
                         <div className="overflow-hidden">
                           <p className="font-medium truncate pr-2">
                             {device.device_name}
-                            {isCurrentDevice && <span className="text-purple-600 ml-1">({t('settingsPage.current')})</span>}
+                            {isCurrentDevice && <span className="text-primary ml-1">({t('settingsPage.current')})</span>}
                           </p>
-                          <p className="text-xs text-gray-400">
+                          <p className="text-xs text-muted-foreground">
                             {t('settingsPage.lastLogin')}: {new Date(device.last_login).toLocaleDateString()}
                           </p>
                         </div>
@@ -286,15 +286,15 @@ export default function Settings() {
               }
             }} className="flex items-center justify-between py-2 w-full text-left" disabled={isSendingCode || myProfile?.verification_status?.email_verified}>
               <div>
-                <span className="text-gray-700 block">{t('settingsPage.emailLabel')}</span>
-                <span className="text-sm text-gray-500">
+                <span className="text-foreground block">{t('settingsPage.emailLabel')}</span>
+                <span className="text-sm text-muted-foreground">
                   {myProfile?.verification_status?.email_verified ? t('settingsPage.verified') : isSendingCode ? t('settingsPage.sendingCode') : t('settingsPage.verifyNow')}
                 </span>
               </div>
               {myProfile?.verification_status?.email_verified ? (
                 <Shield size={18} className="text-green-500" />
               ) : (
-                <ChevronRight size={20} className="text-gray-400" />
+                <ChevronRight size={20} className="text-muted-foreground" />
               )}
             </button>
           </CardContent>
@@ -304,13 +304,13 @@ export default function Settings() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <Globe size={18} className="text-purple-600" />
+              <Globe size={18} className="text-primary" />
               {t('settingsPage.language')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <Label className="text-gray-700">{t('settingsPage.changeLanguage')}</Label>
+              <Label className="text-foreground">{t('settingsPage.changeLanguage')}</Label>
               <LanguageSelector />
             </div>
           </CardContent>
@@ -320,13 +320,13 @@ export default function Settings() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <Bell size={18} className="text-purple-600" />
+              <Bell size={18} className="text-primary" />
               {t('settingsPage.notifications')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
-              <Label htmlFor="push" className="text-gray-700">{t('settingsPage.pushNotifications')}</Label>
+              <Label htmlFor="push" className="text-foreground">{t('settingsPage.pushNotifications')}</Label>
               <Switch
                 id="push"
                 checked={settings.notifications}
@@ -338,8 +338,8 @@ export default function Settings() {
 
             <div className="flex items-center justify-between">
               <div>
-                <Label htmlFor="email" className="text-gray-700 block">{t('settingsPage.emailNotifications')}</Label>
-                <span className="text-xs text-gray-500">{t('settingsPage.emailNotificationsDesc')}</span>
+                <Label htmlFor="email" className="text-foreground block">{t('settingsPage.emailNotifications')}</Label>
+                <span className="text-xs text-muted-foreground">{t('settingsPage.emailNotificationsDesc')}</span>
               </div>
               <Switch
                 id="email"
@@ -354,15 +354,15 @@ export default function Settings() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <Eye size={18} className="text-purple-600" />
+              <Eye size={18} className="text-primary" />
               {t('settingsPage.privacy')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <Label htmlFor="distance" className="text-gray-700 block">{t('settingsPage.showDistance')}</Label>
-                <span className="text-xs text-gray-500">{t('settingsPage.showDistanceDesc')}</span>
+                <Label htmlFor="distance" className="text-foreground block">{t('settingsPage.showDistance')}</Label>
+                <span className="text-xs text-muted-foreground">{t('settingsPage.showDistanceDesc')}</span>
               </div>
               <Switch
                 id="distance"
@@ -375,8 +375,8 @@ export default function Settings() {
 
             <div className="flex items-center justify-between">
               <div>
-                <Label htmlFor="lastActive" className="text-gray-700 block">{t('settingsPage.showLastActive')}</Label>
-                <span className="text-xs text-gray-500">{t('settingsPage.showLastActiveDesc')}</span>
+                <Label htmlFor="lastActive" className="text-foreground block">{t('settingsPage.showLastActive')}</Label>
+                <span className="text-xs text-muted-foreground">{t('settingsPage.showLastActiveDesc')}</span>
               </div>
               <Switch
                 id="lastActive"
@@ -388,8 +388,8 @@ export default function Settings() {
             <Separator />
 
             <Link to={createPageUrl('BlockedUsers')} className="flex items-center justify-between py-2">
-              <span className="text-gray-700">{t('settingsPage.blockedUsers')}</span>
-              <ChevronRight size={20} className="text-gray-400" />
+              <span className="text-foreground">{t('settingsPage.blockedUsers')}</span>
+              <ChevronRight size={20} className="text-muted-foreground" />
             </Link>
 
             <Separator />
@@ -411,11 +411,11 @@ export default function Settings() {
                   <ShoppingBag size={20} className="text-white" />
                 </div>
                 <div>
-                  <span className="font-bold text-gray-900 block">{t('settingsPage.shop')}</span>
-                  <span className="text-xs text-gray-500">{t('settingsPage.shopDesc')}</span>
+                  <span className="font-bold text-foreground block">{t('settingsPage.shop')}</span>
+                  <span className="text-xs text-muted-foreground">{t('settingsPage.shopDesc')}</span>
                 </div>
               </div>
-              <ChevronRight size={20} className="text-purple-600" />
+              <ChevronRight size={20} className="text-primary" />
             </Link>
           </CardContent>
         </Card>
@@ -424,13 +424,13 @@ export default function Settings() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              {settings.darkMode ? <Moon size={18} className="text-purple-600" /> : <Sun size={18} className="text-purple-600" />}
+              {settings.darkMode ? <Moon size={18} className="text-primary" /> : <Sun size={18} className="text-primary" />}
               {t('settingsPage.appearance')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <Label htmlFor="darkMode" className="text-gray-700">{t('settingsPage.darkMode')}</Label>
+              <Label htmlFor="darkMode" className="text-foreground">{t('settingsPage.darkMode')}</Label>
               <Switch
                 id="darkMode"
                 checked={settings.darkMode}
@@ -444,27 +444,27 @@ export default function Settings() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <Globe size={18} className="text-purple-600" />
+              <Globe size={18} className="text-primary" />
               {t('settingsPage.discovery')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <Link to={createPageUrl('Home')} className="flex items-center justify-between py-2">
               <div>
-                <span className="text-gray-700 block">{t('settingsPage.discoveryPreferences')}</span>
-                <span className="text-xs text-gray-500">{t('settingsPage.discoveryPreferencesDesc')}</span>
+                <span className="text-foreground block">{t('settingsPage.discoveryPreferences')}</span>
+                <span className="text-xs text-muted-foreground">{t('settingsPage.discoveryPreferencesDesc')}</span>
               </div>
-              <ChevronRight size={20} className="text-gray-400" />
+              <ChevronRight size={20} className="text-muted-foreground" />
             </Link>
             
             <Separator />
             
             <Link to={createPageUrl('PricingPlans')} className="flex items-center justify-between py-2">
               <div>
-                <span className="text-gray-700 block">{t('settingsPage.subscriptionPricing')}</span>
-                <span className="text-xs text-gray-500">{t('settingsPage.managePlan')}</span>
+                <span className="text-foreground block">{t('settingsPage.subscriptionPricing')}</span>
+                <span className="text-xs text-muted-foreground">{t('settingsPage.managePlan')}</span>
               </div>
-              <ChevronRight size={20} className="text-gray-400" />
+              <ChevronRight size={20} className="text-muted-foreground" />
             </Link>
             
             {/* Cancel Subscription - only if active */}
@@ -503,7 +503,7 @@ export default function Settings() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <HelpCircle size={18} className="text-purple-600" />
+              <HelpCircle size={18} className="text-primary" />
               {t('settingsPage.support')}
             </CardTitle>
           </CardHeader>
@@ -514,32 +514,32 @@ export default function Settings() {
                   <span className="text-white text-sm">✨</span>
                 </div>
                 <div>
-                  <span className="text-gray-900 font-medium block">{t('settingsPage.chatWithAI')}</span>
-                  <span className="text-xs text-purple-600">{t('settingsPage.getInstantHelp')}</span>
+                  <span className="text-foreground font-medium block">{t('settingsPage.chatWithAI')}</span>
+                  <span className="text-xs text-primary">{t('settingsPage.getInstantHelp')}</span>
                 </div>
               </div>
-              <ChevronRight size={20} className="text-purple-600" />
+              <ChevronRight size={20} className="text-primary" />
             </Link>
 
             <Separator />
 
             <Link to={createPageUrl('Support')} className="flex items-center justify-between py-2">
-              <span className="text-gray-700">{t('settingsPage.supportTickets')}</span>
-              <ChevronRight size={20} className="text-gray-400" />
+              <span className="text-foreground">{t('settingsPage.supportTickets')}</span>
+              <ChevronRight size={20} className="text-muted-foreground" />
             </Link>
 
             <Separator />
 
             <a href="mailto:support@afrinnect.com" className="flex items-center justify-between py-2">
-              <span className="text-gray-700">{t('settingsPage.contactUs')}</span>
-              <ChevronRight size={20} className="text-gray-400" />
+              <span className="text-foreground">{t('settingsPage.contactUs')}</span>
+              <ChevronRight size={20} className="text-muted-foreground" />
             </a>
 
             <Separator />
 
             <Link to={createPageUrl('CommunityGuidelines')} className="flex items-center justify-between py-2">
-              <span className="text-gray-700">{t('settingsPage.safetyTips')}</span>
-              <ChevronRight size={20} className="text-gray-400" />
+              <span className="text-foreground">{t('settingsPage.safetyTips')}</span>
+              <ChevronRight size={20} className="text-muted-foreground" />
             </Link>
           </CardContent>
         </Card>
@@ -548,28 +548,28 @@ export default function Settings() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <FileText size={18} className="text-purple-600" />
+              <FileText size={18} className="text-primary" />
               {t('settingsPage.legal')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <Link to={createPageUrl('Privacy')} className="flex items-center justify-between py-2">
-              <span className="text-gray-700">{t('settingsPage.privacyPolicy')}</span>
-              <ChevronRight size={20} className="text-gray-400" />
+              <span className="text-foreground">{t('settingsPage.privacyPolicy')}</span>
+              <ChevronRight size={20} className="text-muted-foreground" />
             </Link>
 
             <Separator />
 
             <Link to={createPageUrl('Terms')} className="flex items-center justify-between py-2">
-              <span className="text-gray-700">{t('settingsPage.termsOfService')}</span>
-              <ChevronRight size={20} className="text-gray-400" />
+              <span className="text-foreground">{t('settingsPage.termsOfService')}</span>
+              <ChevronRight size={20} className="text-muted-foreground" />
             </Link>
 
             <Separator />
 
             <Link to={createPageUrl('CommunityGuidelines')} className="flex items-center justify-between py-2">
-              <span className="text-gray-700">{t('settingsPage.communityGuidelines')}</span>
-              <ChevronRight size={20} className="text-gray-400" />
+              <span className="text-foreground">{t('settingsPage.communityGuidelines')}</span>
+              <ChevronRight size={20} className="text-muted-foreground" />
             </Link>
 
             <Separator />
@@ -580,15 +580,15 @@ export default function Settings() {
               className="flex items-center justify-between py-2 w-full text-left"
             >
               <div>
-                <span className="text-gray-700 block">{t('settingsPage.downloadMyData')}</span>
-                <span className="text-xs text-gray-500">
+                <span className="text-foreground block">{t('settingsPage.downloadMyData')}</span>
+                <span className="text-xs text-muted-foreground">
                   {exportDataMutation.isPending ? t('settingsPage.preparingDownload') : t('settingsPage.gdprExport')}
                 </span>
               </div>
               {exportDataMutation.isPending ? (
-                <Loader2 size={20} className="text-purple-600 animate-spin" />
+                <Loader2 size={20} className="text-primary animate-spin" />
               ) : (
-                <ChevronRight size={20} className="text-gray-400" />
+                <ChevronRight size={20} className="text-muted-foreground" />
               )}
             </button>
           </CardContent>
@@ -624,7 +624,7 @@ export default function Settings() {
         </div>
 
         {/* App Version */}
-        <p className="text-center text-gray-400 text-xs">
+        <p className="text-center text-muted-foreground text-xs">
           Afrinnect v1.0.1 (Build 2024.02)
         </p>
       </main>
