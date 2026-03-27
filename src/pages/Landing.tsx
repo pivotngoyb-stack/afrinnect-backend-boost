@@ -100,8 +100,8 @@ export default function Landing() {
 
   const stats = [
     { number: "🇺🇸 🇨🇦", label: "USA & Canada" },
-    { number: "24/7", label: "Active Community" },
-    { number: "Free", label: "To Get Started" },
+    { number: "24/7", label: t('landing.stats.members') },
+    { number: t('common.free'), label: t('landing.getStarted') },
     { number: "100%", label: "Culture-Focused" }
   ];
 
@@ -111,24 +111,24 @@ export default function Landing() {
       location: "Met on Afrinnect • Now Engaged",
       image: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/4aa15e12a_image.png",
       secondImage: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/a4c7689a9_image.png",
-      quote: "I almost didn't sign up. I'd been disappointed by other apps. But Afrinnect was different - Kwame understood my values from day one. We're planning our traditional wedding next month!",
-      detail: "Connected through shared Igbo heritage"
+      quote: t('landingExtra.testimonials.quote1'),
+      detail: t('landingExtra.testimonials.detail1')
     },
     {
       name: "Zara & Malik",
       location: "Met on Afrinnect • Together 18 months",
       image: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/4a4914d37_image.png",
       secondImage: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/600f3567c_image.png",
-      quote: "I was skeptical about dating apps. My friend convinced me to try Afrinnect for just one week. I met Malik on day 3. Best decision I ever made.",
-      detail: "Bonded over East African culture"
+      quote: t('landingExtra.testimonials.quote2'),
+      detail: t('landingExtra.testimonials.detail2')
     },
     {
       name: "Thandiwe & David",
       location: "Met on Afrinnect • Married 2024",
       image: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/aa7b7d0ce_image.png",
       secondImage: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/9c6bf76a1_image.png",
-      quote: "Other apps made me feel invisible. On Afrinnect, I felt celebrated. David messaged me about my bio mentioning Ubuntu philosophy - we talked for 6 hours that first night.",
-      detail: "Matched through shared values"
+      quote: t('landingExtra.testimonials.quote3'),
+      detail: t('landingExtra.testimonials.detail3')
     }
   ];
 
