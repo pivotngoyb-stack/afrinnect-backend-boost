@@ -44,16 +44,22 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
   const [showDetails, setShowDetails] = useState(expanded);
   const [viewLogged, setViewLogged] = useState(false);
 
+  // OPTIMIZED: Log profile view without re-fetching current user (pass viewer ID from parent if needed)
   useEffect(() => {
     if (viewLogged || !profile?.id) return;
     const timer = setTimeout(async () => {
       try {
-        const user = await getCurrentUser();
+        const { data: { user } } = await (await import('@/integrations/supabase/client')).supabase.auth.getUser();
         if (!user) return;
-        const profiles = await filterRecords('user_profiles', { user_id: user.id });
-        if (profiles.length > 0 && profiles[0].id !== profile.id) {
+        // Use a lightweight query to get just the viewer's profile ID
+        const { data: viewerProfiles } = await (await import('@/integrations/supabase/client')).supabase
+          .from('user_profiles')
+          .select('id')
+          .eq('user_id', user.id)
+          .limit(1);
+        if (viewerProfiles?.[0] && viewerProfiles[0].id !== profile.id) {
           await createRecord('profile_views', {
-            viewer_profile_id: profiles[0].id,
+            viewer_profile_id: viewerProfiles[0].id,
             viewed_profile_id: profile.id,
             view_date: new Date().toISOString(),
             view_source: 'discovery'
@@ -61,7 +67,7 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
           setViewLogged(true);
         }
       } catch (e) {}
-    }, 1500);
+    }, 2000); // Increased delay to reduce API pressure
     return () => clearTimeout(timer);
   }, [profile?.id, viewLogged]);
 
