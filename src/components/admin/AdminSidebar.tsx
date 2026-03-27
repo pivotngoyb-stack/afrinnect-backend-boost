@@ -49,7 +49,7 @@ export default function AdminSidebar({ pendingReports = 0 }: AdminSidebarProps) 
     { label: 'Analytics', icon: TrendingUp, path: '/adminanalytics' },
     { label: 'Audit Logs', icon: ClipboardList, path: '/adminauditlogs' },
     { label: 'Subscriptions', icon: DollarSign, path: '/adminsubscriptions' },
-    { label: 'Events', icon: Gift, path: '/adminevents' },
+    { label: 'Events', icon: Calendar, path: '/adminevents' },
     { label: 'VIP Events', icon: Gift, path: '/adminvipevents' },
     { label: 'Ambassadors', icon: Star, path: '/adminambassadors' },
     { label: 'Broadcast', icon: Megaphone, path: '/adminbroadcast' },
