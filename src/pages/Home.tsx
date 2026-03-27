@@ -14,6 +14,7 @@ import { useUpgradePrompts } from '@/components/monetization/UpgradePrompts';
 import { useVerificationGate } from '@/hooks/useVerificationGate';
 import { useLanguage } from '@/components/i18n/LanguageContext';
 import AfricanPattern from '@/components/shared/AfricanPattern';
+import { AfricanProverbLoader, CulturalGreeting } from '@/components/shared/AfricanCulture';
 import PullToRefresh from '@/components/shared/PullToRefresh';
 import BannedScreen from '@/components/auth/BannedScreen';
 import FoundingMemberBanner from '@/components/founding/FoundingMemberBanner';
@@ -441,10 +442,7 @@ export default function Home() {
   if (isCheckingAuth) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="animate-spin h-10 w-10 text-primary mx-auto" />
-          <p className="mt-3 text-muted-foreground text-sm">Loading...</p>
-        </div>
+        <AfricanProverbLoader />
       </div>
     );
   }
@@ -456,7 +454,7 @@ export default function Home() {
   return (
     <PullToRefresh onRefresh={refetch}>
       <div className="h-[100dvh] flex flex-col bg-background relative overflow-hidden">
-        <AfricanPattern className="text-primary" opacity={0.02} />
+        <AfricanPattern className="text-primary" opacity={0.03} variant="adinkra" />
 
         <HomeHeader
           discoveryMode={discoveryMode} setDiscoveryMode={setDiscoveryMode}
@@ -470,6 +468,7 @@ export default function Home() {
         {isVerificationGated && <VerificationGateBanner matchCount={gateMatchCount} />}
 
         <main className="flex-1 flex flex-col overflow-hidden px-4" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+          <CulturalGreeting userName={myProfile?.display_name?.split(' ')[0]} className="mb-2 mt-1" />
           <FreeTrialCountdown userProfile={myProfile} />
           <ContextualUpgradeBanner userProfile={myProfile} />
           {!['premium', 'elite', 'vip'].includes(myProfile?.subscription_tier) && (

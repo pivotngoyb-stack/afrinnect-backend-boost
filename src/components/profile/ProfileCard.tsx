@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { MapPin, Briefcase, GraduationCap, Heart, ChevronLeft, ChevronRight, Languages, Book, Sparkles, Mic, Loader2, Crown } from 'lucide-react';
+import { KenteDivider } from '../shared/AfricanPattern';
 import { Badge } from "@/components/ui/badge";
 import VerificationBadge from '../shared/VerificationBadge';
 import CountryFlag from '../shared/CountryFlag';
@@ -142,6 +143,8 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
             </>
           )}
 
+          {/* Kente accent stripe */}
+          <div className="absolute bottom-0 left-0 right-0 h-1 gradient-kente opacity-60 z-10" />
           <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
           <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
@@ -172,6 +175,7 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
           {showDetails && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
               <div className="p-6 space-y-4">
+                <KenteDivider className="mb-2" />
                 {(matchScore || profile?.matchScore) && (
                   <MatchExplanation score={matchScore || profile?.matchScore || 0} reasons={matchReasons || profile?.matchReasons || []} breakdown={matchBreakdown || profile?.matchBreakdown || {}} confidence="good" />
                 )}
