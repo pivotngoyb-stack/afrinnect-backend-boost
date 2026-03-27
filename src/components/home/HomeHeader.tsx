@@ -35,9 +35,9 @@ export default function HomeHeader({
   return (
     <header className="flex-shrink-0 z-40 bg-card/90 backdrop-blur-xl border-b border-border/50" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
       <div className="max-w-7xl mx-auto px-4 py-3">
-        <div className="flex items-center justify-between">
-          <Logo />
-          <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide">
+          <Logo className="flex-shrink-0" />
+          <div className="flex items-center gap-2 flex-shrink-0">
             <Tabs value={discoveryMode} onValueChange={setDiscoveryMode}>
               <TabsList className="bg-muted h-8">
                 <TabsTrigger value="local" className="gap-1 text-xs h-7 px-2">
@@ -69,7 +69,7 @@ export default function HomeHeader({
             <SuperLikeCounter userProfile={myProfile} />
 
             <Link to={createPageUrl('WhoLikesYou')}>
-              <Button variant="outline" size="icon" className="h-8 w-8 relative border-border">
+              <Button variant="outline" size="icon" className="h-8 w-8 relative border-border flex-shrink-0">
                 <HeartIcon size={16} className="text-destructive" />
                 {(activityCounts?.likes > 0 || activityCounts?.views > 0) && (
                   <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-destructive rounded-full border-2 border-card" />
@@ -81,7 +81,7 @@ export default function HomeHeader({
 
             {isAdmin && (
               <Link to={createPageUrl('AdminDashboard')}>
-                <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/10" title="Admin Dashboard">
+                <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/10 flex-shrink-0" title="Admin Dashboard">
                   <Crown size={20} />
                 </Button>
               </Link>
