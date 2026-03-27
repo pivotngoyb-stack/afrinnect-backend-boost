@@ -421,7 +421,7 @@ export default function Home() {
     },
     onSuccess: (data, variables) => {
       if (data?.isMatch) {
-        confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 }, colors: ['#ff6b9d', '#c084fc', '#f59e0b', '#ef4444'] });
+        lazyConfetti().then(confetti => confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 }, colors: ['#ff6b9d', '#c084fc', '#f59e0b', '#ef4444'] }));
         if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
         setShowMatchCelebration(true);
         setMatchCount(prev => prev + 1);
