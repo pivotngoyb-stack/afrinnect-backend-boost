@@ -19,7 +19,7 @@ export default function MissedMatchRegret({ show, onClose, matchScore = 95 }: Pr
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-4"
+        className="fixed inset-0 z-50 bg-foreground/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-4"
         onClick={onClose}
       >
         <motion.div
@@ -32,15 +32,15 @@ export default function MissedMatchRegret({ show, onClose, matchScore = 95 }: Pr
           <div className="bg-card rounded-2xl overflow-hidden shadow-2xl border border-border">
             {/* Blurred profile teaser */}
             <div className="relative h-56 bg-gradient-to-br from-pink-400 via-purple-400 to-amber-400">
-              <div className="absolute inset-0 backdrop-blur-3xl bg-black/20 flex flex-col items-center justify-center">
+              <div className="absolute inset-0 backdrop-blur-3xl bg-foreground/20 flex flex-col items-center justify-center">
                 <motion.div
                   animate={{ scale: [1, 1.1, 1] }}
                   transition={{ repeat: Infinity, duration: 2 }}
-                  className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-xl flex items-center justify-center mb-3"
+                  className="w-20 h-20 rounded-full bg-card/20 backdrop-blur-xl flex items-center justify-center mb-3"
                 >
                   <Heart size={36} className="text-white" fill="white" />
                 </motion.div>
-                <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-1.5">
+                <div className="bg-card/20 backdrop-blur-sm rounded-full px-4 py-1.5">
                   <span className="text-white font-bold text-lg flex items-center gap-1.5">
                     <Sparkles size={16} />
                     {matchScore}% Match

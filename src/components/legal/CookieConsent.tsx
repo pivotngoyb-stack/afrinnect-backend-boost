@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -30,7 +29,7 @@ export default function CookieConsent() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 p-4 pb-20 md:pb-4">
-      <Card className="max-w-4xl mx-auto bg-white shadow-2xl border-2">
+      <Card className="max-w-4xl mx-auto bg-card shadow-2xl border-2">
         <div className="p-6">
           <div className="flex items-start gap-4">
             <div className="p-3 bg-amber-100 rounded-lg">
@@ -38,7 +37,7 @@ export default function CookieConsent() {
             </div>
             <div className="flex-1">
               <h3 className="font-bold text-lg mb-2">Cookie Notice</h3>
-              <p className="text-gray-600 text-sm mb-4">
+              <p className="text-muted-foreground text-sm mb-4">
                 We use cookies and similar technologies to enhance your experience, analyze site traffic, 
                 and personalize content. By clicking "Accept All", you consent to our use of cookies. 
                 You can manage your preferences at any time in your settings.
@@ -65,7 +64,7 @@ export default function CookieConsent() {
             </div>
             <button 
               onClick={declineCookies}
-              className="p-2 hover:bg-gray-100 rounded-full"
+              className="p-2 hover:bg-muted rounded-full"
             >
               <X size={20} />
             </button>

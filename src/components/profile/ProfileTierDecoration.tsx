@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Crown, Sparkles, Zap, Star } from 'lucide-react';
@@ -61,7 +60,7 @@ const ProfileTierDecoration = ({ tier = 'free', children }: { tier?: string; chi
         <motion.div className="absolute -top-5 left-1/2 -translate-x-1/2 z-10" initial={{ y: -20, opacity: 0, scale: 0.8 }} animate={{ y: 0, opacity: 1, scale: 1 }} transition={{ delay: 0.2, type: "spring" }}>
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 rounded-full blur-md opacity-75" />
-            <motion.div className="relative bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 text-white px-6 py-2 rounded-full shadow-2xl flex items-center gap-2 border-2 border-white/30"
+            <motion.div className="relative bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 text-white px-6 py-2 rounded-full shadow-2xl flex items-center gap-2 border-2 border-card/30"
               animate={{ boxShadow: ['0 0 20px rgba(236, 72, 153, 0.6)', '0 0 30px rgba(168, 85, 247, 0.6)', '0 0 20px rgba(34, 211, 238, 0.6)', '0 0 20px rgba(236, 72, 153, 0.6)'] }} transition={{ duration: 3, repeat: Infinity }}>
               <motion.div animate={{ rotate: [0, -15, 15, -15, 0] }} transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}><Crown size={20} className="fill-white" /></motion.div>
               <span className="text-sm font-black tracking-widest">VIP</span>

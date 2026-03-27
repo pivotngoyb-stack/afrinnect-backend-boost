@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -61,11 +60,11 @@ export default function FoundingMemberWelcome({ isOpen, onClose, profile }) {
         <Sparkles size={14} className="mr-1" /> EXCLUSIVE
       </Badge>
 
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      <h1 className="text-3xl font-bold text-foreground mb-2">
         Welcome, Founding Member! 👑
       </h1>
       
-      <p className="text-gray-600 mb-6">
+      <p className="text-muted-foreground mb-6">
         You're one of the <strong className="text-amber-600">first 1,000</strong> people to join Afrinnect. 
         As a thank you, you get <strong className="text-amber-600">{trialLabel} of Premium FREE</strong>!
       </p>
@@ -74,7 +73,7 @@ export default function FoundingMemberWelcome({ isOpen, onClose, profile }) {
         <div className="flex items-center justify-center gap-3 mb-4">
           <Gift className="text-amber-600" size={24} />
           <span className="text-2xl font-bold text-amber-700">$0.00</span>
-          <span className="text-gray-500 line-through">${(trialMonths * 14.99).toFixed(2)}</span>
+          <span className="text-muted-foreground line-through">${(trialMonths * 14.99).toFixed(2)}</span>
         </div>
         <p className="text-sm text-amber-800 font-medium">
           No credit card needed • No charges ever • Full Premium access
@@ -97,10 +96,10 @@ export default function FoundingMemberWelcome({ isOpen, onClose, profile }) {
       exit={{ opacity: 0, x: -50 }}
     >
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <h2 className="text-2xl font-bold text-foreground mb-2">
           Your Founding Member Benefits
         </h2>
-        <p className="text-gray-500">Everything included, completely free:</p>
+        <p className="text-muted-foreground">Everything included, completely free:</p>
       </div>
 
       <div className="space-y-3 mb-6">
@@ -110,12 +109,12 @@ export default function FoundingMemberWelcome({ isOpen, onClose, profile }) {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: idx * 0.1 }}
-            className="flex items-center gap-4 bg-white rounded-xl p-4 border border-gray-100 shadow-sm"
+            className="flex items-center gap-4 bg-card rounded-xl p-4 border border-border shadow-sm"
           >
-            <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
               <benefit.icon size={20} className={benefit.color} />
             </div>
-            <span className="font-medium text-gray-800">{benefit.text}</span>
+            <span className="font-medium text-foreground">{benefit.text}</span>
             <Check size={18} className="text-green-500 ml-auto" />
           </motion.div>
         ))}
@@ -141,11 +140,11 @@ export default function FoundingMemberWelcome({ isOpen, onClose, profile }) {
         <Users size={40} className="text-purple-600" />
       </div>
 
-      <h2 className="text-2xl font-bold text-gray-900 mb-3">
+      <h2 className="text-2xl font-bold text-foreground mb-3">
         You're Part of Something Special
       </h2>
 
-      <p className="text-gray-600 mb-6">
+      <p className="text-muted-foreground mb-6">
         As a Founding Member, you're helping us build the <strong>premier community</strong> for 
         African and African diaspora singles. Your feedback matters!
       </p>
@@ -187,7 +186,7 @@ export default function FoundingMemberWelcome({ isOpen, onClose, profile }) {
         Start Finding Matches! 💕
       </Button>
 
-      <p className="text-xs text-gray-400 mt-4">
+      <p className="text-xs text-muted-foreground mt-4">
         Thank you for being a Founding Member. We're honored to have you!
       </p>
     </motion.div>

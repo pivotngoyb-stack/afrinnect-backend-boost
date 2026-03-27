@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { format, isToday, isYesterday } from 'date-fns';
 import { Badge } from "@/components/ui/badge";
@@ -32,7 +31,7 @@ export default function ConversationItem({ match, profile, lastMessage, unreadCo
   return (
     <div 
       onClick={onClick}
-      className={`flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50 active:bg-gray-100 transition-colors ${
+      className={`flex items-center gap-4 p-4 cursor-pointer hover:bg-muted active:bg-muted transition-colors ${
         unreadCount > 0 ? 'bg-purple-50/30' : ''
       }`}
     >
@@ -43,25 +42,25 @@ export default function ConversationItem({ match, profile, lastMessage, unreadCo
           className="w-16 h-16 rounded-full object-cover"
         />
         {profile?.is_active && (
-          <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white" />
+          <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-card" />
         )}
       </div>
       
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <h3 className={`font-semibold truncate ${unreadCount > 0 ? 'text-gray-900' : 'text-gray-800'}`}>
+            <h3 className={`font-semibold truncate ${unreadCount > 0 ? 'text-foreground' : 'text-foreground'}`}>
               {profile?.display_name}
             </h3>
             <VerificationBadge verification={profile?.verification_status} size="small" />
           </div>
-          <span className="text-xs text-gray-400 flex-shrink-0 ml-2">
+          <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
             {formatMessageDate(lastMessage?.created_date || match?.matched_at)}
           </span>
         </div>
         
         <div className="flex items-center justify-between gap-2">
-          <p className={`text-sm truncate flex-1 ${unreadCount > 0 ? 'text-gray-900 font-semibold' : 'text-gray-500'}`}>
+          <p className={`text-sm truncate flex-1 ${unreadCount > 0 ? 'text-foreground font-semibold' : 'text-muted-foreground'}`}>
             {truncateMessage(lastMessage?.content)}
           </p>
           {unreadCount > 0 && (

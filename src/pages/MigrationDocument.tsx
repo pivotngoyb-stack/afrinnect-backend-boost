@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Download, ArrowLeft, Database, Key, Shield } from 'lucide-react';
@@ -557,9 +556,9 @@ export default function MigrationDocument() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted">
       {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-10">
+      <div className="bg-card border-b sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to={createPageUrl('AdminDashboard')}>
@@ -567,7 +566,7 @@ export default function MigrationDocument() {
             </Link>
             <div>
               <h1 className="text-xl font-bold">Migration Document</h1>
-              <p className="text-sm text-gray-500">{SCHEMAS.length} entities + credentials</p>
+              <p className="text-sm text-muted-foreground">{SCHEMAS.length} entities + credentials</p>
             </div>
           </div>
           <Button onClick={downloadAsText} className="bg-purple-600 hover:bg-purple-700 gap-2">
@@ -589,10 +588,10 @@ export default function MigrationDocument() {
           </div>
           <div className="space-y-2">
             {SECRETS.map(s => (
-              <div key={s.name} className="bg-white border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div key={s.name} className="bg-card border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
                   <code className="text-sm font-mono font-bold text-purple-700">{s.name}</code>
-                  <p className="text-xs text-gray-500 mt-1">{s.source}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{s.source}</p>
                 </div>
                 <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline whitespace-nowrap">
                   Open Dashboard →
@@ -613,23 +612,23 @@ export default function MigrationDocument() {
           </div>
           <div className="space-y-4">
             {SCHEMAS.map((s, i) => (
-              <div key={s.name} className="bg-white border rounded-lg overflow-hidden">
-                <div className="bg-gray-50 px-4 py-3 border-b flex items-center gap-2">
+              <div key={s.name} className="bg-card border rounded-lg overflow-hidden">
+                <div className="bg-muted px-4 py-3 border-b flex items-center gap-2">
                   <span className="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-1 rounded">{i + 1}</span>
-                  <h3 className="font-bold text-gray-900">{s.name}</h3>
+                  <h3 className="font-bold text-foreground">{s.name}</h3>
                 </div>
                 <div className="p-4 space-y-3">
                   <div>
-                    <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Fields</p>
-                    <p className="text-sm text-gray-700 font-mono leading-relaxed break-all">{s.fields}</p>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Fields</p>
+                    <p className="text-sm text-foreground font-mono leading-relaxed break-all">{s.fields}</p>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1">
-                      <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Required</p>
+                      <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Required</p>
                       <p className="text-sm text-red-700 font-mono">{s.required}</p>
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs font-semibold text-gray-500 uppercase mb-1 flex items-center gap-1">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase mb-1 flex items-center gap-1">
                         <Shield size={12} /> Row Level Security
                       </p>
                       <p className="text-sm text-green-700 font-mono">{s.rls}</p>

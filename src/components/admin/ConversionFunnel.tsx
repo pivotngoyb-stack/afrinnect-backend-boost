@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { filterRecords, listRecords } from '@/lib/supabase-helpers';
@@ -65,7 +64,7 @@ export default function ConversionFunnel() {
         <CardContent>
           <div className="animate-pulse space-y-4">
             {[1, 2, 3, 4, 5].map(i => (
-              <div key={i} className="h-8 bg-gray-200 rounded" />
+              <div key={i} className="h-8 bg-muted rounded" />
             ))}
           </div>
         </CardContent>
@@ -88,7 +87,7 @@ export default function ConversionFunnel() {
               <span className="text-sm font-medium">{stage.name}</span>
               <div className="text-right">
                 <span className="text-lg font-bold">{stage.count.toLocaleString()}</span>
-                <span className="text-sm text-gray-500 ml-2">({stage.percent}%)</span>
+                <span className="text-sm text-muted-foreground ml-2">({stage.percent}%)</span>
               </div>
             </div>
             <Progress value={parseFloat(stage.percent)} className="h-2" />

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { createRecord, deleteRecord, filterRecords, getCurrentUser, listRecords, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -101,10 +100,10 @@ export default function VendorManagement() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 relative pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative pb-24">
       <AfricanPattern className="text-purple-600" opacity={0.03} />
 
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b">
+      <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-lg border-b">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link to={createPageUrl('Home')}>
             <Button variant="ghost" size="icon">
@@ -117,7 +116,7 @@ export default function VendorManagement() {
 
       <main className="max-w-4xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-gray-800">Manage Vendors</h2>
+          <h2 className="text-3xl font-bold text-foreground">Manage Vendors</h2>
           <Button onClick={() => { setEditVendor(null); setShowDialog(true); }} className="bg-purple-600 hover:bg-purple-700">
             <Plus size={18} className="mr-2" />
             Add New Vendor
@@ -127,7 +126,7 @@ export default function VendorManagement() {
         {vendors.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {vendors.map(vendor => (
-              <Card key={vendor.id} className="bg-white/70 backdrop-blur-md border border-gray-200 shadow-lg">
+              <Card key={vendor.id} className="bg-card/70 backdrop-blur-md border border-border shadow-lg">
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -144,15 +143,15 @@ export default function VendorManagement() {
                     </div>
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-2 text-gray-700 text-sm">
+                <CardContent className="space-y-2 text-foreground text-sm">
                   <p className="flex items-center gap-2"><Tag size={16} />{vendor.category}</p>
                   <p className="flex items-center gap-2"><MapPin size={16} />{vendor.location}</p>
                   <p className="flex items-center gap-2"><Phone size={16} /><a href={`tel:${vendor.phone}`} className="underline">{vendor.phone}</a></p>
                   <p className="flex items-center gap-2"><Mail size={16} /><a href={`mailto:${vendor.email}`} className="underline">{vendor.email}</a></p>
                   {vendor.website && <p className="flex items-center gap-2"><Globe size={16} /><a href={vendor.website} target="_blank" rel="noopener noreferrer" className="underline">Website</a></p>}
-                  <p className="text-gray-600 line-clamp-2">{vendor.description}</p>
+                  <p className="text-muted-foreground line-clamp-2">{vendor.description}</p>
                   <div className="flex items-center gap-2">
-                    <Sparkles size={16} className={vendor.is_featured ? 'text-amber-500' : 'text-gray-400'} />
+                    <Sparkles size={16} className={vendor.is_featured ? 'text-amber-500' : 'text-muted-foreground'} />
                     Featured: {vendor.is_featured ? 'Yes' : 'No'}
                   </div>
                 </CardContent>
@@ -160,7 +159,7 @@ export default function VendorManagement() {
             ))}
           </div>
         ) : (
-          <p className="text-gray-600 text-center py-8">No vendors added yet. Click "Add New Vendor" to get started.</p>
+          <p className="text-muted-foreground text-center py-8">No vendors added yet. Click "Add New Vendor" to get started.</p>
         )}
       </main>
 

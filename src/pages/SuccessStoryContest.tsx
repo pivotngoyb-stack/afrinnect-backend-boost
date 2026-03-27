@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser, updateRecord, uploadFile } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -95,7 +94,7 @@ export default function SuccessStoryContest() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 pb-24">
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b">
+      <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-lg border-b">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link to={createPageUrl('SuccessStories')}>
             <Button variant="ghost" size="icon">
@@ -177,8 +176,8 @@ export default function SuccessStoryContest() {
                   <img src={winner.photos[0]} className="w-full h-64 object-cover rounded-lg mb-4" />
                 )}
                 <h4 className="text-xl font-bold mb-2">{winner.story_title}</h4>
-                <p className="text-gray-700 mb-3">{winner.story_text}</p>
-                <div className="flex items-center gap-2 text-gray-600">
+                <p className="text-foreground mb-3">{winner.story_text}</p>
+                <div className="flex items-center gap-2 text-muted-foreground">
                   <Heart size={18} className="text-red-500" />
                   <span>{winner.votes || 0} votes</span>
                 </div>
@@ -198,7 +197,7 @@ export default function SuccessStoryContest() {
                     <img src={story.photos[0]} className="w-full h-40 object-cover rounded-lg mb-3" />
                   )}
                   <h4 className="font-bold mb-2">{story.story_title}</h4>
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-3">{story.story_text}</p>
+                  <p className="text-sm text-muted-foreground mb-3 line-clamp-3">{story.story_text}</p>
                   <Button
                     onClick={() => voteMutation.mutate(story.id)}
                     variant="outline"

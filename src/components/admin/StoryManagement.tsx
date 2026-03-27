@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteRecord, filterRecords, listRecords } from '@/lib/supabase-helpers';
@@ -39,7 +38,7 @@ export default function StoryManagement() {
       <CardContent>
         <div className="space-y-3">
           {stories.map(story => (
-            <div key={story.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            <div key={story.id} className="flex items-center gap-3 p-3 bg-muted rounded-lg">
               <img
                 src={story.media_type === 'photo' ? story.media_url : story.user_profile?.primary_photo}
                 alt="Story"
@@ -47,7 +46,7 @@ export default function StoryManagement() {
               />
               <div className="flex-1">
                 <p className="font-medium">{story.user_profile?.display_name}</p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   {format(new Date(story.created_date), 'PPp')}
                 </p>
                 <div className="flex gap-2 mt-1">

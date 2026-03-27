@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -113,15 +112,15 @@ export default function Support() {
     in_progress: { color: 'bg-purple-100 text-purple-700', icon: Loader2, label: 'In Progress' },
     waiting: { color: 'bg-amber-100 text-amber-700', icon: AlertCircle, label: 'Waiting for Response' },
     resolved: { color: 'bg-green-100 text-green-700', icon: CheckCircle, label: 'Resolved' },
-    closed: { color: 'bg-gray-100 text-gray-600', icon: CheckCircle, label: 'Closed' }
+    closed: { color: 'bg-muted text-muted-foreground', icon: CheckCircle, label: 'Closed' }
   };
 
   const openTickets = tickets.filter(t => ['open', 'in_progress', 'waiting'].includes(t.status));
   const closedTickets = tickets.filter(t => ['resolved', 'closed'].includes(t.status));
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
-      <header className="sticky top-0 z-40 bg-white border-b">
+    <div className="min-h-screen bg-muted pb-24">
+      <header className="sticky top-0 z-40 bg-card border-b">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to={createPageUrl('Settings')}>
@@ -176,13 +175,13 @@ export default function Support() {
             {isLoading ? (
               <div className="text-center py-12">
                 <Loader2 className="animate-spin mx-auto mb-2 text-purple-600" size={32} />
-                <p className="text-gray-500">Loading tickets...</p>
+                <p className="text-muted-foreground">Loading tickets...</p>
               </div>
             ) : openTickets.length === 0 ? (
               <Card>
                 <CardContent className="p-12 text-center">
-                  <MessageSquare size={48} className="mx-auto mb-4 text-gray-300" />
-                  <p className="text-gray-500 mb-4">No open tickets</p>
+                  <MessageSquare size={48} className="mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-muted-foreground mb-4">No open tickets</p>
                   <Button onClick={() => setShowNewTicket(true)} variant="outline">
                     Create Your First Ticket
                   </Button>
@@ -201,8 +200,8 @@ export default function Support() {
                       <CardContent className="p-4">
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex-1">
-                            <h3 className="font-semibold text-gray-900 mb-1">{ticket.subject}</h3>
-                            <p className="text-sm text-gray-600 line-clamp-2">{ticket.description}</p>
+                            <h3 className="font-semibold text-foreground mb-1">{ticket.subject}</h3>
+                            <p className="text-sm text-muted-foreground line-clamp-2">{ticket.description}</p>
                           </div>
                         </div>
                         <div className="flex items-center justify-between mt-3">
@@ -215,7 +214,7 @@ export default function Support() {
                               {statusConfig[ticket.status].label}
                             </Badge>
                           </div>
-                          <span className="text-xs text-gray-400">
+                          <span className="text-xs text-muted-foreground">
                             {new Date(ticket.created_at).toLocaleDateString()}
                           </span>
                         </div>
@@ -231,8 +230,8 @@ export default function Support() {
             {closedTickets.length === 0 ? (
               <Card>
                 <CardContent className="p-12 text-center">
-                  <CheckCircle size={48} className="mx-auto mb-4 text-gray-300" />
-                  <p className="text-gray-500">No closed tickets</p>
+                  <CheckCircle size={48} className="mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-muted-foreground">No closed tickets</p>
                 </CardContent>
               </Card>
             ) : (
@@ -241,8 +240,8 @@ export default function Support() {
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 mb-1">{ticket.subject}</h3>
-                        <p className="text-sm text-gray-600 line-clamp-2">{ticket.description}</p>
+                        <h3 className="font-semibold text-foreground mb-1">{ticket.subject}</h3>
+                        <p className="text-sm text-muted-foreground line-clamp-2">{ticket.description}</p>
                       </div>
                     </div>
                     <div className="flex items-center justify-between mt-3">
@@ -250,7 +249,7 @@ export default function Support() {
                         <CheckCircle size={12} className="mr-1" />
                         Resolved
                       </Badge>
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-muted-foreground">
                         {new Date(ticket.created_at).toLocaleDateString()}
                       </span>
                     </div>
@@ -265,7 +264,7 @@ export default function Support() {
         <Card className="mt-6 bg-gradient-to-br from-purple-50 to-white">
           <CardContent className="p-6 text-center">
             <h3 className="font-bold mb-2">Need Urgent Help?</h3>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-muted-foreground mb-4">
               For urgent safety concerns, email us directly at
             </p>
             <a href="mailto:support@afrinnect.com" className="text-purple-600 font-semibold hover:underline">
@@ -300,7 +299,7 @@ export default function Support() {
                     <SelectItem key={cat.value} value={cat.value}>
                       <div>
                         <div className="font-medium">{cat.label}</div>
-                        <div className="text-xs text-gray-500">{cat.description}</div>
+                        <div className="text-xs text-muted-foreground">{cat.description}</div>
                       </div>
                     </SelectItem>
                   ))}

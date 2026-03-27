@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { filterRecords, updateRecord } from '@/lib/supabase-helpers';
@@ -33,7 +32,7 @@ export default function SupportTickets({ tickets, currentUser }) {
     : tickets.filter(t => t.status === filterStatus);
 
   const priorityColors = {
-    low: 'bg-gray-100 text-gray-800',
+    low: 'bg-muted text-foreground',
     medium: 'bg-blue-100 text-blue-800',
     high: 'bg-orange-100 text-orange-800',
     urgent: 'bg-red-100 text-red-800'
@@ -44,7 +43,7 @@ export default function SupportTickets({ tickets, currentUser }) {
     in_progress: 'bg-blue-100 text-blue-800',
     waiting: 'bg-purple-100 text-purple-800',
     resolved: 'bg-green-100 text-green-800',
-    closed: 'bg-gray-100 text-gray-800'
+    closed: 'bg-muted text-foreground'
   };
 
   return (
@@ -57,7 +56,7 @@ export default function SupportTickets({ tickets, currentUser }) {
               <HelpCircle size={24} className="text-blue-600" />
               <div>
                 <p className="text-2xl font-bold">{tickets.length}</p>
-                <p className="text-sm text-gray-600">Total Tickets</p>
+                <p className="text-sm text-muted-foreground">Total Tickets</p>
               </div>
             </div>
           </CardContent>
@@ -70,7 +69,7 @@ export default function SupportTickets({ tickets, currentUser }) {
                 <p className="text-2xl font-bold">
                   {tickets.filter(t => t.status === 'open').length}
                 </p>
-                <p className="text-sm text-gray-600">Open</p>
+                <p className="text-sm text-muted-foreground">Open</p>
               </div>
             </div>
           </CardContent>
@@ -83,7 +82,7 @@ export default function SupportTickets({ tickets, currentUser }) {
                 <p className="text-2xl font-bold">
                   {tickets.filter(t => t.status === 'in_progress').length}
                 </p>
-                <p className="text-sm text-gray-600">In Progress</p>
+                <p className="text-sm text-muted-foreground">In Progress</p>
               </div>
             </div>
           </CardContent>
@@ -96,7 +95,7 @@ export default function SupportTickets({ tickets, currentUser }) {
                 <p className="text-2xl font-bold">
                   {tickets.filter(t => t.status === 'resolved' || t.status === 'closed').length}
                 </p>
-                <p className="text-sm text-gray-600">Resolved</p>
+                <p className="text-sm text-muted-foreground">Resolved</p>
               </div>
             </div>
           </CardContent>
@@ -130,7 +129,7 @@ export default function SupportTickets({ tickets, currentUser }) {
         <CardContent>
           <div className="space-y-3">
             {filteredTickets.map(ticket => (
-              <div key={ticket.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
+              <div key={ticket.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <Badge className={priorityColors[ticket.priority]}>{ticket.priority}</Badge>
@@ -138,8 +137,8 @@ export default function SupportTickets({ tickets, currentUser }) {
                     <Badge variant="outline">{ticket.category}</Badge>
                   </div>
                   <h3 className="font-semibold">{ticket.subject}</h3>
-                  <p className="text-sm text-gray-600">{ticket.user_email}</p>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-sm text-muted-foreground">{ticket.user_email}</p>
+                  <p className="text-xs text-muted-foreground mt-1">
                     Created {new Date(ticket.created_date).toLocaleDateString()}
                   </p>
                 </div>
@@ -149,7 +148,7 @@ export default function SupportTickets({ tickets, currentUser }) {
               </div>
             ))}
             {filteredTickets.length === 0 && (
-              <p className="text-center text-gray-500 py-8">No tickets found</p>
+              <p className="text-center text-muted-foreground py-8">No tickets found</p>
             )}
           </div>
         </CardContent>
@@ -171,10 +170,10 @@ export default function SupportTickets({ tickets, currentUser }) {
 
               <div>
                 <h3 className="font-semibold text-lg">{selectedTicket.subject}</h3>
-                <p className="text-sm text-gray-600">From: {selectedTicket.user_email}</p>
+                <p className="text-sm text-muted-foreground">From: {selectedTicket.user_email}</p>
               </div>
 
-              <div className="p-3 bg-gray-50 rounded-lg">
+              <div className="p-3 bg-muted rounded-lg">
                 <p className="text-sm">{selectedTicket.description}</p>
               </div>
 

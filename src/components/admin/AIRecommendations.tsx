@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -154,14 +153,14 @@ export default function AIRecommendations({
     <Card className={`${colorMap[recommendation.color]} border`}>
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
-          <div className="p-2 bg-white rounded-lg">
+          <div className="p-2 bg-card rounded-lg">
             <Sparkles size={20} className="text-purple-600" />
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               <Icon size={16} />
               <h4 className="font-semibold text-sm">{recommendation.label}</h4>
-              <Badge className="ml-auto bg-white/50">
+              <Badge className="ml-auto bg-card/50">
                 {recommendation.confidence}% Confidence
               </Badge>
             </div>

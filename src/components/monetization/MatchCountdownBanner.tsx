@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, MessageCircle, AlertTriangle, Heart } from 'lucide-react';
@@ -66,7 +65,7 @@ export default function MatchCountdownBanner({
           <motion.div
             animate={{ opacity: [0.3, 0.6, 0.3] }}
             transition={{ repeat: Infinity, duration: 1 }}
-            className="absolute inset-0 bg-white/20"
+            className="absolute inset-0 bg-card/20"
           />
         )}
 
@@ -75,12 +74,12 @@ export default function MatchCountdownBanner({
             <img
               src={partnerPhoto || '/default-avatar.png'}
               alt={partnerName}
-              className="w-14 h-14 rounded-full object-cover border-2 border-white/50"
+              className="w-14 h-14 rounded-full object-cover border-2 border-card/50"
             />
             <motion.div
               animate={isUrgent ? { scale: [1, 1.2, 1] } : {}}
               transition={{ repeat: Infinity, duration: 0.5 }}
-              className="absolute -top-1 -right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow"
+              className="absolute -top-1 -right-1 w-6 h-6 bg-card rounded-full flex items-center justify-center shadow"
             >
               {isUrgent ? (
                 <AlertTriangle size={14} className="text-red-500" />
@@ -114,8 +113,8 @@ export default function MatchCountdownBanner({
               size="sm"
               className={`flex-shrink-0 ${
                 isUrgent 
-                  ? 'bg-white text-red-600 hover:bg-white/90' 
-                  : 'bg-white/20 text-white hover:bg-white/30'
+                  ? 'bg-card text-red-600 hover:bg-card/90' 
+                  : 'bg-card/20 text-white hover:bg-card/30'
               }`}
             >
               <MessageCircle size={16} className="mr-1" />

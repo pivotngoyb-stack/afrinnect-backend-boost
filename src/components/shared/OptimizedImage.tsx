@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, memo } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -26,8 +25,8 @@ const OptimizedImage = memo(function OptimizedImage({
 
   if (hasError) {
     return (
-      <div className={cn('bg-gray-200 flex items-center justify-center', aspectRatio, className)}>
-        <span className="text-gray-400 text-sm">Image unavailable</span>
+      <div className={cn('bg-muted flex items-center justify-center', aspectRatio, className)}>
+        <span className="text-muted-foreground text-sm">Image unavailable</span>
       </div>
     );
   }
@@ -35,7 +34,7 @@ const OptimizedImage = memo(function OptimizedImage({
   return (
     <div className={cn('relative overflow-hidden', aspectRatio, className)}>
       {!isLoaded && (
-        <div className="absolute inset-0 bg-gray-200" />
+        <div className="absolute inset-0 bg-muted" />
       )}
       
       <img

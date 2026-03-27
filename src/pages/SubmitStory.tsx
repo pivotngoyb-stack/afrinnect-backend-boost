@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser, uploadFile } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
@@ -76,8 +75,8 @@ export default function SubmitStory() {
             <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center">
               <Heart size={40} className="text-pink-600" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h2>
-            <p className="text-gray-600 mb-6">
+            <h2 className="text-2xl font-bold text-foreground mb-2">Thank You!</h2>
+            <p className="text-muted-foreground mb-6">
               Your success story has been submitted and is under review. We'll notify you once it's approved!
             </p>
             <Link to={createPageUrl('SuccessStories')}>
@@ -93,7 +92,7 @@ export default function SubmitStory() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50/30 to-amber-50/20 pb-24">
-      <header className="bg-white/80 backdrop-blur-lg border-b sticky top-0 z-40">
+      <header className="bg-card/80 backdrop-blur-lg border-b sticky top-0 z-40">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link to={createPageUrl('SuccessStories')}>
             <Button variant="ghost" size="icon">
@@ -109,8 +108,8 @@ export default function SubmitStory() {
         <Card>
           <CardContent className="p-6 space-y-6">
             <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-2">Tell Your Love Story</h2>
-              <p className="text-gray-600 text-sm">
+              <h2 className="text-xl font-bold text-foreground mb-2">Tell Your Love Story</h2>
+              <p className="text-muted-foreground text-sm">
                 Inspire others by sharing how you found love on Afrinnect 💕
               </p>
             </div>
@@ -140,9 +139,9 @@ export default function SubmitStory() {
                       </Button>
                     </div>
                   ) : (
-                    <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
-                      <Upload size={40} className="text-gray-400 mb-2" />
-                      <p className="text-sm text-gray-500">Click to upload a photo</p>
+                    <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted">
+                      <Upload size={40} className="text-muted-foreground mb-2" />
+                      <p className="text-sm text-muted-foreground">Click to upload a photo</p>
                       <input
                         id="photo"
                         type="file"
@@ -166,7 +165,7 @@ export default function SubmitStory() {
                   rows={6}
                   className="mt-2"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   {storyText.length}/500 characters
                 </p>
               </div>
@@ -218,7 +217,7 @@ export default function SubmitStory() {
                 )}
               </Button>
 
-              <p className="text-xs text-gray-500 text-center">
+              <p className="text-xs text-muted-foreground text-center">
                 Stories are reviewed before being published to ensure quality and authenticity.
               </p>
             </div>

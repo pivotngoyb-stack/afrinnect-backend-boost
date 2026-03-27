@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -96,11 +95,11 @@ export default function PhotoPerformance() {
     : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 relative pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative pb-24">
       <AfricanPattern className="text-purple-600" opacity={0.03} />
 
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b border-gray-100">
+      <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-lg border-b border-border">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -110,8 +109,8 @@ export default function PhotoPerformance() {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Photo Performance</h1>
-                <p className="text-sm text-gray-500">See which photos work best</p>
+                <h1 className="text-xl font-bold text-foreground">Photo Performance</h1>
+                <p className="text-sm text-muted-foreground">See which photos work best</p>
               </div>
             </div>
           </div>
@@ -124,13 +123,13 @@ export default function PhotoPerformance() {
             <CardContent className="p-6 text-center">
               <TrendingUp size={48} className="mx-auto mb-4 text-purple-600" />
               <h3 className="text-lg font-bold mb-2">Not Enough Data Yet</h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-muted-foreground mb-4">
                 We need at least 20 profile views to show accurate photo performance. 
                 Keep swiping and your stats will appear here!
               </p>
               <div className="mt-4">
                 <Progress value={(engagements.length / 20) * 100} className="h-2" />
-                <p className="text-sm text-gray-500 mt-2">{engagements.length} / 20 views</p>
+                <p className="text-sm text-muted-foreground mt-2">{engagements.length} / 20 views</p>
               </div>
             </CardContent>
           </Card>
@@ -142,14 +141,14 @@ export default function PhotoPerformance() {
                 <CardContent className="p-4 text-center">
                   <Eye size={24} className="mx-auto mb-2 text-purple-600" />
                   <div className="text-2xl font-bold">{engagements.length}</div>
-                  <div className="text-sm text-gray-600">Total Views</div>
+                  <div className="text-sm text-muted-foreground">Total Views</div>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-4 text-center">
                   <Heart size={24} className="mx-auto mb-2 text-pink-600" />
                   <div className="text-2xl font-bold">{avgLikeRate.toFixed(1)}%</div>
-                  <div className="text-sm text-gray-600">Avg Like Rate</div>
+                  <div className="text-sm text-muted-foreground">Avg Like Rate</div>
                 </CardContent>
               </Card>
             </div>
@@ -174,15 +173,15 @@ export default function PhotoPerformance() {
                       <div className="grid grid-cols-3 gap-2 text-center">
                         <div>
                           <div className="text-2xl font-bold text-purple-600">{bestPhoto.likeRate.toFixed(0)}%</div>
-                          <div className="text-xs text-gray-600">Like Rate</div>
+                          <div className="text-xs text-muted-foreground">Like Rate</div>
                         </div>
                         <div>
                           <div className="text-2xl font-bold text-blue-600">{bestPhoto.views}</div>
-                          <div className="text-xs text-gray-600">Views</div>
+                          <div className="text-xs text-muted-foreground">Views</div>
                         </div>
                         <div>
                           <div className="text-2xl font-bold text-pink-600">{bestPhoto.likes}</div>
-                          <div className="text-xs text-gray-600">Likes</div>
+                          <div className="text-xs text-muted-foreground">Likes</div>
                         </div>
                       </div>
                     </div>
@@ -198,8 +197,8 @@ export default function PhotoPerformance() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {photoStats.map((photo, rank) => (
-                  <div key={photo.url} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-                    <div className="text-2xl font-bold text-gray-400">#{rank + 1}</div>
+                  <div key={photo.url} className="flex items-center gap-4 p-3 bg-muted rounded-lg">
+                    <div className="text-2xl font-bold text-muted-foreground">#{rank + 1}</div>
                     <img 
                       src={photo.url} 
                       alt={`Photo ${rank + 1}`} 
@@ -210,7 +209,7 @@ export default function PhotoPerformance() {
                         <Progress value={photo.likeRate} className="flex-1 h-2" />
                         <span className="text-sm font-semibold">{photo.likeRate.toFixed(0)}%</span>
                       </div>
-                      <div className="flex gap-4 text-xs text-gray-600">
+                      <div className="flex gap-4 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <Eye size={12} /> {photo.views}
                         </span>
@@ -233,7 +232,7 @@ export default function PhotoPerformance() {
             </Card>
 
             {/* Optimize Button */}
-            <div className="fixed bottom-20 left-0 right-0 p-4 bg-white border-t">
+            <div className="fixed bottom-20 left-0 right-0 p-4 bg-card border-t">
               <Button 
                 onClick={() => optimizeMutation.mutate()}
                 disabled={optimizeMutation.isPending}
@@ -242,7 +241,7 @@ export default function PhotoPerformance() {
                 <Sparkles size={20} className="mr-2" />
                 {optimizeMutation.isPending ? 'Optimizing...' : 'Optimize Photo Order'}
               </Button>
-              <p className="text-xs text-center text-gray-500 mt-2">
+              <p className="text-xs text-center text-muted-foreground mt-2">
                 Reorder photos by performance automatically
               </p>
             </div>

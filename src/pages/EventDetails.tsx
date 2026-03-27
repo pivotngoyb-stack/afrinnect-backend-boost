@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { supabase } from '@/integrations/supabase/client';
@@ -138,10 +137,10 @@ export default function EventDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 relative pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative pb-24">
       <AfricanPattern className="text-purple-600" opacity={0.03} />
 
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b">
+      <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-lg border-b">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link to={createPageUrl('Events')}>
             <Button variant="ghost" size="icon">
@@ -166,7 +165,7 @@ export default function EventDetails() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             <div className="absolute bottom-6 left-6 right-6">
               <div className="flex items-center gap-2 mb-2">
-                <Badge className="bg-white/20 backdrop-blur text-white">
+                <Badge className="bg-card/20 backdrop-blur text-white">
                   {formatEventType(event.event_type)}
                 </Badge>
                 {event.is_featured && <Badge className="bg-amber-500">Featured</Badge>}
@@ -179,7 +178,7 @@ export default function EventDetails() {
         {!event.image_url && (
           <div className="mb-6">
             <Badge className="bg-purple-100 text-purple-700 mb-2">{formatEventType(event.event_type)}</Badge>
-            <h1 className="text-3xl font-bold text-gray-900">{event.title}</h1>
+            <h1 className="text-3xl font-bold text-foreground">{event.title}</h1>
           </div>
         )}
 
@@ -191,10 +190,10 @@ export default function EventDetails() {
                 <div className="flex items-start gap-3">
                   <Calendar size={20} className="text-purple-600 mt-1" />
                   <div>
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-foreground">
                       {format(new Date(event.start_date), 'EEEE, MMMM d, yyyy')}
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-muted-foreground">
                       {format(new Date(event.start_date), 'h:mm a')}
                       {event.end_date && ` - ${format(new Date(event.end_date), 'h:mm a')}`}
                     </p>
@@ -205,7 +204,7 @@ export default function EventDetails() {
                   <div className="flex items-start gap-3">
                     <Globe size={20} className="text-purple-600 mt-1" />
                     <div>
-                      <p className="font-semibold text-gray-900">Virtual Event</p>
+                      <p className="font-semibold text-foreground">Virtual Event</p>
                       {event.virtual_link && isAttending && (
                         <a
                           href={event.virtual_link}
@@ -222,9 +221,9 @@ export default function EventDetails() {
                   <div className="flex items-start gap-3">
                     <MapPin size={20} className="text-purple-600 mt-1" />
                     <div>
-                      {event.location_name && <p className="font-semibold text-gray-900">{event.location_name}</p>}
-                      {event.location_address && <p className="text-sm text-gray-600">{event.location_address}</p>}
-                      <p className="text-sm text-gray-600">{event.city}{event.country ? `, ${event.country}` : ''}</p>
+                      {event.location_name && <p className="font-semibold text-foreground">{event.location_name}</p>}
+                      {event.location_address && <p className="text-sm text-muted-foreground">{event.location_address}</p>}
+                      <p className="text-sm text-muted-foreground">{event.city}{event.country ? `, ${event.country}` : ''}</p>
                     </div>
                   </div>
                 )}
@@ -234,11 +233,11 @@ export default function EventDetails() {
                 <div className="flex items-start gap-3">
                   <Users size={20} className="text-purple-600 mt-1" />
                   <div>
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-foreground">
                       {event.attendees?.length || 0} Attending
                     </p>
                     {event.max_attendees && (
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-muted-foreground">
                         {Math.max(0, event.max_attendees - (event.attendees?.length || 0))} spots left
                       </p>
                     )}
@@ -257,10 +256,10 @@ export default function EventDetails() {
                   <div className="flex items-start gap-3">
                     <DollarSign size={20} className="text-purple-600 mt-1" />
                     <div>
-                      <p className="font-semibold text-gray-900">
+                      <p className="font-semibold text-foreground">
                         ${event.price} {event.currency || 'USD'}
                       </p>
-                      <p className="text-sm text-gray-600">Ticket Price</p>
+                      <p className="text-sm text-muted-foreground">Ticket Price</p>
                     </div>
                   </div>
                 )}
@@ -272,8 +271,8 @@ export default function EventDetails() {
         {/* Description */}
         <Card className="mb-6">
           <CardContent className="p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">About This Event</h2>
-            <p className="text-gray-700 whitespace-pre-line">{event.description}</p>
+            <h2 className="text-xl font-bold text-foreground mb-4">About This Event</h2>
+            <p className="text-foreground whitespace-pre-line">{event.description}</p>
             
             {event.tags?.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-6">
@@ -287,7 +286,7 @@ export default function EventDetails() {
 
         {/* RSVP Button */}
         {!isPast && (
-          <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t p-4 safe-area-inset-bottom z-30">
+          <div className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-lg border-t p-4 safe-area-inset-bottom z-30">
             <div className="max-w-4xl mx-auto">
               {isAttending ? (
                 <div className="space-y-2">
@@ -347,15 +346,15 @@ export default function EventDetails() {
               <Link
                 key={profile.id}
                 to={createPageUrl(`Profile?id=${profile.id}`)}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition"
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted transition"
               >
                 <Avatar>
                   <AvatarImage src={profile.primary_photo || profile.photos?.[0]} />
                   <AvatarFallback>{profile.display_name?.[0]}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-medium text-gray-900">{profile.display_name}</p>
-                  <p className="text-sm text-gray-500">
+                  <p className="font-medium text-foreground">{profile.display_name}</p>
+                  <p className="text-sm text-muted-foreground">
                     {profile.current_city}{profile.current_country ? `, ${profile.current_country}` : ''}
                   </p>
                 </div>

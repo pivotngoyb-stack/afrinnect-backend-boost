@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -71,31 +70,31 @@ export default function UserManagement({
         <Card>
           <CardContent className="p-4">
             <p className="text-2xl font-bold">{stats?.totalUsers || 0}</p>
-            <p className="text-sm text-gray-600">Total Users</p>
+            <p className="text-sm text-muted-foreground">Total Users</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <p className="text-2xl font-bold text-green-600">{stats?.activeUsers || 0}</p>
-            <p className="text-sm text-gray-600">Active</p>
+            <p className="text-sm text-muted-foreground">Active</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <p className="text-2xl font-bold text-amber-600">{stats?.premiumUsers || 0}</p>
-            <p className="text-sm text-gray-600">Premium</p>
+            <p className="text-sm text-muted-foreground">Premium</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <p className="text-2xl font-bold text-blue-600">{stats?.verifiedUsers || 0}</p>
-            <p className="text-sm text-gray-600">Verified</p>
+            <p className="text-sm text-muted-foreground">Verified</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <p className="text-2xl font-bold text-red-600">{stats?.bannedUsers || 0}</p>
-            <p className="text-sm text-gray-600">Banned</p>
+            <p className="text-sm text-muted-foreground">Banned</p>
           </CardContent>
         </Card>
       </div>
@@ -117,7 +116,7 @@ export default function UserManagement({
         <CardContent>
           <div className="grid md:grid-cols-4 gap-4">
             <div className="relative">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search by name or ID..."
                 value={searchTerm}
@@ -203,16 +202,16 @@ export default function UserManagement({
               const userEmail = user?.email || profile.created_by || 'N/A';
               
               return (
-                <div key={profile.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition border">
+                <div key={profile.id} className="flex items-center justify-between p-4 bg-muted rounded-lg hover:bg-muted transition border">
                   <div className="flex items-center gap-4 flex-1">
                     <img
                       src={profile.primary_photo || profile.photos?.[0] || 'https://via.placeholder.com/50'}
                       alt={profile.display_name}
-                      className="w-14 h-14 rounded-full object-cover border-2 border-gray-200"
+                      className="w-14 h-14 rounded-full object-cover border-2 border-border"
                     />
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <p className="font-semibold text-gray-900">{profile.display_name}</p>
+                        <p className="font-semibold text-foreground">{profile.display_name}</p>
                         {profile.verification_status?.photo_verified && (
                           <CheckCircle size={16} className="text-green-500" />
                         )}
@@ -229,8 +228,8 @@ export default function UserManagement({
                           <Badge className="bg-red-600">Admin</Badge>
                         )}
                       </div>
-                      <p className="text-sm text-gray-600">{userEmail}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm text-muted-foreground">{userEmail}</p>
+                      <p className="text-xs text-muted-foreground">
                         {profile.current_city}, {profile.current_country} • {profile.gender} • Created {new Date(profile.created_date).toLocaleDateString()}
                       </p>
                     </div>
@@ -252,7 +251,7 @@ export default function UserManagement({
                     {/* Tier Selector */}
                     <div className="relative">
                       {processingAction?.id === profile.id && processingAction?.type === 'tier' && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-10">
+                        <div className="absolute inset-0 flex items-center justify-center bg-card/50 z-10">
                           <Loader2 size={16} className="animate-spin text-purple-600" />
                         </div>
                       )}

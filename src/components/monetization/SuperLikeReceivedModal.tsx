@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Crown, Lock, Heart, Sparkles, X } from 'lucide-react';
@@ -24,7 +23,7 @@ export default function SuperLikeReceivedModal({ isOpen, onClose, senderName, se
                   <img src={senderPhoto || '/default-avatar.png'} alt={senderName} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300">
-                    <div className="absolute inset-0 backdrop-blur-xl bg-white/30 flex items-center justify-center"><Lock size={32} className="text-primary-foreground drop-shadow-lg" /></div>
+                    <div className="absolute inset-0 backdrop-blur-xl bg-card/30 flex items-center justify-center"><Lock size={32} className="text-primary-foreground drop-shadow-lg" /></div>
                   </div>
                 )}
               </div>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -51,7 +50,7 @@ export default function RevenueAnalytics({ subscriptions, profiles }) {
                 <DollarSign size={24} className="text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Revenue</p>
+                <p className="text-sm text-muted-foreground">Total Revenue</p>
                 <p className="text-3xl font-bold text-green-700">${totalRevenue.toFixed(2)}</p>
               </div>
             </div>
@@ -65,7 +64,7 @@ export default function RevenueAnalytics({ subscriptions, profiles }) {
                 <TrendingUp size={24} className="text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">MRR</p>
+                <p className="text-sm text-muted-foreground">MRR</p>
                 <p className="text-3xl font-bold text-blue-700">${mrr.toFixed(2)}</p>
               </div>
             </div>
@@ -79,7 +78,7 @@ export default function RevenueAnalytics({ subscriptions, profiles }) {
                 <Users size={24} className="text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">ARPU / ARPPU</p>
+                <p className="text-sm text-muted-foreground">ARPU / ARPPU</p>
                 <p className="text-3xl font-bold text-purple-700">${arpu.toFixed(2)} / ${arppu.toFixed(2)}</p>
               </div>
             </div>
@@ -93,7 +92,7 @@ export default function RevenueAnalytics({ subscriptions, profiles }) {
                 <Crown size={24} className="text-white" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Conversion</p>
+                <p className="text-sm text-muted-foreground">Conversion</p>
                 <p className="text-3xl font-bold text-amber-700">{conversionRate.toFixed(1)}%</p>
               </div>
             </div>
@@ -114,7 +113,7 @@ export default function RevenueAnalytics({ subscriptions, profiles }) {
             <p className="text-3xl font-bold text-purple-600 mb-2">
               ${revenueByTier.premium.toFixed(2)}
             </p>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               {totalRevenue > 0 ? ((revenueByTier.premium / totalRevenue) * 100).toFixed(1) : 0}% of total revenue
             </p>
             <div className="mt-4 space-y-2">
@@ -145,7 +144,7 @@ export default function RevenueAnalytics({ subscriptions, profiles }) {
             <p className="text-3xl font-bold text-amber-600 mb-2">
               ${revenueByTier.elite.toFixed(2)}
             </p>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               {totalRevenue > 0 ? ((revenueByTier.elite / totalRevenue) * 100).toFixed(1) : 0}% of total revenue
             </p>
             <div className="mt-4 space-y-2">
@@ -176,7 +175,7 @@ export default function RevenueAnalytics({ subscriptions, profiles }) {
             <p className="text-3xl font-bold text-rose-600 mb-2">
               ${revenueByTier.vip.toFixed(2)}
             </p>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               {totalRevenue > 0 ? ((revenueByTier.vip / totalRevenue) * 100).toFixed(1) : 0}% of total revenue
             </p>
             <div className="mt-4 space-y-2">
@@ -208,13 +207,13 @@ export default function RevenueAnalytics({ subscriptions, profiles }) {
         <CardContent>
           <div className="space-y-2 max-h-[400px] overflow-y-auto">
             {activeSubscriptions.slice(0, 20).map(sub => (
-              <div key={sub.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
+              <div key={sub.id} className="flex items-center justify-between p-4 bg-muted rounded-lg border">
                 <div>
                   <p className="font-semibold capitalize">
                     {sub.plan_type.replace('_', ' ')}
                   </p>
-                  <p className="text-sm text-gray-600">User: {sub.user_profile_id}</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-sm text-muted-foreground">User: {sub.user_profile_id}</p>
+                  <p className="text-xs text-muted-foreground">
                     Started: {new Date(sub.start_date).toLocaleDateString()}
                   </p>
                 </div>
@@ -222,7 +221,7 @@ export default function RevenueAnalytics({ subscriptions, profiles }) {
                   <p className="text-lg font-bold text-green-600">
                     ${sub.amount_paid} {sub.currency}
                   </p>
-                  <Badge className={sub.auto_renew ? 'bg-green-600' : 'bg-gray-600'}>
+                  <Badge className={sub.auto_renew ? 'bg-green-600' : 'bg-secondary'}>
                     {sub.auto_renew ? 'Auto-renew' : 'Manual'}
                   </Badge>
                 </div>

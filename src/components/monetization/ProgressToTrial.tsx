@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gift, Check, Crown, Star, Heart, MessageCircle, User, ChevronDown, ChevronUp } from 'lucide-react';
@@ -34,7 +33,7 @@ export default function ProgressToTrial({
     >
       <button 
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full p-3 flex items-center gap-3 hover:bg-white/30 transition-colors"
+        className="w-full p-3 flex items-center gap-3 hover:bg-card/30 transition-colors"
       >
         <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-sm flex-shrink-0">
           <Gift size={18} className="text-white" />
@@ -46,7 +45,7 @@ export default function ProgressToTrial({
               {completedCount}/{totalRequired}
             </span>
           </div>
-          <Progress value={progress} className="h-1.5 bg-gray-200 mt-1.5" />
+          <Progress value={progress} className="h-1.5 bg-muted mt-1.5" />
         </div>
         {isExpanded ? (
           <ChevronUp size={18} className="text-muted-foreground" />
@@ -74,7 +73,7 @@ export default function ProgressToTrial({
                       className={`flex items-center gap-2 p-1.5 rounded-lg text-xs ${
                         action.completed 
                           ? 'bg-green-50 text-green-700' 
-                          : 'bg-white/50 text-muted-foreground'
+                          : 'bg-card/50 text-muted-foreground'
                       }`}
                     >
                       <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 ${

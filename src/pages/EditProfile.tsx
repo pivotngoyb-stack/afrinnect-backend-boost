@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser, invokeFunction, updateCurrentUser, uploadFile } from '@/lib/supabase-helpers';
 import { Link } from 'react-router-dom';
@@ -314,7 +313,7 @@ export default function EditProfile() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-amber-50">
         <div className="text-center">
           <Loader2 className="animate-spin mx-auto mb-4 text-purple-600" size={48} />
-          <p className="text-gray-600">{t('common.loading')}</p>
+          <p className="text-muted-foreground">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -323,11 +322,11 @@ export default function EditProfile() {
   const completion = calculateCompletion();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 relative pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative pb-24">
       <AfricanPattern className="text-purple-600" opacity={0.03} />
 
       {/* Sticky Header */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-sm">
+      <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border shadow-sm">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -337,8 +336,8 @@ export default function EditProfile() {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-lg font-bold text-gray-900">{t('editProfile.title')}</h1>
-                <p className="text-xs text-gray-500">{completion}% {t('profile.profileCompletion')}</p>
+                <h1 className="text-lg font-bold text-foreground">{t('editProfile.title')}</h1>
+                <p className="text-xs text-muted-foreground">{completion}% {t('profile.profileCompletion')}</p>
               </div>
             </div>
             <Dialog>
@@ -349,7 +348,7 @@ export default function EditProfile() {
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-md p-0 overflow-hidden bg-transparent border-0 shadow-none">
-                <div className="bg-white rounded-3xl overflow-hidden h-[600px] overflow-y-auto">
+                <div className="bg-card rounded-3xl overflow-hidden h-[600px] overflow-y-auto">
                   <ProfileCard 
                     profile={{ ...formData, id: 'preview', matchScore: 95 }} 
                     previewMode 
@@ -446,10 +445,10 @@ export default function EditProfile() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.15 }}
         >
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur">
+          <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
             <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-6">
               <div className="flex items-center gap-3 text-white">
-                <div className="p-3 bg-white/20 rounded-xl backdrop-blur">
+                <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Sparkles size={24} />
                 </div>
                 <div>
@@ -460,7 +459,7 @@ export default function EditProfile() {
             </div>
             <CardContent className="p-6 space-y-4">
               <div>
-                <Label className="text-sm font-semibold text-gray-700 mb-2">Your Opening Move Prompt</Label>
+                <Label className="text-sm font-semibold text-foreground mb-2">Your Opening Move Prompt</Label>
                 <Textarea
                   value={formData.opening_move || ''}
                   onChange={(e) => setFormData({ ...formData, opening_move: e.target.value })}
@@ -494,10 +493,10 @@ export default function EditProfile() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur">
+          <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
             <div className="bg-gradient-to-r from-green-500 to-teal-600 p-6">
               <div className="flex items-center gap-3 text-white">
-                <div className="p-3 bg-white/20 rounded-xl backdrop-blur">
+                <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Globe size={24} />
                 </div>
                 <div>
@@ -510,7 +509,7 @@ export default function EditProfile() {
             <CardContent className="p-6 space-y-5">
               <div className="grid md:grid-cols-2 gap-5">
                 <div>
-                  <Label className="text-sm font-semibold text-gray-700 mb-2">{t('onboarding.location.heritage')}</Label>
+                  <Label className="text-sm font-semibold text-foreground mb-2">{t('onboarding.location.heritage')}</Label>
                   <Select 
                     value={formData.country_of_origin || ''} 
                     onValueChange={(v) => setFormData({ ...formData, country_of_origin: v })}
@@ -527,7 +526,7 @@ export default function EditProfile() {
                 </div>
 
                 <div>
-                  <Label className="text-sm font-semibold text-gray-700 mb-2">{t('editProfile.tribe')}</Label>
+                  <Label className="text-sm font-semibold text-foreground mb-2">{t('editProfile.tribe')}</Label>
                   <Input
                     value={formData.tribe_ethnicity || ''}
                     onChange={(e) => setFormData({ ...formData, tribe_ethnicity: e.target.value })}
@@ -539,7 +538,7 @@ export default function EditProfile() {
 
               <div className="grid md:grid-cols-2 gap-5">
                 <div>
-                  <Label className="text-sm font-semibold text-gray-700 mb-2">{t('onboarding.location.currentCountry')}</Label>
+                  <Label className="text-sm font-semibold text-foreground mb-2">{t('onboarding.location.currentCountry')}</Label>
                   <Select 
                     value={formData.current_country || ''} 
                     onValueChange={(v) => setFormData({ ...formData, current_country: v })}
@@ -556,7 +555,7 @@ export default function EditProfile() {
                 </div>
 
                 <div>
-                  <Label className="text-sm font-semibold text-gray-700 mb-2">{t('onboarding.location.city')}</Label>
+                  <Label className="text-sm font-semibold text-foreground mb-2">{t('onboarding.location.city')}</Label>
                   <Input
                     value={formData.current_city || ''}
                     onChange={(e) => setFormData({ ...formData, current_city: e.target.value })}
@@ -575,10 +574,10 @@ export default function EditProfile() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
         >
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur">
+          <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
             <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
               <div className="flex items-center gap-3 text-white">
-                <div className="p-3 bg-white/20 rounded-xl backdrop-blur">
+                <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Briefcase size={24} />
                 </div>
                 <div>
@@ -591,7 +590,7 @@ export default function EditProfile() {
             <CardContent className="p-6 space-y-5">
               <div className="grid md:grid-cols-2 gap-5">
                 <div>
-                  <Label className="text-sm font-semibold text-gray-700 mb-2">{t('editProfile.profession')}</Label>
+                  <Label className="text-sm font-semibold text-foreground mb-2">{t('editProfile.profession')}</Label>
                   <Input
                     value={formData.profession || ''}
                     onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
@@ -601,7 +600,7 @@ export default function EditProfile() {
                 </div>
 
                 <div>
-                  <Label className="text-sm font-semibold text-gray-700 mb-2">{t('editProfile.education')}</Label>
+                  <Label className="text-sm font-semibold text-foreground mb-2">{t('editProfile.education')}</Label>
                   <Select 
                     value={formData.education || ''} 
                     onValueChange={(v) => setFormData({ ...formData, education: v })}
@@ -623,7 +622,7 @@ export default function EditProfile() {
 
               <div className="grid md:grid-cols-2 gap-5">
                 <div>
-                  <Label className="text-sm font-semibold text-gray-700 mb-2">{t('profile.religion')}</Label>
+                  <Label className="text-sm font-semibold text-foreground mb-2">{t('profile.religion')}</Label>
                   <Select 
                     value={formData.religion || ''} 
                     onValueChange={(v) => setFormData({ ...formData, religion: v })}
@@ -645,17 +644,17 @@ export default function EditProfile() {
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <Label className="text-sm font-semibold text-gray-700">{t('editProfile.height')}</Label>
-                    <div className="flex bg-gray-100 rounded-lg p-1">
+                    <Label className="text-sm font-semibold text-foreground">{t('editProfile.height')}</Label>
+                    <div className="flex bg-muted rounded-lg p-1">
                       <button
                         onClick={() => setMeasurementSystem('imperial')}
-                        className={`text-xs px-2 py-1 rounded-md transition ${measurementSystem === 'imperial' ? 'bg-white shadow text-purple-600 font-medium' : 'text-gray-500'}`}
+                        className={`text-xs px-2 py-1 rounded-md transition ${measurementSystem === 'imperial' ? 'bg-card shadow text-purple-600 font-medium' : 'text-muted-foreground'}`}
                       >
                         {t('editProfile.ft_in')}
                       </button>
                       <button
                         onClick={() => setMeasurementSystem('metric')}
-                        className={`text-xs px-2 py-1 rounded-md transition ${measurementSystem === 'metric' ? 'bg-white shadow text-purple-600 font-medium' : 'text-gray-500'}`}
+                        className={`text-xs px-2 py-1 rounded-md transition ${measurementSystem === 'metric' ? 'bg-card shadow text-purple-600 font-medium' : 'text-muted-foreground'}`}
                       >
                         {t('editProfile.cm_short')}
                       </button>
@@ -674,7 +673,7 @@ export default function EditProfile() {
                           max="8"
                           className="border-2 focus:border-purple-400 rounded-xl"
                         />
-                        <p className="text-xs text-gray-500 mt-1 text-center">{t('editProfile.feet')}</p>
+                        <p className="text-xs text-muted-foreground mt-1 text-center">{t('editProfile.feet')}</p>
                       </div>
                       <div className="flex-1">
                         <Input
@@ -686,7 +685,7 @@ export default function EditProfile() {
                           max="11"
                           className="border-2 focus:border-purple-400 rounded-xl"
                         />
-                        <p className="text-xs text-gray-500 mt-1 text-center">{t('editProfile.inches')}</p>
+                        <p className="text-xs text-muted-foreground mt-1 text-center">{t('editProfile.inches')}</p>
                       </div>
                     </div>
                   ) : (
@@ -700,7 +699,7 @@ export default function EditProfile() {
                         max="300"
                         className="border-2 focus:border-purple-400 rounded-xl"
                       />
-                      <p className="text-xs text-gray-500 mt-1 text-center">{t('editProfile.cm')}</p>
+                      <p className="text-xs text-muted-foreground mt-1 text-center">{t('editProfile.cm')}</p>
                     </div>
                   )}
                 </div>
@@ -715,10 +714,10 @@ export default function EditProfile() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.4 }}
         >
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur">
+          <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
             <div className="bg-gradient-to-r from-amber-500 to-orange-600 p-6">
               <div className="flex items-center gap-3 text-white">
-                <div className="p-3 bg-white/20 rounded-xl backdrop-blur">
+                <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Globe size={24} />
                 </div>
                 <div>
@@ -756,10 +755,10 @@ export default function EditProfile() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.5 }}
         >
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur">
+          <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
             <div className="bg-gradient-to-r from-purple-500 to-pink-600 p-6">
               <div className="flex items-center gap-3 text-white">
-                <div className="p-3 bg-white/20 rounded-xl backdrop-blur">
+                <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Award size={24} />
                 </div>
                 <div>
@@ -797,10 +796,10 @@ export default function EditProfile() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.6 }}
         >
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur">
+          <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
             <div className="bg-gradient-to-r from-teal-500 to-cyan-600 p-6">
               <div className="flex items-center gap-3 text-white">
-                <div className="p-3 bg-white/20 rounded-xl backdrop-blur">
+                <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Sparkles size={24} />
                 </div>
                 <div>

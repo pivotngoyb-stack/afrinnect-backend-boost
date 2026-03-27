@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { createRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -133,11 +132,11 @@ export default function Events() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 pb-24">
-      <header className="bg-white border-b sticky top-0 z-10">
+    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 pb-24">
+      <header className="bg-card border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold text-gray-900">Community Events</h1>
+            <h1 className="text-2xl font-bold text-foreground">Community Events</h1>
             <Link to={createPageUrl('CreateEvent')}>
               <Button className="bg-gradient-to-r from-purple-600 to-purple-700">
                 <Calendar size={18} className="mr-2" />
@@ -147,7 +146,7 @@ export default function Events() {
           </div>
           
           <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
             <Input
               placeholder="Search events..."
               value={searchQuery}
@@ -261,24 +260,24 @@ export default function Events() {
                             <CardTitle>{event.title}</CardTitle>
                           </CardHeader>
                           <CardContent>
-                            <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                            <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
                               {event.description}
                             </p>
 
-                            <div className="space-y-2 text-sm text-gray-700 mb-4">
+                            <div className="space-y-2 text-sm text-foreground mb-4">
                               <div className="flex items-center gap-2">
-                                <Clock size={16} className="text-gray-400" />
+                                <Clock size={16} className="text-muted-foreground" />
                                 <span>{format(new Date(event.start_date), 'PPp')}</span>
                               </div>
                               
                               {event.is_virtual ? (
                                 <div className="flex items-center gap-2">
-                                  <Globe size={16} className="text-gray-400" />
+                                  <Globe size={16} className="text-muted-foreground" />
                                   <span>Virtual Event</span>
                                 </div>
                               ) : (
                                 <div className="flex items-center gap-2">
-                                  <MapPin size={16} className="text-gray-400" />
+                                  <MapPin size={16} className="text-muted-foreground" />
                                   <span className="line-clamp-1">
                                     {event.location_name || event.city}{event.city && event.location_name ? `, ${event.city}` : ''}
                                   </span>
@@ -286,7 +285,7 @@ export default function Events() {
                               )}
 
                               <div className="flex items-center gap-2">
-                                <Users size={16} className="text-gray-400" />
+                                <Users size={16} className="text-muted-foreground" />
                                 <span>
                                   {event.attendees?.length || 0}
                                   {event.max_attendees ? ` / ${event.max_attendees}` : ''} attending
@@ -349,18 +348,18 @@ export default function Events() {
                             <Badge className="bg-green-100 text-green-700 hover:bg-green-200">Going</Badge>
                           </div>
                           
-                          <div className="space-y-2 text-sm text-gray-600">
+                          <div className="space-y-2 text-sm text-muted-foreground">
                             <div className="flex items-center gap-2">
                               <Clock size={16} className="text-purple-500" />
-                              <span className="font-medium text-gray-900">{format(new Date(event.start_date), 'PPp')}</span>
+                              <span className="font-medium text-foreground">{format(new Date(event.start_date), 'PPp')}</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <MapPin size={16} className="text-gray-400" />
+                              <MapPin size={16} className="text-muted-foreground" />
                               <span className="line-clamp-1">{event.location_name || (event.is_virtual ? 'Virtual' : event.city || 'TBD')}</span>
                             </div>
                           </div>
                           
-                          <Button className="w-full mt-4 bg-white text-purple-600 border border-purple-200 hover:bg-purple-50">
+                          <Button className="w-full mt-4 bg-card text-purple-600 border border-purple-200 hover:bg-purple-50">
                             View Details
                           </Button>
                         </CardContent>
@@ -379,7 +378,7 @@ export default function Events() {
           )}
 
           {!hasMore && events.length > 0 && activeTab === 'discover' && (
-            <p className="text-center text-gray-500 py-8">No more events</p>
+            <p className="text-center text-muted-foreground py-8">No more events</p>
           )}
         </main>
       </PullToRefresh>

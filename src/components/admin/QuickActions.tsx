@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { invokeFunction } from '@/lib/supabase-helpers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -107,11 +106,11 @@ export default function QuickActions() {
               >
                 <Icon size={24} className={`${action.color} mb-2`} />
                 <div className="text-left">
-                  <p className="font-semibold text-sm text-gray-900">{action.label}</p>
-                  <p className="text-xs text-gray-500">{action.description}</p>
+                  <p className="font-semibold text-sm text-foreground">{action.label}</p>
+                  <p className="text-xs text-muted-foreground">{action.description}</p>
                 </div>
                 {action.mutation.isPending && (
-                  <div className="mt-2 text-xs text-gray-500">Processing...</div>
+                  <div className="mt-2 text-xs text-muted-foreground">Processing...</div>
                 )}
               </Button>
             );

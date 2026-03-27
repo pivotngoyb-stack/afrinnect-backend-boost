@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { createRecord, filterRecords, invokeLLM, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -130,8 +129,8 @@ export default function FakeProfileScanner() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Fake Profile Detection</h2>
-          <p className="text-gray-600">AI-powered scam detection system</p>
+          <h2 className="text-2xl font-bold text-foreground">Fake Profile Detection</h2>
+          <p className="text-muted-foreground">AI-powered scam detection system</p>
         </div>
         <Button
           onClick={scanAllProfiles}
@@ -148,28 +147,28 @@ export default function FakeProfileScanner() {
           <CardContent className="p-4 text-center">
             <Shield size={32} className="mx-auto text-green-600 mb-2" />
             <p className="text-2xl font-bold">{detections.filter(d => d.status === 'safe').length}</p>
-            <p className="text-sm text-gray-600">Safe Profiles</p>
+            <p className="text-sm text-muted-foreground">Safe Profiles</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <AlertTriangle size={32} className="mx-auto text-yellow-600 mb-2" />
             <p className="text-2xl font-bold">{detections.filter(d => d.status === 'suspicious').length}</p>
-            <p className="text-sm text-gray-600">Suspicious</p>
+            <p className="text-sm text-muted-foreground">Suspicious</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <Ban size={32} className="mx-auto text-red-600 mb-2" />
             <p className="text-2xl font-bold">{detections.filter(d => d.status === 'flagged').length}</p>
-            <p className="text-sm text-gray-600">Flagged</p>
+            <p className="text-sm text-muted-foreground">Flagged</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <Ban size={32} className="mx-auto text-gray-600 mb-2" />
+            <Ban size={32} className="mx-auto text-muted-foreground mb-2" />
             <p className="text-2xl font-bold">{bannedProfiles.length}</p>
-            <p className="text-sm text-gray-600">Banned</p>
+            <p className="text-sm text-muted-foreground">Banned</p>
           </CardContent>
         </Card>
       </div>
@@ -180,7 +179,7 @@ export default function FakeProfileScanner() {
         </CardHeader>
         <CardContent>
           {suspiciousProfiles.length === 0 ? (
-            <p className="text-center text-gray-500 py-8">No suspicious profiles detected</p>
+            <p className="text-center text-muted-foreground py-8">No suspicious profiles detected</p>
           ) : (
             <div className="space-y-4">
               {suspiciousProfiles.map(detection => {
@@ -200,7 +199,7 @@ export default function FakeProfileScanner() {
                           Risk: {detection.risk_score}%
                         </Badge>
                       </div>
-                      <p className="text-sm text-gray-600 mb-2">
+                      <p className="text-sm text-muted-foreground mb-2">
                         {profile.current_city}, {profile.current_country}
                       </p>
                       <Progress value={detection.risk_score} className="h-2 mb-2" />

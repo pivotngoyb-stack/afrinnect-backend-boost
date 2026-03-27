@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
@@ -71,7 +70,7 @@ export default function MobilePhotoGallery({ photos, initialIndex = 0 }) {
               className="w-full h-full object-cover"
               loading="lazy"
             />
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+            <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/20 transition-colors flex items-center justify-center">
               <ZoomIn className="text-white opacity-0 group-hover:opacity-100 transition-opacity" size={24} />
             </div>
             {idx === 0 && (
@@ -90,7 +89,7 @@ export default function MobilePhotoGallery({ photos, initialIndex = 0 }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black flex flex-col"
+            className="fixed inset-0 z-50 bg-foreground flex flex-col"
             onClick={closeFullscreen}
           >
             <div className="flex items-center justify-between p-4 text-white z-10">
@@ -99,7 +98,7 @@ export default function MobilePhotoGallery({ photos, initialIndex = 0 }) {
               </span>
               <button
                 onClick={closeFullscreen}
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition"
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-card/10 hover:bg-card/20 transition"
               >
                 <X size={24} />
               </button>
@@ -129,7 +128,7 @@ export default function MobilePhotoGallery({ photos, initialIndex = 0 }) {
               {currentIndex > 0 && (
                 <button
                   onClick={goPrev}
-                  className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 items-center justify-center rounded-full bg-white/10 hover:bg-white/30 transition text-white"
+                  className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 items-center justify-center rounded-full bg-card/10 hover:bg-card/30 transition text-white"
                 >
                   <ChevronLeft size={28} />
                 </button>
@@ -137,7 +136,7 @@ export default function MobilePhotoGallery({ photos, initialIndex = 0 }) {
               {currentIndex < photos.length - 1 && (
                 <button
                   onClick={goNext}
-                  className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 items-center justify-center rounded-full bg-white/10 hover:bg-white/30 transition text-white"
+                  className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 items-center justify-center rounded-full bg-card/10 hover:bg-card/30 transition text-white"
                 >
                   <ChevronRight size={28} />
                 </button>
@@ -154,8 +153,8 @@ export default function MobilePhotoGallery({ photos, initialIndex = 0 }) {
                   }}
                   className={`w-2 h-2 rounded-full transition-all ${
                     idx === currentIndex
-                      ? 'bg-white w-6'
-                      : 'bg-white/40 hover:bg-white/60'
+                      ? 'bg-card w-6'
+                      : 'bg-card/40 hover:bg-card/60'
                   }`}
                 />
               ))}

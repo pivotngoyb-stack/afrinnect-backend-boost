@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { filterRecords, listRecords, updateRecord } from '@/lib/supabase-helpers';
@@ -90,37 +89,37 @@ export default function SubscriptionManagement() {
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-2xl font-bold">{stats.total}</p>
-            <p className="text-sm text-gray-600">Total Subs</p>
+            <p className="text-sm text-muted-foreground">Total Subs</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-2xl font-bold text-green-600">{stats.active}</p>
-            <p className="text-sm text-gray-600">Active</p>
+            <p className="text-sm text-muted-foreground">Active</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-2xl font-bold text-purple-600">{stats.premium}</p>
-            <p className="text-sm text-gray-600">Premium</p>
+            <p className="text-sm text-muted-foreground">Premium</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-2xl font-bold text-amber-600">{stats.elite}</p>
-            <p className="text-sm text-gray-600">Elite</p>
+            <p className="text-sm text-muted-foreground">Elite</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-2xl font-bold text-rose-600">{stats.vip}</p>
-            <p className="text-sm text-gray-600">VIP</p>
+            <p className="text-sm text-muted-foreground">VIP</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-2xl font-bold text-green-600">${stats.revenue.toFixed(0)}</p>
-            <p className="text-sm text-gray-600">Revenue</p>
+            <p className="text-sm text-muted-foreground">Revenue</p>
           </CardContent>
         </Card>
       </div>
@@ -133,7 +132,7 @@ export default function SubscriptionManagement() {
         <CardContent className="space-y-4">
           <div className="flex gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
               <Input
                 placeholder="Search by name or user ID..."
                 value={searchTerm}
@@ -157,7 +156,7 @@ export default function SubscriptionManagement() {
           {/* Subscriptions List */}
           <div className="space-y-2 max-h-[600px] overflow-y-auto">
             {filteredSubs.map(sub => (
-              <div key={sub.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <div key={sub.id} className="flex items-center gap-3 p-3 bg-muted rounded-lg">
                 <img
                   src={sub.profile?.primary_photo}
                   alt={sub.profile?.display_name}
@@ -168,7 +167,7 @@ export default function SubscriptionManagement() {
                     <h3 className="font-semibold">{sub.profile?.display_name}</h3>
                     {getTierIcon(sub.plan_type)}
                   </div>
-                  <div className="flex gap-2 mt-1 text-xs text-gray-600">
+                  <div className="flex gap-2 mt-1 text-xs text-muted-foreground">
                     <span>{sub.plan_type}</span>
                     <span>•</span>
                     <span className="flex items-center gap-1">
@@ -189,7 +188,7 @@ export default function SubscriptionManagement() {
                         ? 'bg-green-100 text-green-700'
                         : sub.status === 'cancelled'
                         ? 'bg-red-100 text-red-700'
-                        : 'bg-gray-100 text-gray-700'
+                        : 'bg-muted text-foreground'
                     }
                   >
                     {sub.status}

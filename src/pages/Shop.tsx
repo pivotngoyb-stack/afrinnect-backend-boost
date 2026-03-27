@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { motion } from 'framer-motion';
@@ -109,9 +108,9 @@ export default function Shop() {
   const isPremium = ['premium', 'elite', 'vip'].includes(tier);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 pb-24">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-lg border-b border-gray-100 sticky top-0 z-40">
+      <header className="bg-card/80 backdrop-blur-lg border-b border-border sticky top-0 z-40">
         <div className="max-w-lg mx-auto px-4 h-14 flex items-center justify-between">
           <Link to={createPageUrl('Home')}>
             <Button variant="ghost" size="icon">
@@ -166,21 +165,21 @@ export default function Shop() {
 
         {/* Current Balance */}
         {(myProfile?.purchased_boosts > 0 || myProfile?.purchased_super_likes > 0) && (
-          <div className="bg-white rounded-xl p-4 mb-6 border border-gray-100 shadow-sm">
-            <h3 className="text-sm font-semibold text-gray-500 uppercase mb-3">Your Balance</h3>
+          <div className="bg-card rounded-xl p-4 mb-6 border border-border shadow-sm">
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase mb-3">Your Balance</h3>
             <div className="flex gap-4">
               {myProfile?.purchased_boosts > 0 && (
                 <div className="flex items-center gap-2 bg-purple-50 rounded-lg px-3 py-2">
                   <Zap size={16} className="text-purple-600" />
                   <span className="font-bold text-purple-700">{myProfile.purchased_boosts}</span>
-                  <span className="text-sm text-gray-600">Boosts</span>
+                  <span className="text-sm text-muted-foreground">Boosts</span>
                 </div>
               )}
               {myProfile?.purchased_super_likes > 0 && (
                 <div className="flex items-center gap-2 bg-blue-50 rounded-lg px-3 py-2">
                   <Star size={16} className="text-blue-600 fill-blue-600" />
                   <span className="font-bold text-blue-700">{myProfile.purchased_super_likes}</span>
-                  <span className="text-sm text-gray-600">Super Likes</span>
+                  <span className="text-sm text-muted-foreground">Super Likes</span>
                 </div>
               )}
             </div>
@@ -214,16 +213,16 @@ export default function Shop() {
                     </div>
                     
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-gray-900">{item.name}</h3>
-                      <p className="text-sm text-gray-500 line-clamp-1">{item.description}</p>
+                      <h3 className="font-bold text-foreground">{item.name}</h3>
+                      <p className="text-sm text-muted-foreground line-clamp-1">{item.description}</p>
                     </div>
                     
                     <div className="text-right flex-shrink-0">
                       <div className="flex items-center gap-1 justify-end">
                         {item.originalPrice && (
-                          <span className="text-sm text-gray-400 line-through">${item.originalPrice}</span>
+                          <span className="text-sm text-muted-foreground line-through">${item.originalPrice}</span>
                         )}
-                        <span className="text-xl font-bold text-gray-900">${item.price}</span>
+                        <span className="text-xl font-bold text-foreground">${item.price}</span>
                       </div>
                       <Button
                         onClick={() => handlePurchase(item)}
@@ -241,7 +240,7 @@ export default function Shop() {
         </div>
 
         {/* Info */}
-        <div className="mt-8 text-center text-sm text-gray-500">
+        <div className="mt-8 text-center text-sm text-muted-foreground">
           <p>Purchases are one-time and don't expire.</p>
           <p className="mt-1">Questions? <Link to={createPageUrl('Support')} className="text-purple-600 hover:underline">Contact Support</Link></p>
         </div>

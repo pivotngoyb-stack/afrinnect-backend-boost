@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser, invokeFunction, invokeLLM } from '@/lib/supabase-helpers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -147,13 +146,13 @@ Return JSON array:
                         You and {matchProfile?.display_name} are going to <span className="font-bold">{existingPlan.venue_name}</span>.
                     </p>
                     
-                    <div className="bg-white/60 rounded-xl p-4 text-left space-y-2">
-                        <div className="flex items-center gap-2 text-gray-700">
+                    <div className="bg-card/60 rounded-xl p-4 text-left space-y-2">
+                        <div className="flex items-center gap-2 text-foreground">
                             <MapPin size={18} className="text-green-600" />
                             {existingPlan.venue_address}
                         </div>
                         {existingPlan.budget_estimate && (
-                            <div className="flex items-center gap-2 text-gray-700">
+                            <div className="flex items-center gap-2 text-foreground">
                                 <DollarSign size={18} className="text-green-600" />
                                 Est. budget: ${existingPlan.budget_estimate}
                             </div>
@@ -185,12 +184,12 @@ Return JSON array:
                     </div>
                     <div>
                         <h2 className="text-xl font-bold mb-2">{matchProfile?.display_name} proposed a date!</h2>
-                        <p className="text-gray-600">How does this sound to you?</p>
+                        <p className="text-muted-foreground">How does this sound to you?</p>
                     </div>
 
-                    <div className="bg-gray-50 rounded-xl p-6 text-left border">
+                    <div className="bg-muted rounded-xl p-6 text-left border">
                         <h3 className="font-bold text-lg mb-2">{existingPlan.venue_name}</h3>
-                        <p className="text-gray-600 text-sm mb-4">{existingPlan.venue_address}</p>
+                        <p className="text-muted-foreground text-sm mb-4">{existingPlan.venue_address}</p>
                         <div className="flex gap-2">
                             <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-medium capitalize">
                                 {existingPlan.date_type?.replace('_', ' ')}
@@ -232,7 +231,7 @@ Return JSON array:
                         <Clock size={32} className="text-amber-600" />
                     </div>
                     <h2 className="text-xl font-bold">Proposal Sent!</h2>
-                    <p className="text-gray-600">
+                    <p className="text-muted-foreground">
                         Waiting for {matchProfile?.display_name} to respond to your date idea at <span className="font-semibold">{existingPlan.venue_name}</span>.
                     </p>
                     <Button variant="outline" disabled className="w-full">
@@ -251,7 +250,7 @@ Return JSON array:
             <CardContent className="p-8">
               <Sparkles size={64} className="mx-auto text-purple-600 mb-4" />
               <h2 className="text-xl font-bold mb-2">AI Date Planner</h2>
-              <p className="text-gray-600 mb-6">
+              <p className="text-muted-foreground mb-6">
                 Get personalized date suggestions for your area
               </p>
               <Button 
@@ -270,16 +269,16 @@ Return JSON array:
                 <CardContent className="p-6">
                   <h3 className="font-bold text-lg mb-2">{suggestion.venue_name}</h3>
                   <div className="space-y-2 mb-4">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <MapPin size={16} />
                       {suggestion.venue_address}
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <DollarSign size={16} />
                       ~${suggestion.budget_estimate} per person
                     </div>
                   </div>
-                  <p className="text-sm text-gray-700 mb-4">{suggestion.description}</p>
+                  <p className="text-sm text-foreground mb-4">{suggestion.description}</p>
                   <Button 
                     onClick={() => suggestDateMutation.mutate(suggestion)}
                     className="w-full"
@@ -297,7 +296,7 @@ Return JSON array:
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 pb-24">
-      <header className="bg-white/80 backdrop-blur-lg border-b sticky top-0 z-40">
+      <header className="bg-card/80 backdrop-blur-lg border-b sticky top-0 z-40">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center gap-3">
           <Link to={createPageUrl(`Chat?matchId=${matchId}`)}>
             <Button variant="ghost" size="icon">

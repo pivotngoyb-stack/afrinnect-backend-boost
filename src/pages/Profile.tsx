@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser, listRecords, logout } from '@/lib/supabase-helpers';
 import { supabase } from '@/integrations/supabase/client';
@@ -210,7 +209,7 @@ export default function Profile() {
   const completion = calculateProfileCompletion();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 relative pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative pb-24">
       <AfricanPattern className="text-primary" opacity={0.03} />
 
       {/* Header */}
@@ -226,7 +225,7 @@ export default function Profile() {
             <img
               src={photo}
               alt={profile?.display_name}
-              className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl bg-white"
+              className="w-32 h-32 rounded-full object-cover border-4 border-card shadow-xl bg-card"
             />
             {isOwnProfile && (
               <Link to={createPageUrl('EditProfile')}>
@@ -241,9 +240,9 @@ export default function Profile() {
         {/* Header Actions */}
         {isOwnProfile && (
           <div className="absolute top-4 right-4 flex gap-2">
-            <NotificationBell className="bg-white/20 backdrop-blur text-white hover:bg-white/30" />
+            <NotificationBell className="bg-card/20 backdrop-blur text-white hover:bg-card/30" />
             <Link to={createPageUrl('Settings')}>
-              <Button variant="ghost" size="icon" className="bg-white/20 backdrop-blur text-white hover:bg-white/30">
+              <Button variant="ghost" size="icon" className="bg-card/20 backdrop-blur text-white hover:bg-card/30">
                 <Settings size={20} />
               </Button>
             </Link>
@@ -491,14 +490,14 @@ export default function Profile() {
               {profile?.languages?.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {profile.languages.map((lang, idx) => (
-                    <Badge key={idx} variant="secondary" className="bg-gray-100">
+                    <Badge key={idx} variant="secondary" className="bg-muted">
                       {lang}
                     </Badge>
                   ))}
                 </div>
               ) : (
                 <Link to={createPageUrl('EditProfile')}>
-                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-gray-200 text-muted-foreground hover:text-primary hover:border-purple-200">
+                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-border text-muted-foreground hover:text-primary hover:border-purple-200">
                     + Add Languages
                   </Button>
                 </Link>
@@ -527,7 +526,7 @@ export default function Profile() {
                 </div>
               ) : (
                 <Link to={createPageUrl('EditProfile')}>
-                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-gray-200 text-muted-foreground hover:text-amber-600 hover:border-amber-200">
+                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-border text-muted-foreground hover:text-amber-600 hover:border-amber-200">
                     + Add Interests
                   </Button>
                 </Link>
@@ -556,7 +555,7 @@ export default function Profile() {
                 </div>
               ) : (
                 <Link to={createPageUrl('EditProfile')}>
-                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-gray-200 text-muted-foreground hover:text-green-600 hover:border-green-200">
+                  <Button variant="ghost" size="sm" className="w-full border-2 border-dashed border-border text-muted-foreground hover:text-green-600 hover:border-green-200">
                     + Add Cultural Values
                   </Button>
                 </Link>

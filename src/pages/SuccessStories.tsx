@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -66,7 +65,7 @@ export default function SuccessStories() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50/30 to-amber-50/20 pb-24">
-      <header className="bg-white/80 backdrop-blur-lg border-b sticky top-0 z-40">
+      <header className="bg-card/80 backdrop-blur-lg border-b sticky top-0 z-40">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link to={createPageUrl('Home')}>
             <Button variant="ghost" size="icon">
@@ -141,12 +140,12 @@ export default function SuccessStories() {
                       )}
                     </div>
 
-                    <p className="text-gray-700 mb-4 leading-relaxed">
+                    <p className="text-foreground mb-4 leading-relaxed">
                       "{story.story_text}"
                     </p>
 
                     {story.match_date && (
-                      <p className="text-sm text-gray-500 mb-3">
+                      <p className="text-sm text-muted-foreground mb-3">
                         Matched on {format(new Date(story.match_date), 'MMMM yyyy')}
                       </p>
                     )}
@@ -172,8 +171,8 @@ export default function SuccessStories() {
 
         {stories.length === 0 && !isLoading && (
           <div className="text-center py-20">
-            <Heart size={64} className="mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-600">No success stories yet</p>
+            <Heart size={64} className="mx-auto text-muted-foreground mb-4" />
+            <p className="text-muted-foreground">No success stories yet</p>
           </div>
         )}
       </main>

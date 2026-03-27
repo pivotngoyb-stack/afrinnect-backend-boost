@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Camera, User, Heart, CheckCircle2, ChevronRight } from 'lucide-react';

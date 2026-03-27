@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Check, CheckCheck } from 'lucide-react';
 
@@ -10,14 +9,14 @@ export default function ReadReceipt({ message, isOwnMessage }) {
       {message.is_read ? (
         <>
           <CheckCheck size={14} className="text-blue-500" />
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-muted-foreground">
             Read {new Date(message.read_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </span>
         </>
       ) : (
         <>
-          <Check size={14} className="text-gray-400" />
-          <span className="text-xs text-gray-400">Sent</span>
+          <Check size={14} className="text-muted-foreground" />
+          <span className="text-xs text-muted-foreground">Sent</span>
         </>
       )}
     </div>

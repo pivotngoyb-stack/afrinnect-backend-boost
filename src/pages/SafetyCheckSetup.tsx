@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser, sendEmail } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
@@ -78,7 +77,7 @@ export default function SafetyCheckSetup() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 p-4">
       <div className="max-w-2xl mx-auto pt-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -88,8 +87,8 @@ export default function SafetyCheckSetup() {
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Shield size={32} className="text-green-600" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Safety Check</h1>
-            <p className="text-gray-600 mt-2">
+            <h1 className="text-2xl font-bold text-foreground">Safety Check</h1>
+            <p className="text-muted-foreground mt-2">
               Set up a safety check for your meetup with {otherProfile?.display_name}
             </p>
           </div>
@@ -151,7 +150,7 @@ export default function SafetyCheckSetup() {
                   onChange={(e) => setFormData({...formData, check_in_time: e.target.value})}
                   className="mt-2"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   We'll check in with you at this time
                 </p>
               </div>

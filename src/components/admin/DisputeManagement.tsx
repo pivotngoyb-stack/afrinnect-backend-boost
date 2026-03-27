@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -102,8 +101,8 @@ export default function DisputeManagement({ disputes, currentUser }) {
       <div className="grid md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-6">
-            <p className="text-3xl font-bold text-gray-900">{disputes.length}</p>
-            <p className="text-sm text-gray-600">Total Disputes</p>
+            <p className="text-3xl font-bold text-foreground">{disputes.length}</p>
+            <p className="text-sm text-muted-foreground">Total Disputes</p>
           </CardContent>
         </Card>
         <Card className="bg-yellow-50 border-yellow-300">
@@ -147,22 +146,22 @@ export default function DisputeManagement({ disputes, currentUser }) {
               >
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <p className="font-semibold text-gray-900">{dispute.user_email}</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="font-semibold text-foreground">{dispute.user_email}</p>
+                    <p className="text-sm text-muted-foreground">
                       Filed: {new Date(dispute.created_date).toLocaleString()}
                     </p>
                   </div>
                   {getStatusBadge(dispute.status)}
                 </div>
 
-                <div className="bg-white p-3 rounded border border-gray-200 mb-3">
-                  <p className="text-xs text-gray-500 mb-1">Original Ban Reason:</p>
-                  <p className="text-sm text-gray-900">{dispute.original_ban_reason}</p>
+                <div className="bg-card p-3 rounded border border-border mb-3">
+                  <p className="text-xs text-muted-foreground mb-1">Original Ban Reason:</p>
+                  <p className="text-sm text-foreground">{dispute.original_ban_reason}</p>
                 </div>
 
-                <div className="bg-white p-3 rounded border border-gray-200 mb-3">
-                  <p className="text-xs text-gray-500 mb-1">User's Appeal:</p>
-                  <p className="text-sm text-gray-900">{dispute.reason}</p>
+                <div className="bg-card p-3 rounded border border-border mb-3">
+                  <p className="text-xs text-muted-foreground mb-1">User's Appeal:</p>
+                  <p className="text-sm text-foreground">{dispute.reason}</p>
                 </div>
 
                 <TooltipProvider>
@@ -183,7 +182,7 @@ export default function DisputeManagement({ disputes, currentUser }) {
             ))}
 
             {pendingDisputes.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-muted-foreground">
                 <CheckCircle size={48} className="mx-auto mb-2 opacity-50" />
                 <p>No pending disputes to review</p>
               </div>
@@ -210,14 +209,14 @@ export default function DisputeManagement({ disputes, currentUser }) {
               >
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <p className="font-semibold text-gray-900">{dispute.user_email}</p>
-                    <p className="text-xs text-gray-600">
+                    <p className="font-semibold text-foreground">{dispute.user_email}</p>
+                    <p className="text-xs text-muted-foreground">
                       Resolved by {dispute.reviewed_by} on {new Date(dispute.reviewed_at).toLocaleDateString()}
                     </p>
                   </div>
                   {getStatusBadge(dispute.status)}
                 </div>
-                <p className="text-sm text-gray-700 mt-2">
+                <p className="text-sm text-foreground mt-2">
                   <span className="font-medium">Admin Response:</span> {dispute.admin_response}
                 </p>
               </div>
@@ -235,23 +234,23 @@ export default function DisputeManagement({ disputes, currentUser }) {
           
           {selectedDispute && (
             <div className="space-y-4">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-sm text-gray-600 mb-1">User:</p>
+              <div className="bg-muted p-4 rounded-lg">
+                <p className="text-sm text-muted-foreground mb-1">User:</p>
                 <p className="font-semibold">{selectedDispute.user_email}</p>
               </div>
 
               <div className="bg-red-50 p-4 rounded-lg border border-red-200">
-                <p className="text-sm text-gray-600 mb-1">Original Ban Reason:</p>
-                <p className="text-gray-900">{selectedDispute.original_ban_reason}</p>
+                <p className="text-sm text-muted-foreground mb-1">Original Ban Reason:</p>
+                <p className="text-foreground">{selectedDispute.original_ban_reason}</p>
               </div>
 
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <p className="text-sm text-gray-600 mb-1">User's Appeal:</p>
-                <p className="text-gray-900">{selectedDispute.reason}</p>
+                <p className="text-sm text-muted-foreground mb-1">User's Appeal:</p>
+                <p className="text-foreground">{selectedDispute.reason}</p>
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                <label className="text-sm font-medium text-foreground mb-2 block">
                   Your Response to User:
                 </label>
                 <Textarea

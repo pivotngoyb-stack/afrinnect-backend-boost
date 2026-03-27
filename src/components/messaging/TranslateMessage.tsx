@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { createRecord, filterRecords, invokeLLM, updateRecord } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
@@ -69,7 +68,7 @@ export default function TranslateMessage({ message, messageId }) {
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className="h-6 w-6">
-          <Languages size={14} className="text-gray-400" />
+          <Languages size={14} className="text-muted-foreground" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-64">
@@ -104,7 +103,7 @@ export default function TranslateMessage({ message, messageId }) {
               <p className="text-xs text-purple-600 font-medium mb-1">
                 {LANGUAGES.find(l => l.code === targetLang)?.name}:
               </p>
-              <p className="text-sm text-gray-700">{translatedText}</p>
+              <p className="text-sm text-foreground">{translatedText}</p>
             </div>
           )}
         </div>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Crown, Zap, Eye, MessageCircle } from 'lucide-react';
@@ -50,9 +49,9 @@ export function UpgradePromptBanner({ prompt, onDismiss }) {
     <AnimatePresence>
       <motion.div initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 100, opacity: 0 }} className="fixed bottom-20 left-4 right-4 md:left-auto md:right-6 md:max-w-sm z-40">
         <div className="bg-gradient-to-br from-primary to-amber-600 rounded-2xl p-5 shadow-2xl text-primary-foreground relative">
-          <button onClick={onDismiss} className="absolute top-3 right-3 p-1 hover:bg-white/20 rounded-full transition"><X size={18} /></button>
+          <button onClick={onDismiss} className="absolute top-3 right-3 p-1 hover:bg-card/20 rounded-full transition"><X size={18} /></button>
           <div className="flex items-start gap-3 mb-4">
-            <div className="p-2 bg-white/20 rounded-lg"><Icon size={24} /></div>
+            <div className="p-2 bg-card/20 rounded-lg"><Icon size={24} /></div>
             <div><h4 className="font-bold text-lg">{prompt.title}</h4><p className="text-sm opacity-90">{prompt.description}</p></div>
           </div>
           <Link to={createPageUrl('PricingPlans')}>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
@@ -47,7 +46,7 @@ export default function PasswordReset() {
 
   if (sent) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 flex items-center justify-center p-4">
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -56,11 +55,11 @@ export default function PasswordReset() {
           <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle size={48} className="text-green-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-3">Check Your Email</h2>
-          <p className="text-gray-600 mb-6">
+          <h2 className="text-2xl font-bold text-foreground mb-3">Check Your Email</h2>
+          <p className="text-muted-foreground mb-6">
             We've sent password reset instructions to <strong>{email}</strong>
           </p>
-          <p className="text-sm text-gray-500 mb-6">
+          <p className="text-sm text-muted-foreground mb-6">
             Didn't receive the email? Check your spam folder or try again.
           </p>
           <div className="space-y-3">
@@ -86,12 +85,12 @@ export default function PasswordReset() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Logo />
-          <h1 className="text-2xl font-bold text-gray-900 mt-4">Reset Your Password</h1>
-          <p className="text-gray-600 mt-2">Enter your email to receive reset instructions</p>
+          <h1 className="text-2xl font-bold text-foreground mt-4">Reset Your Password</h1>
+          <p className="text-muted-foreground mt-2">Enter your email to receive reset instructions</p>
         </div>
 
         <Card>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -191,11 +190,11 @@ export default function WhoLikesYou() {
         onClose={() => setMatchedProfile(null)} 
       />
       
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 pb-24">
-      <header className="bg-white border-b sticky top-0 z-10">
+      <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 pb-24">
+      <header className="bg-card border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">Activity</h1>
+            <h1 className="text-2xl font-bold text-foreground">Activity</h1>
             {myProfile?.subscription_tier && myProfile.subscription_tier !== 'free' ? (
               <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-white">
                 <Crown size={14} className="mr-1" />
@@ -239,9 +238,9 @@ export default function WhoLikesYou() {
               </div>
             ) : likes.length === 0 ? (
               <div className="text-center py-20">
-                <Heart size={64} className="mx-auto text-gray-400 mb-4" />
-                <p className="text-gray-600">No likes yet</p>
-                <p className="text-sm text-gray-500 mt-2">Keep swiping to find your match!</p>
+                <Heart size={64} className="mx-auto text-muted-foreground mb-4" />
+                <p className="text-muted-foreground">No likes yet</p>
+                <p className="text-sm text-muted-foreground mt-2">Keep swiping to find your match!</p>
               </div>
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -272,7 +271,7 @@ export default function WhoLikesYou() {
                             </Badge>
                           )}
                           {showBlurred && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                            <div className="absolute inset-0 flex items-center justify-center bg-foreground/40">
                               <div className="text-center">
                                 <Lock size={48} className="text-white mx-auto mb-2" />
                                 <p className="text-white font-semibold">Upgrade to See</p>
@@ -289,8 +288,8 @@ export default function WhoLikesYou() {
                         <CardContent className="p-4">
                           {showBlurred ? (
                             <>
-                              <div className="h-6 bg-gray-200 rounded mb-2 blur-sm"></div>
-                              <div className="h-4 bg-gray-200 rounded w-3/4 mb-3 blur-sm"></div>
+                              <div className="h-6 bg-muted rounded mb-2 blur-sm"></div>
+                              <div className="h-4 bg-muted rounded w-3/4 mb-3 blur-sm"></div>
                               <SocialProofPaywall className="mb-3" />
                               <Link to={createPageUrl('PricingPlans')}>
                                 <Button className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700">
@@ -301,14 +300,14 @@ export default function WhoLikesYou() {
                             </>
                           ) : (
                             <>
-                              <h3 className="text-lg font-bold text-gray-900">
+                              <h3 className="text-lg font-bold text-foreground">
                                 {profile.display_name}{age && `, ${age}`}
                               </h3>
-                              <p className="text-sm text-gray-600 mb-2">
+                              <p className="text-sm text-muted-foreground mb-2">
                                 {profile.current_city}, {profile.current_country}
                               </p>
                               {profile.bio && (
-                                <p className="text-sm text-gray-700 mb-4 line-clamp-2">
+                                <p className="text-sm text-foreground mb-4 line-clamp-2">
                                   {profile.bio}
                                 </p>
                               )}
@@ -347,9 +346,9 @@ export default function WhoLikesYou() {
               </div>
             ) : views.length === 0 ? (
               <div className="text-center py-20">
-                <Eye size={64} className="mx-auto text-gray-400 mb-4" />
-                <p className="text-gray-600">No profile views yet</p>
-                <p className="text-sm text-gray-500 mt-2">Optimize your profile to get more attention!</p>
+                <Eye size={64} className="mx-auto text-muted-foreground mb-4" />
+                <p className="text-muted-foreground">No profile views yet</p>
+                <p className="text-sm text-muted-foreground mt-2">Optimize your profile to get more attention!</p>
               </div>
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -370,7 +369,7 @@ export default function WhoLikesYou() {
                             className={`w-full h-64 object-cover ${showBlurred ? 'blur-2xl' : ''}`}
                           />
                           {showBlurred && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                            <div className="absolute inset-0 flex items-center justify-center bg-foreground/40">
                               <div className="text-center">
                                 <Lock size={48} className="text-white mx-auto mb-2" />
                                 <p className="text-white font-semibold">Upgrade to See</p>
@@ -381,8 +380,8 @@ export default function WhoLikesYou() {
                         <CardContent className="p-4">
                           {showBlurred ? (
                             <>
-                              <div className="h-6 bg-gray-200 rounded mb-2 blur-sm"></div>
-                              <div className="h-4 bg-gray-200 rounded w-3/4 mb-4 blur-sm"></div>
+                              <div className="h-6 bg-muted rounded mb-2 blur-sm"></div>
+                              <div className="h-4 bg-muted rounded w-3/4 mb-4 blur-sm"></div>
                               <Link to={createPageUrl('PricingPlans')}>
                                 <Button className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700">
                                   <Crown size={18} className="mr-2" />
@@ -392,10 +391,10 @@ export default function WhoLikesYou() {
                             </>
                           ) : (
                             <>
-                              <h3 className="text-lg font-bold text-gray-900">
+                              <h3 className="text-lg font-bold text-foreground">
                                 {profile.display_name}{age && `, ${age}`}
                               </h3>
-                              <p className="text-sm text-gray-600 mb-2">
+                              <p className="text-sm text-muted-foreground mb-2">
                                 {profile.current_city}, {profile.current_country}
                               </p>
                               <div className="flex gap-2">

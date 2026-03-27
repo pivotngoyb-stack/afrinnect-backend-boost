@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Link, useNavigate } from 'react-router-dom';
@@ -81,7 +80,7 @@ export default function LegalAcceptance() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-amber-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent" />
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-card border-t-transparent" />
       </div>
     );
   }
@@ -99,10 +98,10 @@ export default function LegalAcceptance() {
           <p className="text-white/80">Before we begin, please review and accept our policies</p>
         </div>
 
-        <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+        <Card className="bg-card/10 backdrop-blur-lg border-card/20">
           <CardContent className="p-8 space-y-6">
             <div className="space-y-4">
-              <div className="flex items-start gap-4 p-4 bg-white/10 rounded-xl">
+              <div className="flex items-start gap-4 p-4 bg-card/10 rounded-xl">
                 <Checkbox
                   id="terms"
                   checked={accepted.terms}
@@ -127,7 +126,7 @@ export default function LegalAcceptance() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-4 p-4 bg-white/10 rounded-xl">
+              <div className="flex items-start gap-4 p-4 bg-card/10 rounded-xl">
                 <Checkbox
                   id="privacy"
                   checked={accepted.privacy}
@@ -152,7 +151,7 @@ export default function LegalAcceptance() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-4 p-4 bg-white/10 rounded-xl">
+              <div className="flex items-start gap-4 p-4 bg-card/10 rounded-xl">
                 <Checkbox
                   id="guidelines"
                   checked={accepted.guidelines}

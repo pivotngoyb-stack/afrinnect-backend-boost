@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { Button } from "@/components/ui/button";
@@ -59,11 +58,11 @@ export default function ReferralProgram() {
           <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Gift className="w-8 h-8 text-purple-600" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Invite Friends</h1>
-          <p className="text-gray-600">Earn 3 days of Premium for every friend who joins!</p>
+          <h1 className="text-3xl font-bold text-foreground">Invite Friends</h1>
+          <p className="text-muted-foreground">Earn 3 days of Premium for every friend who joins!</p>
         </header>
 
-        <Card className="border-purple-200 shadow-lg bg-white/80 backdrop-blur-sm">
+        <Card className="border-purple-200 shadow-lg bg-card/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-lg">Your Unique Link</CardTitle>
             <CardDescription>Share this link to start earning</CardDescription>
@@ -73,7 +72,7 @@ export default function ReferralProgram() {
               <Input 
                 value={referralLink} 
                 readOnly 
-                className="bg-gray-50 border-gray-200"
+                className="bg-muted border-border"
               />
               <Button onClick={handleCopy} variant="outline" size="icon">
                 <Copy className="w-4 h-4" />
@@ -92,14 +91,14 @@ export default function ReferralProgram() {
             <CardContent className="p-4 flex flex-col items-center justify-center text-center">
               <Users className="w-6 h-6 text-blue-500 mb-2" />
               <div className="text-2xl font-bold">{stats.total}</div>
-              <div className="text-xs text-gray-500">Friends Invited</div>
+              <div className="text-xs text-muted-foreground">Friends Invited</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4 flex flex-col items-center justify-center text-center">
               <Star className="w-6 h-6 text-amber-500 mb-2" />
               <div className="text-2xl font-bold">{stats.completed}</div>
-              <div className="text-xs text-gray-500">Rewards Earned</div>
+              <div className="text-xs text-muted-foreground">Rewards Earned</div>
             </CardContent>
           </Card>
         </div>

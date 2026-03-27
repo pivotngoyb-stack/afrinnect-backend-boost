@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { invokeFunction } from '@/lib/supabase-helpers';
 import { useQuery } from '@tanstack/react-query';
@@ -78,10 +77,10 @@ export default function InvestorReport() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-muted">
         <Loader2 className="h-12 w-12 text-purple-600 animate-spin mb-4" />
-        <h2 className="text-xl font-semibold text-gray-700">Generating Comprehensive Report...</h2>
-        <p className="text-gray-500">Aggregating data and generating AI insights</p>
+        <h2 className="text-xl font-semibold text-foreground">Generating Comprehensive Report...</h2>
+        <p className="text-muted-foreground">Aggregating data and generating AI insights</p>
       </div>
     );
   }
@@ -94,7 +93,7 @@ export default function InvestorReport() {
   const COLORS = ['#7c3aed', '#db2777', '#f59e0b', '#10b981', '#3b82f6'];
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8 print:p-0 print:bg-white font-sans">
+    <div className="min-h-screen bg-muted p-8 print:p-0 print:bg-card font-sans">
       
       {/* Controls */}
       <div className="max-w-[210mm] mx-auto mb-8 flex justify-between items-center print:hidden">
@@ -111,27 +110,27 @@ export default function InvestorReport() {
       </div>
 
       {/* Report Container (A4 Width) */}
-      <div id="report-content" className="max-w-[210mm] mx-auto bg-white shadow-xl print:shadow-none p-12 rounded-xl text-gray-900 min-h-[297mm]">
+      <div id="report-content" className="max-w-[210mm] mx-auto bg-card shadow-xl print:shadow-none p-12 rounded-xl text-foreground min-h-[297mm]">
         
         {/* 1. Header */}
-        <header className="border-b-2 border-gray-100 pb-8 mb-10 flex justify-between items-end">
+        <header className="border-b-2 border-border pb-8 mb-10 flex justify-between items-end">
           <div>
             <Logo size="large" showText />
-            <h1 className="text-4xl font-bold mt-4 text-gray-900">Investor Report</h1>
-            <p className="text-gray-500 mt-2 font-medium">{stats.executive.period} • {date}</p>
+            <h1 className="text-4xl font-bold mt-4 text-foreground">Investor Report</h1>
+            <p className="text-muted-foreground mt-2 font-medium">{stats.executive.period} • {date}</p>
           </div>
           <div className="text-right">
             <Badge className="bg-green-100 text-green-800 hover:bg-green-100 text-sm px-3 py-1 mb-2">
               {stats.executive.stage}
             </Badge>
-            <div className="text-sm text-gray-500">Confidential</div>
+            <div className="text-sm text-muted-foreground">Confidential</div>
           </div>
         </header>
 
         {/* 1. Executive Summary */}
         <section className="mb-10">
-          <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-l-4 border-purple-600 pl-3">Executive Summary</h2>
-          <div className="bg-gray-50 p-6 rounded-xl border border-gray-100 text-lg leading-relaxed text-gray-800">
+          <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 border-l-4 border-purple-600 pl-3">Executive Summary</h2>
+          <div className="bg-muted p-6 rounded-xl border border-border text-lg leading-relaxed text-foreground">
             {aiContent.summary}
           </div>
           
@@ -164,19 +163,19 @@ export default function InvestorReport() {
           
           {/* 2. User Growth */}
           <section>
-            <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-l-4 border-purple-600 pl-3">User Growth & Acquisition</h2>
+            <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 border-l-4 border-purple-600 pl-3">User Growth & Acquisition</h2>
             <div className="space-y-4">
-              <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                <span className="text-gray-600">Daily Signups (Avg)</span>
+              <div className="flex justify-between items-center py-2 border-b border-border">
+                <span className="text-muted-foreground">Daily Signups (Avg)</span>
                 <span className="font-bold">{stats.growth.dailySignups}</span>
               </div>
-              <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                <span className="text-gray-600">Weekly Signups (Avg)</span>
+              <div className="flex justify-between items-center py-2 border-b border-border">
+                <span className="text-muted-foreground">Weekly Signups (Avg)</span>
                 <span className="font-bold">{stats.growth.weeklySignups}</span>
               </div>
               
               <div className="mt-4">
-                <h3 className="text-xs font-semibold text-gray-500 mb-2">Acquisition Sources</h3>
+                <h3 className="text-xs font-semibold text-muted-foreground mb-2">Acquisition Sources</h3>
                 <div className="h-48">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={stats.growth.sources} layout="vertical">
@@ -193,7 +192,7 @@ export default function InvestorReport() {
 
           {/* 3. Demographics */}
           <section>
-            <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-l-4 border-purple-600 pl-3">Demographics</h2>
+            <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 border-l-4 border-purple-600 pl-3">Demographics</h2>
             <div className="flex gap-4 mb-6">
               <div className="w-1/2 h-32">
                 <ResponsiveContainer width="100%" height="100%">
@@ -206,7 +205,7 @@ export default function InvestorReport() {
                     <Tooltip />
                   </PieChart>
                 </ResponsiveContainer>
-                <div className="text-center text-xs text-gray-500 mt-1">Gender Distribution</div>
+                <div className="text-center text-xs text-muted-foreground mt-1">Gender Distribution</div>
               </div>
               <div className="w-1/2 h-32">
                 <ResponsiveContainer width="100%" height="100%">
@@ -219,15 +218,15 @@ export default function InvestorReport() {
                     <Tooltip />
                   </PieChart>
                 </ResponsiveContainer>
-                <div className="text-center text-xs text-gray-500 mt-1">Age Groups</div>
+                <div className="text-center text-xs text-muted-foreground mt-1">Age Groups</div>
               </div>
             </div>
             <div>
-              <h3 className="text-xs font-semibold text-gray-500 mb-2">Top Countries</h3>
+              <h3 className="text-xs font-semibold text-muted-foreground mb-2">Top Countries</h3>
               <div className="space-y-2">
                 {stats.demographics.topCountries.map((c, i) => (
                   <div key={i} className="flex justify-between text-sm">
-                    <span className="flex items-center gap-2"><Globe size={12} className="text-gray-400" /> {c.name}</span>
+                    <span className="flex items-center gap-2"><Globe size={12} className="text-muted-foreground" /> {c.name}</span>
                     <span className="font-medium">{c.percent}%</span>
                   </div>
                 ))}
@@ -238,61 +237,61 @@ export default function InvestorReport() {
 
         {/* 4. Engagement */}
         <section className="mb-10">
-          <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-l-4 border-purple-600 pl-3">Engagement Metrics</h2>
+          <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 border-l-4 border-purple-600 pl-3">Engagement Metrics</h2>
           <div className="grid grid-cols-4 gap-4">
-            <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-              <div className="text-xs text-gray-500 uppercase mb-1">DAU / MAU</div>
-              <div className="text-xl font-bold text-gray-900">{stats.engagement.dau} <span className="text-gray-400 text-sm">/ {stats.engagement.mau}</span></div>
+            <div className="bg-muted p-4 rounded-lg border border-border">
+              <div className="text-xs text-muted-foreground uppercase mb-1">DAU / MAU</div>
+              <div className="text-xl font-bold text-foreground">{stats.engagement.dau} <span className="text-muted-foreground text-sm">/ {stats.engagement.mau}</span></div>
             </div>
-            <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-              <div className="text-xs text-gray-500 uppercase mb-1">Avg Session</div>
-              <div className="text-xl font-bold text-gray-900">{stats.engagement.avgSessionDuration}</div>
+            <div className="bg-muted p-4 rounded-lg border border-border">
+              <div className="text-xs text-muted-foreground uppercase mb-1">Avg Session</div>
+              <div className="text-xl font-bold text-foreground">{stats.engagement.avgSessionDuration}</div>
             </div>
-            <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-              <div className="text-xs text-gray-500 uppercase mb-1">Matches/User</div>
-              <div className="text-xl font-bold text-gray-900">{stats.engagement.matchesPerUser}</div>
+            <div className="bg-muted p-4 rounded-lg border border-border">
+              <div className="text-xs text-muted-foreground uppercase mb-1">Matches/User</div>
+              <div className="text-xl font-bold text-foreground">{stats.engagement.matchesPerUser}</div>
             </div>
-            <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-              <div className="text-xs text-gray-500 uppercase mb-1">Profile Complete</div>
-              <div className="text-xl font-bold text-gray-900">{stats.engagement.profileCompletionRate}%</div>
+            <div className="bg-muted p-4 rounded-lg border border-border">
+              <div className="text-xs text-muted-foreground uppercase mb-1">Profile Complete</div>
+              <div className="text-xl font-bold text-foreground">{stats.engagement.profileCompletionRate}%</div>
             </div>
           </div>
         </section>
 
         {/* 5. Trust & Safety */}
         <section className="mb-10 bg-red-50/50 p-6 rounded-xl border border-red-100">
-          <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-l-4 border-red-500 pl-3">Trust, Safety & Moderation</h2>
+          <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 border-l-4 border-red-500 pl-3">Trust, Safety & Moderation</h2>
           <div className="grid grid-cols-3 gap-8">
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-gray-600">Verified Profiles</span>
+                <span className="text-muted-foreground">Verified Profiles</span>
                 <span className="font-bold text-green-600">{stats.trustSafety.verifiedUsers}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Scams Blocked</span>
+                <span className="text-muted-foreground">Scams Blocked</span>
                 <span className="font-bold text-red-600">{stats.trustSafety.scamAccounts}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Banned Accounts</span>
+                <span className="text-muted-foreground">Banned Accounts</span>
                 <span className="font-bold">{stats.trustSafety.bannedUsers}</span>
               </div>
             </div>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-gray-600">Avg Resolution</span>
+                <span className="text-muted-foreground">Avg Resolution</span>
                 <span className="font-bold">{stats.trustSafety.avgResolutionTime}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Detection Rate</span>
+                <span className="text-muted-foreground">Detection Rate</span>
                 <span className="font-bold">{stats.trustSafety.scamDetectionRate}</span>
               </div>
             </div>
             <div>
-              <h3 className="text-xs font-semibold text-gray-500 mb-2">Systems Active</h3>
+              <h3 className="text-xs font-semibold text-muted-foreground mb-2">Systems Active</h3>
               <div className="flex flex-wrap gap-2">
-                <Badge className="bg-white border-green-200 text-green-700">AI Scam Detection</Badge>
-                <Badge className="bg-white border-green-200 text-green-700">Video Verification</Badge>
-                <Badge className="bg-white border-green-200 text-green-700">Auto-Moderation</Badge>
+                <Badge className="bg-card border-green-200 text-green-700">AI Scam Detection</Badge>
+                <Badge className="bg-card border-green-200 text-green-700">Video Verification</Badge>
+                <Badge className="bg-card border-green-200 text-green-700">Auto-Moderation</Badge>
               </div>
             </div>
           </div>
@@ -302,7 +301,7 @@ export default function InvestorReport() {
           
           {/* 6. Product Status */}
           <section>
-            <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-l-4 border-purple-600 pl-3">Product Development</h2>
+            <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 border-l-4 border-purple-600 pl-3">Product Development</h2>
             <div className="space-y-4">
               <div>
                 <div className="text-xs font-semibold text-green-600 uppercase mb-2">Live Features</div>
@@ -325,34 +324,34 @@ export default function InvestorReport() {
 
           {/* 7. Technical Health */}
           <section>
-            <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-l-4 border-purple-600 pl-3">System Health</h2>
+            <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 border-l-4 border-purple-600 pl-3">System Health</h2>
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 flex items-center gap-3">
+              <div className="bg-muted p-3 rounded-lg border border-border flex items-center gap-3">
                 <Server className="text-green-500" size={20} />
                 <div>
-                  <div className="text-xs text-gray-500">Uptime</div>
+                  <div className="text-xs text-muted-foreground">Uptime</div>
                   <div className="font-bold">{stats.tech.uptime}</div>
                 </div>
               </div>
-              <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 flex items-center gap-3">
+              <div className="bg-muted p-3 rounded-lg border border-border flex items-center gap-3">
                 <Activity className="text-blue-500" size={20} />
                 <div>
-                  <div className="text-xs text-gray-500">Avg Response</div>
+                  <div className="text-xs text-muted-foreground">Avg Response</div>
                   <div className="font-bold">{stats.tech.avgResponseTime}</div>
                 </div>
               </div>
-              <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 flex items-center gap-3">
+              <div className="bg-muted p-3 rounded-lg border border-border flex items-center gap-3">
                 <Shield className="text-purple-500" size={20} />
                 <div>
-                  <div className="text-xs text-gray-500">Security</div>
+                  <div className="text-xs text-muted-foreground">Security</div>
                   <div className="font-bold text-green-600">{stats.tech.securityStatus}</div>
                 </div>
               </div>
-              <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 flex items-center gap-3">
+              <div className="bg-muted p-3 rounded-lg border border-border flex items-center gap-3">
                 <Database className="text-amber-500" size={20} />
                 <div>
-                  <div className="text-xs text-gray-500">Data Ownership</div>
-                  <div className="font-bold text-gray-900">{stats.tech.dataOwnership}</div>
+                  <div className="text-xs text-muted-foreground">Data Ownership</div>
+                  <div className="font-bold text-foreground">{stats.tech.dataOwnership}</div>
                 </div>
               </div>
             </div>
@@ -361,8 +360,8 @@ export default function InvestorReport() {
 
         {/* 8, 9, 10. Financials & Strategy */}
         <div className="grid grid-cols-3 gap-6 mb-8">
-          <section className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <section className="bg-muted p-5 rounded-xl border border-border">
+            <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
               <DollarSign className="text-green-600" size={18} /> Monetization
             </h3>
             <div className="space-y-2 text-sm">
@@ -372,8 +371,8 @@ export default function InvestorReport() {
             </div>
           </section>
 
-          <section className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <section className="bg-muted p-5 rounded-xl border border-border">
+            <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
               <Users className="text-blue-600" size={18} /> Community
             </h3>
             <div className="space-y-2 text-sm">
@@ -396,10 +395,10 @@ export default function InvestorReport() {
 
         {/* AI Insights List */}
         <section className="bg-amber-50/50 p-6 rounded-xl border border-amber-100 mb-8">
-          <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-l-4 border-amber-500 pl-3">Key Strategic Insights</h2>
+          <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4 border-l-4 border-amber-500 pl-3">Key Strategic Insights</h2>
           <ul className="space-y-3">
             {aiContent.insights.map((insight, i) => (
-              <li key={i} className="flex items-start gap-3 text-gray-800">
+              <li key={i} className="flex items-start gap-3 text-foreground">
                 <CheckCircle size={18} className="text-amber-500 shrink-0 mt-0.5" />
                 {insight}
               </li>
@@ -408,7 +407,7 @@ export default function InvestorReport() {
         </section>
 
         {/* Footer */}
-        <footer className="text-center text-xs text-gray-400 mt-12 pt-8 border-t border-gray-100">
+        <footer className="text-center text-xs text-muted-foreground mt-12 pt-8 border-t border-border">
           <p>Generated automatically by Afrinnect Admin Dashboard • {new Date().getFullYear()} Afrinnect Inc.</p>
           <p className="mt-1">Confidential & Proprietary Information</p>
         </footer>

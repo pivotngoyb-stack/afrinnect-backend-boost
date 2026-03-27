@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser, invokeFunction, logout, uploadFile } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
@@ -386,10 +385,10 @@ export default function Onboarding() {
       className="text-center relative"
     >
       <Logo size="large" />
-      <h1 className="text-3xl font-bold text-gray-900 mt-8 mb-2">
+      <h1 className="text-3xl font-bold text-foreground mt-8 mb-2">
         Your Journey Starts Here
       </h1>
-      <p className="text-gray-500 text-lg mb-2">
+      <p className="text-muted-foreground text-lg mb-2">
         {t('onboarding.welcome.subtitle')}
       </p>
       
@@ -402,42 +401,42 @@ export default function Onboarding() {
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="text-center p-3 bg-white rounded-xl shadow-sm">
+        <div className="text-center p-3 bg-card rounded-xl shadow-sm">
           <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-purple-100 flex items-center justify-center">
             <Globe size={20} className="text-purple-600" />
           </div>
-          <p className="text-xs text-gray-600 font-medium">{t('onboarding.welcome.global')}</p>
+          <p className="text-xs text-muted-foreground font-medium">{t('onboarding.welcome.global')}</p>
         </div>
-        <div className="text-center p-3 bg-white rounded-xl shadow-sm">
+        <div className="text-center p-3 bg-card rounded-xl shadow-sm">
           <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-amber-100 flex items-center justify-center">
             <Users size={20} className="text-amber-600" />
           </div>
-          <p className="text-xs text-gray-600 font-medium">{t('onboarding.welcome.cultural')}</p>
+          <p className="text-xs text-muted-foreground font-medium">{t('onboarding.welcome.cultural')}</p>
         </div>
-        <div className="text-center p-3 bg-white rounded-xl shadow-sm">
+        <div className="text-center p-3 bg-card rounded-xl shadow-sm">
           <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-green-100 flex items-center justify-center">
             <Shield size={20} className="text-green-600" />
           </div>
-          <p className="text-xs text-gray-600 font-medium">{t('onboarding.welcome.safe')}</p>
+          <p className="text-xs text-muted-foreground font-medium">{t('onboarding.welcome.safe')}</p>
         </div>
       </div>
       
       <div className="flex justify-center gap-6 mb-6 text-sm">
         <div className="text-center">
           <p className="font-bold text-purple-600">1 min</p>
-          <p className="text-gray-500 text-xs">to complete</p>
+          <p className="text-muted-foreground text-xs">to complete</p>
         </div>
         <div className="text-center">
           <p className="font-bold text-purple-600">100%</p>
-          <p className="text-gray-500 text-xs">free to join</p>
+          <p className="text-muted-foreground text-xs">free to join</p>
         </div>
         <div className="text-center">
           <p className="font-bold text-purple-600">🇺🇸 🇨🇦</p>
-          <p className="text-gray-500 text-xs">USA & Canada</p>
+          <p className="text-muted-foreground text-xs">USA & Canada</p>
         </div>
       </div>
 
-      <p className="text-xs text-gray-400">{t('onboarding.welcome.terms')}</p>
+      <p className="text-xs text-muted-foreground">{t('onboarding.welcome.terms')}</p>
 
       {formData.founder_invite_code && (
         <div className="mt-6 p-4 bg-gradient-to-r from-amber-50 to-amber-100 border-2 border-amber-300 rounded-xl">
@@ -461,8 +460,8 @@ export default function Onboarding() {
       className="space-y-6"
     >
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-1">About You</h2>
-        <p className="text-gray-500 text-sm">Let's get the basics</p>
+        <h2 className="text-2xl font-bold text-foreground mb-1">About You</h2>
+        <p className="text-muted-foreground text-sm">Let's get the basics</p>
       </div>
 
       <div className="space-y-4">
@@ -500,7 +499,7 @@ export default function Onboarding() {
             id="age-confirm"
             checked={formData.age_confirmed || false}
             onChange={(e) => updateField('age_confirmed', e.target.checked)}
-            className="mt-1 h-4 w-4 rounded border-gray-300 accent-purple-600"
+            className="mt-1 h-4 w-4 rounded border-border accent-purple-600"
           />
           <label htmlFor="age-confirm" className="text-sm text-muted-foreground leading-tight">
             I confirm that I am 18 years or older and agree to the{' '}
@@ -516,11 +515,11 @@ export default function Onboarding() {
                 key={gender}
                 onClick={() => updateField('gender', gender)}
                 className={`p-3 rounded-xl border-2 transition flex items-center justify-center gap-2 ${
-                  formData.gender === gender ? 'border-purple-600 bg-purple-50' : 'border-gray-200'
+                  formData.gender === gender ? 'border-purple-600 bg-purple-50' : 'border-border'
                 }`}
               >
                 <span className="text-xl">{gender === 'man' ? '👨' : '👩'}</span>
-                <span className={`font-medium ${formData.gender === gender ? 'text-purple-600' : 'text-gray-700'}`}>
+                <span className={`font-medium ${formData.gender === gender ? 'text-purple-600' : 'text-foreground'}`}>
                   {gender === 'man' ? 'Man' : 'Woman'}
                 </span>
               </button>
@@ -536,11 +535,11 @@ export default function Onboarding() {
                 key={gender}
                 onClick={() => toggleGender(gender)}
                 className={`p-3 rounded-xl border-2 transition flex items-center justify-center gap-2 ${
-                  formData.looking_for.includes(gender) ? 'border-purple-600 bg-purple-50' : 'border-gray-200'
+                  formData.looking_for.includes(gender) ? 'border-purple-600 bg-purple-50' : 'border-border'
                 }`}
               >
                 <span className="text-xl">{gender === 'man' ? '👨' : '👩'}</span>
-                <span className={`font-medium ${formData.looking_for.includes(gender) ? 'text-purple-600' : 'text-gray-700'}`}>
+                <span className={`font-medium ${formData.looking_for.includes(gender) ? 'text-purple-600' : 'text-foreground'}`}>
                   {gender === 'man' ? 'Men' : 'Women'}
                 </span>
               </button>
@@ -559,8 +558,8 @@ export default function Onboarding() {
       className="space-y-5"
     >
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-1">Your Background</h2>
-        <p className="text-gray-500 text-sm">Help us find your perfect match</p>
+        <h2 className="text-2xl font-bold text-foreground mb-1">Your Background</h2>
+        <p className="text-muted-foreground text-sm">Help us find your perfect match</p>
       </div>
 
       <div>
@@ -601,7 +600,7 @@ export default function Onboarding() {
             <div className="space-y-2 pt-2 border-t border-amber-200">
               <p className="text-xs text-amber-700">Or select manually:</p>
               <Select value={formData.current_country} onValueChange={(v) => updateField('current_country', v)}>
-                <SelectTrigger className="h-10 bg-white"><SelectValue placeholder="Country of residence" /></SelectTrigger>
+                <SelectTrigger className="h-10 bg-card"><SelectValue placeholder="Country of residence" /></SelectTrigger>
                 <SelectContent>
                   {ALLOWED_RESIDENCE_COUNTRIES.map(c => (
                     <SelectItem key={c} value={c}>{c}</SelectItem>
@@ -612,7 +611,7 @@ export default function Onboarding() {
                 value={formData.current_city || ''}
                 onChange={(e) => updateField('current_city', e.target.value)}
                 placeholder="City (e.g. Houston, Toronto)"
-                className="h-10 bg-white"
+                className="h-10 bg-card"
               />
             </div>
           </div>
@@ -632,11 +631,11 @@ export default function Onboarding() {
               key={goal.value}
               onClick={() => updateField('relationship_goal', goal.value)}
               className={`p-3 rounded-xl border-2 transition text-left ${
-                formData.relationship_goal === goal.value ? 'border-purple-600 bg-purple-50' : 'border-gray-200'
+                formData.relationship_goal === goal.value ? 'border-purple-600 bg-purple-50' : 'border-border'
               }`}
             >
               <span className="text-xl mr-2">{goal.emoji}</span>
-              <span className={`font-medium text-sm ${formData.relationship_goal === goal.value ? 'text-purple-600' : 'text-gray-700'}`}>
+              <span className={`font-medium text-sm ${formData.relationship_goal === goal.value ? 'text-purple-600' : 'text-foreground'}`}>
                 {goal.label}
               </span>
             </button>
@@ -655,8 +654,8 @@ export default function Onboarding() {
     >
       <div className="text-center">
         <span className="text-3xl">🎉</span>
-        <h2 className="text-2xl font-bold text-gray-900 mt-2">Almost Done!</h2>
-        <p className="text-gray-500 text-sm">Add photos & interests</p>
+        <h2 className="text-2xl font-bold text-foreground mt-2">Almost Done!</h2>
+        <p className="text-muted-foreground text-sm">Add photos & interests</p>
       </div>
 
       {/* Photos */}
@@ -682,9 +681,9 @@ export default function Onboarding() {
             </div>
           ))}
           {formData.photos.length < 4 && (
-            <label className="aspect-square rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-purple-400 hover:bg-purple-50 transition">
+            <label className="aspect-square rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:border-purple-400 hover:bg-purple-50 transition">
               <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" disabled={isUploading} />
-              {isUploading ? <Loader2 size={24} className="text-purple-600 animate-spin" /> : <Camera size={24} className="text-gray-400" />}
+              {isUploading ? <Loader2 size={24} className="text-purple-600 animate-spin" /> : <Camera size={24} className="text-muted-foreground" />}
             </label>
           )}
         </div>
@@ -725,11 +724,11 @@ export default function Onboarding() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 relative">
+    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative">
       <AfricanPattern className="text-purple-600" opacity={0.03} />
 
       {/* Progress Bar - Enhanced with motivation */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-lg">
         {step > 0 && (
           <div className="relative">
             <Progress value={progress} className="h-2 rounded-none" />
@@ -749,12 +748,12 @@ export default function Onboarding() {
                 setStep(step - 1);
               }
             }} 
-            className="p-2 -ml-2 rounded-lg hover:bg-gray-100 transition"
+            className="p-2 -ml-2 rounded-lg hover:bg-muted transition"
           >
-            <ArrowLeft size={24} className="text-gray-600" />
+            <ArrowLeft size={24} className="text-muted-foreground" />
           </button>
           <div className="text-center">
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-foreground">
               {step === 0 ? 'Get Started' : `Step ${step} of 3`}
             </span>
             {step > 0 && step <= 3 && (
@@ -771,7 +770,7 @@ export default function Onboarding() {
                 navigate(createPageUrl('Landing'));
               }
             }}
-            className="text-sm text-gray-500 hover:text-red-600 transition px-2 py-1"
+            className="text-sm text-muted-foreground hover:text-red-600 transition px-2 py-1"
           >
             Exit
           </button>
@@ -785,12 +784,12 @@ export default function Onboarding() {
       </main>
 
       {/* Bottom Navigation - Enhanced */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-lg">
+      <div className="fixed bottom-0 left-0 right-0 bg-card border-t p-4 shadow-lg">
         <div className="max-w-lg mx-auto">
           {/* Social proof ticker */}
           {step > 0 && step < 6 && (
             <div className="mb-3 overflow-hidden">
-              <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
+              <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
@@ -828,7 +827,7 @@ export default function Onboarding() {
           
           {/* Trust signals */}
           {step === 0 && (
-            <p className="text-center text-xs text-gray-400 mt-3">
+            <p className="text-center text-xs text-muted-foreground mt-3">
               🔒 Your data is encrypted • Takes ~2 minutes
             </p>
           )}

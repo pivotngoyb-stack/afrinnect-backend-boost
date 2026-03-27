@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { createRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -129,7 +128,7 @@ export default function PhotoModeration() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Pending</p>
+                <p className="text-sm text-muted-foreground">Pending</p>
                 <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
               </div>
               <AlertTriangle size={32} className="text-yellow-600" />
@@ -140,7 +139,7 @@ export default function PhotoModeration() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Approved</p>
+                <p className="text-sm text-muted-foreground">Approved</p>
                 <p className="text-2xl font-bold text-green-600">{stats.approved}</p>
               </div>
               <CheckCircle size={32} className="text-green-600" />
@@ -151,7 +150,7 @@ export default function PhotoModeration() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">Rejected</p>
+                <p className="text-sm text-muted-foreground">Rejected</p>
                 <p className="text-2xl font-bold text-red-600">{stats.rejected}</p>
               </div>
               <XCircle size={32} className="text-red-600" />
@@ -202,7 +201,7 @@ export default function PhotoModeration() {
                       <div className="flex items-center justify-between mb-3">
                         <div>
                           <p className="font-semibold">{profile?.display_name}</p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-muted-foreground">
                             {photo.ai_flagged && '⚠️ AI Flagged'}
                           </p>
                         </div>
@@ -240,8 +239,8 @@ export default function PhotoModeration() {
               })}
 
               {photos.length === 0 && (
-                <div className="col-span-3 text-center py-12 text-gray-500">
-                  <Shield size={48} className="mx-auto mb-4 text-gray-300" />
+                <div className="col-span-3 text-center py-12 text-muted-foreground">
+                  <Shield size={48} className="mx-auto mb-4 text-muted-foreground" />
                   <p>No photos to review</p>
                 </div>
               )}

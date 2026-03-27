@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
@@ -130,10 +129,10 @@ export default function AdminManual() {
                 {['Sign Up', 'Onboarding', 'Photo Verify', 'Active User', 'Premium Convert'].map((step, i) => (
                   <div key={step} className="flex items-center gap-2">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm ${
-                      i === 0 ? 'bg-gray-500' : i === 4 ? 'bg-green-500' : 'bg-purple-500'
+                      i === 0 ? 'bg-muted' : i === 4 ? 'bg-green-500' : 'bg-purple-500'
                     }`}>{i + 1}</div>
                     <span className="text-sm font-medium">{step}</span>
-                    {i < 4 && <ChevronRight size={16} className="text-gray-400" />}
+                    {i < 4 && <ChevronRight size={16} className="text-muted-foreground" />}
                   </div>
                 ))}
               </div>
@@ -171,9 +170,9 @@ export default function AdminManual() {
                         <h5 className="font-semibold text-red-800">Banned (is_banned: true)</h5>
                         <p className="text-sm text-red-700">Permanent ban. User can file dispute.</p>
                       </div>
-                      <div className="bg-gray-50 p-3 rounded-lg">
-                        <h5 className="font-semibold text-gray-800">Inactive</h5>
-                        <p className="text-sm text-gray-700">User hasn't logged in for 30+ days</p>
+                      <div className="bg-muted p-3 rounded-lg">
+                        <h5 className="font-semibold text-foreground">Inactive</h5>
+                        <p className="text-sm text-foreground">User hasn't logged in for 30+ days</p>
                       </div>
                     </div>
                   </AccordionContent>
@@ -459,28 +458,28 @@ export default function AdminManual() {
                         <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600 font-bold">1</div>
                         <div>
                           <p className="font-medium">1st Violation: Warning</p>
-                          <p className="text-sm text-gray-600">warning_count = 1, notification sent</p>
+                          <p className="text-sm text-muted-foreground">warning_count = 1, notification sent</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold">2</div>
                         <div>
                           <p className="font-medium">2nd Violation: 24-hour Suspension</p>
-                          <p className="text-sm text-gray-600">is_suspended = true, suspension_expires_at set</p>
+                          <p className="text-sm text-muted-foreground">is_suspended = true, suspension_expires_at set</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center text-red-600 font-bold">3</div>
                         <div>
                           <p className="font-medium">3rd Violation: 7-day Suspension</p>
-                          <p className="text-sm text-gray-600">Longer suspension period</p>
+                          <p className="text-sm text-muted-foreground">Longer suspension period</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white font-bold">4</div>
                         <div>
                           <p className="font-medium">4th Violation: Permanent Ban</p>
-                          <p className="text-sm text-gray-600">is_banned = true, user can file dispute</p>
+                          <p className="text-sm text-muted-foreground">is_banned = true, user can file dispute</p>
                         </div>
                       </div>
                     </div>
@@ -514,7 +513,7 @@ export default function AdminManual() {
                       <li>Copy-paste message patterns</li>
                       <li>Profile photo reverse image search hits</li>
                     </ul>
-                    <p className="mt-3 text-sm text-gray-600">Suspicious accounts are flagged in <code>ScamAnalysis</code> entity for review.</p>
+                    <p className="mt-3 text-sm text-muted-foreground">Suspicious accounts are flagged in <code>ScamAnalysis</code> entity for review.</p>
                   </AccordionContent>
                 </AccordionItem>
 
@@ -555,7 +554,7 @@ export default function AdminManual() {
             <CardContent>
               <div className="grid md:grid-cols-4 gap-4 mb-6">
                 <div className="border rounded-lg p-4">
-                  <h4 className="font-bold text-gray-600">Free</h4>
+                  <h4 className="font-bold text-muted-foreground">Free</h4>
                   <ul className="text-xs mt-2 space-y-1">
                     <li>• 25 likes/day</li>
                     <li>• 1 super like/week</li>
@@ -566,7 +565,7 @@ export default function AdminManual() {
                 </div>
                 <div className="border-2 border-purple-300 rounded-lg p-4 bg-purple-50">
                   <h4 className="font-bold text-purple-600">Premium</h4>
-                  <p className="text-xs text-gray-500">$14.99/mo</p>
+                  <p className="text-xs text-muted-foreground">$14.99/mo</p>
                   <ul className="text-xs mt-2 space-y-1">
                     <li>• 50 likes/day</li>
                     <li>• 5 super likes/day</li>
@@ -577,7 +576,7 @@ export default function AdminManual() {
                 </div>
                 <div className="border-2 border-amber-300 rounded-lg p-4 bg-amber-50">
                   <h4 className="font-bold text-amber-600">Elite</h4>
-                  <p className="text-xs text-gray-500">$29.99/mo</p>
+                  <p className="text-xs text-muted-foreground">$29.99/mo</p>
                   <ul className="text-xs mt-2 space-y-1">
                     <li>• Unlimited likes</li>
                     <li>• Unlimited super likes</li>
@@ -589,7 +588,7 @@ export default function AdminManual() {
                 </div>
                 <div className="border-2 border-pink-300 rounded-lg p-4 bg-gradient-to-br from-pink-50 to-purple-50">
                   <h4 className="font-bold text-pink-600">VIP</h4>
-                  <p className="text-xs text-gray-500">$79.99/mo</p>
+                  <p className="text-xs text-muted-foreground">$79.99/mo</p>
                   <ul className="text-xs mt-2 space-y-1">
                     <li>• All Elite features</li>
                     <li>• VIP speed dating events</li>
@@ -1144,12 +1143,12 @@ export default function AdminManual() {
                   <AccordionContent>
                     <div className="grid md:grid-cols-4 gap-3">
                       <div className="border p-3 rounded-lg">
-                        <h5 className="font-semibold text-gray-600">Bronze</h5>
+                        <h5 className="font-semibold text-muted-foreground">Bronze</h5>
                         <p className="text-xs">0-10 referrals</p>
                         <p className="text-xs mt-1">1x multiplier</p>
                       </div>
-                      <div className="border p-3 rounded-lg bg-gray-50">
-                        <h5 className="font-semibold text-gray-600">Silver</h5>
+                      <div className="border p-3 rounded-lg bg-muted">
+                        <h5 className="font-semibold text-muted-foreground">Silver</h5>
                         <p className="text-xs">11-50 referrals</p>
                         <p className="text-xs mt-1">1.1x multiplier</p>
                       </div>
@@ -1192,7 +1191,7 @@ export default function AdminManual() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Settings className="text-gray-600" />
+                <Settings className="text-muted-foreground" />
                 Configuration
               </CardTitle>
             </CardHeader>
@@ -1305,9 +1304,9 @@ export default function AdminManual() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted">
       {/* Header */}
-      <header className="sticky top-0 bg-white border-b z-40">
+      <header className="sticky top-0 bg-card border-b z-40">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -1317,15 +1316,15 @@ export default function AdminManual() {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <h1 className="text-xl font-bold text-foreground flex items-center gap-2">
                   <Book className="text-purple-600" />
                   Admin Manual
                 </h1>
-                <p className="text-sm text-gray-500">Complete guide to managing Afrinnect</p>
+                <p className="text-sm text-muted-foreground">Complete guide to managing Afrinnect</p>
               </div>
             </div>
             <div className="relative w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
               <Input
                 placeholder="Search manual..."
                 value={searchQuery}
@@ -1351,7 +1350,7 @@ export default function AdminManual() {
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
                       activeSection === section.id
                         ? 'bg-purple-100 text-purple-700 font-medium'
-                        : 'text-gray-600 hover:bg-gray-100'
+                        : 'text-muted-foreground hover:bg-muted'
                     }`}
                   >
                     <Icon size={18} />
@@ -1383,7 +1382,7 @@ export default function AdminManual() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              <h2 className="text-2xl font-bold text-foreground mb-6">
                 {manualContent[activeSection]?.title}
               </h2>
               {manualContent[activeSection]?.content}

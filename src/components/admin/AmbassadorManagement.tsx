@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { invokeFunction, listRecords } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -237,7 +236,7 @@ export default function AmbassadorManagement() {
 
   const tierColors = {
     bronze: 'bg-amber-700',
-    silver: 'bg-gray-400',
+    silver: 'bg-muted',
     gold: 'bg-yellow-500',
     platinum: 'bg-purple-600'
   };
@@ -255,11 +254,11 @@ export default function AmbassadorManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Crown className="text-purple-600" />
             Ambassador Program
           </h2>
-          <p className="text-gray-500">Manage ambassadors, commissions, and campaigns</p>
+          <p className="text-muted-foreground">Manage ambassadors, commissions, and campaigns</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => approveCommissionsMutation.mutate()}>
@@ -279,35 +278,35 @@ export default function AmbassadorManagement() {
           <CardContent className="p-4 text-center">
             <Users className="mx-auto text-purple-600 mb-2" size={24} />
             <div className="text-2xl font-bold">{stats?.active_ambassadors || 0}</div>
-            <div className="text-xs text-gray-500">Active Ambassadors</div>
+            <div className="text-xs text-muted-foreground">Active Ambassadors</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <Target className="mx-auto text-blue-600 mb-2" size={24} />
             <div className="text-2xl font-bold">{stats?.total_signups || 0}</div>
-            <div className="text-xs text-gray-500">Total Signups</div>
+            <div className="text-xs text-muted-foreground">Total Signups</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <DollarSign className="mx-auto text-green-600 mb-2" size={24} />
             <div className="text-2xl font-bold">${stats?.total_revenue?.toFixed(0) || 0}</div>
-            <div className="text-xs text-gray-500">Revenue Generated</div>
+            <div className="text-xs text-muted-foreground">Revenue Generated</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <TrendingUp className="mx-auto text-amber-600 mb-2" size={24} />
             <div className="text-2xl font-bold">{stats?.conversion_rate || 0}%</div>
-            <div className="text-xs text-gray-500">Conversion Rate</div>
+            <div className="text-xs text-muted-foreground">Conversion Rate</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <AlertTriangle className="mx-auto text-red-600 mb-2" size={24} />
             <div className="text-2xl font-bold">{stats?.suspicious_referrals || 0}</div>
-            <div className="text-xs text-gray-500">Flagged Referrals</div>
+            <div className="text-xs text-muted-foreground">Flagged Referrals</div>
           </CardContent>
         </Card>
       </div>
@@ -364,7 +363,7 @@ export default function AmbassadorManagement() {
                   <TableCell>
                     <div>
                       <div className="font-medium">{amb.display_name}</div>
-                      <div className="text-xs text-gray-500">@{amb.handle} • {amb.email}</div>
+                      <div className="text-xs text-muted-foreground">@{amb.handle} • {amb.email}</div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -378,7 +377,7 @@ export default function AmbassadorManagement() {
                     <Badge className={
                       amb.status === 'active' ? 'bg-green-600' :
                       amb.status === 'suspended' ? 'bg-red-600' :
-                      amb.status === 'pending' ? 'bg-yellow-600' : 'bg-gray-400'
+                      amb.status === 'pending' ? 'bg-yellow-600' : 'bg-muted'
                     }>
                       {amb.status}
                     </Badge>
@@ -461,7 +460,7 @@ export default function AmbassadorManagement() {
                     {campaign.bonus_multiplier && <Badge variant="outline">{campaign.bonus_multiplier}x</Badge>}
                     {campaign.flat_bonus_amount && <Badge variant="outline">+${campaign.flat_bonus_amount}</Badge>}
                   </div>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     {format(new Date(campaign.starts_at), 'MMM d')} - {format(new Date(campaign.ends_at), 'MMM d, yyyy')}
                   </p>
                 </CardContent>
@@ -501,7 +500,7 @@ export default function AmbassadorManagement() {
             </Table>
           ) : (
             <Card>
-              <CardContent className="py-12 text-center text-gray-500">
+              <CardContent className="py-12 text-center text-muted-foreground">
                 <CheckCircle className="mx-auto mb-2 text-green-500" size={32} />
                 No suspicious referrals detected
               </CardContent>
@@ -524,7 +523,7 @@ export default function AmbassadorManagement() {
                 onChange={(e) => setNewAmbassador({ ...newAmbassador, handle: e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '') })}
                 placeholder="joelle"
               />
-              <p className="text-xs text-gray-500 mt-1">Code will be: AMBA_{newAmbassador.handle.toUpperCase()}</p>
+              <p className="text-xs text-muted-foreground mt-1">Code will be: AMBA_{newAmbassador.handle.toUpperCase()}</p>
             </div>
             <div>
               <Label>Email</Label>
@@ -660,7 +659,7 @@ export default function AmbassadorManagement() {
               </Select>
             </div>
             {payoutMethod === 'stripe' && (
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 The payout will be sent automatically via Stripe Connect. Ambassador must have a connected Stripe account.
               </p>
             )}

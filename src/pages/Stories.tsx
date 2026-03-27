@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -309,7 +308,7 @@ export default function Stories() {
                         <img
                           src={group.profile?.primary_photo}
                           alt=""
-                          className="w-7 h-7 rounded-full border-2 border-white object-cover"
+                          className="w-7 h-7 rounded-full border-2 border-card object-cover"
                           onError={e => { e.target.style.display = 'none'; }}
                         />
                         <span className="text-white text-xs font-medium truncate">
@@ -317,7 +316,7 @@ export default function Stories() {
                         </span>
                       </div>
                       {group.stories.length > 1 && (
-                        <div className="absolute top-2 right-2 bg-black/50 px-2 py-0.5 rounded-full text-white text-xs">
+                        <div className="absolute top-2 right-2 bg-foreground/50 px-2 py-0.5 rounded-full text-white text-xs">
                           {group.stories.length}
                         </div>
                       )}
@@ -337,7 +336,7 @@ export default function Stories() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black z-50 flex flex-col"
+            className="fixed inset-0 bg-foreground z-50 flex flex-col"
             style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}
           >
             <div className="flex items-center justify-between p-4">
@@ -356,7 +355,7 @@ export default function Stories() {
               <label htmlFor="story-file" className="w-full cursor-pointer">
                 <motion.div
                   whileTap={{ scale: 0.98 }}
-                  className="border-2 border-dashed border-gray-600 rounded-3xl p-16 text-center"
+                  className="border-2 border-dashed border-border rounded-3xl p-16 text-center"
                 >
                   {isUploading ? (
                     <div className="flex flex-col items-center">
@@ -369,7 +368,7 @@ export default function Stories() {
                         <ImagePlus size={36} className="text-primary-foreground" />
                       </div>
                       <p className="text-white text-lg font-medium mb-1">Tap to select</p>
-                      <p className="text-gray-400 text-sm">Photo or video</p>
+                      <p className="text-muted-foreground text-sm">Photo or video</p>
                     </>
                   )}
                 </motion.div>
@@ -389,13 +388,13 @@ export default function Stories() {
                   onChange={(e) => setCaption(e.target.value)}
                   placeholder="Add a caption..."
                   disabled={isUploading}
-                  className="bg-gray-900 border-gray-700 text-white placeholder:text-gray-500 rounded-full"
+                  className="bg-background border-border text-white placeholder:text-muted-foreground rounded-full"
                 />
               </div>
             </div>
 
             <div className="p-6 text-center">
-              <p className="text-gray-500 text-xs">Stories disappear after 24 hours</p>
+              <p className="text-muted-foreground text-xs">Stories disappear after 24 hours</p>
             </div>
           </motion.div>
         )}

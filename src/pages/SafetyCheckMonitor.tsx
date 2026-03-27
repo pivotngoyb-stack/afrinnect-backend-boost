@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser, sendEmail, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -127,7 +126,7 @@ export default function SafetyCheckMonitor() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 pb-24">
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b">
+      <header className="sticky top-0 z-40 bg-card/80 backdrop-blur-lg border-b">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link to={createPageUrl('Profile')}>
             <Button variant="ghost" size="icon">
@@ -140,13 +139,13 @@ export default function SafetyCheckMonitor() {
 
       <main className="max-w-4xl mx-auto px-4 py-6">
         {activeChecks.length === 0 ? (
-          <Card className="border-gray-200">
+          <Card className="border-border">
             <CardContent className="p-8 text-center">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Shield size={32} className="text-green-600" />
               </div>
               <h3 className="text-lg font-semibold mb-2">No Active Safety Checks</h3>
-              <p className="text-gray-600 mb-4">Set up a safety check before your next meetup</p>
+              <p className="text-muted-foreground mb-4">Set up a safety check before your next meetup</p>
               <Link to={createPageUrl('Matches')}>
                 <Button className="bg-green-600">Go to Matches</Button>
               </Link>
@@ -174,18 +173,18 @@ export default function SafetyCheckMonitor() {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div className="flex items-start gap-3">
-                      <MapPin size={18} className="text-gray-600 mt-0.5" />
+                      <MapPin size={18} className="text-muted-foreground mt-0.5" />
                       <div>
-                        <p className="text-sm font-medium text-gray-700">Meeting Location</p>
-                        <p className="text-sm text-gray-600">{check.date_location}</p>
+                        <p className="text-sm font-medium text-foreground">Meeting Location</p>
+                        <p className="text-sm text-muted-foreground">{check.date_location}</p>
                       </div>
                     </div>
 
                     <div className="flex items-start gap-3">
-                      <Clock size={18} className="text-gray-600 mt-0.5" />
+                      <Clock size={18} className="text-muted-foreground mt-0.5" />
                       <div>
-                        <p className="text-sm font-medium text-gray-700">Check-in Time</p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm font-medium text-foreground">Check-in Time</p>
+                        <p className="text-sm text-muted-foreground">
                           {checkInTime.toLocaleString()}
                           {isOverdue && <span className="text-amber-600 ml-2">(Overdue)</span>}
                         </p>
@@ -193,10 +192,10 @@ export default function SafetyCheckMonitor() {
                     </div>
 
                     <div className="flex items-start gap-3">
-                      <User size={18} className="text-gray-600 mt-0.5" />
+                      <User size={18} className="text-muted-foreground mt-0.5" />
                       <div>
-                        <p className="text-sm font-medium text-gray-700">Emergency Contact</p>
-                        <p className="text-sm text-gray-600">{check.emergency_contact_name}</p>
+                        <p className="text-sm font-medium text-foreground">Emergency Contact</p>
+                        <p className="text-sm text-muted-foreground">{check.emergency_contact_name}</p>
                       </div>
                     </div>
 
@@ -254,7 +253,7 @@ export default function SafetyCheckMonitor() {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            <p className="text-center text-gray-700">
+            <p className="text-center text-foreground">
               It's time for your safety check-in. Are you safe?
             </p>
             <div className="flex gap-3">

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,13 +42,13 @@ export default function FoundingMemberStatus({ profile }) {
       {/* Header Banner */}
       <div className="bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 px-6 py-5">
         <div className="flex items-center gap-4 text-white">
-          <div className="p-3 bg-white/20 rounded-2xl backdrop-blur">
+          <div className="p-3 bg-card/20 rounded-2xl backdrop-blur">
             <Crown size={28} />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h3 className="font-bold text-xl">Founding Member</h3>
-              <Badge className="bg-white/20 text-white text-xs">VIP</Badge>
+              <Badge className="bg-card/20 text-white text-xs">VIP</Badge>
             </div>
             <p className="text-sm text-white/90">You're one of our first 1,000 members! 🎉</p>
           </div>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { useLanguage } from './LanguageContext';
 import { Globe } from 'lucide-react';

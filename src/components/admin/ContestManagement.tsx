@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createRecord, deleteRecord, listRecords, updateRecord } from '@/lib/supabase-helpers';
@@ -79,7 +78,7 @@ export default function ContestManagement() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800">Contest Management</h2>
+        <h2 className="text-2xl font-bold text-foreground">Contest Management</h2>
         <Button onClick={() => { resetForm(); setIsDialogOpen(true); }} className="bg-purple-600 hover:bg-purple-700">
           <Plus className="mr-2 h-4 w-4" /> New Contest Month
         </Button>
@@ -123,7 +122,7 @@ export default function ContestManagement() {
               ))}
               {contests.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                     No contests configured yet.
                   </TableCell>
                 </TableRow>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Heart, MapPin, BookOpen, Users, Star, Briefcase, Languages } from 'lucide-react';
@@ -49,7 +48,7 @@ export default function MatchExplanation({ score, reasons = [], breakdown = {}, 
           <span className="text-sm font-semibold text-purple-700">{score}% Match</span>
         </div>
         {reasons.length > 0 && (
-          <span className="text-xs text-gray-500 truncate max-w-[150px]">
+          <span className="text-xs text-muted-foreground truncate max-w-[150px]">
             {reasons[0]}
           </span>
         )}
@@ -70,7 +69,7 @@ export default function MatchExplanation({ score, reasons = [], breakdown = {}, 
             <Sparkles size={18} className="text-white" />
           </div>
           <div>
-            <h4 className="font-bold text-gray-900">AI Compatibility Score</h4>
+            <h4 className="font-bold text-foreground">AI Compatibility Score</h4>
             <p className={`text-xs ${confidenceColors[confidence]}`}>
               {confidenceLabels[confidence]}
             </p>
@@ -91,7 +90,7 @@ export default function MatchExplanation({ score, reasons = [], breakdown = {}, 
       {/* Match Reasons */}
       {reasons.length > 0 && (
         <div className="space-y-2 mb-4">
-          <h5 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Why you match</h5>
+          <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Why you match</h5>
           <div className="flex flex-wrap gap-2">
             {reasons.map((reason, idx) => {
               const Icon = getIcon(reason);
@@ -99,7 +98,7 @@ export default function MatchExplanation({ score, reasons = [], breakdown = {}, 
                 <Badge 
                   key={idx}
                   variant="outline" 
-                  className="bg-white border-purple-200 text-purple-700 py-1.5 px-3"
+                  className="bg-card border-purple-200 text-purple-700 py-1.5 px-3"
                 >
                   <Icon size={12} className="mr-1.5" />
                   {reason}
@@ -113,19 +112,19 @@ export default function MatchExplanation({ score, reasons = [], breakdown = {}, 
       {/* Score Breakdown */}
       {Object.keys(breakdown).length > 0 && (
         <div className="pt-3 border-t border-purple-100">
-          <h5 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Compatibility breakdown</h5>
+          <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Compatibility breakdown</h5>
           <div className="grid grid-cols-2 gap-2">
             {Object.entries(breakdown).map(([key, value]) => (
               <div key={key} className="flex items-center justify-between text-xs">
-                <span className="text-gray-600 capitalize">{key.replace('_', ' ')}</span>
+                <span className="text-muted-foreground capitalize">{key.replace('_', ' ')}</span>
                 <div className="flex items-center gap-1">
-                  <div className="w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
                       style={{ width: `${Math.min(value * 5, 100)}%` }}
                     />
                   </div>
-                  <span className="text-gray-500 w-6 text-right">{value}</span>
+                  <span className="text-muted-foreground w-6 text-right">{value}</span>
                 </div>
               </div>
             ))}

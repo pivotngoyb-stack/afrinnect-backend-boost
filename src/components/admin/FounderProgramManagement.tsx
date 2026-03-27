@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, invokeFunction, listRecords, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -267,40 +266,40 @@ export default function FounderProgramManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Crown className="text-amber-500" />
             Founding Member Program
           </h2>
-          <p className="text-gray-500">Manage founding member settings, invite codes, and track conversions</p>
+          <p className="text-muted-foreground">Manage founding member settings, invite codes, and track conversions</p>
         </div>
       </div>
 
       {/* Main Toggle Cards */}
       <div className="grid md:grid-cols-3 gap-4">
-        <Card className={`border-2 ${settings?.founders_mode_enabled ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
+        <Card className={`border-2 ${settings?.founders_mode_enabled ? 'border-green-500 bg-green-50' : 'border-border'}`}>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-semibold text-gray-900">Founders Mode</h3>
-                <p className="text-sm text-gray-500">Enable founding member program</p>
+                <h3 className="font-semibold text-foreground">Founders Mode</h3>
+                <p className="text-sm text-muted-foreground">Enable founding member program</p>
               </div>
               <Switch 
                 checked={settings?.founders_mode_enabled || false}
                 onCheckedChange={() => toggleSetting('founders_mode_enabled')}
               />
             </div>
-            <Badge className={`mt-3 ${settings?.founders_mode_enabled ? 'bg-green-600' : 'bg-gray-400'}`}>
+            <Badge className={`mt-3 ${settings?.founders_mode_enabled ? 'bg-green-600' : 'bg-muted'}`}>
               {settings?.founders_mode_enabled ? 'ACTIVE' : 'INACTIVE'}
             </Badge>
           </CardContent>
         </Card>
 
-        <Card className={`border-2 ${settings?.auto_assign_new_users ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
+        <Card className={`border-2 ${settings?.auto_assign_new_users ? 'border-blue-500 bg-blue-50' : 'border-border'}`}>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-semibold text-gray-900">Auto-Assign New Users</h3>
-                <p className="text-sm text-gray-500">Automatically grant to all new signups</p>
+                <h3 className="font-semibold text-foreground">Auto-Assign New Users</h3>
+                <p className="text-sm text-muted-foreground">Automatically grant to all new signups</p>
               </div>
               <Switch 
                 checked={settings?.auto_assign_new_users || false}
@@ -308,20 +307,20 @@ export default function FounderProgramManagement() {
                 disabled={!settings?.founders_mode_enabled}
               />
             </div>
-            <p className="text-xs text-gray-400 mt-2">
+            <p className="text-xs text-muted-foreground mt-2">
               When off, only invite codes grant status
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-2 border-gray-200">
+        <Card className="border-2 border-border">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <h3 className="font-semibold text-gray-900">Trial Length</h3>
-                <p className="text-sm text-gray-500">Days of free premium</p>
+                <h3 className="font-semibold text-foreground">Trial Length</h3>
+                <p className="text-sm text-muted-foreground">Days of free premium</p>
               </div>
-              <Calendar className="text-gray-400" size={20} />
+              <Calendar className="text-muted-foreground" size={20} />
             </div>
             <div className="flex items-center gap-2">
               <Input
@@ -332,9 +331,9 @@ export default function FounderProgramManagement() {
                 min={1}
                 max={365}
               />
-              <span className="text-gray-500">days</span>
+              <span className="text-muted-foreground">days</span>
             </div>
-            <p className="text-xs text-gray-400 mt-2">
+            <p className="text-xs text-muted-foreground mt-2">
               ≈ {Math.round((settings?.trial_days || 183) / 30)} months
             </p>
           </CardContent>
@@ -347,35 +346,35 @@ export default function FounderProgramManagement() {
           <CardContent className="p-4 text-center">
             <Users className="mx-auto text-purple-600 mb-2" size={24} />
             <div className="text-2xl font-bold">{stats?.total_founders || 0}</div>
-            <div className="text-xs text-gray-500">Total Founders</div>
+            <div className="text-xs text-muted-foreground">Total Founders</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <Clock className="mx-auto text-blue-600 mb-2" size={24} />
             <div className="text-2xl font-bold">{stats?.active_trials || 0}</div>
-            <div className="text-xs text-gray-500">Active Trials</div>
+            <div className="text-xs text-muted-foreground">Active Trials</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <CheckCircle className="mx-auto text-green-600 mb-2" size={24} />
             <div className="text-2xl font-bold">{stats?.converted || 0}</div>
-            <div className="text-xs text-gray-500">Converted</div>
+            <div className="text-xs text-muted-foreground">Converted</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <XCircle className="mx-auto text-red-600 mb-2" size={24} />
             <div className="text-2xl font-bold">{stats?.churned || 0}</div>
-            <div className="text-xs text-gray-500">Churned</div>
+            <div className="text-xs text-muted-foreground">Churned</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <Percent className="mx-auto text-amber-600 mb-2" size={24} />
             <div className="text-2xl font-bold">{stats?.conversion_rate || 0}%</div>
-            <div className="text-xs text-gray-500">Conversion Rate</div>
+            <div className="text-xs text-muted-foreground">Conversion Rate</div>
           </CardContent>
         </Card>
       </div>
@@ -473,7 +472,7 @@ export default function FounderProgramManagement() {
                   <TableCell>{code.redemptions} / {code.max}</TableCell>
                   <TableCell>{code.trial_days || settings?.trial_days} days</TableCell>
                   <TableCell>
-                    <Badge className={code.is_active ? 'bg-green-600' : 'bg-gray-400'}>
+                    <Badge className={code.is_active ? 'bg-green-600' : 'bg-muted'}>
                       {code.is_active ? 'Active' : 'Inactive'}
                     </Badge>
                   </TableCell>
@@ -489,7 +488,7 @@ export default function FounderProgramManagement() {
               ))}
               {(!stats?.invite_codes || stats.invite_codes.length === 0) && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-gray-500 py-8">
+                  <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
                     No invite codes yet. Create one to get started.
                   </TableCell>
                 </TableRow>
@@ -602,7 +601,7 @@ export default function FounderProgramManagement() {
                     <TableCell>
                       <div>
                         <div className="font-medium">{member.display_name}</div>
-                        <div className="text-xs text-gray-500">{member.created_by}</div>
+                        <div className="text-xs text-muted-foreground">{member.created_by}</div>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -632,7 +631,7 @@ export default function FounderProgramManagement() {
               })}
               {(!foundingMembers || foundingMembers.length === 0) && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-gray-500 py-8">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
                     No founding members yet.
                   </TableCell>
                 </TableRow>
@@ -664,7 +663,7 @@ export default function FounderProgramManagement() {
                     <TableCell>
                       <div>
                         <div className="font-medium">{user.display_name}</div>
-                        <div className="text-xs text-gray-500">{user.email}</div>
+                        <div className="text-xs text-muted-foreground">{user.email}</div>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -693,7 +692,7 @@ export default function FounderProgramManagement() {
             </Table>
           ) : (
             <Card>
-              <CardContent className="py-12 text-center text-gray-500">
+              <CardContent className="py-12 text-center text-muted-foreground">
                 <CheckCircle className="mx-auto mb-2 text-green-500" size={32} />
                 No trials expiring in the next 7 days
               </CardContent>

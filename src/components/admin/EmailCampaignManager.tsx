@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { invokeFunction } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
@@ -157,11 +156,11 @@ export default function EmailCampaignManager() {
                 className={`p-3 rounded-lg border text-left transition-all hover:shadow-md ${
                   selectedTemplate === template.id 
                     ? 'border-purple-500 bg-purple-50' 
-                    : 'border-gray-200 hover:border-purple-300'
+                    : 'border-border hover:border-purple-300'
                 }`}
               >
-                <p className="font-medium text-sm text-gray-900">{template.name}</p>
-                <p className="text-xs text-gray-500 mt-1 line-clamp-2">{template.subject}</p>
+                <p className="font-medium text-sm text-foreground">{template.name}</p>
+                <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{template.subject}</p>
               </button>
             ))}
           </div>
@@ -231,8 +230,8 @@ export default function EmailCampaignManager() {
               className="h-48 font-mono text-sm"
             />
             <div className="flex items-center gap-4 mt-2">
-              <p className="text-xs text-gray-500">
-                Variables: <code className="bg-gray-100 px-1 rounded">{'{name}'}</code> = User's name
+              <p className="text-xs text-muted-foreground">
+                Variables: <code className="bg-muted px-1 rounded">{'{name}'}</code> = User's name
               </p>
               <Badge variant="outline" className="text-xs">
                 <Sparkles size={12} className="mr-1" />
@@ -243,12 +242,12 @@ export default function EmailCampaignManager() {
 
           {/* Preview */}
           {campaign.body && (
-            <div className="border rounded-lg p-4 bg-gray-50">
-              <p className="text-xs text-gray-500 mb-2 flex items-center gap-1">
+            <div className="border rounded-lg p-4 bg-muted">
+              <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
                 <Mail size={12} /> Preview
               </p>
-              <p className="font-medium text-gray-900 mb-2">{campaign.subject || 'No subject'}</p>
-              <div className="text-sm text-gray-700 whitespace-pre-wrap bg-white p-3 rounded border">
+              <p className="font-medium text-foreground mb-2">{campaign.subject || 'No subject'}</p>
+              <div className="text-sm text-foreground whitespace-pre-wrap bg-card p-3 rounded border">
                 {campaign.body.replace('{name}', 'John')}
               </div>
             </div>

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -24,7 +23,7 @@ export default function MessageWithLikeModal({ profile, onSend, onClose, open })
         </DialogHeader>
 
         <div className="space-y-4">
-          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+          <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
             <img
               src={profile?.primary_photo || profile?.photos?.[0]}
               alt={profile?.display_name}
@@ -32,7 +31,7 @@ export default function MessageWithLikeModal({ profile, onSend, onClose, open })
             />
             <div>
               <p className="font-medium">{profile?.display_name}</p>
-              <p className="text-sm text-gray-500">{profile?.current_city}</p>
+              <p className="text-sm text-muted-foreground">{profile?.current_city}</p>
             </div>
           </div>
 
@@ -44,7 +43,7 @@ export default function MessageWithLikeModal({ profile, onSend, onClose, open })
             maxLength={200}
           />
           
-          <p className="text-xs text-gray-500 text-right">{message.length}/200</p>
+          <p className="text-xs text-muted-foreground text-right">{message.length}/200</p>
 
           <div className="flex gap-2">
             <Button onClick={onClose} variant="outline" className="flex-1">

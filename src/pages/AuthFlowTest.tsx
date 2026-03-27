@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { filterRecords, getCurrentUser, invokeFunction, isAuthenticated, logout } from '@/lib/supabase-helpers';
 import { Button } from '@/components/ui/button';
@@ -147,7 +146,7 @@ export default function AuthFlowTest() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-muted p-8">
       <div className="max-w-4xl mx-auto space-y-6">
         <Card>
           <CardHeader>
@@ -175,7 +174,7 @@ export default function AuthFlowTest() {
             {Object.keys(testResults).length > 0 && (
               <div className="space-y-2">
                 {Object.entries(testResults).map(([name, result]) => (
-                  <div key={name} className="flex items-center justify-between p-4 bg-white border rounded-lg">
+                  <div key={name} className="flex items-center justify-between p-4 bg-card border rounded-lg">
                     <div className="flex items-center gap-3">
                       {result.pass ? (
                         <CheckCircle size={20} className="text-green-600" />
@@ -184,7 +183,7 @@ export default function AuthFlowTest() {
                       )}
                       <div>
                         <p className="font-medium text-sm">{name}</p>
-                        <p className="text-xs text-gray-500">{result.message}</p>
+                        <p className="text-xs text-muted-foreground">{result.message}</p>
                       </div>
                     </div>
                     <Badge variant={result.pass ? 'default' : 'destructive'}>

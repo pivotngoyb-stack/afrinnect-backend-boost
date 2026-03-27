@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -158,7 +157,7 @@ export default function EventManagement({ events }) {
               <Calendar size={24} className="text-purple-600" />
               <div>
                 <p className="text-2xl font-bold">{(events || []).length}</p>
-                <p className="text-sm text-gray-600">Total Events</p>
+                <p className="text-sm text-muted-foreground">Total Events</p>
               </div>
             </div>
           </CardContent>
@@ -169,7 +168,7 @@ export default function EventManagement({ events }) {
               <Calendar size={24} className="text-green-600" />
               <div>
                 <p className="text-2xl font-bold">{upcomingEvents.length}</p>
-                <p className="text-sm text-gray-600">Upcoming</p>
+                <p className="text-sm text-muted-foreground">Upcoming</p>
               </div>
             </div>
           </CardContent>
@@ -180,7 +179,7 @@ export default function EventManagement({ events }) {
               <Users size={24} className="text-blue-600" />
               <div>
                 <p className="text-2xl font-bold">{totalAttendees}</p>
-                <p className="text-sm text-gray-600">Total Attendees</p>
+                <p className="text-sm text-muted-foreground">Total Attendees</p>
               </div>
             </div>
           </CardContent>
@@ -191,7 +190,7 @@ export default function EventManagement({ events }) {
               <DollarSign size={24} className="text-green-600" />
               <div>
                 <p className="text-2xl font-bold">${totalRevenue.toFixed(0)}</p>
-                <p className="text-sm text-gray-600">Revenue</p>
+                <p className="text-sm text-muted-foreground">Revenue</p>
               </div>
             </div>
           </CardContent>
@@ -211,7 +210,7 @@ export default function EventManagement({ events }) {
         <CardContent>
           <div className="space-y-3">
             {(events || []).map(event => (
-              <div key={event.id} className="p-4 border rounded-lg hover:bg-gray-50">
+              <div key={event.id} className="p-4 border rounded-lg hover:bg-muted">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
@@ -222,7 +221,7 @@ export default function EventManagement({ events }) {
                         <Badge variant="secondary">Past</Badge>
                       )}
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Calendar size={14} />
                         {event.start_date && format(new Date(event.start_date), 'MMM d, yyyy')}
@@ -256,7 +255,7 @@ export default function EventManagement({ events }) {
               </div>
             ))}
             {(!events || events.length === 0) && (
-              <p className="text-center text-gray-500 py-8">No events created yet</p>
+              <p className="text-center text-muted-foreground py-8">No events created yet</p>
             )}
           </div>
         </CardContent>
@@ -303,10 +302,10 @@ export default function EventManagement({ events }) {
                 type="file"
                 accept="image/*"
                 onChange={handlePhotoUpload}
-                className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+                className="mt-1 block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
                 disabled={uploadingPhoto}
               />
-              {uploadingPhoto && <p className="text-sm text-gray-500 mt-1">Uploading...</p>}
+              {uploadingPhoto && <p className="text-sm text-muted-foreground mt-1">Uploading...</p>}
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">

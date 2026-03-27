@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -147,13 +146,13 @@ export default function VIPEventsHub() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl p-8 max-w-md text-center shadow-2xl"
+          className="bg-card rounded-3xl p-8 max-w-md text-center shadow-2xl"
         >
           <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
             <Lock size={40} className="text-white" />
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">VIP Events</h2>
-          <p className="text-gray-600 mb-6">
+          <h2 className="text-3xl font-bold text-foreground mb-4">VIP Events</h2>
+          <p className="text-muted-foreground mb-6">
             Exclusive events are only available for Elite and VIP members. Upgrade now to access:
           </p>
           <div className="space-y-3 mb-8 text-left">
@@ -186,8 +185,8 @@ export default function VIPEventsHub() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-amber-50/20 pb-24">
-      <header className="bg-white/80 backdrop-blur-lg border-b border-gray-100 sticky top-0 z-40">
+    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 pb-24">
+      <header className="bg-card/80 backdrop-blur-lg border-b border-border sticky top-0 z-40">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link to={createPageUrl('Home')}>
             <Button variant="ghost" size="icon">
@@ -223,8 +222,8 @@ export default function VIPEventsHub() {
             {upcomingEvents.length === 0 ? (
               <Card>
                 <CardContent className="p-12 text-center">
-                  <Calendar size={48} className="text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">No upcoming events yet. Check back soon!</p>
+                  <Calendar size={48} className="text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">No upcoming events yet. Check back soon!</p>
                 </CardContent>
               </Card>
             ) : (
@@ -264,26 +263,26 @@ export default function VIPEventsHub() {
                             <div className="flex items-start justify-between mb-3">
                               <div>
                                 <Badge className="mb-2 capitalize">{event.event_type.replace('_', ' ')}</Badge>
-                                <h3 className="text-xl font-bold text-gray-900">{event.title}</h3>
+                                <h3 className="text-xl font-bold text-foreground">{event.title}</h3>
                               </div>
                             </div>
 
-                            <p className="text-gray-600 mb-4 line-clamp-2">{event.description}</p>
+                            <p className="text-muted-foreground mb-4 line-clamp-2">{event.description}</p>
 
                             <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
-                              <div className="flex items-center gap-2 text-gray-700">
+                              <div className="flex items-center gap-2 text-foreground">
                                 <Calendar size={16} className="text-purple-600" />
                                 {format(new Date(event.scheduled_at), 'MMM d, yyyy')}
                               </div>
-                              <div className="flex items-center gap-2 text-gray-700">
+                              <div className="flex items-center gap-2 text-foreground">
                                 <Clock size={16} className="text-purple-600" />
                                 {format(new Date(event.scheduled_at), 'h:mm a')}
                               </div>
-                              <div className="flex items-center gap-2 text-gray-700">
+                              <div className="flex items-center gap-2 text-foreground">
                                 <Users size={16} className="text-purple-600" />
                                 {event.current_participants}/{event.max_participants} spots
                               </div>
-                              <div className="flex items-center gap-2 text-gray-700">
+                              <div className="flex items-center gap-2 text-foreground">
                                 <Clock size={16} className="text-purple-600" />
                                 {event.duration_minutes} min
                               </div>
@@ -332,8 +331,8 @@ export default function VIPEventsHub() {
             {pastEvents.length === 0 ? (
               <Card>
                 <CardContent className="p-12 text-center">
-                  <Calendar size={48} className="text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">No past events to show</p>
+                  <Calendar size={48} className="text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">No past events to show</p>
                 </CardContent>
               </Card>
             ) : (
@@ -343,8 +342,8 @@ export default function VIPEventsHub() {
                     <div className="flex items-center justify-between">
                       <div>
                         <Badge className="mb-2 capitalize">{event.event_type.replace('_', ' ')}</Badge>
-                        <h3 className="text-lg font-bold text-gray-900">{event.title}</h3>
-                        <p className="text-sm text-gray-500">
+                        <h3 className="text-lg font-bold text-foreground">{event.title}</h3>
+                        <p className="text-sm text-muted-foreground">
                           {format(new Date(event.scheduled_at), 'MMM d, yyyy • h:mm a')}
                         </p>
                       </div>

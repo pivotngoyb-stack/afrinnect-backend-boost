@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { filterRecords } from '@/lib/supabase-helpers';
 import { useQuery } from '@tanstack/react-query';
@@ -31,18 +30,18 @@ export default function DateFeedbackReview() {
                 </div>
                 <Badge variant="destructive">Safety Concern</Badge>
               </div>
-              <p className="text-sm text-gray-700 mb-2">
+              <p className="text-sm text-foreground mb-2">
                 Met in person: {feedback.met_in_person ? 'Yes' : 'No'}
               </p>
               {feedback.feedback_notes && (
-                <p className="text-sm text-gray-700 bg-white p-2 rounded">
+                <p className="text-sm text-foreground bg-card p-2 rounded">
                   "{feedback.feedback_notes}"
                 </p>
               )}
             </div>
           ))}
           {feedbacks.length === 0 && (
-            <p className="text-center text-gray-500 py-8">No safety concerns reported</p>
+            <p className="text-center text-muted-foreground py-8">No safety concerns reported</p>
           )}
         </div>
       </CardContent>

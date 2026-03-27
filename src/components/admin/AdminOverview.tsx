@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ConversionFunnel from './ConversionFunnel';
@@ -14,7 +13,7 @@ export default function AdminOverview({ stats, isLoading }) {
           {[1, 2, 3, 4].map(i => (
             <Card key={i} className="animate-pulse">
               <CardContent className="p-6">
-                <div className="h-20 bg-gray-200 rounded" />
+                <div className="h-20 bg-muted rounded" />
               </CardContent>
             </Card>
           ))}
@@ -117,8 +116,8 @@ export default function AdminOverview({ stats, isLoading }) {
                         </Badge>
                       </div>
                       <h3 className="text-3xl font-bold mb-1">{kpi.value}</h3>
-                      <p className="text-sm text-gray-600">{kpi.title}</p>
-                      <p className="text-xs text-gray-500 mt-2">{kpi.subtext}</p>
+                      <p className="text-sm text-muted-foreground">{kpi.title}</p>
+                      <p className="text-xs text-muted-foreground mt-2">{kpi.subtext}</p>
                     </CardContent>
                   </Card>
                 </TooltipTrigger>
@@ -143,19 +142,19 @@ export default function AdminOverview({ stats, isLoading }) {
           <CardContent className="space-y-4">
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">New This Week</span>
+                <span className="text-muted-foreground">New This Week</span>
                 <span className="text-xl font-bold text-blue-600">+{stats.newUsersThisWeek || 0}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">New This Month</span>
+                <span className="text-muted-foreground">New This Month</span>
                 <span className="text-xl font-bold text-blue-600">+{stats.newUsersThisMonth || 0}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Growth Rate</span>
+                <span className="text-muted-foreground">Growth Rate</span>
                 <span className="text-xl font-bold text-green-600">{stats.growthRate || 0}%</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Matches This Week</span>
+                <span className="text-muted-foreground">Matches This Week</span>
                 <span className="text-xl font-bold text-pink-600">+{stats.matchesThisWeek || 0}</span>
               </div>
             </div>
@@ -174,12 +173,12 @@ export default function AdminOverview({ stats, isLoading }) {
             {healthMetrics.map((metric, idx) => (
               <div key={idx}>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-gray-600">{metric.label}</span>
+                  <span className="text-sm text-muted-foreground">{metric.label}</span>
                   <span className="text-sm font-semibold">
                     {metric.value} / {metric.total}
                   </span>
                 </div>
-                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div
                     className={`h-full ${metric.status === 'good' ? 'bg-green-500' : 'bg-yellow-500'}`}
                     style={{ width: `${(metric.value / metric.total) * 100}%` }}
@@ -205,21 +204,21 @@ export default function AdminOverview({ stats, isLoading }) {
         <CardContent>
           <div className="grid md:grid-cols-4 gap-6">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Total Revenue</p>
+              <p className="text-sm text-muted-foreground mb-1">Total Revenue</p>
               <p className="text-2xl font-bold">${(stats.totalRevenue || 0).toFixed(2)}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-600 mb-1">This Month</p>
+              <p className="text-sm text-muted-foreground mb-1">This Month</p>
               <p className="text-2xl font-bold text-green-600">${(stats.revenueThisMonth || 0).toFixed(2)}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-600 mb-1">ARPU</p>
+              <p className="text-sm text-muted-foreground mb-1">ARPU</p>
               <p className="text-2xl font-bold">
                 ${(stats.totalProfiles || 0) > 0 ? ((stats.totalRevenue || 0) / stats.totalProfiles).toFixed(2) : '0.00'}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-600 mb-1">Conversion Rate</p>
+              <p className="text-sm text-muted-foreground mb-1">Conversion Rate</p>
               <p className="text-2xl font-bold text-amber-600">{stats.conversionRate || 0}%</p>
             </div>
           </div>

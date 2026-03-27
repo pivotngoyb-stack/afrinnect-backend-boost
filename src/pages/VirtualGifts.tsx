@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
@@ -110,7 +109,7 @@ export default function VirtualGifts() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-amber-50 pb-24">
-      <header className="bg-white/80 backdrop-blur-lg border-b sticky top-0 z-40">
+      <header className="bg-card/80 backdrop-blur-lg border-b sticky top-0 z-40">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center gap-3">
           <Link to={createPageUrl(`Profile?id=${profileId}`)}>
             <Button variant="ghost" size="icon">
@@ -131,7 +130,7 @@ export default function VirtualGifts() {
               className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
                 activeCategory === cat.id
                   ? 'bg-purple-600 text-white'
-                  : 'bg-white text-gray-600 hover:bg-purple-50'
+                  : 'bg-card text-muted-foreground hover:bg-purple-50'
               }`}
             >
               {cat.label}
@@ -190,7 +189,7 @@ export default function VirtualGifts() {
                   className="mt-2"
                   maxLength={100}
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   {message.length}/100
                 </p>
               </CardContent>

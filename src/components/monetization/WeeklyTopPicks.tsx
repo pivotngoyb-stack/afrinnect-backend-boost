@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Star, Crown, Lock, ChevronRight, Sparkles } from 'lucide-react';

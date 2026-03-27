@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { format } from 'date-fns';
 import { Badge } from "@/components/ui/badge";
@@ -35,7 +34,7 @@ export default function EventCard({ event, onJoin, isAttending = false }) {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 group">
+    <div className="bg-card rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 group">
       <div className="relative h-48 overflow-hidden">
         <img 
           src={event.image_url || 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600'}
@@ -63,15 +62,15 @@ export default function EventCard({ event, onJoin, isAttending = false }) {
       </div>
       
       <div className="p-5">
-        <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-1">{event.title}</h3>
+        <h3 className="font-bold text-lg text-foreground mb-2 line-clamp-1">{event.title}</h3>
         
         <div className="space-y-2 mb-4">
-          <div className="flex items-center gap-2 text-gray-600 text-sm">
+          <div className="flex items-center gap-2 text-muted-foreground text-sm">
             <Calendar size={16} className="text-purple-600 flex-shrink-0" />
             <span>{formatDate(event.start_date)}</span>
           </div>
           
-          <div className="flex items-center gap-2 text-gray-600 text-sm">
+          <div className="flex items-center gap-2 text-muted-foreground text-sm">
             {event.is_virtual ? (
               <>
                 <Globe size={16} className="text-purple-600 flex-shrink-0" />
@@ -85,7 +84,7 @@ export default function EventCard({ event, onJoin, isAttending = false }) {
             )}
           </div>
           
-          <div className="flex items-center gap-2 text-gray-600 text-sm">
+          <div className="flex items-center gap-2 text-muted-foreground text-sm">
             <Users size={16} className="text-purple-600 flex-shrink-0" />
             <span>
               {event.attendees?.length || 0}
@@ -94,7 +93,7 @@ export default function EventCard({ event, onJoin, isAttending = false }) {
           </div>
         </div>
 
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">{event.description}</p>
+        <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{event.description}</p>
 
         {event.tags?.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-4">

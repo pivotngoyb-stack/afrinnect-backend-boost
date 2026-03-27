@@ -50,7 +50,7 @@ export default function LiveViewerNotification({
               <motion.div
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ repeat: Infinity, duration: 1 }}
-                className="w-2 h-2 bg-white rounded-full"
+                className="w-2 h-2 bg-card rounded-full"
               />
               <span className="text-white text-xs font-semibold uppercase tracking-wide">
                 Profile View
@@ -70,7 +70,7 @@ export default function LiveViewerNotification({
                     ) : (
                       <>
                         <div className="w-full h-full bg-gradient-to-br from-purple-300 to-pink-300 blur-lg" />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                        <div className="absolute inset-0 flex items-center justify-center bg-foreground/20">
                           <Lock size={20} className="text-white" />
                         </div>
                       </>

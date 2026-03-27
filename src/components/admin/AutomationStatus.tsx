@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { invokeFunction } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
@@ -63,7 +62,7 @@ export default function AutomationStatus() {
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold">Automation Status</h3>
-          <p className="text-sm text-gray-600">AI-powered automation jobs running in the background</p>
+          <p className="text-sm text-muted-foreground">AI-powered automation jobs running in the background</p>
         </div>
         <Badge className="bg-green-600">
           <Zap size={14} className="mr-1" />
@@ -85,8 +84,8 @@ export default function AutomationStatus() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <p className="text-sm text-gray-600">{automation.description}</p>
-                <p className="text-xs text-gray-500">{automation.schedule}</p>
+                <p className="text-sm text-muted-foreground">{automation.description}</p>
+                <p className="text-xs text-muted-foreground">{automation.schedule}</p>
                 <Button
                   onClick={() => runAutomationMutation.mutate(automation.name)}
                   disabled={isRunning}

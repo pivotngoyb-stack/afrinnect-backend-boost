@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
@@ -38,12 +37,12 @@ export default function QuestionGame({ matchId, myProfileId, onAnswerSubmit }) {
       <CardContent className="p-4">
         <div className="flex items-center gap-2 mb-3">
           <Sparkles className="text-purple-600" size={20} />
-          <h3 className="font-semibold text-gray-900">Question Game</h3>
+          <h3 className="font-semibold text-foreground">Question Game</h3>
         </div>
 
         {!selectedQuestion ? (
           <div className="space-y-2">
-            <p className="text-sm text-gray-600 mb-3">Pick a question to answer!</p>
+            <p className="text-sm text-muted-foreground mb-3">Pick a question to answer!</p>
             <div className="grid grid-cols-1 gap-2">
               {QUESTIONS.slice(0, 3).map((q, idx) => (
                 <Button

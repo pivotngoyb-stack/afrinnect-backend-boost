@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, updateRecord } from '@/lib/supabase-helpers';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -97,7 +96,7 @@ export default function SystemSettings() {
       </div>
 
       <Tabs defaultValue="platform" className="w-full">
-        <TabsList className="bg-white/10">
+        <TabsList className="bg-card/10">
           <TabsTrigger value="platform">Platform</TabsTrigger>
           <TabsTrigger value="limits">Limits</TabsTrigger>
           <TabsTrigger value="safety">Safety</TabsTrigger>
@@ -106,7 +105,7 @@ export default function SystemSettings() {
         </TabsList>
 
         <TabsContent value="platform" className="space-y-4">
-          <Card className="bg-white/5 border-white/10">
+          <Card className="bg-card/5 border-card/10">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Globe size={20} />
@@ -115,18 +114,18 @@ export default function SystemSettings() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label className="text-gray-300">Platform Name</Label>
+                <Label className="text-muted-foreground">Platform Name</Label>
                 <Input
                   value={settings.platformName}
                   onChange={(e) => setSettings({...settings, platformName: e.target.value})}
-                  className="bg-white/10 border-white/20 text-white"
+                  className="bg-card/10 border-card/20 text-white"
                 />
               </div>
 
               <div className="flex items-center justify-between p-4 bg-purple-500/20 rounded-lg border border-purple-500/50">
                 <div>
                   <Label className="text-white text-lg font-bold">GO LIVE / LAUNCH MODE</Label>
-                  <p className="text-sm text-gray-300">
+                  <p className="text-sm text-muted-foreground">
                     {settings.isLive 
                       ? "APP IS LIVE! Users can access normally." 
                       : "MAINTENANCE MODE. Users are redirected to Waitlist."}
@@ -141,8 +140,8 @@ export default function SystemSettings() {
               
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-gray-300">Maintenance Mode (Legacy)</Label>
-                  <p className="text-sm text-gray-400">Disable all user access</p>
+                  <Label className="text-muted-foreground">Maintenance Mode (Legacy)</Label>
+                  <p className="text-sm text-muted-foreground">Disable all user access</p>
                 </div>
                 <Switch
                   checked={settings.maintenanceMode}
@@ -152,8 +151,8 @@ export default function SystemSettings() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-gray-300">New User Registration</Label>
-                  <p className="text-sm text-gray-400">Allow new users to sign up</p>
+                  <Label className="text-muted-foreground">New User Registration</Label>
+                  <p className="text-sm text-muted-foreground">Allow new users to sign up</p>
                 </div>
                 <Switch
                   checked={settings.newUserRegistration}
@@ -163,8 +162,8 @@ export default function SystemSettings() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-gray-300">Email Verification Required</Label>
-                  <p className="text-sm text-gray-400">Users must verify email</p>
+                  <Label className="text-muted-foreground">Email Verification Required</Label>
+                  <p className="text-sm text-muted-foreground">Users must verify email</p>
                 </div>
                 <Switch
                   checked={settings.emailVerificationRequired}
@@ -176,48 +175,48 @@ export default function SystemSettings() {
         </TabsContent>
 
         <TabsContent value="limits" className="space-y-4">
-          <Card className="bg-white/5 border-white/10">
+          <Card className="bg-card/5 border-card/10">
             <CardHeader>
               <CardTitle className="text-white">User Limits</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label className="text-gray-300">Free Daily Likes</Label>
+                <Label className="text-muted-foreground">Free Daily Likes</Label>
                 <Input
                   type="number"
                   value={settings.freeDailyLikes}
                   onChange={(e) => setSettings({...settings, freeDailyLikes: parseInt(e.target.value)})}
-                  className="bg-white/10 border-white/20 text-white"
+                  className="bg-card/10 border-card/20 text-white"
                 />
               </div>
 
               <div>
-                <Label className="text-gray-300">Premium Daily Likes</Label>
+                <Label className="text-muted-foreground">Premium Daily Likes</Label>
                 <Input
                   type="number"
                   value={settings.premiumDailyLikes}
                   onChange={(e) => setSettings({...settings, premiumDailyLikes: parseInt(e.target.value)})}
-                  className="bg-white/10 border-white/20 text-white"
+                  className="bg-card/10 border-card/20 text-white"
                 />
               </div>
 
               <div>
-                <Label className="text-gray-300">Max Profile Photos</Label>
+                <Label className="text-muted-foreground">Max Profile Photos</Label>
                 <Input
                   type="number"
                   value={settings.maxProfilePhotos}
                   onChange={(e) => setSettings({...settings, maxProfilePhotos: parseInt(e.target.value)})}
-                  className="bg-white/10 border-white/20 text-white"
+                  className="bg-card/10 border-card/20 text-white"
                 />
               </div>
 
               <div>
-                <Label className="text-gray-300">Max Bio Characters</Label>
+                <Label className="text-muted-foreground">Max Bio Characters</Label>
                 <Input
                   type="number"
                   value={settings.maxBio}
                   onChange={(e) => setSettings({...settings, maxBio: parseInt(e.target.value)})}
-                  className="bg-white/10 border-white/20 text-white"
+                  className="bg-card/10 border-card/20 text-white"
                 />
               </div>
             </CardContent>
@@ -225,7 +224,7 @@ export default function SystemSettings() {
         </TabsContent>
 
         <TabsContent value="safety" className="space-y-4">
-          <Card className="bg-white/5 border-white/10">
+          <Card className="bg-card/5 border-card/10">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Shield size={20} />
@@ -235,8 +234,8 @@ export default function SystemSettings() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-gray-300">Auto Moderation</Label>
-                  <p className="text-sm text-gray-400">AI-powered content moderation</p>
+                  <Label className="text-muted-foreground">Auto Moderation</Label>
+                  <p className="text-sm text-muted-foreground">AI-powered content moderation</p>
                 </div>
                 <Switch
                   checked={settings.autoModerationEnabled}
@@ -246,8 +245,8 @@ export default function SystemSettings() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-gray-300">Manual Review Required</Label>
-                  <p className="text-sm text-gray-400">All photos need admin approval</p>
+                  <Label className="text-muted-foreground">Manual Review Required</Label>
+                  <p className="text-sm text-muted-foreground">All photos need admin approval</p>
                 </div>
                 <Switch
                   checked={settings.manualReviewRequired}
@@ -256,22 +255,22 @@ export default function SystemSettings() {
               </div>
 
               <div>
-                <Label className="text-gray-300">Minimum Age Requirement</Label>
+                <Label className="text-muted-foreground">Minimum Age Requirement</Label>
                 <Input
                   type="number"
                   value={settings.minAgeRequirement}
                   onChange={(e) => setSettings({...settings, minAgeRequirement: parseInt(e.target.value)})}
-                  className="bg-white/10 border-white/20 text-white"
+                  className="bg-card/10 border-card/20 text-white"
                 />
               </div>
 
               <div>
-                <Label className="text-gray-300">Maximum Age Allowed</Label>
+                <Label className="text-muted-foreground">Maximum Age Allowed</Label>
                 <Input
                   type="number"
                   value={settings.maxAgeAllowed}
                   onChange={(e) => setSettings({...settings, maxAgeAllowed: parseInt(e.target.value)})}
-                  className="bg-white/10 border-white/20 text-white"
+                  className="bg-card/10 border-card/20 text-white"
                 />
               </div>
             </CardContent>
@@ -279,7 +278,7 @@ export default function SystemSettings() {
         </TabsContent>
 
         <TabsContent value="pricing" className="space-y-4">
-          <Card className="bg-white/5 border-white/10">
+          <Card className="bg-card/5 border-card/10">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <DollarSign size={20} />
@@ -289,8 +288,8 @@ export default function SystemSettings() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-gray-300">Regional Pricing</Label>
-                  <p className="text-sm text-gray-400">Offer discounts by region</p>
+                  <Label className="text-muted-foreground">Regional Pricing</Label>
+                  <p className="text-sm text-muted-foreground">Offer discounts by region</p>
                 </div>
                 <Switch
                   checked={settings.regionalPricingEnabled}
@@ -299,12 +298,12 @@ export default function SystemSettings() {
               </div>
 
               <div>
-                <Label className="text-gray-300">African Countries Discount (%)</Label>
+                <Label className="text-muted-foreground">African Countries Discount (%)</Label>
                 <Input
                   type="number"
                   value={settings.africanDiscount}
                   onChange={(e) => setSettings({...settings, africanDiscount: parseInt(e.target.value)})}
-                  className="bg-white/10 border-white/20 text-white"
+                  className="bg-card/10 border-card/20 text-white"
                 />
               </div>
             </CardContent>
@@ -312,7 +311,7 @@ export default function SystemSettings() {
         </TabsContent>
 
         <TabsContent value="features" className="space-y-4">
-          <Card className="bg-white/5 border-white/10">
+          <Card className="bg-card/5 border-card/10">
             <CardHeader>
               <CardTitle className="text-white">Feature Toggles</CardTitle>
             </CardHeader>
@@ -326,8 +325,8 @@ export default function SystemSettings() {
               ].map(feature => (
                 <div key={feature.key} className="flex items-center justify-between">
                   <div>
-                    <Label className="text-gray-300">{feature.label}</Label>
-                    <p className="text-sm text-gray-400">{feature.desc}</p>
+                    <Label className="text-muted-foreground">{feature.label}</Label>
+                    <p className="text-sm text-muted-foreground">{feature.desc}</p>
                   </div>
                   <Switch
                     checked={settings[feature.key]}

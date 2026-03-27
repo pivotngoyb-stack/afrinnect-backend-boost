@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createRecord, deleteRecord, listRecords, updateRecord, uploadFile } from '@/lib/supabase-helpers';
@@ -120,7 +119,7 @@ export default function VendorManagement() {
       <CardContent>
         <div className="space-y-3">
           {vendors.map(vendor => (
-            <div key={vendor.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+            <div key={vendor.id} className="flex items-start gap-3 p-3 bg-muted rounded-lg">
               {vendor.image_url && (
                 <img
                   src={vendor.image_url}
@@ -138,8 +137,8 @@ export default function VendorManagement() {
                       {vendor.state && <Badge variant="outline">{vendor.state}</Badge>}
                       {vendor.is_featured && <Badge className="bg-amber-500">Featured</Badge>}
                     </div>
-                    <p className="text-sm text-gray-600 mt-1">{vendor.location}</p>
-                    <p className="text-xs text-gray-500 mt-1">{vendor.email}</p>
+                    <p className="text-sm text-muted-foreground mt-1">{vendor.location}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{vendor.email}</p>
                   </div>
                   <div className="flex gap-2">
                     {vendor.website && (
@@ -227,7 +226,7 @@ export default function VendorManagement() {
                   className="mt-2"
                   disabled={uploadingPhoto}
                 />
-                {uploadingPhoto && <p className="text-sm text-gray-500 mt-1">Uploading...</p>}
+                {uploadingPhoto && <p className="text-sm text-muted-foreground mt-1">Uploading...</p>}
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">

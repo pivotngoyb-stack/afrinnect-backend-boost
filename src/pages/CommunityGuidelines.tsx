@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -7,8 +6,8 @@ import { Button } from "@/components/ui/button";
 
 export default function CommunityGuidelines() {
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
-      <header className="bg-white border-b sticky top-0 z-40">
+    <div className="min-h-screen bg-muted pb-24">
+      <header className="bg-card border-b sticky top-0 z-40">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link to={createPageUrl('Landing')}>
             <Button variant="ghost" size="icon">
@@ -20,15 +19,15 @@ export default function CommunityGuidelines() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl p-8 shadow-sm space-y-6">
+        <div className="bg-card rounded-xl p-8 shadow-sm space-y-6">
           <div>
             <h2 className="text-2xl font-bold mb-2">Afrinnect Community Guidelines</h2>
-            <p className="text-gray-700">Afrinnect is a safe, respectful community celebrating African culture and meaningful connections.</p>
+            <p className="text-foreground">Afrinnect is a safe, respectful community celebrating African culture and meaningful connections.</p>
           </div>
 
           <section className="space-y-4">
             <h3 className="text-xl font-semibold">✅ Do's - Be Respectful</h3>
-            <ul className="list-disc pl-6 space-y-2 text-gray-700">
+            <ul className="list-disc pl-6 space-y-2 text-foreground">
               <li>Treat everyone with kindness and respect</li>
               <li>Be honest in your profile and photos</li>
               <li>Celebrate cultural diversity and heritage</li>
@@ -53,7 +52,7 @@ export default function CommunityGuidelines() {
 
           <section className="space-y-4">
             <h3 className="text-xl font-semibold">🔒 Safety First</h3>
-            <ul className="list-disc pl-6 space-y-2 text-gray-700">
+            <ul className="list-disc pl-6 space-y-2 text-foreground">
               <li>Never share financial information</li>
               <li>Meet in public places for first dates</li>
               <li>Tell someone where you're going</li>
@@ -64,7 +63,7 @@ export default function CommunityGuidelines() {
 
           <section className="space-y-4">
             <h3 className="text-xl font-semibold">📸 Profile Guidelines</h3>
-            <ul className="list-disc pl-6 space-y-2 text-gray-700">
+            <ul className="list-disc pl-6 space-y-2 text-foreground">
               <li>Use recent, clear photos of yourself</li>
               <li>No nudity or sexually explicit content</li>
               <li>No children in photos (for their protection)</li>
@@ -75,7 +74,7 @@ export default function CommunityGuidelines() {
 
           <section className="space-y-4">
             <h3 className="text-xl font-semibold">💬 Messaging Etiquette</h3>
-            <ul className="list-disc pl-6 space-y-2 text-gray-700">
+            <ul className="list-disc pl-6 space-y-2 text-foreground">
               <li>Start with friendly, respectful messages</li>
               <li>Respect if someone doesn't respond</li>
               <li>No spam or copy-paste messages</li>
@@ -86,10 +85,10 @@ export default function CommunityGuidelines() {
 
           <section className="space-y-4">
             <h3 className="text-xl font-semibold">🎯 Cultural Respect</h3>
-            <p className="text-gray-700">
+            <p className="text-foreground">
               Afrinnect celebrates the African diaspora. Whether you're African, of African descent, or simply interested in the culture, show respect for:
             </p>
-            <ul className="list-disc pl-6 space-y-2 text-gray-700">
+            <ul className="list-disc pl-6 space-y-2 text-foreground">
               <li>Different cultures, traditions, and languages</li>
               <li>Religious beliefs and practices</li>
               <li>Varied backgrounds and experiences</li>
@@ -99,8 +98,8 @@ export default function CommunityGuidelines() {
 
           <section className="space-y-4">
             <h3 className="text-xl font-semibold">⚖️ Enforcement</h3>
-            <p className="text-gray-700">Violations result in:</p>
-            <ul className="list-disc pl-6 space-y-2 text-gray-700">
+            <p className="text-foreground">Violations result in:</p>
+            <ul className="list-disc pl-6 space-y-2 text-foreground">
               <li><strong>First offense:</strong> Warning</li>
               <li><strong>Second offense:</strong> Temporary suspension (7-30 days)</li>
               <li><strong>Serious violations:</strong> Immediate permanent ban</li>
@@ -110,7 +109,7 @@ export default function CommunityGuidelines() {
 
           <section className="space-y-4">
             <h3 className="text-xl font-semibold">📢 Reporting</h3>
-            <p className="text-gray-700">
+            <p className="text-foreground">
               See something concerning? Report it immediately. All reports are reviewed within 24 hours. Your report is confidential.
             </p>
           </section>
@@ -123,8 +122,8 @@ export default function CommunityGuidelines() {
 
           {/* Copyright Notice */}
           <div className="pt-6 border-t text-center">
-            <p className="text-sm text-gray-600">© {new Date().getFullYear()} Afrinnect. All rights reserved.</p>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} Afrinnect. All rights reserved.</p>
+            <p className="text-xs text-muted-foreground mt-1">
               These guidelines are proprietary to Afrinnect and protected by copyright.
             </p>
           </div>
