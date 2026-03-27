@@ -66,11 +66,19 @@ export default function Explore() {
   const globalProfiles = useMemo(() => allProfiles.filter(p => !LOCAL_COUNTRIES.some(c => c.toLowerCase() === (p.current_country || '').toLowerCase())), [allProfiles]);
 
   const hasGlobalProfiles = globalProfiles.length > 0;
-  const [mode, setMode] = useState<'local' | 'global'>('global');
+  const hasLocalProfiles = localProfiles.length > 0;
+  const [mode, setMode] = useState<'local' | 'global'>('local');
 
-  // Use appropriate set based on mode; fallback to local if no global
-  const profiles = mode === 'global' && hasGlobalProfiles ? globalProfiles : localProfiles.length > 0 ? localProfiles : allProfiles;
-  const effectiveMode = mode === 'global' && hasGlobalProfiles ? 'global' : 'local';
+  // Respect selected mode, but gracefully fallback if selected set is empty
+  const effectiveMode: 'local' | 'global' =
+    mode === 'local'
+      ? (hasLocalProfiles ? 'local' : hasGlobalProfiles ? 'global' : 'local')
+      : (hasGlobalProfiles ? 'global' : hasLocalProfiles ? 'local' : 'global');
+
+  const profiles =
+    effectiveMode === 'local'
+      ? (hasLocalProfiles ? localProfiles : allProfiles)
+      : (hasGlobalProfiles ? globalProfiles : allProfiles);
 
   // Get unique countries
   const countries = [...new Set(profiles.map(p => p.country_of_origin).filter(Boolean))].sort();
