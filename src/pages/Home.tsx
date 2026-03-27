@@ -449,6 +449,19 @@ export default function Home() {
             });
           } catch (e) { console.warn('Notification skipped (match→self):', e); }
 
+          // Send push notifications for the match to both users
+          try {
+            await supabase.functions.invoke('send-push-notification', {
+              body: {
+                userId: likedProfile.user_id,
+                title: "It's a Match! 💕",
+                body: `You and ${myProfile.display_name} liked each other!`,
+                type: 'match',
+                data: { link: '/matches' },
+              },
+            });
+          } catch (e) { console.warn('Push skipped (match→liked):', e); }
+
           return { isMatch: true };
         }
         return { isMatch: true };
@@ -462,6 +475,21 @@ export default function Home() {
             p_from_profile_id: myProfile.id, p_link_to: createPageUrl('Matches')
           });
         } catch (e) { console.warn('Notification skipped (like):', e); }
+
+        // Push notification for super likes
+        if (isSuperLike) {
+          try {
+            await supabase.functions.invoke('send-push-notification', {
+              body: {
+                userId: likedProfile.user_id,
+                title: 'You got a Super Like! ⭐',
+                body: `${myProfile.display_name} super liked your profile`,
+                type: 'super_like',
+                data: { link: '/who-likes-you' },
+              },
+            });
+          } catch (e) { console.warn('Push skipped (super_like):', e); }
+        }
       }
       return { isMatch: false, alreadyLiked };
     },
