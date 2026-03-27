@@ -4,9 +4,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { 
   BarChart3, Users, Shield, TrendingUp, DollarSign, MessageSquare,
-  Settings, ChevronLeft, ChevronRight, Flag, Book, Store,
-  Eye, LogOut, Megaphone, Gift, Star, Zap, ClipboardList
 } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -50,6 +49,7 @@ export default function AdminSidebar({ pendingReports = 0 }: AdminSidebarProps) 
     { label: 'Analytics', icon: TrendingUp, path: '/adminanalytics' },
     { label: 'Audit Logs', icon: ClipboardList, path: '/adminauditlogs' },
     { label: 'Subscriptions', icon: DollarSign, path: '/adminsubscriptions' },
+    { label: 'Events', icon: Calendar, path: '/adminevents' },
     { label: 'VIP Events', icon: Gift, path: '/adminvipevents' },
     { label: 'Ambassadors', icon: Star, path: '/adminambassadors' },
     { label: 'Broadcast', icon: Megaphone, path: '/adminbroadcast' },
