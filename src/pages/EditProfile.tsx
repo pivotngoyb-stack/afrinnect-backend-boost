@@ -440,7 +440,55 @@ export default function EditProfile() {
           />
         </motion.div>
 
-        {/* Location & Heritage */}
+        {/* Opening Move */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.15 }}
+        >
+          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur">
+            <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-6">
+              <div className="flex items-center gap-3 text-white">
+                <div className="p-3 bg-white/20 rounded-xl backdrop-blur">
+                  <Sparkles size={24} />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold">Opening Move</h2>
+                  <p className="text-sm text-white/80">Set a prompt your matches will see first</p>
+                </div>
+              </div>
+            </div>
+            <CardContent className="p-6 space-y-4">
+              <div>
+                <Label className="text-sm font-semibold text-gray-700 mb-2">Your Opening Move Prompt</Label>
+                <Textarea
+                  value={formData.opening_move || ''}
+                  onChange={(e) => setFormData({ ...formData, opening_move: e.target.value })}
+                  placeholder='e.g. "Tell me your favorite African dish 🍲" or "Where would you travel next?"'
+                  maxLength={150}
+                  rows={2}
+                  className="border-2 focus:border-purple-400 rounded-xl resize-none"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  {(formData.opening_move || '').length}/150 — This prompt shows when someone matches with you
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {['Tell me your favorite African dish 🍲', 'Where would you travel next? ✈️', "What's your go-to weekend vibe? 🎶", "What's one thing you're proud of? 💪"].map(suggestion => (
+                  <Badge
+                    key={suggestion}
+                    variant="outline"
+                    className="cursor-pointer hover:bg-accent transition-colors text-xs py-1.5"
+                    onClick={() => setFormData({ ...formData, opening_move: suggestion })}
+                  >
+                    {suggestion}
+                  </Badge>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
