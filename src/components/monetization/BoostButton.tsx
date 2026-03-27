@@ -115,21 +115,111 @@ export default function BoostButton({ userProfile, onBoostActivated, onBoostSucc
     }
   };
 
-  // Compact variant (for Profile page)
+  const compactButton = (
+    <Button
+      onClick={() => setShowModal(true)}
+      variant={isBoostActive ? "outline" : "default"}
+      className={isBoostActive ? "border-primary text-primary" : ""}
+      size="lg"
+    >
+      <Zap size={20} className={isBoostActive ? "fill-primary" : "fill-primary-foreground"} />
+      <span className="ml-2">
+        {isBoostActive ? `Boosted (${boostTimeLeft})` : 'Boost Profile'}
+      </span>
+    </Button>
+  );
+
+  const modal = (
+    <AnimatePresence>
+      {showModal && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          onClick={() => setShowModal(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.9, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.9, y: 20 }}
+            onClick={e => e.stopPropagation()}
+            className="bg-background rounded-2xl p-6 max-w-sm w-full shadow-2xl relative"
+          >
+            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground">
+              <X size={20} />
+            </button>
+
+            <div className="text-center mb-5">
+              <div className="w-14 h-14 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center mx-auto mb-3">
+                <Zap size={28} className="text-primary-foreground" />
+              </div>
+              <h3 className="text-xl font-bold text-foreground">Boost Your Profile</h3>
+              <p className="text-sm text-muted-foreground mt-1">Get up to 10x more views</p>
+            </div>
+
+            {error && (
+              <Alert variant="destructive" className="mb-4">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription className="text-sm">{error}</AlertDescription>
+              </Alert>
+            )}
+
+            {isBoostActive && (
+              <Alert className="mb-4">
+                <Zap className="h-4 w-4 text-primary" />
+                <AlertDescription>Boost active — {boostTimeLeft} remaining</AlertDescription>
+              </Alert>
+            )}
+
+            <div className="space-y-2 mb-4">
+              {['Appear first in discovery', 'Up to 10x more profile views', 'Prioritized in your area'].map((text, i) => (
+                <div key={i} className="flex items-center gap-2 text-sm">
+                  <CheckCircle size={16} className="text-green-500 shrink-0" />
+                  <span className="text-muted-foreground">{text}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-muted rounded-lg p-3 mb-4">
+              <p className="text-sm text-muted-foreground">
+                <strong>Your Plan:</strong> <Badge variant="secondary">{tier.toUpperCase()}</Badge>
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">{TIER_LABELS[tier] || TIER_LABELS.free}</p>
+            </div>
+
+            <div className="space-y-2">
+              <Button
+                onClick={handleBoost}
+                disabled={isBoosting || isBoostActive}
+                className="w-full h-11"
+              >
+                {isBoosting ? (
+                  <><Loader2 size={18} className="mr-2 animate-spin" /> Boosting...</>
+                ) : isBoostActive ? (
+                  'Already Boosted'
+                ) : (
+                  <><Zap size={18} className="mr-2" /> Boost Now</>
+                )}
+              </Button>
+
+              {tier === 'free' && (
+                <Link to="/pricing">
+                  <Button variant="outline" className="w-full h-11">
+                    <Crown size={18} className="mr-2 text-amber-500" />
+                    Upgrade for Boosts
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
   if (variant === 'compact') {
-    return (
-      <Button
-        onClick={() => setShowModal(true)}
-        variant={isBoostActive ? "outline" : "default"}
-        className={isBoostActive ? "border-primary text-primary" : ""}
-        size="lg"
-      >
-        <Zap size={20} className={isBoostActive ? "fill-primary" : "fill-primary-foreground"} />
-        <span className="ml-2">
-          {isBoostActive ? `Boosted (${boostTimeLeft})` : 'Boost Profile'}
-        </span>
-      </Button>
-    );
+    return <>{compactButton}{modal}</>;
   }
 
   return (
@@ -167,94 +257,7 @@ export default function BoostButton({ userProfile, onBoostActivated, onBoostSucc
           </Button>
         )}
       </motion.div>
-
-      {/* Unified Modal */}
-      <AnimatePresence>
-        {showModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-            onClick={() => setShowModal(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              onClick={e => e.stopPropagation()}
-              className="bg-background rounded-2xl p-6 max-w-sm w-full shadow-2xl relative"
-            >
-              <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground">
-                <X size={20} />
-              </button>
-
-              <div className="text-center mb-5">
-                <div className="w-14 h-14 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Zap size={28} className="text-primary-foreground" />
-                </div>
-                <h3 className="text-xl font-bold text-foreground">Boost Your Profile</h3>
-                <p className="text-sm text-muted-foreground mt-1">Get up to 10x more views</p>
-              </div>
-
-              {error && (
-                <Alert variant="destructive" className="mb-4">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription className="text-sm">{error}</AlertDescription>
-                </Alert>
-              )}
-
-              {isBoostActive && (
-                <Alert className="mb-4">
-                  <Zap className="h-4 w-4 text-primary" />
-                  <AlertDescription>Boost active — {boostTimeLeft} remaining</AlertDescription>
-                </Alert>
-              )}
-
-              <div className="space-y-2 mb-4">
-                {['Appear first in discovery', 'Up to 10x more profile views', 'Prioritized in your area'].map((text, i) => (
-                  <div key={i} className="flex items-center gap-2 text-sm">
-                    <CheckCircle size={16} className="text-green-500 shrink-0" />
-                    <span className="text-muted-foreground">{text}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="bg-muted rounded-lg p-3 mb-4">
-                <p className="text-sm text-muted-foreground">
-                  <strong>Your Plan:</strong> <Badge variant="secondary">{tier.toUpperCase()}</Badge>
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">{TIER_LABELS[tier] || TIER_LABELS.free}</p>
-              </div>
-
-              <div className="space-y-2">
-                <Button
-                  onClick={handleBoost}
-                  disabled={isBoosting || isBoostActive}
-                  className="w-full h-11"
-                >
-                  {isBoosting ? (
-                    <><Loader2 size={18} className="mr-2 animate-spin" /> Boosting...</>
-                  ) : isBoostActive ? (
-                    'Already Boosted'
-                  ) : (
-                    <><Zap size={18} className="mr-2" /> Boost Now</>
-                  )}
-                </Button>
-
-                {tier === 'free' && (
-                  <Link to="/pricing">
-                    <Button variant="outline" className="w-full h-11">
-                      <Crown size={18} className="mr-2 text-amber-500" />
-                      Upgrade for Boosts
-                    </Button>
-                  </Link>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {modal}
     </>
   );
 }
