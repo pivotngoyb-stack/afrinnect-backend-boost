@@ -202,7 +202,9 @@ export default function Home() {
         const myCountry = normalize(myProfile.current_country);
 
         const passesBaseFilters = (p) => {
-          if (p.user_id === myProfile.user_id) return false;
+          // Hide only the exact current profile; allow seed/test profiles even if they share user_id
+          if (p.id === myProfile.id) return false;
+          if (p.user_id === myProfile.user_id && !p.is_seed) return false;
           if (myBlockedUsers.has(p.id)) return false;
           if (myProfile.looking_for?.length && !myProfile.looking_for.some((g) => normalize(g) === normalize(p.gender))) return false;
           if (filters.age_min || filters.age_max) {
