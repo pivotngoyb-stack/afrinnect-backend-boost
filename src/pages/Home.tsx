@@ -354,28 +354,34 @@ export default function Home() {
             is_expired: false, last_chance_sent: false, first_message_sent: false, status: 'active'
           });
 
-          await createRecord('notifications', {
-            user_profile_id: likedId, user_id: likedProfile.user_id, type: 'match',
-            title: "It's a Match! 💕", message: `You and ${myProfile.display_name} liked each other!`,
-            from_profile_id: myProfile.id, link_to: createPageUrl('Matches')
-          });
-          await createRecord('notifications', {
-            user_profile_id: myProfile.id, user_id: myProfile.user_id, type: 'match',
-            title: "It's a Match! 💕", message: `You and ${likedProfile.display_name} liked each other!`,
-            from_profile_id: likedId, link_to: createPageUrl('Matches')
-          });
+          try {
+            await createRecord('notifications', {
+              user_profile_id: likedId, user_id: likedProfile.user_id, type: 'match',
+              title: "It's a Match! 💕", message: `You and ${myProfile.display_name} liked each other!`,
+              from_profile_id: myProfile.id, link_to: createPageUrl('Matches')
+            });
+          } catch (e) { console.warn('Notification skipped (match→liked):', e); }
+          try {
+            await createRecord('notifications', {
+              user_profile_id: myProfile.id, user_id: myProfile.user_id, type: 'match',
+              title: "It's a Match! 💕", message: `You and ${likedProfile.display_name} liked each other!`,
+              from_profile_id: likedId, link_to: createPageUrl('Matches')
+            });
+          } catch (e) { console.warn('Notification skipped (match→self):', e); }
 
           return { isMatch: true };
         }
         return { isMatch: true };
       } else if (!alreadyLiked) {
-        await createRecord('notifications', {
-          user_profile_id: likedId, user_id: likedProfile.user_id,
-          type: isSuperLike ? 'super_like' : 'like',
-          title: isSuperLike ? "You got a Super Like! ⭐" : "Someone likes you!",
-          message: `${myProfile.display_name} ${isSuperLike ? 'super liked' : 'liked'} your profile`,
-          from_profile_id: myProfile.id, link_to: createPageUrl('Matches')
-        });
+        try {
+          await createRecord('notifications', {
+            user_profile_id: likedId, user_id: likedProfile.user_id,
+            type: isSuperLike ? 'super_like' : 'like',
+            title: isSuperLike ? "You got a Super Like! ⭐" : "Someone likes you!",
+            message: `${myProfile.display_name} ${isSuperLike ? 'super liked' : 'liked'} your profile`,
+            from_profile_id: myProfile.id, link_to: createPageUrl('Matches')
+          });
+        } catch (e) { console.warn('Notification skipped (like):', e); }
       }
       return { isMatch: false, alreadyLiked };
     },
