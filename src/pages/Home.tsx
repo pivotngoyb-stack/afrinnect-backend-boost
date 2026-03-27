@@ -66,7 +66,7 @@ export default function Home() {
     const timer = setTimeout(() => {
       queryClient.prefetchQuery({
         queryKey: ['who-likes-me', myProfile.id],
-        queryFn: () => filterRecords('likes', { liked_id: myProfile.id, is_seen: false }, '-created_at', 50),
+        queryFn: () => filterRecords('likes', { liked_id: myProfile.id, is_seen: false }, '-created_at', 50, 'id,liker_id'),
         staleTime: 120000
       });
     }, 2000);
@@ -78,13 +78,22 @@ export default function Home() {
     queryFn: async () => {
       if (!myProfile?.id) return { likes: 0, views: 0 };
       try {
-        const likes = await filterRecords('likes', { liked_id: myProfile.id, is_seen: false });
+        // OPTIMIZED: Use count queries instead of fetching all records
+        const { count: likesCount } = await supabase
+          .from('likes')
+          .select('id', { count: 'exact', head: true })
+          .eq('liked_id', myProfile.id)
+          .eq('is_seen', false);
         let views = 0;
         try {
-          const viewData = await filterRecords('profile_views', { viewed_profile_id: myProfile.id, is_seen: false });
-          views = viewData?.length || 0;
+          const { count: viewsCount } = await supabase
+            .from('profile_views')
+            .select('id', { count: 'exact', head: true })
+            .eq('viewed_profile_id', myProfile.id)
+            .eq('is_seen', false);
+          views = viewsCount || 0;
         } catch { /* table may not exist yet */ }
-        return { likes: likes.length, views };
+        return { likes: likesCount || 0, views };
       } catch { return { likes: 0, views: 0 }; }
     },
     enabled: !!myProfile?.id,
