@@ -1,7 +1,5 @@
-// @ts-nocheck
-import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Crown, X, Sparkles } from 'lucide-react';
+import { Heart, Crown, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
