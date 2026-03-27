@@ -1045,7 +1045,11 @@ export type Database = {
           email: string | null
           id: string
           metadata: Json | null
+          profile_snapshot: Json | null
+          reactivated_at: string | null
           reason: string | null
+          scheduled_deletion_at: string | null
+          status: string
           user_id: string
         }
         Insert: {
@@ -1053,7 +1057,11 @@ export type Database = {
           email?: string | null
           id?: string
           metadata?: Json | null
+          profile_snapshot?: Json | null
+          reactivated_at?: string | null
           reason?: string | null
+          scheduled_deletion_at?: string | null
+          status?: string
           user_id: string
         }
         Update: {
@@ -1061,7 +1069,11 @@ export type Database = {
           email?: string | null
           id?: string
           metadata?: Json | null
+          profile_snapshot?: Json | null
+          reactivated_at?: string | null
           reason?: string | null
+          scheduled_deletion_at?: string | null
+          status?: string
           user_id?: string
         }
         Relationships: []
