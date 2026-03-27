@@ -439,6 +439,10 @@ export default function Home() {
     },
     onError: (error) => {
       if (error.message === 'verification_required') return;
+      if (error.message === 'slow_down') {
+        toast.info('Slow down! Take a moment between likes.');
+        return;
+      }
       if (error.message === 'daily_limit_reached') {
         setShowLimitPaywall(true);
         setTimeout(() => setShowMissedMatch(true), 500);
