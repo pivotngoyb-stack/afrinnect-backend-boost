@@ -25,7 +25,7 @@ interface ChatReminderBannerProps {
 }
 
 const ChatReminderBanner = forwardRef<HTMLDivElement, ChatReminderBannerProps>(({ staleConversations, conversationData }, ref) => {
-  const { t, language } = useLanguage();
+  const { t, language } = useLanguage() as any;
   const starters = language === 'fr' ? STARTERS_FR : STARTERS_EN;
 
   const stale = staleConversations.filter(p => {
