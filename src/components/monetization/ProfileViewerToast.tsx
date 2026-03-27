@@ -4,40 +4,71 @@ import { Eye, Crown, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
-
-const VIEWER_NAMES = ['Someone special', 'A verified member', 'A Premium member', 'An Elite member', 'Someone nearby'];
+import { supabase } from '@/integrations/supabase/client';
 
 export default function ProfileViewerToast({ userProfile }: { userProfile: any }) {
   const [visible, setVisible] = useState(false);
   const [viewerName, setViewerName] = useState('');
+  const [recentViewCount, setRecentViewCount] = useState(0);
 
   const tier = userProfile?.subscription_tier || 'free';
   const isPaid = ['premium', 'elite', 'vip'].includes(tier);
 
   useEffect(() => {
-    if (!userProfile?.id || isPaid) return;
+    if (!userProfile?.id) return;
 
-    // Show first notification after 45-90 seconds, then every 3-5 minutes
-    const firstDelay = 45000 + Math.random() * 45000;
-    
-    const showNotification = () => {
-      setViewerName(VIEWER_NAMES[Math.floor(Math.random() * VIEWER_NAMES.length)]);
-      setVisible(true);
-      setTimeout(() => setVisible(false), 8000);
+    const checkRecentViews = async () => {
+      try {
+        // Get views from the last 24 hours
+        const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        const { data: views, error } = await supabase
+          .from('profile_views')
+          .select('viewer_profile_id, created_at')
+          .eq('viewed_profile_id', userProfile.id)
+          .gte('created_at', since)
+          .order('created_at', { ascending: false })
+          .limit(10);
+
+        if (error || !views || views.length === 0) return;
+
+        setRecentViewCount(views.length);
+
+        // For premium users, fetch the most recent viewer's name
+        if (isPaid && views[0]) {
+          const { data: viewerProfile } = await supabase
+            .from('user_profiles')
+            .select('full_name')
+            .eq('id', views[0].viewer_profile_id)
+            .maybeSingle();
+
+          setViewerName(viewerProfile?.full_name || 'Someone');
+        } else {
+          setViewerName('Someone');
+        }
+
+        setVisible(true);
+        setTimeout(() => setVisible(false), 8000);
+      } catch {
+        // Silently fail
+      }
     };
 
-    const firstTimer = setTimeout(() => {
-      showNotification();
-      const interval = setInterval(() => {
-        showNotification();
-      }, 180000 + Math.random() * 120000); // 3-5 min
-      return () => clearInterval(interval);
-    }, firstDelay);
-
-    return () => clearTimeout(firstTimer);
+    // Check after a short delay so it doesn't fire immediately on mount
+    const timer = setTimeout(checkRecentViews, 5000);
+    return () => clearTimeout(timer);
   }, [userProfile?.id, isPaid]);
 
-  if (isPaid || !userProfile) return null;
+  if (!userProfile || recentViewCount === 0) return null;
+
+  const message = isPaid
+    ? `${viewerName} viewed your profile`
+    : `${recentViewCount} ${recentViewCount === 1 ? 'person' : 'people'} viewed your profile recently`;
+
+  const subtitle = isPaid
+    ? 'Tap to see who checked you out'
+    : 'Upgrade to see who\'s interested';
+
+  const destination = isPaid ? '/who-likes-you' : createPageUrl('PricingPlans');
 
   return (
     <AnimatePresence>
@@ -59,30 +90,28 @@ export default function ProfileViewerToast({ userProfile }: { userProfile: any }
             </button>
 
             <div className="relative flex items-center gap-3">
-              <motion.div
-                animate={{ scale: [1, 1.15, 1] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-pink-500 flex items-center justify-center shrink-0"
-              >
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-pink-500 flex items-center justify-center shrink-0">
                 <Eye size={20} className="text-primary-foreground" />
-              </motion.div>
+              </div>
 
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-foreground">
-                  {viewerName} is viewing your profile 👀
+                  {message}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  Upgrade to see who's checking you out
+                  {subtitle}
                 </p>
               </div>
             </div>
 
-            <Link to={createPageUrl('PricingPlans')}>
-              <Button size="sm" className="w-full mt-3 gap-1.5">
-                <Crown size={14} />
-                See Who's Looking
-              </Button>
-            </Link>
+            {!isPaid && (
+              <Link to={destination}>
+                <Button size="sm" className="w-full mt-3 gap-1.5">
+                  <Crown size={14} />
+                  See Who's Looking
+                </Button>
+              </Link>
+            )}
           </div>
         </motion.div>
       )}

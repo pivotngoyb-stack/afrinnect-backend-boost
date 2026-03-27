@@ -1,10 +1,17 @@
-// @ts-nocheck
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, Crown, Lock, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from "@/components/ui/button";
+
+interface LiveViewerNotificationProps {
+  viewerName: string;
+  viewerPhoto?: string;
+  isPremium?: boolean;
+  onDismiss?: () => void;
+  className?: string;
+}
 
 export default function LiveViewerNotification({ 
   viewerName,
@@ -12,7 +19,7 @@ export default function LiveViewerNotification({
   isPremium = false,
   onDismiss,
   className = "" 
-}) {
+}: LiveViewerNotificationProps) {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
@@ -46,7 +53,7 @@ export default function LiveViewerNotification({
                 className="w-2 h-2 bg-white rounded-full"
               />
               <span className="text-white text-xs font-semibold uppercase tracking-wide">
-                Live Now
+                Profile View
               </span>
             </div>
 
@@ -69,21 +76,17 @@ export default function LiveViewerNotification({
                       </>
                     )}
                   </div>
-                  <motion.div
-                    animate={{ scale: [1, 1.3, 1] }}
-                    transition={{ repeat: Infinity, duration: 1.5 }}
-                    className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center border-2 border-background"
-                  >
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center border-2 border-background">
                     <Eye size={12} className="text-white" />
-                  </motion.div>
+                  </div>
                 </div>
 
                 <div className="flex-1">
                   <h4 className="font-bold">
-                    {isPremium ? viewerName : 'Someone'} is viewing your profile
+                    {isPremium ? viewerName : 'Someone'} viewed your profile
                   </h4>
                   <p className="text-sm text-muted-foreground">
-                    {isPremium ? 'Check out their profile!' : 'Upgrade to see who 👀'}
+                    {isPremium ? 'Check out their profile!' : 'Upgrade to see who'}
                   </p>
 
                   {!isPremium && (

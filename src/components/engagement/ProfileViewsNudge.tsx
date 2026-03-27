@@ -1,28 +1,49 @@
-// @ts-nocheck
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '@/components/i18n/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function ProfileViewsNudge({ userProfile }: { userProfile: any }) {
   const { t } = useLanguage();
   const [viewCount, setViewCount] = useState(0);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!userProfile) return;
-    const baseViews = Math.floor(Math.random() * 4) + 2;
-    const streakBonus = Math.min(userProfile.login_streak || 0, 5);
-    const premiumBonus = ['premium', 'elite', 'vip'].includes(userProfile.subscription_tier) ? 3 : 0;
-    setViewCount(baseViews + streakBonus + premiumBonus);
-  }, [userProfile]);
+    if (!userProfile?.id) {
+      setLoading(false);
+      return;
+    }
 
-  if (!userProfile || viewCount === 0) return null;
+    const fetchRealViews = async () => {
+      try {
+        const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        const { count, error } = await supabase
+          .from('profile_views')
+          .select('*', { count: 'exact', head: true })
+          .eq('viewed_profile_id', userProfile.id)
+          .gte('created_at', since);
+
+        if (!error && count !== null) {
+          setViewCount(count);
+        }
+      } catch {
+        // Silently fail
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRealViews();
+  }, [userProfile?.id]);
+
+  if (loading || !userProfile || viewCount === 0) return null;
 
   const isPremium = ['premium', 'elite', 'vip'].includes(userProfile?.subscription_tier);
-  const destination = isPremium ? createPageUrl('WhoLikesYou') : createPageUrl('PricingPlans');
+  const destination = isPremium ? '/who-likes-you' : createPageUrl('PricingPlans');
   const noun = viewCount === 1 ? t('engagement.profileViews.person') : t('engagement.profileViews.people');
 
   return (
