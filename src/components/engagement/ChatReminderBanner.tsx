@@ -65,4 +65,8 @@ const ChatReminderBanner = forwardRef<HTMLDivElement, ChatReminderBannerProps>((
       </Link>
     </motion.div>
   );
-}
+});
+
+ChatReminderBanner.displayName = 'ChatReminderBanner';
+
+export default ChatReminderBanner;
