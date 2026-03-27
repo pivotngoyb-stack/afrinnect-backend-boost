@@ -1,7 +1,6 @@
-// @ts-nocheck
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { motion } from 'framer-motion';
-import { MessageSquare, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '@/components/i18n/LanguageContext';
@@ -25,8 +24,8 @@ interface ChatReminderBannerProps {
   conversationData: Record<string, any>;
 }
 
-export default function ChatReminderBanner({ staleConversations, conversationData }: ChatReminderBannerProps) {
-  const { t, language } = useLanguage();
+const ChatReminderBanner = forwardRef<HTMLDivElement, ChatReminderBannerProps>(({ staleConversations, conversationData }, ref) => {
+  const { t, language } = useLanguage() as any;
   const starters = language === 'fr' ? STARTERS_FR : STARTERS_EN;
 
   const stale = staleConversations.filter(p => {
@@ -66,4 +65,8 @@ export default function ChatReminderBanner({ staleConversations, conversationDat
       </Link>
     </motion.div>
   );
-}
+});
+
+ChatReminderBanner.displayName = 'ChatReminderBanner';
+
+export default ChatReminderBanner;
