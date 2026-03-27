@@ -17,8 +17,8 @@ import BoostButton from '@/components/monetization/BoostButton';
 interface HomeHeaderProps {
   discoveryMode: string;
   setDiscoveryMode: (mode: string) => void;
-  viewMode: string;
-  setViewMode: (mode: string) => void;
+  viewMode?: string;
+  setViewMode?: (mode: string) => void;
   filters: any;
   setFilters: (f: any) => void;
   myProfile: any;
@@ -29,7 +29,6 @@ interface HomeHeaderProps {
 
 export default function HomeHeader({
   discoveryMode, setDiscoveryMode,
-  viewMode, setViewMode,
   filters, setFilters,
   myProfile, isAdmin, activityCounts, onBoostActivated,
 }: HomeHeaderProps) {
@@ -54,6 +53,12 @@ export default function HomeHeader({
               </TabsList>
             </Tabs>
 
+            <FilterDrawer
+              filters={filters}
+              onFiltersChange={setFilters}
+              isPremium={myProfile?.is_premium}
+              userTier={myProfile?.subscription_tier || 'free'}
+            />
 
             <LikesCounter userProfile={myProfile} />
 
