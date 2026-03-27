@@ -744,7 +744,7 @@ export default function Landing() {
             <Link to={createPageUrl('CommunityGuidelines')} className="hover:text-white">{t('landing.footer.guidelines')}</Link>
           </div>
           {/* Contact & Copyright */}
-          <div className="mt-8 pt-8 border-t border-gray-800">
+          <div className="mt-8 pt-8 border-t border-border">
             <p className="text-sm text-muted-foreground mb-2">
               {t('landingExtra.footerContact')} <a href="mailto:Support@afrinnect.com" className="text-amber-400 hover:text-amber-300">Support@afrinnect.com</a>
             </p>
