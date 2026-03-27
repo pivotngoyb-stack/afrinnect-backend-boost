@@ -327,7 +327,8 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
                 )}
               </div>
             )}
-          </div>
+          </motion.div>
+          )}
         </AnimatePresence>
 
         {showActions && (
