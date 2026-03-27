@@ -195,15 +195,26 @@ export default function Home() {
       try {
         // OPTIMIZED: Select only fields needed for discovery cards
         const DISCOVERY_FIELDS = 'id,user_id,display_name,primary_photo,photos,birth_date,gender,current_country,current_state,current_city,country_of_origin,tribe_ethnicity,ethnicity,bio,interests,cultural_values,relationship_goal,religion,profession,education,languages,location,is_active,is_banned,is_seed,is_photo_verified,is_id_verified,is_premium,subscription_tier,verification_status,blocked_users,looking_for,last_active,daily_likes_count,daily_likes_reset_date,voice_intro_url,prompts,profile_prompts';
-        const { data: allProfiles, error: profilesError } = await supabase
+        const SAFE_DISCOVERY_FIELDS = 'id,user_id,display_name,primary_photo,photos,birth_date,gender,current_country,current_city,country_of_origin,bio,interests,relationship_goal,religion,profession,education,languages,location,is_active,is_banned,is_seed,is_photo_verified,is_id_verified,is_premium,subscription_tier,verification_status,blocked_users,looking_for,last_active,daily_likes_count,daily_likes_reset_date,voice_intro_url,prompts,profile_prompts';
+
+        const runDiscoveryQuery = async (fields) => supabase
           .from('user_profiles')
-          .select(DISCOVERY_FIELDS)
+          .select(fields)
           .eq('is_active', true)
           .eq('is_banned', false)
           .order('created_at', { ascending: false })
           .limit(500);
 
+        let { data: allProfiles, error: profilesError } = await runDiscoveryQuery(DISCOVERY_FIELDS);
+
         if (profilesError) {
+          console.warn('Primary discovery field set failed; retrying with safe field set:', profilesError);
+          const fallback = await runDiscoveryQuery(SAFE_DISCOVERY_FIELDS);
+          allProfiles = fallback.data;
+          profilesError = fallback.error;
+        }
+
+        if (profilesError || !allProfiles) {
           console.error('Discovery profiles fetch error:', profilesError);
           return [];
         }
