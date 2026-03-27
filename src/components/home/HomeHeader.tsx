@@ -11,6 +11,7 @@ import SuperLikeCounter from '@/components/monetization/SuperLikeCounter';
 import NotificationBell from '@/components/shared/NotificationBell';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '@/components/i18n/LanguageContext';
+import ActivityDrawer from '@/components/home/ActivityDrawer';
 
 interface HomeHeaderProps {
   discoveryMode: string;
@@ -78,6 +79,7 @@ export default function HomeHeader({
             </Link>
 
             <NotificationBell />
+            <ActivityDrawer userProfile={myProfile} />
 
             {isAdmin && (
               <Link to={createPageUrl('AdminDashboard')}>
