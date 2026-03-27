@@ -196,8 +196,8 @@ export default function Home() {
     queryFn: async () => {
       try {
         // OPTIMIZED: Select only fields needed for discovery cards
-        const DISCOVERY_FIELDS = 'id,user_id,display_name,primary_photo,photos,birth_date,gender,current_country,current_state,current_city,country_of_origin,tribe_ethnicity,ethnicity,bio,interests,cultural_values,relationship_goal,religion,profession,education,languages,location,is_active,is_banned,is_seed,is_photo_verified,is_id_verified,is_premium,subscription_tier,verification_status,blocked_users,looking_for,last_active,daily_likes_count,daily_likes_reset_date,voice_intro_url,prompts,profile_prompts';
-        const SAFE_DISCOVERY_FIELDS = 'id,user_id,display_name,primary_photo,photos,birth_date,gender,current_country,current_city,country_of_origin,bio,interests,relationship_goal,religion,profession,education,languages,location,is_active,is_banned,is_seed,is_photo_verified,is_id_verified,is_premium,subscription_tier,verification_status,blocked_users,looking_for,last_active,daily_likes_count,daily_likes_reset_date,voice_intro_url,prompts,profile_prompts';
+        const DISCOVERY_FIELDS = 'id,user_id,display_name,primary_photo,photos,birth_date,gender,current_country,current_state,current_city,country_of_origin,tribe_ethnicity,ethnicity,bio,interests,cultural_values,relationship_goal,religion,profession,education,languages,location,is_active,is_banned,is_seed,is_photo_verified,is_id_verified,is_premium,subscription_tier,verification_status,blocked_users,looking_for,last_active,daily_likes_count,daily_likes_reset_date,voice_intro_url,prompts,profile_prompts,opening_move';
+        const SAFE_DISCOVERY_FIELDS = 'id,user_id,display_name,primary_photo,photos,birth_date,gender,current_country,current_city,country_of_origin,bio,interests,relationship_goal,religion,profession,education,languages,location,is_active,is_banned,is_seed,is_photo_verified,is_id_verified,is_premium,subscription_tier,verification_status,blocked_users,looking_for,last_active,daily_likes_count,daily_likes_reset_date,voice_intro_url,prompts,profile_prompts,opening_move';
 
         const runDiscoveryQuery = async (fields) => supabase
           .from('user_profiles')
@@ -362,6 +362,20 @@ export default function Home() {
 
       if (!alreadyLiked) {
         if (!canLike()) throw new Error('daily_limit_reached');
+
+        // Server-side limit enforcement
+        try {
+          const limitRes = await supabase.functions.invoke('check-swipe-limit', {
+            body: { action: 'increment', profileId: myProfile.id }
+          });
+          if (limitRes.data && !limitRes.data.allowed) {
+            throw new Error('daily_limit_reached');
+          }
+        } catch (e: any) {
+          if (e.message === 'daily_limit_reached') throw e;
+          // If server check fails, fall back to client-side check (already done above)
+          console.warn('Server swipe limit check failed, using client-side:', e);
+        }
 
         const today = new Date().toISOString().split('T')[0];
         const shouldReset = myProfile.daily_likes_reset_date !== today;
