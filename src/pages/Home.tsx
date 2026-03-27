@@ -225,7 +225,7 @@ export default function Home() {
         }
 
         return filtered;
-      } catch { return []; }
+      } catch (err) { console.error('Discovery query failed:', err); return []; }
     },
     enabled: !!myProfile?.id,
     staleTime: 300000,
