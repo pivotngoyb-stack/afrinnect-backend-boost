@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
     // Build query
     let query = supabase
       .from('user_profiles')
-      .select('id,user_id,display_name,primary_photo,photos,age,gender,current_city,current_country,country_of_origin,bio,interests,subscription_tier,is_verified,verification_status,last_active')
+      .select('id,user_id,display_name,primary_photo,photos,birth_date,gender,current_city,current_country,country_of_origin,bio,interests,subscription_tier,is_verified,verification_status,last_active')
       .eq('is_active', true)
       .not('id', 'in', `(${Array.from(excludeSet).join(',')})`)
       .order('last_active', { ascending: false })
@@ -101,7 +101,7 @@ Deno.serve(async (req) => {
     if (discoveryMode === 'local' && finalProfiles.length < 5 && currentCountry) {
       const { data: countryProfiles } = await supabase
         .from('user_profiles')
-        .select('id,user_id,display_name,primary_photo,photos,age,gender,current_city,current_country,country_of_origin,bio,interests,subscription_tier,is_verified,verification_status,last_active')
+        .select('id,user_id,display_name,primary_photo,photos,birth_date,gender,current_city,current_country,country_of_origin,bio,interests,subscription_tier,is_verified,verification_status,last_active')
         .eq('is_active', true)
         .eq('current_country', currentCountry)
         .not('id', 'in', `(${Array.from(excludeSet).join(',')})`)

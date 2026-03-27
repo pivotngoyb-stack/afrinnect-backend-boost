@@ -194,7 +194,7 @@ export default function Home() {
     queryFn: async () => {
       try {
         // OPTIMIZED: Select only fields needed for discovery cards
-        const DISCOVERY_FIELDS = 'id,user_id,display_name,primary_photo,photos,birth_date,age,gender,current_country,current_city,country_of_origin,tribe,ethnicity,ethnic_group,culture,bio,about_me,interests,cultural_values,relationship_goal,religion,profession,education,languages,location,is_active,is_banned,is_seed,is_verified,is_premium,subscription_tier,verification_status,blocked_users,looking_for,last_active,liked_by_count,likes_count,profile_views_count,voice_intro_url,prompts,community_name';
+        const DISCOVERY_FIELDS = 'id,user_id,display_name,primary_photo,photos,birth_date,gender,current_country,current_city,country_of_origin,tribe,ethnicity,ethnic_group,culture,bio,about_me,interests,cultural_values,relationship_goal,religion,profession,education,languages,location,is_active,is_banned,is_seed,is_verified,is_premium,subscription_tier,verification_status,blocked_users,looking_for,last_active,liked_by_count,likes_count,profile_views_count,voice_intro_url,prompts,community_name';
         const { data: allProfiles, error: profilesError } = await supabase
           .from('user_profiles')
           .select(DISCOVERY_FIELDS)
