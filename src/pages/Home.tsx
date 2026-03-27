@@ -14,31 +14,22 @@ import { useUpgradePrompts } from '@/components/monetization/UpgradePrompts';
 import { useVerificationGate } from '@/hooks/useVerificationGate';
 import { useLanguage } from '@/components/i18n/LanguageContext';
 import AfricanPattern from '@/components/shared/AfricanPattern';
-import { AfricanProverbLoader, CulturalGreeting } from '@/components/shared/AfricanCulture';
+import { AfricanProverbLoader } from '@/components/shared/AfricanCulture';
 import PullToRefresh from '@/components/shared/PullToRefresh';
 import BannedScreen from '@/components/auth/BannedScreen';
 import FoundingMemberBanner from '@/components/founding/FoundingMemberBanner';
 import VerificationGateBanner from '@/components/shared/VerificationGateBanner';
-import ActivitySummaryBanner from '@/components/monetization/ActivitySummaryBanner';
-import WeeklyTopPicks from '@/components/monetization/WeeklyTopPicks';
-import VIPEventsPromo from '@/components/monetization/VIPEventsPromo';
 import BoostButton from '@/components/monetization/BoostButton';
 import HomeHeader from '@/components/home/HomeHeader';
 import SwipeView from '@/components/home/SwipeView';
 import GridView from '@/components/home/GridView';
 import HomeModals from '@/components/home/HomeModals';
-import ProfileCompletionBar from '@/components/engagement/ProfileCompletionBar';
-import LiveActivityFeed from '@/components/engagement/LiveActivityFeed';
-import ProfileViewsNudge from '@/components/engagement/ProfileViewsNudge';
-import DailyReturnBanner from '@/components/engagement/DailyReturnBanner';
-import PeopleLikeYouTeaser from '@/components/engagement/PeopleLikeYouTeaser';
 import NewMatchToast from '@/components/engagement/NewMatchToast';
 import ContextualUpgradeBanner from '@/components/monetization/ContextualUpgradeBanner';
 import BlurredLikesTeaser from '@/components/monetization/BlurredLikesTeaser';
 import ProfileViewerToast from '@/components/monetization/ProfileViewerToast';
 import FreeTrialCountdown from '@/components/monetization/FreeTrialCountdown';
 import MissedMatchRegret from '@/components/monetization/MissedMatchRegret';
-import { Loader2 } from 'lucide-react';
 
 export default function Home() {
   usePerformanceMonitor('Home');
@@ -526,50 +517,43 @@ export default function Home() {
         <FoundingMemberBanner profile={myProfile} />
         {isVerificationGated && <VerificationGateBanner matchCount={gateMatchCount} />}
 
-        <main className="flex-1 flex flex-col overflow-hidden px-4" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
-          <CulturalGreeting userName={myProfile?.display_name?.split(' ')[0]} countryOfOrigin={myProfile?.country_of_origin} className="mb-2 mt-1" />
-          <FreeTrialCountdown userProfile={myProfile} />
-          <ContextualUpgradeBanner userProfile={myProfile} />
-          {!['premium', 'elite', 'vip'].includes(myProfile?.subscription_tier) && (
-            <BlurredLikesTeaser likesCount={activityCounts?.likes || 0} className="mb-3" />
-          )}
-          <DailyReturnBanner userProfile={myProfile} />
-          <LiveActivityFeed userProfile={myProfile} />
-          <ProfileCompletionBar userProfile={myProfile} />
-          <PeopleLikeYouTeaser userProfile={myProfile} />
-          <ProfileViewsNudge userProfile={myProfile} />
-          <ActivitySummaryBanner userProfile={myProfile} />
-          <div className="mb-3">
+        <main className="flex-1 flex flex-col overflow-hidden" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+          {/* Profile cards take priority — full remaining space */}
+          <div className="flex-1 flex flex-col min-h-0 px-4">
+            {viewMode === 'swipe' ? (
+              <SwipeView
+                isLoading={isLoading}
+                currentProfile={currentProfile}
+                hasMoreProfiles={hasMoreProfiles}
+                myProfile={myProfile}
+                swipeHistory={swipeHistory}
+                likeMutation={likeMutation}
+                passMutation={passMutation}
+                handleLike={handleLike}
+                handlePass={handlePass}
+                handleSuperLike={handleSuperLike}
+                handleRewind={handleRewind}
+                setFilters={setFilters}
+                setDiscoveryMode={setDiscoveryMode}
+              />
+            ) : (
+              <GridView
+                profiles={profiles}
+                myProfile={myProfile}
+                selectedProfile={selectedProfile}
+                setSelectedProfile={setSelectedProfile}
+                handleLike={handleLike}
+                handleSuperLike={handleSuperLike}
+              />
+            )}
+          </div>
+
+          {/* Floating action: Boost button */}
+          <div className="absolute bottom-24 right-4 z-30">
             <BoostButton userProfile={myProfile} onBoostActivated={() => refetch()} />
           </div>
 
-          {viewMode === 'swipe' ? (
-            <SwipeView
-              isLoading={isLoading}
-              currentProfile={currentProfile}
-              hasMoreProfiles={hasMoreProfiles}
-              myProfile={myProfile}
-              swipeHistory={swipeHistory}
-              likeMutation={likeMutation}
-              passMutation={passMutation}
-              handleLike={handleLike}
-              handlePass={handlePass}
-              handleSuperLike={handleSuperLike}
-              handleRewind={handleRewind}
-              setFilters={setFilters}
-              setDiscoveryMode={setDiscoveryMode}
-            />
-          ) : (
-            <GridView
-              profiles={profiles}
-              myProfile={myProfile}
-              selectedProfile={selectedProfile}
-              setSelectedProfile={setSelectedProfile}
-              handleLike={handleLike}
-              handleSuperLike={handleSuperLike}
-            />
-          )}
-
+          {/* All modals and toasts — render but don't take layout space */}
           <HomeModals
             showLimitPaywall={showLimitPaywall} setShowLimitPaywall={setShowLimitPaywall}
             showTutorial={showTutorial} tutorialSteps={tutorialSteps} completeTutorial={completeTutorial}
@@ -593,6 +577,11 @@ export default function Home() {
             onClose={() => setShowMissedMatch(false)}
             matchScore={Math.floor(Math.random() * 10) + 90}
           />
+          <FreeTrialCountdown userProfile={myProfile} />
+          <ContextualUpgradeBanner userProfile={myProfile} />
+          {!['premium', 'elite', 'vip'].includes(myProfile?.subscription_tier) && (
+            <BlurredLikesTeaser likesCount={activityCounts?.likes || 0} className="mb-3" />
+          )}
           <div className="h-20" />
         </main>
       </div>
