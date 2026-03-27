@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
