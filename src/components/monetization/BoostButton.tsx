@@ -137,7 +137,7 @@ export default function BoostButton({ userProfile, onBoostActivated, onBoostSucc
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-end justify-center bg-foreground/60 backdrop-blur-sm px-4 pb-8"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm p-4"
           onClick={() => setShowModal(false)}
         >
           <motion.div
@@ -145,7 +145,7 @@ export default function BoostButton({ userProfile, onBoostActivated, onBoostSucc
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.96, y: 24 }}
             onClick={e => e.stopPropagation()}
-            className="bg-background rounded-2xl p-6 max-w-sm w-full shadow-2xl relative max-h-[calc(100vh-120px)] overflow-y-auto"
+            className="bg-background rounded-xl p-4 max-w-xs w-full shadow-2xl relative max-h-[72vh] overflow-y-auto"
           >
             <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground">
               <X size={20} />
