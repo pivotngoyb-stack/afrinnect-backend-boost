@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser, listRecords, logout } from '@/lib/supabase-helpers';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
@@ -40,8 +40,9 @@ import { toast } from '@/hooks/use-toast';
 
 export default function Profile() {
   const { t } = useLanguage();
-  const urlParams = new URLSearchParams(window.location.search);
-  const profileId = urlParams.get('id');
+  const [searchParams] = useSearchParams();
+  const profileId = searchParams.get('id');
+  const navigate = useNavigate();
   
   const [myProfile, setMyProfile] = useState(null);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
@@ -202,7 +203,7 @@ export default function Profile() {
     );
   }
 
-  const photo = profile?.primary_photo || profile?.photos?.[0] || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400';
+  const photo = profile?.primary_photo || profile?.photos?.[0] || '/placeholder.svg';
   const age = calculateAge(profile?.birth_date);
   const completion = calculateProfileCompletion();
 

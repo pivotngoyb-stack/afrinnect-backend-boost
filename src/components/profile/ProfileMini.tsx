@@ -26,7 +26,7 @@ const ProfileMini = React.memo(function ProfileMini({ profile, myLocation, onCli
   };
 
   const age = calculateAge(profile?.birth_date);
-  const photo = profile?.primary_photo || profile?.photos?.[0] || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400';
+  const photo = profile?.primary_photo || profile?.photos?.[0] || '/placeholder.svg';
 
   const relationshipLabels: Record<string, string> = {
     dating: 'Dating', serious_relationship: 'Serious', marriage: 'Marriage', friendship: 'Friends', networking: 'Network'

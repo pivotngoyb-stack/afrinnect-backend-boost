@@ -79,7 +79,7 @@ export default function SafetyCheckSetup({ myProfile, matchProfile, initialData 
           <div className="bg-accent rounded-lg p-4 border">
             <div className="flex items-center gap-3 mb-2">
               <img
-                src={matchProfile?.primary_photo || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100'}
+                src={matchProfile?.primary_photo || '/placeholder.svg'}
                 alt={matchProfile?.display_name}
                 className="w-10 h-10 rounded-full object-cover"
               />
