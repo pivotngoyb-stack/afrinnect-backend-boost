@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -45,26 +45,27 @@ export function useBottomNavBadges() {
     const tabMap: Record<string, string> = {
       '/matches': 'matches',
       '/chat': 'matches',
-      '/who-likes-you': 'matches',
+      '/wholikesyou': 'matches',
       '/events': 'events',
       '/communities': 'communities',
       '/communitychat': 'communities',
-      '/notifications': 'notifications',
     };
     const tab = tabMap[path];
-    if (tab) {
-      const now = new Date().toISOString();
-      setLastVisited(prev => {
-        const next = { ...prev, [tab]: now };
-        localStorage.setItem('nav_last_visited_v2', JSON.stringify(next));
-        return next;
-      });
-      // Delay invalidation so state is updated first
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['bottom-nav-badges'] });
-      }, 100);
-    }
-  }, [location.pathname]);
+    if (!tab) return;
+
+    const now = new Date().toISOString();
+    setLastVisited(prev => {
+      const next = { ...prev, [tab]: now };
+      localStorage.setItem('nav_last_visited_v2', JSON.stringify(next));
+      return next;
+    });
+
+    const timeoutId = window.setTimeout(() => {
+      queryClient.invalidateQueries({ queryKey: ['bottom-nav-badges'] });
+    }, 100);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [location.pathname, queryClient]);
 
   const { data: badges = { matches: 0, events: 0, communities: 0 } } = useQuery({
     queryKey: ['bottom-nav-badges', profileId, lastVisited],
@@ -75,27 +76,32 @@ export function useBottomNavBadges() {
       const eventsLastVisited = lastVisited.events || null;
       const communitiesLastVisited = lastVisited.communities || null;
 
-      const [unreadMsgsRes, newLikesRes, newEventsRes, unreadCommunityRes] = await Promise.all([
+      const [unreadMsgsRes, newLikesRes, newEventsRes, unreadCommunityRes] = await Promise.allSettled([
         // Unread DMs: messages sent to me that are not read
-        supabase
-          .from('messages')
-          .select('id', { count: 'exact', head: true })
-          .eq('receiver_id', profileId)
-          .eq('is_read', false),
+        matchesLastVisited
+          ? supabase
+              .from('messages')
+              .select('id', { count: 'exact', head: true })
+              .eq('receiver_id', profileId)
+              .eq('is_read', false)
+              .gt('created_at', matchesLastVisited)
+          : supabase
+              .from('messages')
+              .select('id', { count: 'exact', head: true })
+              .eq('receiver_id', profileId)
+              .eq('is_read', false),
 
         // Likes received since last visit to matches tab
         matchesLastVisited
           ? supabase
-              .from('swipes')
+              .from('likes')
               .select('id', { count: 'exact', head: true })
-              .eq('target_id', profileId)
-              .eq('action', 'like')
+              .eq('liked_id', profileId)
               .gt('created_at', matchesLastVisited)
           : supabase
-              .from('swipes')
+              .from('likes')
               .select('id', { count: 'exact', head: true })
-              .eq('target_id', profileId)
-              .eq('action', 'like'),
+              .eq('liked_id', profileId),
 
         // New events since last visit
         eventsLastVisited
@@ -136,10 +142,12 @@ export function useBottomNavBadges() {
         })(),
       ]);
 
-      const unreadMessages = unreadMsgsRes.count || 0;
-      const newLikes = newLikesRes.count || 0;
-      const newEvents = newEventsRes.count || 0;
-      const unreadCommunity = unreadCommunityRes.count || 0;
+      const safeCount = (result: any) => (result.status === 'fulfilled' ? result.value?.count || 0 : 0);
+
+      const unreadMessages = safeCount(unreadMsgsRes);
+      const newLikes = safeCount(newLikesRes);
+      const newEvents = safeCount(newEventsRes);
+      const unreadCommunity = safeCount(unreadCommunityRes);
 
       return {
         matches: unreadMessages + newLikes,
@@ -147,7 +155,7 @@ export function useBottomNavBadges() {
         communities: unreadCommunity,
       };
     },
-    enabled: !!profileId,
+    enabled: !!profileId && !!userId,
     refetchInterval: 30000,
     staleTime: 10000,
   });

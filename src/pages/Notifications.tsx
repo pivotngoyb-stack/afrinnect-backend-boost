@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { deleteRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
+import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -74,19 +75,25 @@ export default function Notifications() {
   const markReadMutation = useMutation({
     mutationFn: (notifId) => updateRecord('notifications', notifId, { is_read: true }),
     onSuccess: () => {
-      queryClient.invalidateQueries(['notifications']);
-      queryClient.invalidateQueries(['notifications-count']);
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications-count'] });
+      queryClient.invalidateQueries({ queryKey: ['bottom-nav-badges'] });
     }
   });
 
   const markAllReadMutation = useMutation({
     mutationFn: async () => {
-      const unread = notifications.filter(n => !n.is_read);
-      await Promise.all(unread.map(n => updateRecord('notifications', n.id, { is_read: true })));
+      if (!myProfile?.id) return;
+      await supabase
+        .from('notifications')
+        .update({ is_read: true })
+        .eq('user_profile_id', myProfile.id)
+        .eq('is_read', false);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['notifications']);
-      queryClient.invalidateQueries(['notifications-count']);
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications-count'] });
+      queryClient.invalidateQueries({ queryKey: ['bottom-nav-badges'] });
     }
   });
 
@@ -95,13 +102,14 @@ export default function Notifications() {
     if (notifications.length > 0 && notifications.some(n => !n.is_read)) {
       markAllReadMutation.mutate();
     }
-  }, [notifications]);
+  }, [notifications, myProfile?.id]);
 
   const deleteNotifMutation = useMutation({
     mutationFn: (notifId) => deleteRecord('notifications', notifId),
     onSuccess: () => {
-      queryClient.invalidateQueries(['notifications']);
-      queryClient.invalidateQueries(['notifications-count']);
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications-count'] });
+      queryClient.invalidateQueries({ queryKey: ['bottom-nav-badges'] });
     }
   });
 
