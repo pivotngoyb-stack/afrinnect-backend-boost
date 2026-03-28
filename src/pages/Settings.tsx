@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser, invokeFunction, logout, updateRecord } from '@/lib/supabase-helpers';
 import { supabase } from '@/integrations/supabase/client';
 import { useMutation } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import {
   ArrowLeft, Bell, Lock, Eye, Shield, Globe, Moon, Sun,
@@ -33,6 +33,7 @@ import LanguageSelector from '@/components/i18n/LanguageSelector';
 
 export default function Settings() {
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const [myProfile, setMyProfile] = useState(null);
   const [userEmail, setUserEmail] = useState('');
   
@@ -86,7 +87,7 @@ export default function Settings() {
         }
       } catch (e) {
         console.log('Not logged in');
-        window.location.href = '/login';
+        navigate('/login');
       }
     };
     fetchProfile();

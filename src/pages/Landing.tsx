@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { filterRecords, isAuthenticated } from '@/lib/supabase-helpers';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Shield, Globe, Sparkles, Users, CheckCircle, Crown, ArrowRight, Star, MessageCircle, Download } from 'lucide-react';
@@ -18,6 +18,7 @@ import SEOHead from '@/components/seo/SEOHead';
 export default function Landing() {
   const { t } = useLanguage();
   const { trackEvent } = useConversionTracker();
+  const navigate = useNavigate();
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [liveCount, setLiveCount] = useState(47);
@@ -147,7 +148,7 @@ export default function Landing() {
     const urlParams = new URLSearchParams(window.location.search);
     const ref = urlParams.get('ref');
     const nextUrl = ref ? createPageUrl('Onboarding') + `?ref=${ref}` : createPageUrl('Onboarding');
-    window.location.href = '/login'; // redirectToLogin(window.location.origin + nextUrl);
+    navigate('/login');
   };
 
   const handleLogin = async () => {
@@ -156,7 +157,7 @@ export default function Landing() {
     const urlParams = new URLSearchParams(window.location.search);
     const ref = urlParams.get('ref');
     const nextUrl = ref ? createPageUrl('Home') + `?ref=${ref}` : createPageUrl('Home');
-    window.location.href = '/login'; // redirectToLogin(window.location.origin + nextUrl);
+    navigate('/login');
   };
 
   return (

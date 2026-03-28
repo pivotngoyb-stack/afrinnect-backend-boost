@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser, invokeFunction } from '@/lib/supabase-helpers';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Send, Loader2, Calendar, Shield } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -14,8 +14,9 @@ import { format } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
 
 export default function EventChat() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const eventId = urlParams.get('id');
+  const [searchParams] = useSearchParams();
+  const eventId = searchParams.get('id');
+  const navigate = useNavigate();
   const [myProfile, setMyProfile] = useState(null);
   const [message, setMessage] = useState('');
   const queryClient = useQueryClient();
@@ -27,7 +28,7 @@ export default function EventChat() {
         const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) setMyProfile(profiles[0]);
       } catch (e) {
-        window.location.href = createPageUrl('Landing');
+        navigate('/');
       }
     };
     fetchProfile();
