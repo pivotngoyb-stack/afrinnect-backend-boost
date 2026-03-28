@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser, invokeFunction, updateCurrentUser, uploadFile } from '@/lib/supabase-helpers';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -205,7 +205,7 @@ export default function EditProfile() {
         if (response.data.error) throw new Error(response.data.error);
         setProfile(response.data.profile);
       }
-      window.location.href = createPageUrl('Profile');
+      navigate('/profile');
     } catch (error) {
       console.error('Save error:', error);
       toast({ title: t('errors.saveFailed') + error.message, variant: 'destructive' });

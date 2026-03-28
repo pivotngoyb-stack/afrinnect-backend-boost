@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { 
   ArrowLeft, Zap, Star, RotateCcw, Eye, Crown, Sparkles, 
@@ -94,7 +94,7 @@ export default function Shop() {
           setMyProfile(profiles[0]);
         }
       } catch (e) {
-        window.location.href = createPageUrl('Landing');
+        navigate('/');
       }
     };
     fetchProfile();

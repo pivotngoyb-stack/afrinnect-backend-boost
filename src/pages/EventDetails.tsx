@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
@@ -36,7 +36,7 @@ export default function EventDetails() {
           setMyProfile(profiles[0]);
         }
       } catch (e) {
-        window.location.href = createPageUrl('Landing');
+        navigate('/');
       }
     };
     fetchProfile();

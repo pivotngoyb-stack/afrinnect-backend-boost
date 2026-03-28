@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { Heart, Crown, Lock } from 'lucide-react';
@@ -32,7 +32,7 @@ export default function WhoLikesYou() {
           setMyProfile(profiles[0]);
         }
       } catch (e) {
-        window.location.href = createPageUrl('Landing');
+        navigate('/');
       }
     };
     fetchProfile();
@@ -166,7 +166,7 @@ export default function WhoLikesYou() {
         
         // Redirect after celebration
         setTimeout(() => {
-          window.location.href = createPageUrl('Matches');
+          navigate('/matches');
         }, 3000);
       }
     }

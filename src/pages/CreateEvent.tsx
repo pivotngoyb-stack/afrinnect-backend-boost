@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser, uploadFile } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import {
   ArrowLeft, Calendar, MapPin, Globe, Upload, Loader2, Save,
@@ -61,7 +61,7 @@ export default function CreateEvent() {
           }));
         }
       } catch (e) {
-        window.location.href = createPageUrl('Landing');
+        navigate('/');
       }
     };
     fetchProfile();
@@ -116,7 +116,7 @@ export default function CreateEvent() {
     },
     onSuccess: (event) => {
       toast.success('Event created successfully!');
-      window.location.href = createPageUrl(`EventDetails?id=${event.id}`);
+      navigate(createPageUrl(`EventDetails?id=${event.id}`));
     },
     onError: (error) => {
       toast.error(error.message);

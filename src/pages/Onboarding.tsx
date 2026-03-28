@@ -116,7 +116,7 @@ export default function Onboarding() {
         } catch (e) {
         // Not logged in - redirect to login
         console.log('User not authenticated');
-        window.location.href = '/login'; // redirectToLogin(window.location.href);
+        navigate('/login');
       }
     };
     checkUser();
@@ -274,7 +274,7 @@ export default function Onboarding() {
         friendlyMessage = "Please enter your date of birth to continue.";
       } else if (msg.includes('Unauthorized')) {
         friendlyMessage = "Your session has expired. Please log in again.";
-        setTimeout(() => { window.location.href = '/login'; }, 2000);
+        setTimeout(() => { navigate('/login'); }, 2000);
       } else if (msg && msg !== 'null' && msg !== 'undefined') {
         friendlyMessage = msg;
       }

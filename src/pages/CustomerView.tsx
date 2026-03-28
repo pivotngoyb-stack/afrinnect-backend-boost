@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { getCurrentUser, listRecords } from '@/lib/supabase-helpers';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Eye, Smartphone, Monitor, User, X } from 'lucide-react';
@@ -25,10 +25,10 @@ export default function CustomerView() {
         if (user && user.email === 'pivotngoyb@gmail.com') {
           setIsAdmin(true);
         } else {
-          window.location.href = createPageUrl('Home');
+          navigate('/home');
         }
       } catch (e) {
-        window.location.href = createPageUrl('Landing');
+        navigate('/');
       }
     };
     checkAdmin();

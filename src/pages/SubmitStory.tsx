@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser, uploadFile } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, Heart, Upload, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function SubmitStory() {
-  const [myProfile, setMyProfile] = useState(null);
+  const navigate = useNavigate();
   const [storyText, setStoryText] = useState('');
   const [matchDate, setMatchDate] = useState('');
   const [relationshipStatus, setRelationshipStatus] = useState('dating');
@@ -28,7 +28,7 @@ export default function SubmitStory() {
         const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) setMyProfile(profiles[0]);
       } catch (e) {
-        window.location.href = createPageUrl('Landing');
+        navigate('/');
       }
     };
     fetchProfile();

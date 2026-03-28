@@ -55,7 +55,7 @@ export default function AmbassadorApply() {
         }
       } catch (e) {
         // Not logged in - redirect to login
-        window.location.href = '/login'; // redirectToLogin(window.location.href);
+        navigate('/login');
       }
     };
     checkUser();
