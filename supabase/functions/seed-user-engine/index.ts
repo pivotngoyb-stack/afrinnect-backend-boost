@@ -331,7 +331,7 @@ Deno.serve(async (req) => {
               title: `${seedProfile.display_name} sent you a message`,
               message: action.message_content.substring(0, 50) + (action.message_content.length > 50 ? "..." : ""),
               from_profile_id: action.seed_profile_id,
-              link_to: `/chat/${match.id}`,
+              link_to: `/chat?matchId=${match.id}`,
             });
             stats.messagesQueued++;
           }

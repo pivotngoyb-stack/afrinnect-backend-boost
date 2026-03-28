@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { deleteRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Heart, Users, MessageCircle, Crown, Shield, Trash2, CheckCheck } from 'lucide-react';
@@ -14,6 +14,7 @@ import EmptyState from '@/components/shared/EmptyState';
 export default function Notifications() {
   const [myProfile, setMyProfile] = useState(null);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -100,7 +101,7 @@ export default function Notifications() {
       markReadMutation.mutate(notif.id);
     }
     if (notif.link_to) {
-      window.location.href = notif.link_to;
+      navigate(notif.link_to);
     }
   };
 
