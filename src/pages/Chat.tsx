@@ -272,10 +272,11 @@ export default function Chat() {
   // Image mutation
   const sendImageMutation = useMutation({
     mutationFn: async (file) => {
-      const { file_url } = await uploadFile({ file });
+      const { file_url } = await uploadFile(file);
       await sendMessageMutation.mutateAsync({ content: 'Image', type: 'image', mediaUrl: file_url });
     },
-    onError: () => {
+    onError: (err) => {
+      console.error('Image upload error:', err);
       toast({ title: 'Failed to upload image', variant: 'destructive' });
     }
   });
