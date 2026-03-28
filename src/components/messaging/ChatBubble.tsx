@@ -22,7 +22,7 @@ export default function ChatBubble({ message, isOwn, senderPhoto }) {
     <div className={`flex gap-2 mb-3 ${isOwn ? 'flex-row-reverse' : ''}`}>
       {!isOwn && (
         <img 
-          src={senderPhoto || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100'} 
+          src={senderPhoto || '/placeholder.svg'} 
           alt="sender"
           className="w-8 h-8 rounded-full object-cover flex-shrink-0"
         />
@@ -32,7 +32,7 @@ export default function ChatBubble({ message, isOwn, senderPhoto }) {
         <div 
           className={`rounded-2xl px-4 py-2 ${
             isOwn 
-              ? 'bg-gradient-to-br from-purple-600 to-purple-700 text-white rounded-br-md' 
+              ? 'bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-br-md' 
               : 'bg-muted text-foreground rounded-bl-md'
           }`}
         >
@@ -47,21 +47,21 @@ export default function ChatBubble({ message, isOwn, senderPhoto }) {
             </div>
           ) : message.message_type === 'voice_note' ? (
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-full ${isOwn ? 'bg-card/20' : 'bg-purple-100'}`}>
-                <Mic size={18} className={isOwn ? 'text-white' : 'text-purple-600'} />
+              <div className={`p-2 rounded-full ${isOwn ? 'bg-card/20' : 'bg-primary/10'}`}>
+                <Mic size={18} className={isOwn ? 'text-primary-foreground' : 'text-primary'} />
               </div>
               <div className="flex-1">
                 <div className={`h-1 rounded-full ${isOwn ? 'bg-card/30' : 'bg-muted'}`}>
-                  <div className={`h-full w-1/2 rounded-full ${isOwn ? 'bg-card' : 'bg-purple-600'}`} />
+                  <div className={`h-full w-1/2 rounded-full ${isOwn ? 'bg-card' : 'bg-primary'}`} />
                 </div>
-                <span className={`text-xs mt-1 block ${isOwn ? 'text-white/70' : 'text-muted-foreground'}`}>
+                <span className={`text-xs mt-1 block ${isOwn ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
                   0:15
                 </span>
               </div>
             </div>
           ) : message.message_type === 'ice_breaker' ? (
             <div className="space-y-1">
-              <div className={`text-xs ${isOwn ? 'text-white/70' : 'text-purple-600'} font-medium`}>
+              <div className={`text-xs ${isOwn ? 'text-primary-foreground/70' : 'text-primary'} font-medium`}>
                 Ice Breaker
               </div>
               <p>{message.content}</p>
