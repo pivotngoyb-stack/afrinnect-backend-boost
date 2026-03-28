@@ -239,7 +239,7 @@ export default function Matches() {
             .select('id,match_id,content,message_type,sender_id,created_at')
             .in('match_id', matchIds)
             .order('created_at', { ascending: false })
-            .limit(matchIds.length * 2), // rough: 2 per match to dedupe
+            .limit(Math.max(matchIds.length * 5, 50)),
           // Get unread messages for current user
           supabase
             .from('messages')
