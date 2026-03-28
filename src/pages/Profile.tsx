@@ -61,9 +61,6 @@ export default function Profile() {
         }
       } catch (e) {
         console.log('Not logged in');
-        if (!profileId) {
-          window.location.href = '/login'; // redirectToLogin(createPageUrl('Landing'));
-        }
       }
     };
     fetchMyProfile();

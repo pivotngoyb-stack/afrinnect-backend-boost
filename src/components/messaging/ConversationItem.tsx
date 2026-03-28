@@ -34,7 +34,7 @@ export default function ConversationItem({ match, profile, lastMessage, unreadCo
     ? formatDistanceToNowStrict(lastActiveDate, { addSuffix: false })
     : null;
 
-  const photo = profile?.primary_photo || profile?.photos?.[0] || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100';
+  const photo = profile?.primary_photo || profile?.photos?.[0] || '/placeholder.svg';
 
   return (
     <div 
@@ -50,7 +50,7 @@ export default function ConversationItem({ match, profile, lastMessage, unreadCo
           className="w-16 h-16 rounded-full object-cover"
         />
         {isOnline && (
-          <div className="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 rounded-full border-2 border-card" />
+          <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-card" />
         )}
       </div>
       
@@ -62,7 +62,7 @@ export default function ConversationItem({ match, profile, lastMessage, unreadCo
             </h3>
             <VerificationBadge verification={profile?.verification_status} size="small" />
             {isOnline && (
-              <span className="text-[10px] font-medium text-emerald-500">Online</span>
+              <span className="text-[10px] font-medium text-green-500">Online</span>
             )}
             {!isOnline && lastActiveText && (
               <span className="text-[10px] text-muted-foreground">{lastActiveText} ago</span>
