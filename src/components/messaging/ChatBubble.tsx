@@ -7,8 +7,16 @@ import TranslateMessage from './TranslateMessage';
 export default function ChatBubble({ message, isOwn, senderPhoto }) {
   const formatTime = (date) => {
     if (!date) return '';
-    return format(new Date(date), 'HH:mm');
+    try {
+      const d = new Date(date);
+      if (isNaN(d.getTime())) return '';
+      return format(d, 'HH:mm');
+    } catch {
+      return '';
+    }
   };
+
+  const timestamp = message.created_at || message.created_date;
 
   return (
     <div className={`flex gap-2 mb-3 ${isOwn ? 'flex-row-reverse' : ''}`}>
@@ -65,7 +73,7 @@ export default function ChatBubble({ message, isOwn, senderPhoto }) {
         
         <div className={`flex items-center gap-1 mt-1 px-1 ${isOwn ? 'justify-end' : 'justify-between'}`}>
           <div className="flex items-center gap-1">
-            <span className="text-xs text-muted-foreground">{formatTime(message.created_date || message.created_at)}</span>
+          <span className="text-xs text-muted-foreground">{formatTime(timestamp)}</span>
             {isOwn && (
               message.is_read 
                 ? <CheckCheck size={14} className="text-blue-500" />
