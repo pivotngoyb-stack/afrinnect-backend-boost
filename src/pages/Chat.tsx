@@ -444,6 +444,7 @@ export default function Chat() {
   };
 
   if (!otherProfile) {
+    const showError = (matchFetched && !match) || matchError;
     return (
       <div className="h-screen bg-background flex flex-col overflow-hidden">
         <header className="bg-card border-b border-border px-4 py-3 flex items-center gap-3">
@@ -454,11 +455,22 @@ export default function Chat() {
           </Link>
           <div className="h-6 bg-muted rounded animate-pulse w-32" />
         </header>
-        <ChatSkeleton />
-        {!myProfile && (
-          <div className="text-center p-4 text-muted-foreground text-sm">
-            Loading your profile...
+        {showError ? (
+          <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
+            <p className="text-muted-foreground mb-4">This conversation could not be loaded.</p>
+            <Link to={createPageUrl('Matches')}>
+              <Button variant="outline">Back to Matches</Button>
+            </Link>
           </div>
+        ) : (
+          <>
+            <ChatSkeleton />
+            {!myProfile && (
+              <div className="text-center p-4 text-muted-foreground text-sm">
+                Loading your profile...
+              </div>
+            )}
+          </>
         )}
       </div>
     );
