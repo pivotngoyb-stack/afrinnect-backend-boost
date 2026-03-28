@@ -98,7 +98,7 @@ export default function Chat() {
       try {
         const user = await getCurrentUser();
         if (!user || !user.profile_id) {
-          window.location.href = createPageUrl('Landing');
+          navigate('/landing');
           return;
         }
         // getCurrentUser already returns the full profile merged with auth
@@ -115,7 +115,7 @@ export default function Chat() {
         });
       } catch (e) {
         console.error('Chat profile fetch error:', e);
-        window.location.href = createPageUrl('Landing');
+        navigate('/landing');
       }
     };
     fetchProfiles();
@@ -416,7 +416,7 @@ export default function Chat() {
       if (response?.error) throw new Error(response.error);
     },
     onSuccess: () => {
-      window.location.href = createPageUrl('Matches');
+      navigate('/matches');
     }
   });
 
