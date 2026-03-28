@@ -14,6 +14,7 @@ import EmptyState from '@/components/shared/EmptyState';
 export default function Notifications() {
   const [myProfile, setMyProfile] = useState(null);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -100,7 +101,7 @@ export default function Notifications() {
       markReadMutation.mutate(notif.id);
     }
     if (notif.link_to) {
-      window.location.href = notif.link_to;
+      navigate(notif.link_to);
     }
   };
 
