@@ -9,6 +9,7 @@ import InstallPrompt from "@/components/mobile/InstallPrompt";
 import AppBottomNav from "@/components/shared/AppBottomNav";
 import AuthGuard from "@/components/shared/AuthGuard";
 import AdminGuard from "@/components/shared/AdminGuard";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient({
   defaultOptions: {
