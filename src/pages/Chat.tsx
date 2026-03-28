@@ -102,6 +102,7 @@ export default function Chat() {
         }
         // getCurrentUser already returns the full profile merged with auth
         setMyProfile({
+          ...user,
           id: user.profile_id,
           user_id: user.id,
           display_name: user.display_name,
@@ -110,7 +111,6 @@ export default function Chat() {
           subscription_tier: user.subscription_tier,
           is_banned: user.is_banned,
           blocked_users: user.blocked_users,
-          ...user,
         });
       } catch (e) {
         console.error('Chat profile fetch error:', e);
