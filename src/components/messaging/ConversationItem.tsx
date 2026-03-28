@@ -7,10 +7,15 @@ import VerificationBadge from '../shared/VerificationBadge';
 export default function ConversationItem({ match, profile, lastMessage, unreadCount = 0, onClick }) {
   const formatMessageDate = (date) => {
     if (!date) return '';
-    const d = new Date(date);
-    if (isToday(d)) return format(d, 'HH:mm');
-    if (isYesterday(d)) return 'Yesterday';
-    return format(d, 'MMM d');
+    try {
+      const d = new Date(date);
+      if (isNaN(d.getTime())) return '--';
+      if (isToday(d)) return format(d, 'HH:mm');
+      if (isYesterday(d)) return 'Yesterday';
+      return format(d, 'MMM d');
+    } catch {
+      return '--';
+    }
   };
 
   const truncateMessage = (text, maxLength = 40, isPremium = true) => {
