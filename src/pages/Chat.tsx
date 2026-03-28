@@ -444,7 +444,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
       {/* Header - Native App Bar */}
       <header className="bg-card/95 backdrop-blur-lg border-b border-border/50 px-4 py-3 flex items-center justify-between sticky top-0 z-10" style={{ paddingTop: 'max(12px, env(safe-area-inset-top))' }}>
         <div className="flex items-center gap-3">
@@ -646,7 +646,7 @@ export default function Chat() {
       {isVerificationGated && <VerificationGateBanner matchCount={gateMatchCount} />}
 
       {/* Input - Native Keyboard Optimized */}
-      <div className="bg-card border-t border-border" style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))', padding: '12px 16px' }}>
+      <div className="bg-card border-t border-border px-4 py-3" style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}>
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
