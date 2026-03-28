@@ -50,17 +50,14 @@ export default function Notifications() {
         
         return filteredNotifs.sort((a, b) => {
           const priority = (notif) => {
-            if (isPremium && (notif.type === 'like' || notif.type === 'super_like')) return 0;
-            if (notif.type === 'match') return 1;
-            if (notif.type === 'message') return 2;
-            if (notif.type === 'admin_message') return 3;
-            return 4;
+            if (notif.type === 'match') return 0;
+            if (notif.type === 'admin_message') return 1;
+            return 2;
           };
           
           const priorityDiff = priority(a) - priority(b);
           if (priorityDiff !== 0) return priorityDiff;
           
-          // Within same priority, sort by date (newest first)
           return new Date(b.created_date) - new Date(a.created_date);
         });
       } catch (error) {
