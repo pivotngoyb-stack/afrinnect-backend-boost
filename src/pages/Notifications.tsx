@@ -96,12 +96,52 @@ export default function Notifications() {
     }
   });
 
+  const normalizeNotificationLink = (linkTo) => {
+    if (!linkTo) return null;
+
+    let normalized = linkTo;
+
+    // Support absolute URLs stored in older notifications
+    if (normalized.startsWith('http')) {
+      try {
+        const parsed = new URL(normalized);
+        normalized = `${parsed.pathname}${parsed.search}`;
+      } catch {
+        return linkTo;
+      }
+    }
+
+    // Legacy chat format: /chat/<matchId>
+    if (normalized.startsWith('/chat/')) {
+      const matchId = normalized.split('/chat/')[1]?.split(/[?#]/)[0];
+      return matchId ? createPageUrl('Chat', { matchId }) : createPageUrl('Chat');
+    }
+
+    // Legacy query format: /chat?match=<matchId>
+    if (normalized.startsWith('/chat?')) {
+      const query = normalized.split('?')[1] || '';
+      const params = new URLSearchParams(query);
+      const matchId = params.get('matchId') || params.get('match');
+      return matchId ? createPageUrl('Chat', { matchId }) : createPageUrl('Chat');
+    }
+
+    // Legacy event format: /events/<eventId>
+    if (normalized.startsWith('/events/')) {
+      const eventId = normalized.split('/events/')[1]?.split(/[?#]/)[0];
+      return eventId ? createPageUrl('EventDetails', { id: eventId }) : createPageUrl('Events');
+    }
+
+    return normalized;
+  };
+
   const handleNotificationClick = (notif) => {
     if (!notif.is_read) {
       markReadMutation.mutate(notif.id);
     }
-    if (notif.link_to) {
-      navigate(notif.link_to);
+
+    const targetPath = normalizeNotificationLink(notif.link_to);
+    if (targetPath) {
+      navigate(targetPath);
     }
   };
 
