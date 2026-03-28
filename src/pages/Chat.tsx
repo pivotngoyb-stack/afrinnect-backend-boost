@@ -164,6 +164,18 @@ export default function Chat() {
     staleTime: 300000 // 5 minutes
   });
 
+  const resolveMessageTimestamp = React.useCallback((message) => {
+    return message?.created_at || message?.created_date || message?.updated_at || null;
+  }, []);
+
+  const formatMessageTime = React.useCallback((message) => {
+    const timestamp = resolveMessageTimestamp(message);
+    if (!timestamp) return '--:--';
+    const parsed = new Date(timestamp);
+    if (Number.isNaN(parsed.getTime())) return '--:--';
+    return parsed.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }, [resolveMessageTimestamp]);
+
   // Remove duplicates by ID and sort oldest first (newest at bottom)
   const messages = React.useMemo(() => {
     const seen = new Set();
@@ -172,8 +184,12 @@ export default function Chat() {
       seen.add(msg.id);
       return true;
     });
-    return unique.sort((a, b) => new Date(a.created_at || a.created_date).getTime() - new Date(b.created_at || b.created_date).getTime());
-  }, [rawMessages]);
+    return unique.sort((a, b) => {
+      const timeA = new Date(resolveMessageTimestamp(a) || 0).getTime();
+      const timeB = new Date(resolveMessageTimestamp(b) || 0).getTime();
+      return timeA - timeB;
+    });
+  }, [rawMessages, resolveMessageTimestamp]);
 
   // Scroll to bottom - optimized
   useEffect(() => {
@@ -189,16 +205,61 @@ export default function Chat() {
       if (unreadMessages.length > 0) {
         // OPTIMIZED: Single batch update using .in() instead of N individual calls
         const unreadIds = unreadMessages.map(m => m.id);
+        const readAt = new Date().toISOString();
         supabase
           .from('messages')
-          .update({ is_read: true, read_at: new Date().toISOString() })
+          .update({ is_read: true, read_at: readAt })
           .in('id', unreadIds)
           .then(({ error }) => {
-            if (error) console.error('Failed to batch mark messages as read:', error);
+            if (error) {
+              console.error('Failed to batch mark messages as read:', error);
+              return;
+            }
+
+            const unreadIdSet = new Set(unreadIds);
+
+            queryClient.setQueriesData({ queryKey: ['messages'] }, (old: any) => {
+              if (!old) return old;
+
+              if (Array.isArray(old)) {
+                return old.map((message: any) =>
+                  unreadIdSet.has(message?.id)
+                    ? { ...message, is_read: true, read_at: readAt }
+                    : message
+                );
+              }
+
+              if (!old?.pages || !Array.isArray(old.pages)) return old;
+
+              return {
+                ...old,
+                pages: old.pages.map((page: any) => ({
+                  ...page,
+                  items: (page?.items || []).map((message: any) =>
+                    unreadIdSet.has(message?.id)
+                      ? { ...message, is_read: true, read_at: readAt }
+                      : message
+                  ),
+                })),
+              };
+            });
+
+            queryClient.setQueriesData({ queryKey: ['conversations-data'] }, (old: any) => {
+              if (!old || !matchId || !old[matchId]) return old;
+              return {
+                ...old,
+                [matchId]: {
+                  ...old[matchId],
+                  unreadCount: 0,
+                },
+              };
+            });
+
+            queryClient.invalidateQueries({ queryKey: ['conversations-data'] });
           });
       }
     }
-  }, [messages.length, myProfile?.id]); // Only trigger on relevant changes
+  }, [messages, myProfile?.id, queryClient, matchId]); // Keep unread counters in sync when messages are read
 
   // Send message with optimistic update
   const sendMessageMutation = useOptimisticUpdate(
@@ -384,6 +445,7 @@ export default function Chat() {
       content: textToSend,
       message_type: 'text',
       is_read: false,
+      created_at: new Date().toISOString(),
       created_date: new Date().toISOString(),
       __optimistic: true
     };
@@ -631,7 +693,7 @@ export default function Chat() {
                 )}
                 <div className="flex items-center gap-2 mt-1">
                   <p className={`text-xs ${isMine ? 'text-white/70' : 'text-muted-foreground'}`}>
-                    {new Date(msg.created_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {formatMessageTime(msg)}
                   </p>
                   {isMine && (
                     <ReadReceipts 
