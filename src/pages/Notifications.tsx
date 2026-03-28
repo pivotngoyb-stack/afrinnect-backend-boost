@@ -75,6 +75,7 @@ export default function Notifications() {
     mutationFn: (notifId) => updateRecord('notifications', notifId, { is_read: true }),
     onSuccess: () => {
       queryClient.invalidateQueries(['notifications']);
+      queryClient.invalidateQueries(['notifications-count']);
     }
   });
 
@@ -100,6 +101,7 @@ export default function Notifications() {
     mutationFn: (notifId) => deleteRecord('notifications', notifId),
     onSuccess: () => {
       queryClient.invalidateQueries(['notifications']);
+      queryClient.invalidateQueries(['notifications-count']);
     }
   });
 
