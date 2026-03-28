@@ -1,0 +1,1 @@
+UPDATE system_settings SET value = jsonb_set(value::jsonb, '{trial_days}', '30') WHERE key = 'founder_program';
