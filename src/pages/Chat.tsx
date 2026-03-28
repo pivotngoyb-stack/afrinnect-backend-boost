@@ -155,14 +155,15 @@ export default function Chat() {
     staleTime: 300000 // 5 minutes
   });
 
-  // Remove duplicates by ID
+  // Remove duplicates by ID and sort oldest first (newest at bottom)
   const messages = React.useMemo(() => {
     const seen = new Set();
-    return rawMessages.filter(msg => {
+    const unique = rawMessages.filter(msg => {
       if (seen.has(msg.id)) return false;
       seen.add(msg.id);
       return true;
     });
+    return unique.sort((a, b) => new Date(a.created_at || a.created_date).getTime() - new Date(b.created_at || b.created_date).getTime());
   }, [rawMessages]);
 
   // Scroll to bottom - optimized
