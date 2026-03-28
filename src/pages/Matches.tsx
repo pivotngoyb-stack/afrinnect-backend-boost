@@ -59,27 +59,60 @@ export default function Matches() {
     queryFn: async () => {
       try {
         if (!myProfile) return [];
-        
-        // Single query with OR condition — matches RLS policy (checks user1_user_id/user2_user_id)
-        const { data: rawMatches, error } = await supabase
+
+        // Primary source: all matched records for me
+        const { data: matchedRows, error } = await supabase
           .from('matches')
           .select('*')
           .eq('is_match', true)
-          .eq('status', 'active')
           .or(`user1_id.eq.${myProfile.id},user2_id.eq.${myProfile.id}`)
           .order('matched_at', { ascending: false })
-          .limit(50);
-        
+          .limit(100);
+
         if (error) {
           console.error('Matches query error:', error);
           return [];
         }
-        
-        if (!rawMatches?.length) return [];
+
+        // Secondary source: any match threads where messages already exist
+        // (covers legacy/edge rows where status/is_match fields may be inconsistent)
+        const { data: messageRows } = await supabase
+          .from('messages')
+          .select('match_id,created_at')
+          .or(`sender_id.eq.${myProfile.id},receiver_id.eq.${myProfile.id}`)
+          .order('created_at', { ascending: false })
+          .limit(300);
+
+        const messageMatchIds = Array.from(
+          new Set((messageRows || []).map((m) => m.match_id).filter(Boolean))
+        );
+
+        let messageBackedMatches: any[] = [];
+        if (messageMatchIds.length > 0) {
+          const { data: messageMatches, error: messageMatchesError } = await supabase
+            .from('matches')
+            .select('*')
+            .in('id', messageMatchIds)
+            .or(`user1_id.eq.${myProfile.id},user2_id.eq.${myProfile.id}`)
+            .limit(100);
+
+          if (messageMatchesError) {
+            console.error('Message-backed matches query error:', messageMatchesError);
+          } else {
+            messageBackedMatches = messageMatches || [];
+          }
+        }
+
+        const mergedRawMatches = [...(matchedRows || []), ...messageBackedMatches];
+        if (!mergedRawMatches.length) return [];
+
+        // Only keep actual matches, unless they already have message history
+        const messageMatchSet = new Set(messageMatchIds);
+        const validMatches = mergedRawMatches.filter((m) => m?.is_match || messageMatchSet.has(m?.id));
         
         // Filter out matches with blocked users
         const myBlockedUsers = new Set(myProfile.blocked_users || []);
-        const filtered = rawMatches.filter(m => {
+        const filtered = validMatches.filter(m => {
           const partnerId = m.user1_id === myProfile.id ? m.user2_id : m.user1_id;
           return !myBlockedUsers.has(partnerId);
         });
@@ -126,17 +159,28 @@ export default function Matches() {
         );
         
         // OPTIMIZED: Single batch query with .in() instead of N individual queries
-        const MATCH_PROFILE_FIELDS = 'id,user_id,display_name,primary_photo,photos,subscription_tier,is_verified,verification_status,current_city,current_country,country_of_origin,last_active,blocked_users';
+        const MATCH_PROFILE_FIELDS = 'id,user_id,display_name,primary_photo,photos,subscription_tier,verification_status,current_city,current_country,country_of_origin,last_active,blocked_users,is_photo_verified,is_id_verified';
+        const FALLBACK_MATCH_PROFILE_FIELDS = 'id,user_id,display_name,primary_photo,photos,subscription_tier,verification_status,current_city,current_country,country_of_origin,last_active,blocked_users';
+
         const { data: profiles, error } = await supabase
           .from('user_profiles')
           .select(MATCH_PROFILE_FIELDS)
           .in('id', profileIds);
-        
-        if (error) throw error;
+
+        let safeProfiles = profiles || [];
+        if (error) {
+          const { data: fallbackProfiles, error: fallbackError } = await supabase
+            .from('user_profiles')
+            .select(FALLBACK_MATCH_PROFILE_FIELDS)
+            .in('id', profileIds);
+
+          if (fallbackError) throw fallbackError;
+          safeProfiles = fallbackProfiles || [];
+        }
         
         // Build a map of profile ID -> profile for safe lookup
         const profileMap = new Map();
-        (profiles || []).forEach(p => { if (p) profileMap.set(p.id, p); });
+        safeProfiles.forEach(p => { if (p) profileMap.set(p.id, p); });
         
         // Associate each match with its profile by partner ID
         return matchesData
@@ -210,12 +254,24 @@ export default function Matches() {
       try {
         if (!likesReceived.length) return [];
         const likerIds = likesReceived.slice(0, 10).map(l => l.liker_id);
-        const LIKER_FIELDS = 'id,user_id,display_name,primary_photo,photos,subscription_tier,is_verified,verification_status,current_city,current_country';
+        const LIKER_FIELDS = 'id,user_id,display_name,primary_photo,photos,subscription_tier,verification_status,current_city,current_country,is_photo_verified,is_id_verified';
+        const FALLBACK_LIKER_FIELDS = 'id,user_id,display_name,primary_photo,photos,subscription_tier,verification_status,current_city,current_country';
+
         const { data: profiles, error } = await supabase
           .from('user_profiles')
           .select(LIKER_FIELDS)
           .in('id', likerIds);
-        if (error) throw error;
+
+        if (error) {
+          const { data: fallbackProfiles, error: fallbackError } = await supabase
+            .from('user_profiles')
+            .select(FALLBACK_LIKER_FIELDS)
+            .in('id', likerIds);
+
+          if (fallbackError) throw fallbackError;
+          return (fallbackProfiles || []).filter(Boolean);
+        }
+
         return (profiles || []).filter(Boolean);
       } catch (error) {
         console.error('Failed to fetch liker profiles:', error);
@@ -230,7 +286,7 @@ export default function Matches() {
 
   // Fetch messages and unread counts — OPTIMIZED: 2 batch queries instead of N*2
   const { data: conversationData = {} } = useQuery({
-    queryKey: ['conversations-data', matchesData.map(m => m.id).join(',')],
+    queryKey: ['conversations-data', myProfile?.id, matchesData.map(m => m.id).join(',')],
     queryFn: async () => {
       try {
         const matchIds = matchesData.slice(0, 50).map(m => m.id);
