@@ -4,7 +4,7 @@ import { X, Download, Share } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from 'framer-motion';
 
-const InstallPrompt = React.forwardRef<HTMLDivElement>((_, ref) => {
+export default function InstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
@@ -125,8 +125,4 @@ const InstallPrompt = React.forwardRef<HTMLDivElement>((_, ref) => {
       </motion.div>
     </AnimatePresence>
   );
-});
-
-InstallPrompt.displayName = 'InstallPrompt';
-
-export default InstallPrompt;
+}
