@@ -4,7 +4,7 @@ import { X, Download, Share } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function InstallPrompt() {
+const InstallPrompt = React.forwardRef<HTMLDivElement>((_, ref) => {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
@@ -58,6 +58,7 @@ export default function InstallPrompt() {
   return (
     <AnimatePresence>
       <motion.div
+        ref={ref}
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
@@ -124,4 +125,8 @@ export default function InstallPrompt() {
       </motion.div>
     </AnimatePresence>
   );
-}
+});
+
+InstallPrompt.displayName = 'InstallPrompt';
+
+export default InstallPrompt;
