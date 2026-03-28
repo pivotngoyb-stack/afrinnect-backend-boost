@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -10,19 +10,37 @@ interface BadgeCounts {
   communities: number;
 }
 
+const TAB_MAP: Record<string, string> = {
+  '/matches': 'matches',
+  '/chat': 'matches',
+  '/wholikesyou': 'matches',
+  '/notifications': 'matches',
+  '/events': 'events',
+  '/eventdetails': 'events',
+  '/communities': 'communities',
+  '/communitychat': 'communities',
+};
+
+function getStoredTimestamps(): Record<string, string> {
+  try {
+    const stored = localStorage.getItem('nav_last_visited_v3');
+    return stored ? JSON.parse(stored) : {};
+  } catch { return {}; }
+}
+
+function setStoredTimestamp(tab: string) {
+  const current = getStoredTimestamps();
+  const now = new Date().toISOString();
+  current[tab] = now;
+  localStorage.setItem('nav_last_visited_v3', JSON.stringify(current));
+  return current;
+}
+
 export function useBottomNavBadges() {
   const location = useLocation();
   const queryClient = useQueryClient();
   const [profileId, setProfileId] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
-
-  // Track which tabs the user has visited — stored as ISO timestamps
-  const [lastVisited, setLastVisited] = useState<Record<string, string>>(() => {
-    try {
-      const stored = localStorage.getItem('nav_last_visited_v2');
-      return stored ? JSON.parse(stored) : {};
-    } catch { return {}; }
-  });
 
   useEffect(() => {
     const load = async () => {
@@ -39,86 +57,72 @@ export function useBottomNavBadges() {
     load();
   }, []);
 
-  // Mark tab as visited when navigating — update timestamp THEN invalidate
+  // When navigating to a tab, record the timestamp and force badge refresh
   useEffect(() => {
-    const path = location.pathname;
-    const tabMap: Record<string, string> = {
-      '/matches': 'matches',
-      '/chat': 'matches',
-      '/wholikesyou': 'matches',
-      '/events': 'events',
-      '/communities': 'communities',
-      '/communitychat': 'communities',
-    };
-    const tab = tabMap[path];
+    const tab = TAB_MAP[location.pathname];
     if (!tab) return;
 
-    const now = new Date().toISOString();
-    setLastVisited(prev => {
-      const next = { ...prev, [tab]: now };
-      localStorage.setItem('nav_last_visited_v2', JSON.stringify(next));
-      return next;
-    });
+    // Update timestamp in localStorage
+    setStoredTimestamp(tab);
 
-    const timeoutId = window.setTimeout(() => {
+    // Force a refetch after a small delay to ensure localStorage is written
+    const id = window.setTimeout(() => {
       queryClient.invalidateQueries({ queryKey: ['bottom-nav-badges'] });
-    }, 100);
+    }, 150);
 
-    return () => window.clearTimeout(timeoutId);
+    return () => window.clearTimeout(id);
   }, [location.pathname, queryClient]);
 
   const { data: badges = { matches: 0, events: 0, communities: 0 } } = useQuery({
-    queryKey: ['bottom-nav-badges', profileId, lastVisited],
+    queryKey: ['bottom-nav-badges', profileId],
     queryFn: async (): Promise<BadgeCounts> => {
       if (!profileId || !userId) return { matches: 0, events: 0, communities: 0 };
 
-      const matchesLastVisited = lastVisited.matches || null;
-      const eventsLastVisited = lastVisited.events || null;
-      const communitiesLastVisited = lastVisited.communities || null;
+      // Always read fresh from localStorage — not from React state
+      const timestamps = getStoredTimestamps();
+      const matchesSince = timestamps.matches || null;
+      const eventsSince = timestamps.events || null;
+      const communitiesSince = timestamps.communities || null;
 
       const [unreadMsgsRes, newLikesRes, newEventsRes, unreadCommunityRes] = await Promise.allSettled([
-        // Unread DMs: messages sent to me that are not read
-        matchesLastVisited
-          ? supabase
-              .from('messages')
-              .select('id', { count: 'exact', head: true })
-              .eq('receiver_id', profileId)
-              .eq('is_read', false)
-              .gt('created_at', matchesLastVisited)
-          : supabase
-              .from('messages')
-              .select('id', { count: 'exact', head: true })
-              .eq('receiver_id', profileId)
-              .eq('is_read', false),
+        // Unread DMs
+        (() => {
+          let q = supabase
+            .from('messages')
+            .select('id', { count: 'exact', head: true })
+            .eq('receiver_id', profileId)
+            .eq('is_read', false);
+          if (matchesSince) q = q.gt('created_at', matchesSince);
+          return q;
+        })(),
 
-        // Likes received since last visit to matches tab
-        matchesLastVisited
-          ? supabase
-              .from('likes')
-              .select('id', { count: 'exact', head: true })
-              .eq('liked_id', profileId)
-              .gt('created_at', matchesLastVisited)
-          : supabase
-              .from('likes')
-              .select('id', { count: 'exact', head: true })
-              .eq('liked_id', profileId),
+        // Likes received
+        (() => {
+          let q = supabase
+            .from('likes')
+            .select('id', { count: 'exact', head: true })
+            .eq('liked_id', profileId);
+          if (matchesSince) q = q.gt('created_at', matchesSince);
+          return q;
+        })(),
 
-        // New events since last visit
-        eventsLastVisited
-          ? supabase
-              .from('events')
-              .select('id', { count: 'exact', head: true })
-              .eq('is_active', true)
-              .gt('created_at', eventsLastVisited)
-              .gte('start_date', new Date().toISOString())
-          : supabase
-              .from('events')
-              .select('id', { count: 'exact', head: true })
-              .eq('is_active', true)
-              .gte('start_date', new Date().toISOString())
-              .limit(0),
+        // New events
+        (() => {
+          let q = supabase
+            .from('events')
+            .select('id', { count: 'exact', head: true })
+            .eq('is_active', true)
+            .gte('start_date', new Date().toISOString());
+          if (eventsSince) {
+            q = q.gt('created_at', eventsSince);
+          } else {
+            // Never visited events → don't show badge for pre-existing events
+            q = q.limit(0);
+          }
+          return q;
+        })(),
 
-        // Unread community messages since last visit
+        // Community messages
         (async () => {
           const { data: memberships } = await supabase
             .from('community_members')
@@ -129,35 +133,35 @@ export function useBottomNavBadges() {
 
           const communityIds = memberships.map(m => m.community_id);
 
-          if (communitiesLastVisited) {
+          if (communitiesSince) {
             const { count } = await supabase
               .from('community_messages')
               .select('id', { count: 'exact', head: true })
               .in('community_id', communityIds)
               .neq('sender_id', profileId)
-              .gt('created_at', communitiesLastVisited);
+              .gt('created_at', communitiesSince);
             return { count: count || 0 };
           }
           return { count: 0 };
         })(),
       ]);
 
-      const safeCount = (result: any) => (result.status === 'fulfilled' ? result.value?.count || 0 : 0);
-
-      const unreadMessages = safeCount(unreadMsgsRes);
-      const newLikes = safeCount(newLikesRes);
-      const newEvents = safeCount(newEventsRes);
-      const unreadCommunity = safeCount(unreadCommunityRes);
+      const safeCount = (r: any) => {
+        if (r.status !== 'fulfilled') return 0;
+        const val = r.value;
+        if (val && typeof val.count === 'number') return val.count;
+        return 0;
+      };
 
       return {
-        matches: unreadMessages + newLikes,
-        events: newEvents,
-        communities: unreadCommunity,
+        matches: safeCount(unreadMsgsRes) + safeCount(newLikesRes),
+        events: safeCount(newEventsRes),
+        communities: safeCount(unreadCommunityRes),
       };
     },
     enabled: !!profileId && !!userId,
     refetchInterval: 30000,
-    staleTime: 10000,
+    staleTime: 5000,
   });
 
   return badges;
