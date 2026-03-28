@@ -262,6 +262,20 @@ export default function Chat() {
           };
         });
 
+        if (myProfile?.id && matchId) {
+          supabase
+            .from('notifications')
+            .update({ is_read: true })
+            .eq('user_profile_id', myProfile.id)
+            .eq('type', 'message')
+            .eq('is_read', false)
+            .or(`link_to.ilike.%matchId=${matchId}%,link_to.ilike.%/chat/${matchId}%`)
+            .then(() => {
+              queryClient.invalidateQueries({ queryKey: ['notifications-count'] });
+              queryClient.invalidateQueries({ queryKey: ['notifications'] });
+            });
+        }
+
         queryClient.invalidateQueries({ queryKey: ['conversations-data'] });
         queryClient.invalidateQueries({ queryKey: ['bottom-nav-badges'] });
       });
