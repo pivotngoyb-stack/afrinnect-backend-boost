@@ -461,29 +461,25 @@ export default function Home() {
         }
         return { isMatch: true };
       } else if (!alreadyLiked) {
-        try {
-          await supabase.rpc('create_notification', {
-            p_user_profile_id: likedId, p_user_id: likedProfile.user_id,
-            p_type: isSuperLike ? 'super_like' : 'like',
-            p_title: isSuperLike ? "You got a Super Like! ⭐" : "Someone likes you!",
-            p_message: `${myProfile.display_name} ${isSuperLike ? 'super liked' : 'liked'} your profile`,
-            p_from_profile_id: myProfile.id, p_link_to: createPageUrl('Matches')
-          });
-        } catch (e) { console.warn('Notification skipped (like):', e); }
+        // Fire-and-forget: don't block the swipe on notification delivery
+        supabase.rpc('create_notification', {
+          p_user_profile_id: likedId, p_user_id: likedProfile.user_id,
+          p_type: isSuperLike ? 'super_like' : 'like',
+          p_title: isSuperLike ? "You got a Super Like! ⭐" : "Someone likes you!",
+          p_message: `${myProfile.display_name} ${isSuperLike ? 'super liked' : 'liked'} your profile`,
+          p_from_profile_id: myProfile.id, p_link_to: '/matches'
+        }).catch(e => console.warn('Notification skipped:', e));
 
-        // Push notification for super likes
         if (isSuperLike) {
-          try {
-            await supabase.functions.invoke('send-push-notification', {
-              body: {
-                userId: likedProfile.user_id,
-                title: 'You got a Super Like! ⭐',
-                body: `${myProfile.display_name} super liked your profile`,
-                type: 'super_like',
-                data: { link: '/who-likes-you' },
-              },
-            });
-          } catch (e) { console.warn('Push skipped (super_like):', e); }
+          supabase.functions.invoke('send-push-notification', {
+            body: {
+              userId: likedProfile.user_id,
+              title: 'You got a Super Like! ⭐',
+              body: `${myProfile.display_name} super liked your profile`,
+              type: 'super_like',
+              data: { link: '/who-likes-you' },
+            },
+          }).catch(e => console.warn('Push skipped:', e));
         }
       }
       return { isMatch: false, alreadyLiked };
