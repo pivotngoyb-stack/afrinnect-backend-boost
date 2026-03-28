@@ -36,10 +36,7 @@ const AFRICAN_COUNTRIES = [
 ];
 
 const ALL_COUNTRIES = [
-  ...AFRICAN_COUNTRIES,
-  'USA', 'United Kingdom', 'France', 'Canada', 'Germany', 'Brazil',
-  'Jamaica', 'Haiti', 'Trinidad and Tobago', 'Netherlands', 'Belgium',
-  'Italy', 'Spain', 'Portugal', 'Australia', 'Other'
+  'United States', 'Canada'
 ];
 
 const LANGUAGES = [
