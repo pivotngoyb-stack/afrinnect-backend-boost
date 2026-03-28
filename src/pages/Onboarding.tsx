@@ -213,28 +213,7 @@ export default function Onboarding() {
       // Request push notification permission immediately
       try {
         if ('Notification' in window && Notification.permission === 'default') {
-          const permission = await Notification.requestPermission();
-          if (permission === 'granted') {
-            // Check if browser supports Firebase messaging
-            const { isSupported } = await import('firebase/messaging');
-            const supported = await isSupported();
-            
-            if (supported) {
-              // Get FCM token and save it
-              const { messaging } = await import('@/components/firebase/firebaseConfig');
-              const { getToken } = await import('firebase/messaging');
-              
-              try {
-                const vapidKey = await invokeFunction('getVapidKey');
-                const token = await getToken(messaging, { vapidKey: vapidKey.vapid_key });
-                
-                // Save token to profile
-                await invokeFunction('updateUserProfile', { push_token: token });
-              } catch (tokenError) {
-                console.error('Failed to get FCM token:', tokenError);
-              }
-            }
-          }
+          await Notification.requestPermission();
         }
       } catch (notifError) {
         console.error('Push notification setup failed:', notifError);
