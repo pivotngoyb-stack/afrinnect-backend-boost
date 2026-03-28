@@ -36,31 +36,17 @@ export default function Settings() {
   const [myProfile, setMyProfile] = useState(null);
   const [userEmail, setUserEmail] = useState('');
   
-  // Load settings from localStorage
-  const loadSettings = () => {
-    try {
-      const saved = localStorage.getItem('app_settings');
-      return saved ? JSON.parse(saved) : {
-        notifications: true,
-        emailNotifications: true,
-        showDistance: true,
-        showLastActive: true,
-        darkMode: false
-      };
-    } catch {
-      return {
-        notifications: true,
-        emailNotifications: true,
-        showDistance: true,
-        showLastActive: true,
-        darkMode: false
-      };
-    }
+  const defaultSettings = {
+    notifications: true,
+    emailNotifications: true,
+    showDistance: true,
+    showLastActive: true,
+    darkMode: false
   };
 
-  const [settings, setSettings] = useState(loadSettings());
+  const [settings, setSettings] = useState(defaultSettings);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [_exportingData, _setExportingData] = useState(false); // Reserved for future use
+  const [_exportingData, _setExportingData] = useState(false);
   const [showEmailVerifyDialog, setShowEmailVerifyDialog] = useState(false);
   const [emailCode, setEmailCode] = useState("");
   const [inputCode, setInputCode] = useState("");
@@ -77,22 +63,49 @@ export default function Settings() {
           const profiles = await filterRecords('user_profiles', { user_id: user.id });
           if (profiles.length > 0) {
             setMyProfile(profiles[0]);
+            // Load settings from database, fallback to localStorage, then defaults
+            const dbSettings = profiles[0].app_settings;
+            if (dbSettings && typeof dbSettings === 'object' && Object.keys(dbSettings).length > 0) {
+              setSettings({ ...defaultSettings, ...dbSettings });
+            } else {
+              // Migrate from localStorage if exists
+              try {
+                const saved = localStorage.getItem('app_settings');
+                if (saved) {
+                  const parsed = JSON.parse(saved);
+                  setSettings({ ...defaultSettings, ...parsed });
+                  // Save to DB on first load (migration)
+                  await supabase
+                    .from('user_profiles')
+                    .update({ app_settings: parsed })
+                    .eq('id', profiles[0].id);
+                }
+              } catch {}
+            }
           }
         }
       } catch (e) {
         console.log('Not logged in');
-        window.location.href = '/login'; // redirectToLogin(createPageUrl('Landing'));
+        window.location.href = '/login';
       }
     };
     fetchProfile();
   }, []);
 
-  const updateSetting = (key, value) => {
+  const updateSetting = async (key, value) => {
     const newSettings = { ...settings, [key]: value };
     setSettings(newSettings);
     
-    // Persist to localStorage
+    // Persist to localStorage as fallback
     localStorage.setItem('app_settings', JSON.stringify(newSettings));
+    
+    // Persist to database
+    if (myProfile?.id) {
+      await supabase
+        .from('user_profiles')
+        .update({ app_settings: newSettings })
+        .eq('id', myProfile.id);
+    }
     
     // Apply dark mode
     if (key === 'darkMode') {
