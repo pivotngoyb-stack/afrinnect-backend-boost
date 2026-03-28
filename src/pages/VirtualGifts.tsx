@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Send } from 'lucide-react';
@@ -86,8 +86,8 @@ export default function VirtualGifts() {
   const [myProfile, setMyProfile] = useState(null);
   const [selectedGift, setSelectedGift] = useState(null);
   const [message, setMessage] = useState('');
-  const urlParams = new URLSearchParams(window.location.search);
-  const profileId = urlParams.get('profileId');
+  const [searchParams] = useSearchParams();
+  const profileId = searchParams.get('profileId');
 
   useEffect(() => {
     const fetchProfile = async () => {

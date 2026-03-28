@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { createRecord, filterRecords, getCurrentUser, sendEmail } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { Shield, MapPin, Phone, User, Clock, AlertTriangle } from 'lucide-react';
@@ -13,8 +14,9 @@ import { Label } from "@/components/ui/label";
 import { toast } from '@/hooks/use-toast';
 
 export default function SafetyCheckSetup() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const matchId = urlParams.get('matchId');
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const matchId = searchParams.get('matchId');
   
   const [myProfile, setMyProfile] = useState(null);
   const [otherProfile, setOtherProfile] = useState(null);
@@ -46,7 +48,7 @@ export default function SafetyCheckSetup() {
           }
         }
       } catch (e) {
-        window.location.href = createPageUrl('Landing');
+        navigate('/landing');
       }
     };
     fetchData();
@@ -73,7 +75,7 @@ export default function SafetyCheckSetup() {
     },
     onSuccess: () => {
       toast({ title: 'Safety check activated! Stay safe.' });
-      window.location.href = createPageUrl('Matches');
+      navigate('/matches');
     }
   });
 

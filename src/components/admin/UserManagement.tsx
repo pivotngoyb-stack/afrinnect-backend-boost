@@ -206,7 +206,7 @@ export default function UserManagement({
                 <div key={profile.id} className="flex items-center justify-between p-4 bg-muted rounded-lg hover:bg-muted transition border">
                   <div className="flex items-center gap-4 flex-1">
                     <img
-                      src={profile.primary_photo || profile.photos?.[0] || 'https://via.placeholder.com/50'}
+                      src={profile.primary_photo || profile.photos?.[0] || '/placeholder.svg'}
                       alt={profile.display_name}
                       className="w-14 h-14 rounded-full object-cover border-2 border-border"
                     />

@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { filterRecords, isAuthenticated } from '@/lib/supabase-helpers';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Shield, Globe, Sparkles, Users, CheckCircle, Crown, ArrowRight, Star, MessageCircle, Download } from 'lucide-react';
@@ -142,22 +142,18 @@ export default function Landing() {
     "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/9c6bf76a1_image.png"
   ];
 
+  const [searchParams] = useSearchParams();
+
   const handleGetStarted = async () => {
-    // No location gate - let users sign up first, verify location during onboarding
     trackEvent(CONVERSION_EVENTS.SIGNUP_START);
-    const urlParams = new URLSearchParams(window.location.search);
-    const ref = urlParams.get('ref');
-    const nextUrl = ref ? createPageUrl('Onboarding') + `?ref=${ref}` : createPageUrl('Onboarding');
-    navigate('/login');
+    const ref = searchParams.get('ref');
+    navigate(ref ? `/login?next=${encodeURIComponent(createPageUrl('Onboarding') + `?ref=${ref}`)}` : '/login');
   };
 
   const handleLogin = async () => {
-    // No location gate - verify during onboarding
     trackEvent(CONVERSION_EVENTS.SIGNUP_START);
-    const urlParams = new URLSearchParams(window.location.search);
-    const ref = urlParams.get('ref');
-    const nextUrl = ref ? createPageUrl('Home') + `?ref=${ref}` : createPageUrl('Home');
-    navigate('/login');
+    const ref = searchParams.get('ref');
+    navigate(ref ? `/login?next=${encodeURIComponent(createPageUrl('Home') + `?ref=${ref}`)}` : '/login');
   };
 
   return (

@@ -98,9 +98,11 @@ export default function RateLimitedScreen({ retryAfter = 3600, onRetry }: RateLi
                 <RefreshCw size={18} />
                 {timeLeft > 0 ? `Try Again in ${formatTime(timeLeft)}` : 'Try Again Now'}
               </Button>
-              <Button variant="outline" onClick={() => window.location.href = '/password-reset'} className="w-full">
-                Reset Password
-              </Button>
+              <a href="/password-reset">
+                <Button variant="outline" className="w-full">
+                  Reset Password
+                </Button>
+              </a>
             </div>
 
             <div className="text-center pt-4 border-t border-border">
