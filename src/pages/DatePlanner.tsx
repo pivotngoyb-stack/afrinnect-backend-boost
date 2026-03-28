@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser, invokeFunction, invokeLLM } from '@/lib/supabase-helpers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -19,8 +19,8 @@ export default function DatePlanner() {
   const [existingPlan, setExistingPlan] = useState(null);
   const [matchProfile, setMatchProfile] = useState(null);
   
-  const urlParams = new URLSearchParams(window.location.search);
-  const matchId = urlParams.get('matchId');
+  const [searchParams] = useSearchParams();
+  const matchId = searchParams.get('matchId');
   const queryClient = useQueryClient();
 
   useEffect(() => {

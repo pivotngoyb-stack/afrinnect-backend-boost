@@ -182,7 +182,7 @@ export default function CompatibilityQuizzes() {
             return (
               <Card key={quiz.id} className="bg-card/70 backdrop-blur-md border border-border shadow-lg hover:shadow-xl transition-all">
                 <CardHeader>
-                  <img src={quiz.image_url || 'https://images.unsplash.com/photo-1517457210338-f00f72676767?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'} alt={quiz.title} className="rounded-lg mb-4 object-cover h-40 w-full" />
+                  <img src={quiz.image_url || '/placeholder.svg'} alt={quiz.title} className="rounded-lg mb-4 object-cover h-40 w-full" />
                   <CardTitle className="text-xl font-bold text-foreground">{quiz.title}</CardTitle>
                   <p className="text-sm text-muted-foreground mt-2">{quiz.description}</p>
                 </CardHeader>

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser, invokeFunction, logout, uploadFile } from '@/lib/supabase-helpers';
 import { useMutation } from '@tanstack/react-query';
 import { createPageUrl } from '@/utils';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowRight, ArrowLeft, Camera, Loader2, Check, Heart,
@@ -42,12 +42,11 @@ export default function Onboarding() {
   const [showSafetyEducation, setShowSafetyEducation] = useState(false);
   const [showFoundingWelcome, setShowFoundingWelcome] = useState(false);
   const [createdProfile, setCreatedProfile] = useState(null);
+  const [onboardingSearchParams] = useSearchParams();
   const [formData, setFormData] = useState(() => {
-    // Check for referral code, founder code, and ambassador code in URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const refCode = urlParams.get('ref');
-    const founderCode = urlParams.get('founder') || urlParams.get('code');
-    const ambassadorCode = urlParams.get('a') || urlParams.get('ambassador') || urlParams.get('r');
+    const refCode = onboardingSearchParams.get('ref');
+    const founderCode = onboardingSearchParams.get('founder') || onboardingSearchParams.get('code');
+    const ambassadorCode = onboardingSearchParams.get('a') || onboardingSearchParams.get('ambassador') || onboardingSearchParams.get('r');
     
     if (refCode) {
       localStorage.setItem('referral_code', refCode);

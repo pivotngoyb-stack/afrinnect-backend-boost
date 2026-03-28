@@ -177,7 +177,7 @@ export default function EventChat() {
                   >
                     <Avatar className="w-8 h-8 flex-shrink-0">
                       <img
-                        src={senderProfile?.primary_photo || senderProfile?.photos?.[0] || 'https://via.placeholder.com/40'}
+                        src={senderProfile?.primary_photo || senderProfile?.photos?.[0] || '/placeholder.svg'}
                         alt={senderProfile?.display_name}
                         className="w-full h-full object-cover rounded-full"
                       />

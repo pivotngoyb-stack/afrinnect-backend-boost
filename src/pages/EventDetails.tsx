@@ -20,8 +20,8 @@ import AfricanPattern from '@/components/shared/AfricanPattern';
 import { toast } from '@/hooks/use-toast';
 
 export default function EventDetails() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const eventId = urlParams.get('id');
+  const [searchParams] = useSearchParams();
+  const eventId = searchParams.get('id');
   
   const [myProfile, setMyProfile] = useState(null);
   const [showAttendees, setShowAttendees] = useState(false);

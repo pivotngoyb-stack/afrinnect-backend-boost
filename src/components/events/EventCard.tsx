@@ -38,7 +38,7 @@ export default function EventCard({ event, onJoin, isAttending = false }) {
     <div className="bg-card rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 group">
       <div className="relative h-48 overflow-hidden">
         <img 
-          src={event.image_url || 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600'}
+          src={event.image_url || '/placeholder.svg'}
           alt={event.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />

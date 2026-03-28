@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 
 export default function StoryRing({ profile, hasStory, isViewed, onClick, isOwnProfile, storyCount = 0 }) {
-  const photo = profile?.primary_photo || profile?.photos?.[0] || 'https://via.placeholder.com/80';
+  const photo = profile?.primary_photo || profile?.photos?.[0] || '/placeholder.svg';
   
   const ringStyle = hasStory && !isViewed
     ? { background: 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)' }
