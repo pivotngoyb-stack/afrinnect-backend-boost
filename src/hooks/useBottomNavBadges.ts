@@ -78,11 +78,18 @@ export function useBottomNavBadges() {
 
       const [unreadMsgsRes, newLikesRes, newEventsRes, unreadCommunityRes] = await Promise.allSettled([
         // Unread DMs: messages sent to me that are not read
-        supabase
-          .from('messages')
-          .select('id', { count: 'exact', head: true })
-          .eq('receiver_id', profileId)
-          .eq('is_read', false),
+        matchesLastVisited
+          ? supabase
+              .from('messages')
+              .select('id', { count: 'exact', head: true })
+              .eq('receiver_id', profileId)
+              .eq('is_read', false)
+              .gt('created_at', matchesLastVisited)
+          : supabase
+              .from('messages')
+              .select('id', { count: 'exact', head: true })
+              .eq('receiver_id', profileId)
+              .eq('is_read', false),
 
         // Likes received since last visit to matches tab
         matchesLastVisited
