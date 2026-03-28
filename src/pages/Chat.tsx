@@ -96,11 +96,24 @@ export default function Chat() {
     const fetchProfiles = async () => {
       try {
         const user = await getCurrentUser();
-        const profiles = await filterRecords('user_profiles', { user_id: user.id });
-        if (profiles.length > 0) {
-          setMyProfile(profiles[0]);
+        if (!user || !user.profile_id) {
+          window.location.href = createPageUrl('Landing');
+          return;
         }
+        // getCurrentUser already returns the full profile merged with auth
+        setMyProfile({
+          id: user.profile_id,
+          user_id: user.id,
+          display_name: user.display_name,
+          primary_photo: user.primary_photo,
+          photos: user.photos,
+          subscription_tier: user.subscription_tier,
+          is_banned: user.is_banned,
+          blocked_users: user.blocked_users,
+          ...user,
+        });
       } catch (e) {
+        console.error('Chat profile fetch error:', e);
         window.location.href = createPageUrl('Landing');
       }
     };
