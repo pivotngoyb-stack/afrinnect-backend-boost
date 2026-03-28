@@ -3377,6 +3377,7 @@ export type Database = {
       user_profiles: {
         Row: {
           ai_safety_score: number | null
+          app_settings: Json | null
           badges: string[] | null
           ban_reason: string | null
           bio: string | null
@@ -3469,6 +3470,7 @@ export type Database = {
         }
         Insert: {
           ai_safety_score?: number | null
+          app_settings?: Json | null
           badges?: string[] | null
           ban_reason?: string | null
           bio?: string | null
@@ -3561,6 +3563,7 @@ export type Database = {
         }
         Update: {
           ai_safety_score?: number | null
+          app_settings?: Json | null
           badges?: string[] | null
           ban_reason?: string | null
           bio?: string | null
