@@ -18,6 +18,7 @@ import SEOHead from '@/components/seo/SEOHead';
 export default function Landing() {
   const { t } = useLanguage();
   const { trackEvent } = useConversionTracker();
+  const navigate = useNavigate();
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [liveCount, setLiveCount] = useState(47);
