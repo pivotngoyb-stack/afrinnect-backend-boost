@@ -18,6 +18,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Eye, Sparkles } from 'lucide-react';
 
 export default function WhoLikesYou() {
+  const navigate = useNavigate();
   const [myProfile, setMyProfile] = useState(null);
   const [matchedProfile, setMatchedProfile] = useState(null);
   const [activeTab, setActiveTab] = useState('likes');

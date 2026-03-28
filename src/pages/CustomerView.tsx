@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useQuery } from '@tanstack/react-query';
 
 export default function CustomerView() {
+  const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
   const [viewMode, setViewMode] = useState('mobile');
   const [selectedPage, setSelectedPage] = useState(null);

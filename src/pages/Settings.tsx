@@ -33,6 +33,7 @@ import LanguageSelector from '@/components/i18n/LanguageSelector';
 
 export default function Settings() {
   const { t } = useLanguage();
+  const navigate = useNavigate();
   const [myProfile, setMyProfile] = useState(null);
   const [userEmail, setUserEmail] = useState('');
   

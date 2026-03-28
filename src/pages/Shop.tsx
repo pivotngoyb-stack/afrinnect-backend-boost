@@ -83,6 +83,7 @@ const SHOP_ITEMS = [
 ];
 
 export default function Shop() {
+  const navigate = useNavigate();
   const [myProfile, setMyProfile] = useState(null);
 
   useEffect(() => {
