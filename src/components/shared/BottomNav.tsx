@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { useLanguage } from '@/components/i18n/LanguageContext';
 import { useBottomNavBadges } from '@/hooks/useBottomNavBadges';
 
-const BottomNav = React.forwardRef<HTMLElement>((_, ref) => {
+export default function BottomNav() {
   const location = useLocation();
   const { t } = useLanguage();
   const badges = useBottomNavBadges();
@@ -20,7 +20,7 @@ const BottomNav = React.forwardRef<HTMLElement>((_, ref) => {
   ];
 
   return (
-    <nav ref={ref} className="fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-xl border-t border-border safe-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-xl border-t border-border safe-bottom">
       <div className="flex items-center justify-around h-16 max-w-lg mx-auto px-2">
         {navItems.map(({ icon: Icon, label, path, badge }) => {
           const isActive = location.pathname === path;
@@ -57,8 +57,4 @@ const BottomNav = React.forwardRef<HTMLElement>((_, ref) => {
       </div>
     </nav>
   );
-});
-
-BottomNav.displayName = 'BottomNav';
-
-export default BottomNav;
+}
