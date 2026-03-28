@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from 'react';
-import { format, isToday, isYesterday } from 'date-fns';
+import { format, isToday, isYesterday, formatDistanceToNowStrict } from 'date-fns';
 import { Badge } from "@/components/ui/badge";
 import VerificationBadge from '../shared/VerificationBadge';
 
@@ -20,17 +20,19 @@ export default function ConversationItem({ match, profile, lastMessage, unreadCo
 
   const truncateMessage = (text, maxLength = 40, isPremium = true) => {
     if (!text) return 'Say hello! 👋';
-    
-    // For non-premium, show teaser (first 3 words then blur indication)
     if (!isPremium && text.length > 15) {
       const words = text.split(' ');
-      if (words.length > 3) {
-        return words.slice(0, 3).join(' ') + ' •••';
-      }
+      if (words.length > 3) return words.slice(0, 3).join(' ') + ' •••';
     }
-    
     return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
   };
+
+  // Online status logic
+  const lastActiveDate = profile?.last_active ? new Date(profile.last_active) : null;
+  const isOnline = !!lastActiveDate && (Date.now() - lastActiveDate.getTime()) < 10 * 60 * 1000;
+  const lastActiveText = lastActiveDate && !isOnline
+    ? formatDistanceToNowStrict(lastActiveDate, { addSuffix: false })
+    : null;
 
   const photo = profile?.primary_photo || profile?.photos?.[0] || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100';
 
@@ -38,7 +40,7 @@ export default function ConversationItem({ match, profile, lastMessage, unreadCo
     <div 
       onClick={onClick}
       className={`flex items-center gap-4 p-4 cursor-pointer hover:bg-muted active:bg-muted transition-colors ${
-        unreadCount > 0 ? 'bg-purple-50/30' : ''
+        unreadCount > 0 ? 'bg-primary/5' : ''
       }`}
     >
       <div className="relative flex-shrink-0">
@@ -47,18 +49,24 @@ export default function ConversationItem({ match, profile, lastMessage, unreadCo
           alt={profile?.display_name}
           className="w-16 h-16 rounded-full object-cover"
         />
-        {profile?.is_active && (
-          <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-card" />
+        {isOnline && (
+          <div className="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 rounded-full border-2 border-card" />
         )}
       </div>
       
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <h3 className={`font-semibold truncate ${unreadCount > 0 ? 'text-foreground' : 'text-foreground'}`}>
+            <h3 className={`font-semibold truncate text-foreground`}>
               {profile?.display_name}
             </h3>
             <VerificationBadge verification={profile?.verification_status} size="small" />
+            {isOnline && (
+              <span className="text-[10px] font-medium text-emerald-500">Online</span>
+            )}
+            {!isOnline && lastActiveText && (
+              <span className="text-[10px] text-muted-foreground">{lastActiveText} ago</span>
+            )}
           </div>
           <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
             {formatMessageDate(lastMessage?.created_at || lastMessage?.created_date || match?.matched_at)}
@@ -70,8 +78,8 @@ export default function ConversationItem({ match, profile, lastMessage, unreadCo
             {truncateMessage(lastMessage?.content)}
           </p>
           {unreadCount > 0 && (
-            <div className="w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-white text-xs font-bold">{unreadCount > 9 ? '9+' : unreadCount}</span>
+            <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-primary-foreground text-xs font-bold">{unreadCount > 9 ? '9+' : unreadCount}</span>
             </div>
           )}
         </div>
