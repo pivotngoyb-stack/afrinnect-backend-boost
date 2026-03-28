@@ -65,7 +65,7 @@ export default function ChatBubble({ message, isOwn, senderPhoto }) {
         
         <div className={`flex items-center gap-1 mt-1 px-1 ${isOwn ? 'justify-end' : 'justify-between'}`}>
           <div className="flex items-center gap-1">
-            <span className="text-xs text-muted-foreground">{formatTime(message.created_date)}</span>
+            <span className="text-xs text-muted-foreground">{formatTime(message.created_date || message.created_at)}</span>
             {isOwn && (
               message.is_read 
                 ? <CheckCheck size={14} className="text-blue-500" />
