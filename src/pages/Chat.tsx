@@ -96,11 +96,24 @@ export default function Chat() {
     const fetchProfiles = async () => {
       try {
         const user = await getCurrentUser();
-        const profiles = await filterRecords('user_profiles', { user_id: user.id });
-        if (profiles.length > 0) {
-          setMyProfile(profiles[0]);
+        if (!user || !user.profile_id) {
+          window.location.href = createPageUrl('Landing');
+          return;
         }
+        // getCurrentUser already returns the full profile merged with auth
+        setMyProfile({
+          id: user.profile_id,
+          user_id: user.id,
+          display_name: user.display_name,
+          primary_photo: user.primary_photo,
+          photos: user.photos,
+          subscription_tier: user.subscription_tier,
+          is_banned: user.is_banned,
+          blocked_users: user.blocked_users,
+          ...user,
+        });
       } catch (e) {
+        console.error('Chat profile fetch error:', e);
         window.location.href = createPageUrl('Landing');
       }
     };
@@ -108,34 +121,30 @@ export default function Chat() {
   }, []);
 
   // Fetch match and other user's profile
-  const { data: match } = useQuery({
-    queryKey: ['match', matchId],
+  const { data: match, isError: matchError, isFetched: matchFetched } = useQuery({
+    queryKey: ['match', matchId, myProfile?.id],
     queryFn: async () => {
-      try {
-        const matches = await filterRecords('matches', { id: matchId });
-        if (matches.length > 0) {
-          const m = matches[0];
-          const otherId = m.user1_id === myProfile?.id ? m.user2_id : m.user1_id;
-          const { data: otherProfiles } = await supabase
-            .from('user_profiles')
-            .select('id,user_id,display_name,primary_photo,photos,subscription_tier,current_city,current_country,country_of_origin,interests,opening_move,bio,blocked_users')
-            .eq('id', otherId)
-            .limit(1);
-          if (otherProfiles?.length > 0) {
-            setOtherProfile(otherProfiles[0]);
-          }
-          return m;
+      const matches = await filterRecords('matches', { id: matchId });
+      if (matches.length > 0) {
+        const m = matches[0];
+        const myId = myProfile?.id || myProfile?.profile_id;
+        const otherId = m.user1_id === myId ? m.user2_id : m.user1_id;
+        const { data: otherProfiles } = await supabase
+          .from('user_profiles')
+          .select('id,user_id,display_name,primary_photo,photos,subscription_tier,current_city,current_country,country_of_origin,interests,opening_move,bio,blocked_users')
+          .eq('id', otherId)
+          .limit(1);
+        if (otherProfiles?.length > 0) {
+          setOtherProfile(otherProfiles[0]);
         }
-        return null;
-      } catch (error) {
-        console.error('Failed to fetch match:', error);
-        return null;
+        return m;
       }
+      return null;
     },
     enabled: !!matchId && !!myProfile,
     staleTime: 120000,
-    retry: 1,
-    retryDelay: 5000
+    retry: 2,
+    retryDelay: 2000
   });
 
   // Fetch messages with infinite scroll - OPTIMIZED
@@ -435,6 +444,7 @@ export default function Chat() {
   };
 
   if (!otherProfile) {
+    const showError = (matchFetched && !match) || matchError;
     return (
       <div className="h-screen bg-background flex flex-col overflow-hidden">
         <header className="bg-card border-b border-border px-4 py-3 flex items-center gap-3">
@@ -445,11 +455,22 @@ export default function Chat() {
           </Link>
           <div className="h-6 bg-muted rounded animate-pulse w-32" />
         </header>
-        <ChatSkeleton />
-        {!myProfile && (
-          <div className="text-center p-4 text-muted-foreground text-sm">
-            Loading your profile...
+        {showError ? (
+          <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
+            <p className="text-muted-foreground mb-4">This conversation could not be loaded.</p>
+            <Link to={createPageUrl('Matches')}>
+              <Button variant="outline">Back to Matches</Button>
+            </Link>
           </div>
+        ) : (
+          <>
+            <ChatSkeleton />
+            {!myProfile && (
+              <div className="text-center p-4 text-muted-foreground text-sm">
+                Loading your profile...
+              </div>
+            )}
+          </>
         )}
       </div>
     );
