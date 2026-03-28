@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser, invokeFunction, logout, updateRecord } from '@/lib/supabase-helpers';
+import { supabase } from '@/integrations/supabase/client';
 import { useMutation } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
