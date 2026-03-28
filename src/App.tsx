@@ -8,6 +8,7 @@ import { LanguageProvider } from "@/components/i18n/LanguageContext";
 import InstallPrompt from "@/components/mobile/InstallPrompt";
 import AppBottomNav from "@/components/shared/AppBottomNav";
 import AuthGuard from "@/components/shared/AuthGuard";
+import AdminGuard from "@/components/shared/AdminGuard";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,6 +32,13 @@ const Protected = ({ children, requireProfile = false }: { children: React.React
   <AuthGuard requireAuth requireProfile={requireProfile} redirectTo="/login">
     {children}
   </AuthGuard>
+);
+
+// Admin wrapper — checks auth + admin role
+const AdminProtected = ({ children }: { children: React.ReactNode }) => (
+  <Protected>
+    <AdminGuard>{children}</AdminGuard>
+  </Protected>
 );
 
 // Lazy-load all pages
@@ -219,23 +227,23 @@ const App = () => (
             <Route path="/migrationcalculator" element={<Protected><MigrationCalculator /></Protected>} />
             <Route path="/migrationdocument" element={<Protected><MigrationDocument /></Protected>} />
 
-            {/* Protected Admin */}
-            <Route path="/admindashboard" element={<Protected><AdminDashboard /></Protected>} />
-            <Route path="/adminusers" element={<Protected><AdminUsers /></Protected>} />
-            <Route path="/adminmoderation" element={<Protected><AdminModeration /></Protected>} />
-            <Route path="/adminanalytics" element={<Protected><AdminAnalytics /></Protected>} />
-            <Route path="/adminsubscriptions" element={<Protected><AdminSubscriptions /></Protected>} />
-            <Route path="/adminsettings" element={<Protected><AdminSettings /></Protected>} />
-            <Route path="/adminbroadcast" element={<Protected><AdminBroadcast /></Protected>} />
-            <Route path="/adminambassadors" element={<Protected><AdminAmbassadors /></Protected>} />
-            <Route path="/admincontent" element={<Protected><AdminContent /></Protected>} />
-            <Route path="/adminevents" element={<Protected><AdminEvents /></Protected>} />
-            <Route path="/adminvipevents" element={<Protected><AdminVIPEvents /></Protected>} />
-            <Route path="/adminfeatureflags" element={<Protected><AdminFeatureFlags /></Protected>} />
-            <Route path="/adminmanual" element={<Protected><AdminManual /></Protected>} />
-            <Route path="/adminlaunchchecklist" element={<Protected><AdminLaunchChecklist /></Protected>} />
-            <Route path="/adminmarketplace" element={<Protected><AdminMarketplace /></Protected>} />
-            <Route path="/adminauditlogs" element={<Protected><AdminAuditLogs /></Protected>} />
+            {/* Protected Admin — requires admin role */}
+            <Route path="/admindashboard" element={<AdminProtected><AdminDashboard /></AdminProtected>} />
+            <Route path="/adminusers" element={<AdminProtected><AdminUsers /></AdminProtected>} />
+            <Route path="/adminmoderation" element={<AdminProtected><AdminModeration /></AdminProtected>} />
+            <Route path="/adminanalytics" element={<AdminProtected><AdminAnalytics /></AdminProtected>} />
+            <Route path="/adminsubscriptions" element={<AdminProtected><AdminSubscriptions /></AdminProtected>} />
+            <Route path="/adminsettings" element={<AdminProtected><AdminSettings /></AdminProtected>} />
+            <Route path="/adminbroadcast" element={<AdminProtected><AdminBroadcast /></AdminProtected>} />
+            <Route path="/adminambassadors" element={<AdminProtected><AdminAmbassadors /></AdminProtected>} />
+            <Route path="/admincontent" element={<AdminProtected><AdminContent /></AdminProtected>} />
+            <Route path="/adminevents" element={<AdminProtected><AdminEvents /></AdminProtected>} />
+            <Route path="/adminvipevents" element={<AdminProtected><AdminVIPEvents /></AdminProtected>} />
+            <Route path="/adminfeatureflags" element={<AdminProtected><AdminFeatureFlags /></AdminProtected>} />
+            <Route path="/adminmanual" element={<AdminProtected><AdminManual /></AdminProtected>} />
+            <Route path="/adminlaunchchecklist" element={<AdminProtected><AdminLaunchChecklist /></AdminProtected>} />
+            <Route path="/adminmarketplace" element={<AdminProtected><AdminMarketplace /></AdminProtected>} />
+            <Route path="/adminauditlogs" element={<AdminProtected><AdminAuditLogs /></AdminProtected>} />
 
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />

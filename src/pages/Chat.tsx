@@ -4,7 +4,7 @@ import { createRecord, filterRecords, getCurrentUser, invokeFunction, invokeLLM,
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPageUrl } from '@/utils';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Send, Mic, Image, Languages, AlertTriangle, MoreVertical, Flag, Sparkles, Shield, Ban, Video, Gift, Wand2, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,6 +51,7 @@ import { toast } from '@/hooks/use-toast';
 
 export default function Chat() {
   usePerformanceMonitor('Chat');
+  const navigate = useNavigate();
   
   const urlParams = new URLSearchParams(window.location.search);
   const matchId = urlParams.get('matchId');
@@ -97,7 +98,7 @@ export default function Chat() {
       try {
         const user = await getCurrentUser();
         if (!user || !user.profile_id) {
-          window.location.href = createPageUrl('Landing');
+          navigate('/landing');
           return;
         }
         // getCurrentUser already returns the full profile merged with auth
@@ -114,7 +115,7 @@ export default function Chat() {
         });
       } catch (e) {
         console.error('Chat profile fetch error:', e);
-        window.location.href = createPageUrl('Landing');
+        navigate('/landing');
       }
     };
     fetchProfiles();
@@ -415,7 +416,7 @@ export default function Chat() {
       if (response?.error) throw new Error(response.error);
     },
     onSuccess: () => {
-      window.location.href = createPageUrl('Matches');
+      navigate('/matches');
     }
   });
 

@@ -519,7 +519,7 @@ export default function Matches() {
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-2">{t('matchesPage.noMatchesYet')}</h3>
                 <p className="text-muted-foreground mb-4 max-w-sm mx-auto">{t('matchesPage.noMatchesDesc')}</p>
-                <Button onClick={() => window.location.href = createPageUrl('Home')} className="bg-gradient-to-r from-primary to-destructive">
+                <Button onClick={() => window.location.assign(createPageUrl('Home'))} className="bg-gradient-to-r from-primary to-destructive">
                   <Heart size={16} className="mr-2" />
                   {t('matchesPage.startDiscovering')}
                 </Button>
@@ -564,7 +564,7 @@ export default function Matches() {
                           {t('matchesPage.noNewLikesDesc')}
                         </p>
                         <Button 
-                          onClick={() => window.location.href = createPageUrl('PricingPlans')}
+                          onClick={() => window.location.assign('/pricingplans')}
                           variant="outline"
                           className="border-primary/30 text-primary hover:bg-primary/5"
                         >
