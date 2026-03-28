@@ -199,10 +199,6 @@ export default function Notifications() {
               />
             ) : (
               notifications.map((notif, idx) => {
-                // Check if this is a like notification and user needs premium
-                const isLikeNotif = notif.type === 'like' || notif.type === 'super_like';
-                const needsPremium = isLikeNotif && (!myProfile?.subscription_tier || myProfile.subscription_tier === 'free');
-                
                 return (
                 <motion.div
                   key={notif.id}
