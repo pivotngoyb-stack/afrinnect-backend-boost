@@ -53,48 +53,53 @@ export default function Matches() {
     fetchMyProfile();
   }, []);
 
-  // Fetch matches - OPTIMIZED
+  // Fetch matches - OPTIMIZED: single query with .or() instead of 2 separate calls
   const { data: matchesData = [], isLoading: loadingMatches } = useQuery({
     queryKey: ['matches', myProfile?.id],
     queryFn: async () => {
       try {
         if (!myProfile) return [];
-        // OPTIMIZED: Fetch with limits, filter out blocked matches
-        const [matches1, matches2] = await Promise.all([
-          filterRecords('matches', { user1_id: myProfile.id, is_match: true, status: 'active' }, '-matched_at', 50),
-          filterRecords('matches', { user2_id: myProfile.id, is_match: true, status: 'active' }, '-matched_at', 50)
-        ]);
         
-        // Filter out matches with blocked users (bidirectional)
+        // Single query with OR condition — matches RLS policy (checks user1_user_id/user2_user_id)
+        const { data: rawMatches, error } = await supabase
+          .from('matches')
+          .select('*')
+          .eq('is_match', true)
+          .eq('status', 'active')
+          .or(`user1_id.eq.${myProfile.id},user2_id.eq.${myProfile.id}`)
+          .order('matched_at', { ascending: false })
+          .limit(50);
+        
+        if (error) {
+          console.error('Matches query error:', error);
+          return [];
+        }
+        
+        if (!rawMatches?.length) return [];
+        
+        // Filter out matches with blocked users
         const myBlockedUsers = new Set(myProfile.blocked_users || []);
-        const rawMatches = [...matches1, ...matches2].filter(m => {
+        const filtered = rawMatches.filter(m => {
           const partnerId = m.user1_id === myProfile.id ? m.user2_id : m.user1_id;
           return !myBlockedUsers.has(partnerId);
         });
         
-        // DEDUPLICATE: Ensure only one match per partner is shown
+        // DEDUPLICATE: Ensure only one match per partner
         const uniqueMatches = new Map();
-        
-        rawMatches.forEach(m => {
+        filtered.forEach(m => {
           const partnerId = m.user1_id === myProfile.id ? m.user2_id : m.user1_id;
-          
           if (!uniqueMatches.has(partnerId)) {
             uniqueMatches.set(partnerId, m);
           } else {
-            // If duplicate exists, keep the most recent or robust one
             const existing = uniqueMatches.get(partnerId);
-            const currentObjDate = new Date(m.matched_at || m.created_date);
-            const existingDate = new Date(existing.matched_at || existing.created_date);
-            
-            if (currentObjDate > existingDate) {
+            if (new Date(m.matched_at || m.created_at) > new Date(existing.matched_at || existing.created_at)) {
               uniqueMatches.set(partnerId, m);
             }
           }
         });
 
-        // Sort unique matches by date
         return Array.from(uniqueMatches.values()).sort((a, b) => 
-          new Date(b.matched_at || b.created_date) - new Date(a.matched_at || a.created_date)
+          new Date(b.matched_at || b.created_at) - new Date(a.matched_at || a.created_at)
         );
       } catch (error) {
         console.error('Failed to fetch matches:', error);
@@ -104,9 +109,9 @@ export default function Matches() {
     enabled: !!myProfile,
     refetchInterval: false,
     refetchOnWindowFocus: false,
-    staleTime: 600000, // OPTIMIZED: 10 minutes
-    retry: 1,
-    retryDelay: 5000
+    staleTime: 600000,
+    retry: 2,
+    retryDelay: 3000
   });
 
   // Fetch profiles for matches - OPTIMIZED: batch query instead of N+1

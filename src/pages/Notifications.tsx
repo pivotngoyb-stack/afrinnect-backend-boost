@@ -43,10 +43,12 @@ export default function Notifications() {
           50
         );
         
-        // Sort notifications: likes/super_likes first (if premium), then matches, then messages, then others
-        const isPremium = myProfile?.subscription_tier && myProfile.subscription_tier !== 'free';
+        // Filter out message and like notifications — those belong in Matches page
+        const filteredNotifs = allNotifs.filter(n => 
+          n.type !== 'message' && n.type !== 'like' && n.type !== 'super_like'
+        );
         
-        return allNotifs.sort((a, b) => {
+        return filteredNotifs.sort((a, b) => {
           const priority = (notif) => {
             if (isPremium && (notif.type === 'like' || notif.type === 'super_like')) return 0;
             if (notif.type === 'match') return 1;
