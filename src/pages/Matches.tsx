@@ -564,7 +564,7 @@ export default function Matches() {
                           {t('matchesPage.noNewLikesDesc')}
                         </p>
                         <Button 
-                          onClick={() => window.location.href = createPageUrl('PricingPlans')}
+                          onClick={() => window.location.assign('/pricingplans')}
                           variant="outline"
                           className="border-primary/30 text-primary hover:bg-primary/5"
                         >
