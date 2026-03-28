@@ -21,6 +21,7 @@ import AfricanPattern from '@/components/shared/AfricanPattern';
 import { compressImage, validateImageFile } from '@/components/shared/ImageCompressor';
 
 export default function CreateEvent() {
+  const navigate = useNavigate();
   const [myProfile, setMyProfile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
