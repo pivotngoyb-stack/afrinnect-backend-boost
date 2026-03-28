@@ -14,6 +14,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function SubmitStory() {
   const navigate = useNavigate();
+  const [myProfile, setMyProfile] = useState(null);
   const [storyText, setStoryText] = useState('');
   const [matchDate, setMatchDate] = useState('');
   const [relationshipStatus, setRelationshipStatus] = useState('dating');
