@@ -293,25 +293,35 @@ export default function Matches() {
   });
   
   // Active conversations sorted by most recent message
-  // Priority DMs: Elite/VIP messages appear first
+  // Show ALL matches as conversations — ones with messages sorted first, then unmessaged ones
   const conversations = matchedProfiles
-    .filter(p => conversationData[p.match?.id]?.lastMessage && filterBySearch(p))
+    .filter(p => filterBySearch(p))
     .sort((a, b) => {
-      const aTier = a.subscription_tier || 'free';
-      const bTier = b.subscription_tier || 'free';
-      const tierPriority = { vip: 3, elite: 2, premium: 1, free: 0 };
+      const aMsg = conversationData[a.match?.id]?.lastMessage;
+      const bMsg = conversationData[b.match?.id]?.lastMessage;
       
-      // Priority users first
-      const aPriority = tierPriority[aTier] || 0;
-      const bPriority = tierPriority[bTier] || 0;
+      // Matches with messages come first
+      if (aMsg && !bMsg) return -1;
+      if (!aMsg && bMsg) return 1;
       
-      if (aPriority !== bPriority) {
-        return bPriority - aPriority; // Higher tier first
+      // Both have messages — sort by tier then date
+      if (aMsg && bMsg) {
+        const aTier = a.subscription_tier || 'free';
+        const bTier = b.subscription_tier || 'free';
+        const tierPriority = { vip: 3, elite: 2, premium: 1, free: 0 };
+        const aPriority = tierPriority[aTier] || 0;
+        const bPriority = tierPriority[bTier] || 0;
+        
+        if (aPriority !== bPriority) return bPriority - aPriority;
+        
+        const dateA = new Date(aMsg.created_date || 0);
+        const dateB = new Date(bMsg.created_date || 0);
+        return dateB - dateA;
       }
       
-      // Then by date
-      const dateA = new Date(conversationData[a.match?.id]?.lastMessage?.created_date || 0);
-      const dateB = new Date(conversationData[b.match?.id]?.lastMessage?.created_date || 0);
+      // Both no messages — sort by match date
+      const dateA = new Date(a.match?.matched_at || a.match?.created_date || 0);
+      const dateB = new Date(b.match?.matched_at || b.match?.created_date || 0);
       return dateB - dateA;
     });
 
