@@ -263,6 +263,7 @@ export default function Chat() {
         });
 
         queryClient.invalidateQueries({ queryKey: ['conversations-data'] });
+        queryClient.invalidateQueries({ queryKey: ['bottom-nav-badges'] });
       });
   }, [messages.length, myProfile?.id, queryClient, matchId]); // Mark all unread in this conversation as soon as chat is opened/new message arrives
 
