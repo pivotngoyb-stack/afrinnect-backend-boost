@@ -441,7 +441,7 @@ export default function Matches() {
               <Heart size={16} />
               {t('matchesPage.likesYou')}
               {likesReceived.length > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 text-white text-xs rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive text-destructive-foreground text-xs rounded-full flex items-center justify-center">
                   {likesReceived.length}
                 </span>
               )}
@@ -514,7 +514,7 @@ export default function Matches() {
 
             {matchedProfiles.length === 0 && !loadingMatches && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-12">
-                <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center">
+                <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-primary/20 to-destructive/20 rounded-full flex items-center justify-center">
                   <span className="text-4xl">💕</span>
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-2">{t('matchesPage.noMatchesYet')}</h3>
@@ -556,8 +556,8 @@ export default function Matches() {
                       animate={{ opacity: 1, y: 0 }}
                       className="text-center py-8"
                     >
-                      <div className="w-16 h-16 mx-auto mb-4 bg-pink-100 rounded-full flex items-center justify-center">
-                        <Heart size={28} className="text-pink-500" />
+                      <div className="w-16 h-16 mx-auto mb-4 bg-destructive/10 rounded-full flex items-center justify-center">
+                        <Heart size={28} className="text-destructive" />
                       </div>
                        <h3 className="text-lg font-bold text-foreground mb-2">{t('matchesPage.noNewLikes')}</h3>
                        <p className="text-muted-foreground mb-4 text-sm">

@@ -500,11 +500,6 @@ export default function Home() {
         setShowMatchCelebration(true);
         setMatchCount(prev => prev + 1);
         setLastMatchedProfile(variables?.profile || pendingLikeProfile);
-        setTimeout(() => {
-          setShowMatchCelebration(false);
-          setShowNewMatchToast(true);
-          setTimeout(() => setShowNewMatchToast(false), 8000);
-        }, 3000);
       }
       if (data?.alreadyLiked) {
         toast('Already liked — moving to next profile');
