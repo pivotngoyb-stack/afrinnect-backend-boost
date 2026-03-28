@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Heart, Users, MessageCircle, Crown, Shield, Trash2, CheckCheck } from 'lucide-react';
+import { ArrowLeft, Users, MessageCircle, Shield, Trash2, CheckCheck } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -43,22 +43,21 @@ export default function Notifications() {
           50
         );
         
-        // Sort notifications: likes/super_likes first (if premium), then matches, then messages, then others
-        const isPremium = myProfile?.subscription_tier && myProfile.subscription_tier !== 'free';
+        // Filter out message and like notifications — those belong in Matches page
+        const filteredNotifs = allNotifs.filter(n => 
+          n.type !== 'message' && n.type !== 'like' && n.type !== 'super_like'
+        );
         
-        return allNotifs.sort((a, b) => {
+        return filteredNotifs.sort((a, b) => {
           const priority = (notif) => {
-            if (isPremium && (notif.type === 'like' || notif.type === 'super_like')) return 0;
-            if (notif.type === 'match') return 1;
-            if (notif.type === 'message') return 2;
-            if (notif.type === 'admin_message') return 3;
-            return 4;
+            if (notif.type === 'match') return 0;
+            if (notif.type === 'admin_message') return 1;
+            return 2;
           };
           
           const priorityDiff = priority(a) - priority(b);
           if (priorityDiff !== 0) return priorityDiff;
           
-          // Within same priority, sort by date (newest first)
           return new Date(b.created_date) - new Date(a.created_date);
         });
       } catch (error) {
@@ -200,10 +199,6 @@ export default function Notifications() {
               />
             ) : (
               notifications.map((notif, idx) => {
-                // Check if this is a like notification and user needs premium
-                const isLikeNotif = notif.type === 'like' || notif.type === 'super_like';
-                const needsPremium = isLikeNotif && (!myProfile?.subscription_tier || myProfile.subscription_tier === 'free');
-                
                 return (
                 <motion.div
                   key={notif.id}
@@ -215,8 +210,8 @@ export default function Notifications() {
                   className={`p-4 rounded-xl border cursor-pointer transition-all hover:shadow-md ${
                     notif.is_read
                       ? 'bg-card border-border'
-                      : isLikeNotif ? 'bg-gradient-to-r from-purple-50 to-pink-50 border-purple-300 border-2' : 'bg-purple-50 border-purple-200'
-                  } ${notif.is_admin ? 'border-l-4 border-l-red-500' : ''} ${needsPremium ? 'opacity-75' : ''}`}
+                      : 'bg-purple-50 border-purple-200'
+                  } ${notif.is_admin ? 'border-l-4 border-l-red-500' : ''}`}
                 >
                   <div className="flex items-start gap-4">
                     <div className="mt-1">{getNotificationIcon(notif.type)}</div>
@@ -225,18 +220,10 @@ export default function Notifications() {
                         <div>
                           <h3 className="font-semibold text-foreground">{notif.title}</h3>
                           <p className="text-sm text-muted-foreground mt-1">
-                            {needsPremium ? 'Someone special is interested in you! Upgrade to see who.' : notif.message}
+                            {notif.message}
                           </p>
                           {notif.is_admin && (
                             <Badge className="mt-2 bg-red-600 text-xs">From Admin</Badge>
-                          )}
-                          {needsPremium && (
-                            <Link to={createPageUrl('PricingPlans')}>
-                              <Badge className="mt-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs cursor-pointer hover:from-amber-600 hover:to-amber-700">
-                                <Crown size={10} className="mr-1" />
-                                Upgrade to See Who
-                              </Badge>
-                            </Link>
                           )}
                         </div>
                         <button
