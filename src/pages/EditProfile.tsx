@@ -28,16 +28,9 @@ import ImageCropper from '@/components/shared/ImageCropper';
 import { useLanguage } from '@/components/i18n/LanguageContext';
 import { toast } from '@/hooks/use-toast';
 
-const AFRICAN_COUNTRIES = [
-  'Nigeria', 'Ghana', 'Kenya', 'South Africa', 'Ethiopia', 'Egypt', 'Morocco',
-  'Tanzania', 'Uganda', 'DR Congo', 'Cameroon', 'Ivory Coast', 'Senegal',
-  'Zimbabwe', 'Rwanda', 'Angola', 'Mali', 'Burkina Faso', 'Niger', 'Guinea',
-  'Zambia', 'Malawi', 'Somalia', 'Chad', 'Tunisia', 'Botswana', 'Namibia'
-];
+import { AFRICAN_COUNTRIES, ALLOWED_RESIDENCE_COUNTRIES, ALL_HERITAGE_COUNTRIES } from '@/constants/countries';
 
-const ALL_COUNTRIES = [
-  'United States', 'Canada'
-];
+const ALL_COUNTRIES = ALLOWED_RESIDENCE_COUNTRIES;
 
 const LANGUAGES = [
   'English', 'French', 'Swahili', 'Arabic', 'Yoruba', 'Hausa', 'Igbo',

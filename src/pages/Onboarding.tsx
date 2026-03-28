@@ -24,21 +24,9 @@ import CelebrationModal from '@/components/shared/CelebrationModal';
 import FoundingMemberWelcome from '@/components/founding/FoundingMemberWelcome';
 import { toast } from '@/hooks/use-toast';
 
-const AFRICAN_COUNTRIES = [
-  'Nigeria', 'Ghana', 'Kenya', 'South Africa', 'Ethiopia', 'Egypt', 'Morocco',
-  'Tanzania', 'Uganda', 'DR Congo', 'Cameroon', 'Ivory Coast', 'Senegal',
-  'Zimbabwe', 'Rwanda', 'Angola', 'Mali', 'Burkina Faso', 'Niger', 'Guinea',
-  'Algeria', 'Tunisia', 'Libya', 'Somalia', 'Eritrea', 'Djibouti'
-];
+import { AFRICAN_COUNTRIES, ALLOWED_RESIDENCE_COUNTRIES, ALL_HERITAGE_COUNTRIES } from '@/constants/countries';
 
-// RESTRICTED: Only USA and Canada for residence
-const ALLOWED_RESIDENCE_COUNTRIES = ['United States', 'Canada'];
-
-const ALL_COUNTRIES = [
-  ...AFRICAN_COUNTRIES,
-  'USA', 'United Kingdom', 'France', 'Canada', 'Germany', 'Brazil',
-  'Jamaica', 'Haiti', 'Netherlands', 'Belgium', 'Italy', 'Spain', 'Australia', 'Other'
-];
+const ALL_COUNTRIES = ALL_HERITAGE_COUNTRIES;
 
 const INTERESTS = [
   'Travel', 'Music', 'Cooking', 'Dancing', 'Art', 'Sports', 'Reading',
