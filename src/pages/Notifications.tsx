@@ -220,18 +220,10 @@ export default function Notifications() {
                         <div>
                           <h3 className="font-semibold text-foreground">{notif.title}</h3>
                           <p className="text-sm text-muted-foreground mt-1">
-                            {needsPremium ? 'Someone special is interested in you! Upgrade to see who.' : notif.message}
+                            {notif.message}
                           </p>
                           {notif.is_admin && (
                             <Badge className="mt-2 bg-red-600 text-xs">From Admin</Badge>
-                          )}
-                          {needsPremium && (
-                            <Link to={createPageUrl('PricingPlans')}>
-                              <Badge className="mt-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs cursor-pointer hover:from-amber-600 hover:to-amber-700">
-                                <Crown size={10} className="mr-1" />
-                                Upgrade to See Who
-                              </Badge>
-                            </Link>
                           )}
                         </div>
                         <button
