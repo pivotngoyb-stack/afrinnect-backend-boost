@@ -156,7 +156,7 @@ export default function Chat() {
     isLoading: messagesLoading 
   } = useInfinitePagination('messages', { match_id: matchId }, {
     pageSize: 30,
-    sortBy: '-created_date',
+    sortBy: '-created_at',
     enabled: !!matchId,
     refetchInterval: false, // Disable auto-refetch, rely on WebSocket
     retry: 1,

@@ -56,7 +56,7 @@ export default function ConversationItem({ match, profile, lastMessage, unreadCo
             <VerificationBadge verification={profile?.verification_status} size="small" />
           </div>
           <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
-            {formatMessageDate(lastMessage?.created_date || match?.matched_at)}
+            {formatMessageDate(lastMessage?.created_at || lastMessage?.created_date || match?.matched_at)}
           </span>
         </div>
         
