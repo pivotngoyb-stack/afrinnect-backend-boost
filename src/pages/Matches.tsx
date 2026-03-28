@@ -450,83 +450,101 @@ export default function Matches() {
 
           {/* Conversations Tab - MERGED Matches + Messages */}
           <TabsContent value="matches" className="flex-1 overflow-y-auto space-y-4">
-            {/* Urgency prompts for unmessaged matches */}
-            <MatchUrgencyPrompt unmessagedMatches={matchedProfiles} conversationData={conversationData} />
-            {/* Dead chat reminders */}
-            <ChatReminderBanner staleConversations={matchedProfiles} conversationData={conversationData} myProfile={myProfile} />
-            {/* New Matches Row */}
-            {newMatches.length > 0 && (
-              <div>
-                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-2 mb-3">
-                  <Sparkles size={14} className="text-accent" />
-                  {t('matchesPage.newMatches')}
-                </h3>
-                <div className="flex gap-3 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-hide">
-                  {newMatches.map(profile => (
-                    <Link key={profile.id} to={createPageUrl(`Chat?matchId=${profile.match?.id}`)}>
-                      <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="flex-shrink-0 w-20 text-center">
-                        <div className="relative">
-                          <img
-                            src={profile.primary_photo || profile.photos?.[0]}
-                            alt={profile.display_name}
-                            className="w-20 h-20 object-cover rounded-full border-3 border-primary shadow-lg"
-                          />
-                          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-destructive rounded-full flex items-center justify-center">
-                            <Heart size={12} className="text-destructive-foreground fill-destructive-foreground" />
-                          </div>
-                        </div>
-                        <p className="text-xs font-medium text-foreground mt-1 truncate">{profile.display_name?.split(' ')[0]}</p>
-                      </motion.div>
-                    </Link>
-                  ))}
-                </div>
+            {loadingMatches && (
+              <div className="space-y-3">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="flex items-center gap-4 p-4 bg-card rounded-xl animate-pulse">
+                    <div className="w-16 h-16 rounded-full bg-muted" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 bg-muted rounded w-1/3" />
+                      <div className="h-3 bg-muted rounded w-2/3" />
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 
-            {/* Conversations List */}
-            {conversations.length > 0 && (
-              <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
-                <div className="divide-y divide-border">
-                  {conversations.map(profile => {
-                    const convData = conversationData[profile.match?.id] || {};
-                    return (
-                      <Link key={profile.id} to={createPageUrl(`Chat?matchId=${profile.match?.id}`)}>
-                        <div className="relative">
-                          {/* Priority Badge for Elite/VIP */}
-                          {['elite', 'vip'].includes(profile.subscription_tier) && (
-                            <div className="absolute top-2 right-2 z-10">
-                              <PremiumBadgeOnProfile tier={profile.subscription_tier} size="icon" />
+            {!loadingMatches && (
+              <>
+                {/* Urgency prompts for unmessaged matches */}
+                <MatchUrgencyPrompt unmessagedMatches={matchedProfiles} conversationData={conversationData} />
+                {/* Dead chat reminders */}
+                <ChatReminderBanner staleConversations={matchedProfiles} conversationData={conversationData} myProfile={myProfile} />
+                {/* New Matches Row */}
+                {newMatches.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-2 mb-3">
+                      <Sparkles size={14} className="text-accent" />
+                      {t('matchesPage.newMatches')}
+                    </h3>
+                    <div className="flex gap-3 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-hide">
+                      {newMatches.map(profile => (
+                        <Link key={profile.id} to={createPageUrl(`Chat?matchId=${profile.match?.id}`)}>
+                          <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} className="flex-shrink-0 w-20 text-center">
+                            <div className="relative">
+                              <img
+                                src={profile.primary_photo || profile.photos?.[0]}
+                                alt={profile.display_name}
+                                className="w-20 h-20 object-cover rounded-full border-3 border-primary shadow-lg"
+                              />
+                              <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-destructive rounded-full flex items-center justify-center">
+                                <Heart size={12} className="text-destructive-foreground fill-destructive-foreground" />
+                              </div>
                             </div>
-                          )}
-                          <ConversationItem
-                            match={profile.match}
-                            profile={profile}
-                            lastMessage={convData.lastMessage}
-                            unreadCount={convData.unreadCount || 0}
-                          />
-                        </div>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
+                            <p className="text-xs font-medium text-foreground mt-1 truncate">{profile.display_name?.split(' ')[0]}</p>
+                          </motion.div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-            {matchedProfiles.length === 0 && !loadingMatches && (
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-12">
-                <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-primary/20 to-destructive/20 rounded-full flex items-center justify-center">
-                  <span className="text-4xl">💕</span>
-                </div>
-                <h3 className="text-xl font-bold text-foreground mb-2">{t('matchesPage.noMatchesYet')}</h3>
-                <p className="text-muted-foreground mb-4 max-w-sm mx-auto">{t('matchesPage.noMatchesDesc')}</p>
-                <Button onClick={() => window.location.assign(createPageUrl('Home'))} className="bg-gradient-to-r from-primary to-destructive">
-                  <Heart size={16} className="mr-2" />
-                  {t('matchesPage.startDiscovering')}
-                </Button>
-              </motion.div>
-            )}
+                {/* Conversations List */}
+                {conversations.length > 0 && (
+                  <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
+                    <div className="divide-y divide-border">
+                      {conversations.map(profile => {
+                        const convData = conversationData[profile.match?.id] || {};
+                        return (
+                          <Link key={profile.id} to={createPageUrl(`Chat?matchId=${profile.match?.id}`)}>
+                            <div className="relative">
+                              {/* Priority Badge for Elite/VIP */}
+                              {['elite', 'vip'].includes(profile.subscription_tier) && (
+                                <div className="absolute top-2 right-2 z-10">
+                                  <PremiumBadgeOnProfile tier={profile.subscription_tier} size="icon" />
+                                </div>
+                              )}
+                              <ConversationItem
+                                match={profile.match}
+                                profile={profile}
+                                lastMessage={convData.lastMessage}
+                                unreadCount={convData.unreadCount || 0}
+                              />
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
 
-            {loadingMatches && <LoadingSkeleton variant="list" />}
+                {matchedProfiles.length === 0 && (
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-12">
+                    <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-primary/20 to-destructive/20 rounded-full flex items-center justify-center">
+                      <span className="text-4xl">💕</span>
+                    </div>
+                    <h3 className="text-xl font-bold text-foreground mb-2">{t('matchesPage.noMatchesYet')}</h3>
+                    <p className="text-muted-foreground mb-4 max-w-sm mx-auto">{t('matchesPage.noMatchesDesc')}</p>
+                    <Link to="/home">
+                      <Button className="bg-gradient-to-r from-primary to-destructive">
+                        <Heart size={16} className="mr-2" />
+                        {t('matchesPage.startDiscovering')}
+                      </Button>
+                    </Link>
+                  </motion.div>
+                )}
+              </>
+            )}
           </TabsContent>
 
           {/* Likes Tab */}
