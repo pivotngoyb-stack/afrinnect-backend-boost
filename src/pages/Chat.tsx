@@ -51,6 +51,7 @@ import { toast } from '@/hooks/use-toast';
 
 export default function Chat() {
   usePerformanceMonitor('Chat');
+  const navigate = useNavigate();
   
   const urlParams = new URLSearchParams(window.location.search);
   const matchId = urlParams.get('matchId');
