@@ -200,66 +200,70 @@ export default function Chat() {
 
   // Mark messages as read - optimized with batch update
   useEffect(() => {
-    if (messages.length > 0 && myProfile) {
-      const unreadMessages = messages.filter(m => m.receiver_id === myProfile.id && !m.is_read);
-      if (unreadMessages.length > 0) {
-        // OPTIMIZED: Single batch update using .in() instead of N individual calls
-        const unreadIds = unreadMessages.map(m => m.id);
-        const readAt = new Date().toISOString();
-        supabase
-          .from('messages')
-          .update({ is_read: true, read_at: readAt })
-          .in('id', unreadIds)
-          .then(({ error }) => {
-            if (error) {
-              console.error('Failed to batch mark messages as read:', error);
-              return;
+    if (!matchId || !myProfile?.id) return;
+
+    const loadedUnreadIds = messages
+      .filter((m) => m.receiver_id === myProfile.id && !m.is_read)
+      .map((m) => m.id);
+
+    const readAt = new Date().toISOString();
+
+    supabase
+      .from('messages')
+      .update({ is_read: true, read_at: readAt })
+      .eq('match_id', matchId)
+      .eq('receiver_id', myProfile.id)
+      .eq('is_read', false)
+      .then(({ error }) => {
+        if (error) {
+          console.error('Failed to mark conversation messages as read:', error);
+          return;
+        }
+
+        if (loadedUnreadIds.length > 0) {
+          const unreadIdSet = new Set(loadedUnreadIds);
+
+          queryClient.setQueriesData({ queryKey: ['messages'] }, (old: any) => {
+            if (!old) return old;
+
+            if (Array.isArray(old)) {
+              return old.map((message: any) =>
+                unreadIdSet.has(message?.id)
+                  ? { ...message, is_read: true, read_at: readAt }
+                  : message
+              );
             }
 
-            const unreadIdSet = new Set(unreadIds);
+            if (!old?.pages || !Array.isArray(old.pages)) return old;
 
-            queryClient.setQueriesData({ queryKey: ['messages'] }, (old: any) => {
-              if (!old) return old;
-
-              if (Array.isArray(old)) {
-                return old.map((message: any) =>
+            return {
+              ...old,
+              pages: old.pages.map((page: any) => ({
+                ...page,
+                items: (page?.items || []).map((message: any) =>
                   unreadIdSet.has(message?.id)
                     ? { ...message, is_read: true, read_at: readAt }
                     : message
-                );
-              }
-
-              if (!old?.pages || !Array.isArray(old.pages)) return old;
-
-              return {
-                ...old,
-                pages: old.pages.map((page: any) => ({
-                  ...page,
-                  items: (page?.items || []).map((message: any) =>
-                    unreadIdSet.has(message?.id)
-                      ? { ...message, is_read: true, read_at: readAt }
-                      : message
-                  ),
-                })),
-              };
-            });
-
-            queryClient.setQueriesData({ queryKey: ['conversations-data'] }, (old: any) => {
-              if (!old || !matchId || !old[matchId]) return old;
-              return {
-                ...old,
-                [matchId]: {
-                  ...old[matchId],
-                  unreadCount: 0,
-                },
-              };
-            });
-
-            queryClient.invalidateQueries({ queryKey: ['conversations-data'] });
+                ),
+              })),
+            };
           });
-      }
-    }
-  }, [messages, myProfile?.id, queryClient, matchId]); // Keep unread counters in sync when messages are read
+        }
+
+        queryClient.setQueriesData({ queryKey: ['conversations-data'] }, (old: any) => {
+          if (!old || !matchId || !old[matchId]) return old;
+          return {
+            ...old,
+            [matchId]: {
+              ...old[matchId],
+              unreadCount: 0,
+            },
+          };
+        });
+
+        queryClient.invalidateQueries({ queryKey: ['conversations-data'] });
+      });
+  }, [messages.length, myProfile?.id, queryClient, matchId]); // Mark all unread in this conversation as soon as chat is opened/new message arrives
 
   // Send message with optimistic update
   const sendMessageMutation = useOptimisticUpdate(
