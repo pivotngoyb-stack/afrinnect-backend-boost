@@ -235,15 +235,19 @@ Allow: flirting, compliments, date planning, personal questions, humor.`,
     }
 
     // Create notification for receiver
-    await supabase.from("notifications").insert({
-      user_profile_id: receiverId,
-      user_id: receiverUserId,
-      type: "new_message",
-      title: "New Message",
-      message: `${senderProfile.display_name} sent you a message`,
-      link_to: `/chat?matchId=${matchId}`,
-      is_read: false,
-    }).catch(() => {});
+    try {
+      await supabase.from("notifications").insert({
+        user_profile_id: receiverId,
+        user_id: receiverUserId,
+        type: "new_message",
+        title: "New Message",
+        message: `${senderProfile.display_name} sent you a message`,
+        link_to: `/chat?matchId=${matchId}`,
+        is_read: false,
+      });
+    } catch (_) {
+      // ignore notification insert failures
+    }
 
     // Send push notification to receiver
     try {
