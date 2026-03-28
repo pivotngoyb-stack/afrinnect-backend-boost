@@ -75,6 +75,7 @@ export default function Notifications() {
     mutationFn: (notifId) => updateRecord('notifications', notifId, { is_read: true }),
     onSuccess: () => {
       queryClient.invalidateQueries(['notifications']);
+      queryClient.invalidateQueries(['notifications-count']);
     }
   });
 
@@ -85,13 +86,22 @@ export default function Notifications() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['notifications']);
+      queryClient.invalidateQueries(['notifications-count']);
     }
   });
+
+  // Auto-mark all as read when user visits the notifications page
+  useEffect(() => {
+    if (notifications.length > 0 && notifications.some(n => !n.is_read)) {
+      markAllReadMutation.mutate();
+    }
+  }, [notifications]);
 
   const deleteNotifMutation = useMutation({
     mutationFn: (notifId) => deleteRecord('notifications', notifId),
     onSuccess: () => {
       queryClient.invalidateQueries(['notifications']);
+      queryClient.invalidateQueries(['notifications-count']);
     }
   });
 
