@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { deleteRecord, filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Heart, Users, MessageCircle, Crown, Shield, Trash2, CheckCheck } from 'lucide-react';

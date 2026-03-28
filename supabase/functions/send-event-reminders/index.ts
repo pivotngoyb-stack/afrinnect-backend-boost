@@ -82,7 +82,7 @@ serve(async (req) => {
           title,
           message: body,
           is_read: false,
-          link_to: `/events/${event.id}`,
+          link_to: `/eventdetails?id=${event.id}`,
         });
 
         // Send push if token available
