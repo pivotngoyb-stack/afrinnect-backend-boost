@@ -434,11 +434,21 @@ export default function Chat() {
 
   if (!otherProfile) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <header className="bg-card border-b border-border px-4 py-3">
+      <div className="h-screen bg-background flex flex-col overflow-hidden">
+        <header className="bg-card border-b border-border px-4 py-3 flex items-center gap-3">
+          <Link to={createPageUrl('Matches')}>
+            <Button variant="ghost" size="icon">
+              <ArrowLeft size={20} />
+            </Button>
+          </Link>
           <div className="h-6 bg-muted rounded animate-pulse w-32" />
         </header>
         <ChatSkeleton />
+        {!myProfile && (
+          <div className="text-center p-4 text-muted-foreground text-sm">
+            Loading your profile...
+          </div>
+        )}
       </div>
     );
   }
