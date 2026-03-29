@@ -263,8 +263,8 @@ export default function Notifications() {
                   className={`p-4 rounded-xl border cursor-pointer transition-all hover:shadow-md ${
                     notif.is_read
                       ? 'bg-card border-border'
-                      : 'bg-purple-50 border-purple-200'
-                  } ${notif.is_admin ? 'border-l-4 border-l-red-500' : ''}`}
+                      : 'bg-primary/5 border-primary/20'
+                  } ${notif.is_admin ? 'border-l-4 border-l-destructive' : ''}`}
                 >
                   <div className="flex items-start gap-4">
                     <div className="mt-1">{getNotificationIcon(notif.type)}</div>
