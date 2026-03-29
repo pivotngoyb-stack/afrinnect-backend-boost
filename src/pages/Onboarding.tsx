@@ -350,12 +350,9 @@ export default function Onboarding() {
         {t('onboarding.welcome.subtitle')}
       </p>
       
-      <div className="inline-flex items-center gap-2 bg-green-50 border border-green-200 rounded-full px-4 py-2 mb-6">
-        <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-        </span>
-        <span className="text-sm text-green-700 font-medium">147 people signed up today</span>
+      <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-2 mb-6">
+        <Shield size={14} className="text-primary" />
+        <span className="text-sm text-primary font-medium">Verified & safe community</span>
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
