@@ -51,7 +51,7 @@ const ConversationItem = React.forwardRef(function ConversationItem({ match, pro
           className="w-16 h-16 rounded-full object-cover"
         />
         {isOnline && (
-          <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-card" />
+          <div className="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 rounded-full border-2 border-card" />
         )}
       </div>
       
