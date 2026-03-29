@@ -812,7 +812,7 @@ export default function Chat() {
             <Button variant="ghost" size="icon" asChild disabled={sendImageMutation.isPending}>
               <span>
                 {sendImageMutation.isPending ? (
-                  <Loader2 className="animate-spin text-purple-600" size={20} />
+                  <Loader2 className="animate-spin text-primary" size={20} />
                 ) : (
                   <Image size={20} />
                 )}
@@ -846,7 +846,7 @@ export default function Chat() {
               handleSend();
             }}
             disabled={!messageText.trim() || sendMessageMutation.isPending || isVerificationGated}
-            className="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 h-11 w-11 p-0 rounded-full touch-manipulation transition-all active:scale-95"
+            className="bg-primary hover:bg-primary/90 active:bg-primary/80 h-11 w-11 p-0 rounded-full touch-manipulation transition-all active:scale-95"
           >
             <Send size={20} />
           </Button>

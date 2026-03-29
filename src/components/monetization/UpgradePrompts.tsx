@@ -41,27 +41,29 @@ export function useUpgradePrompts(userProfile) {
   return { prompt, dismissPrompt: () => setPrompt(null) };
 }
 
-export function UpgradePromptBanner({ prompt, onDismiss }) {
-  const { trackEvent } = useConversionTracker();
-  if (!prompt) return null;
-  const Icon = prompt.icon;
+export const UpgradePromptBanner = React.forwardRef<HTMLDivElement, { prompt: any; onDismiss: () => void }>(
+  function UpgradePromptBanner({ prompt, onDismiss }, ref) {
+    const { trackEvent } = useConversionTracker();
+    if (!prompt) return null;
+    const Icon = prompt.icon;
 
-  return (
-    <AnimatePresence>
-      <motion.div initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 100, opacity: 0 }} className="fixed bottom-20 left-4 right-4 md:left-auto md:right-6 md:max-w-sm z-40">
-        <div className="bg-gradient-to-br from-primary to-amber-600 rounded-2xl p-5 shadow-2xl text-primary-foreground relative">
-          <button onClick={onDismiss} className="absolute top-3 right-3 p-1 hover:bg-card/20 rounded-full transition"><X size={18} /></button>
-          <div className="flex items-start gap-3 mb-4">
-            <div className="p-2 bg-card/20 rounded-lg"><Icon size={24} /></div>
-            <div><h4 className="font-bold text-lg">{prompt.title}</h4><p className="text-sm opacity-90">{prompt.description}</p></div>
+    return (
+      <AnimatePresence>
+        <motion.div ref={ref} initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 100, opacity: 0 }} className="fixed bottom-20 left-4 right-4 md:left-auto md:right-6 md:max-w-sm z-40">
+          <div className="bg-gradient-to-br from-primary to-amber-600 rounded-2xl p-5 shadow-2xl text-primary-foreground relative">
+            <button onClick={onDismiss} className="absolute top-3 right-3 p-1 hover:bg-card/20 rounded-full transition"><X size={18} /></button>
+            <div className="flex items-start gap-3 mb-4">
+              <div className="p-2 bg-card/20 rounded-lg"><Icon size={24} /></div>
+              <div><h4 className="font-bold text-lg">{prompt.title}</h4><p className="text-sm opacity-90">{prompt.description}</p></div>
+            </div>
+            <Link to={createPageUrl('PricingPlans')}>
+              <Button className="w-full bg-background text-primary hover:bg-muted" onClick={() => trackEvent(CONVERSION_EVENTS.PREMIUM_CLICK, { source: 'upgrade_prompt', feature: prompt.feature })}>
+                <Zap size={16} className="mr-2" /> Upgrade Now
+              </Button>
+            </Link>
           </div>
-          <Link to={createPageUrl('PricingPlans')}>
-            <Button className="w-full bg-background text-primary hover:bg-muted" onClick={() => trackEvent(CONVERSION_EVENTS.PREMIUM_CLICK, { source: 'upgrade_prompt', feature: prompt.feature })}>
-              <Zap size={16} className="mr-2" /> Upgrade Now
-            </Button>
-          </Link>
-        </div>
-      </motion.div>
-    </AnimatePresence>
-  );
-}
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
+);
