@@ -1,11 +1,10 @@
 // @ts-nocheck
-import React, { useState, useEffect, useRef } from 'react';
-import { createRecord, deleteRecord, filterRecords, getCurrentUser, isAuthenticated, updateRecord } from '@/lib/supabase-helpers';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { filterRecords, getCurrentUser, updateRecord, deleteRecord } from '@/lib/supabase-helpers';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-// Lazy-load confetti to reduce initial bundle
 const lazyConfetti = () => import('canvas-confetti').then(m => m.default);
 import { usePerformanceMonitor } from '@/components/shared/usePerformanceMonitor';
 import { useConversionTracker, CONVERSION_EVENTS } from '@/components/shared/ConversionTracker';
@@ -26,6 +25,28 @@ import NewMatchToast from '@/components/engagement/NewMatchToast';
 import ProfileViewerToast from '@/components/monetization/ProfileViewerToast';
 import MissedMatchRegret from '@/components/monetization/MissedMatchRegret';
 import { toast } from 'sonner';
+
+// Persist swiped IDs across component remounts within the same session
+const getSessionSwipedIds = (): Set<string> => {
+  try {
+    const stored = sessionStorage.getItem('swiped_ids');
+    return stored ? new Set(JSON.parse(stored)) : new Set();
+  } catch { return new Set(); }
+};
+const persistSwipedId = (id: string) => {
+  try {
+    const current = getSessionSwipedIds();
+    current.add(id);
+    sessionStorage.setItem('swiped_ids', JSON.stringify([...current]));
+  } catch {}
+};
+const removeSwipedId = (id: string) => {
+  try {
+    const current = getSessionSwipedIds();
+    current.delete(id);
+    sessionStorage.setItem('swiped_ids', JSON.stringify([...current]));
+  } catch {}
+};
 
 export default function Home() {
   usePerformanceMonitor('Home');
@@ -54,8 +75,9 @@ export default function Home() {
   const [matchCount, setMatchCount] = useState(0);
   const [showNewMatchToast, setShowNewMatchToast] = useState(false);
   const [lastMatchedProfile, setLastMatchedProfile] = useState(null);
-  // Local set of profile IDs swiped this session — ensures immediate exclusion even before DB confirms
-  const localSwipedIds = useRef<Set<string>>(new Set());
+  const [lastMatchId, setLastMatchId] = useState<string | null>(null);
+  // Session-persisted swiped IDs — survives remounts, cleared on new session
+  const localSwipedIds = useRef<Set<string>>(getSessionSwipedIds());
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { prompt: upgradePrompt, dismissPrompt } = useUpgradePrompts(myProfile);
@@ -80,7 +102,6 @@ export default function Home() {
     queryFn: async () => {
       if (!myProfile?.id) return { likes: 0, views: 0 };
       try {
-        // OPTIMIZED: Use count queries instead of fetching all records
         const { count: likesCount } = await supabase
           .from('likes')
           .select('id', { count: 'exact', head: true })
@@ -94,7 +115,7 @@ export default function Home() {
             .eq('viewed_profile_id', myProfile.id)
             .eq('is_seen', false);
           views = viewsCount || 0;
-        } catch { /* table may not exist yet */ }
+        } catch {}
         return { likes: likesCount || 0, views };
       } catch { return { likes: 0, views: 0 }; }
     },
@@ -108,8 +129,8 @@ export default function Home() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const isAuth = await isAuthenticated();
-        if (!isAuth) { navigate(createPageUrl('Landing')); return; }
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) { navigate(createPageUrl('Landing')); return; }
         setIsCheckingAuth(false);
       } catch { navigate(createPageUrl('Landing')); }
     };
@@ -125,8 +146,13 @@ export default function Home() {
         if (!user) { navigate(createPageUrl('Landing')); return; }
         if (user.role === 'admin' || user.email === 'pivotngoyb@gmail.com') setIsAdmin(true);
 
-        const profiles = await filterRecords('user_profiles', { user_id: user.id });
-        if (profiles.length > 0) {
+        const { data: profiles } = await supabase
+          .from('user_profiles')
+          .select('id,user_id,display_name,primary_photo,photos,subscription_tier,is_banned,is_suspended,ban_reason,suspension_reason,blocked_users,looking_for,current_country,current_city,current_state,location,is_premium,daily_likes_count,daily_likes_reset_date,login_streak,last_login_date,last_active,has_matched_before,tutorial_completed,device_ids,device_info')
+          .eq('user_id', user.id)
+          .limit(1);
+
+        if (profiles && profiles.length > 0) {
           const profile = profiles[0];
           if (profile.is_banned || profile.is_suspended) { setMyProfile(profile); return; }
 
@@ -138,24 +164,10 @@ export default function Home() {
           const existingDeviceIds = Array.isArray(profile.device_ids) ? profile.device_ids : [];
           if (!existingDeviceIds.includes(deviceId)) {
             if (existingDeviceIds.length >= 4) { navigate(createPageUrl('Settings')); return; }
-
-            const existingDeviceInfoRaw = profile.device_info;
-            const existingDeviceInfo = Array.isArray(existingDeviceInfoRaw)
-              ? existingDeviceInfoRaw
-              : existingDeviceInfoRaw && typeof existingDeviceInfoRaw === 'object'
-                ? [existingDeviceInfoRaw]
-                : [];
-
+            const existingDeviceInfo = Array.isArray(profile.device_info) ? profile.device_info : profile.device_info ? [profile.device_info] : [];
             await updateRecord('user_profiles', profile.id, {
               device_ids: [...existingDeviceIds, deviceId],
-              device_info: [
-                ...existingDeviceInfo,
-                {
-                  device_id: deviceId,
-                  device_name: navigator.userAgent.substring(0, 50),
-                  last_login: new Date().toISOString()
-                }
-              ]
+              device_info: [...existingDeviceInfo, { device_id: deviceId, device_name: navigator.userAgent.substring(0, 50), last_login: new Date().toISOString() }]
             });
           }
           setMyProfile(profile);
@@ -179,128 +191,54 @@ export default function Home() {
     fetchMyProfile();
   }, [isCheckingAuth]);
 
-  // Helpers
-  const calculateAge = (birthDate) => {
-    if (!birthDate) return null;
-    const today = new Date();
-    const birth = new Date(birthDate);
-    let age = today.getFullYear() - birth.getFullYear();
-    const m = today.getMonth() - birth.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-    return age;
-  };
-
-  // Discovery profiles query
+  // Discovery profiles query — uses server-side edge function
   const { data: profiles = [], isLoading, refetch } = useQuery({
     queryKey: ['discovery-profiles-v2', filters, discoveryMode, myProfile?.id],
     queryFn: async () => {
       try {
-        // OPTIMIZED: Select only fields needed for discovery cards
-        const DISCOVERY_FIELDS = 'id,user_id,display_name,primary_photo,photos,birth_date,gender,current_country,current_state,current_city,country_of_origin,tribe_ethnicity,ethnicity,bio,interests,cultural_values,relationship_goal,religion,profession,education,languages,location,is_active,is_banned,is_seed,is_photo_verified,is_id_verified,is_premium,subscription_tier,verification_status,blocked_users,looking_for,last_active,daily_likes_count,daily_likes_reset_date,voice_intro_url,prompts,profile_prompts,opening_move';
-        const SAFE_DISCOVERY_FIELDS = 'id,user_id,display_name,primary_photo,photos,birth_date,gender,current_country,current_city,country_of_origin,bio,interests,relationship_goal,religion,profession,education,languages,location,is_active,is_banned,is_seed,is_photo_verified,is_id_verified,is_premium,subscription_tier,verification_status,blocked_users,looking_for,last_active,daily_likes_count,daily_likes_reset_date,voice_intro_url,prompts,profile_prompts,opening_move';
+        // Use the server-side discover-profiles edge function
+        const { data, error } = await supabase.functions.invoke('discover-profiles', {
+          body: {
+            profileId: myProfile.id,
+            discoveryMode,
+            currentCity: myProfile.current_city,
+            currentCountry: myProfile.current_country,
+            filters: {
+              gender: myProfile.looking_for?.length === 1 ? myProfile.looking_for[0] : undefined,
+              minAge: filters.age_min,
+              maxAge: filters.age_max,
+              country: filters.countries_of_origin?.length === 1 ? filters.countries_of_origin[0] : undefined,
+              verified: filters.verified_only,
+            },
+            excludeIds: [...localSwipedIds.current],
+            limit: 50,
+          }
+        });
 
-        const runDiscoveryQuery = async (fields) => supabase
-          .from('user_profiles')
-          .select(fields)
-          .eq('is_active', true)
-          .eq('is_banned', false)
-          .order('created_at', { ascending: false })
-          .limit(500);
-
-        let { data: allProfiles, error: profilesError } = await runDiscoveryQuery(DISCOVERY_FIELDS);
-
-        if (profilesError) {
-          console.warn('Primary discovery field set failed; retrying with safe field set:', profilesError);
-          const fallback = await runDiscoveryQuery(SAFE_DISCOVERY_FIELDS);
-          allProfiles = fallback.data;
-          profilesError = fallback.error;
+        if (error) {
+          console.error('Discovery edge function error:', error);
+          throw error;
         }
 
-        if (profilesError || !allProfiles) {
-          console.error('Discovery profiles fetch error:', profilesError);
-          throw profilesError || new Error('Failed to load discovery profiles');
+        let serverProfiles = data?.profiles || [];
+
+        // Client-side filtering for any additional filters not handled by server
+        if (filters.countries_of_origin?.length > 1) {
+          serverProfiles = serverProfiles.filter(p => filters.countries_of_origin.includes(p.country_of_origin));
+        }
+        if (filters.religions?.length > 0) {
+          serverProfiles = serverProfiles.filter(p => filters.religions.includes(p.religion));
+        }
+        if (filters.relationship_goals?.length > 0) {
+          serverProfiles = serverProfiles.filter(p => filters.relationship_goals.includes(p.relationship_goal));
         }
 
-        // Fetch ALL swipe history (no limit) so older swipes are excluded too
-        const [passesRes, likesRes, matchesRes] = await Promise.all([
-          supabase.from('passes').select('passed_id').eq('passer_id', myProfile.id).then(r => r.data || []),
-          supabase.from('likes').select('liked_id').eq('liker_id', myProfile.id).then(r => r.data || []),
-          supabase.from('matches').select('user1_id,user2_id')
-            .or(`user1_id.eq.${myProfile.id},user2_id.eq.${myProfile.id}`)
-            .then(r => r.data || []),
-        ]);
-
-        const passedIds = new Set(passesRes.map((p: any) => p.passed_id));
-        const likedIds = new Set(likesRes.map((l: any) => l.liked_id));
-        const matchedIds = new Set(matchesRes.flatMap((m: any) =>
-          [m.user1_id, m.user2_id].filter(id => id !== myProfile.id)
-        ));
-        const myBlockedUsers = new Set(myProfile?.blocked_users || []);
-        // Bidirectional block: also exclude users who have blocked ME
-        const blockedByOthers = new Set(
-          allProfiles
-            .filter(p => Array.isArray(p.blocked_users) && p.blocked_users.includes(myProfile.id))
-            .map(p => p.id)
-        );
-        const normalize = (value) => String(value || '').trim().toLowerCase();
-        const myCountry = normalize(myProfile.current_country);
-        // Normalize country aliases to canonical names
-        const canonicalize = (c) => {
-          const n = normalize(c);
-          if (['united states', 'usa', 'us'].includes(n)) return 'united states';
-          if (['canada', 'ca'].includes(n)) return 'canada';
-          return n;
-        };
-        const myCanonicalCountry = canonicalize(myProfile.current_country);
-
-        const passesBaseFilters = (p) => {
-          // Hide only the exact current profile; allow seed/test profiles even if they share user_id
-          if (p.id === myProfile.id) return false;
-          if (p.user_id === myProfile.user_id && !p.is_seed) return false;
-          if (myBlockedUsers.has(p.id)) return false;
-          if (blockedByOthers.has(p.id)) return false; // They blocked me
-          if (myProfile.looking_for?.length && !myProfile.looking_for.some((g) => normalize(g) === normalize(p.gender))) return false;
-          if (filters.age_min || filters.age_max) {
-            const age = calculateAge(p.birth_date);
-            if (age && ((filters.age_min && age < filters.age_min) || (filters.age_max && age > filters.age_max))) return false;
-          }
-          if (filters.countries_of_origin?.length > 0 && !filters.countries_of_origin.includes(p.country_of_origin)) return false;
-          if (filters.religions?.length > 0 && !filters.religions.includes(p.religion)) return false;
-          if (filters.relationship_goals?.length > 0 && !filters.relationship_goals.includes(p.relationship_goal)) return false;
-          if (filters.verified_only) {
-            const isVerified = p.verification_status === 'verified' || p.is_photo_verified || p.is_id_verified;
-            if (!isVerified) return false;
-          }
-          return true;
-        };
-
-        const matchesMode = (p) => {
-          const candidateCanonical = canonicalize(p.current_country);
-          if (!candidateCanonical) return discoveryMode === 'global';
-          if (discoveryMode === 'local') {
-            // Local = same country as the current user
-            return candidateCanonical === myCanonicalCountry;
-          }
-          // Global = different country than the current user
-          return candidateCanonical !== myCanonicalCountry;
-        };
-
-        // Combine all exclusion sets: DB records + local session swipes
-        const isExcluded = (id: string) =>
-          passedIds.has(id) || likedIds.has(id) || matchedIds.has(id) || localSwipedIds.current.has(id);
-
-        const withoutSwipeExclusions = allProfiles.filter((p) => passesBaseFilters(p) && matchesMode(p));
-        let filtered = withoutSwipeExclusions.filter((p) => !isExcluded(p.id));
-
-        // Auto-fallback: if local mode returns 0 results, expand to global before showing empty state
-        if (filtered.length === 0 && discoveryMode === 'local') {
-          const globalNoSwipes = allProfiles.filter((p) => passesBaseFilters(p));
-          filtered = globalNoSwipes.filter((p) => !isExcluded(p.id));
-        }
-
-        // NO recovery fallback — never resurface swiped profiles
-        return filtered;
-      } catch (err) { console.error('Discovery query failed:', err); return []; }
+        // Filter out any locally swiped IDs (belt-and-suspenders)
+        return serverProfiles.filter(p => !localSwipedIds.current.has(p.id));
+      } catch (err) {
+        console.error('Discovery query failed:', err);
+        return [];
+      }
     },
     enabled: !!myProfile?.id,
     staleTime: 60000,
@@ -315,21 +253,10 @@ export default function Home() {
     }
   }, [currentIndex, profiles]);
 
-  // Like limit check
-  const canLike = () => {
-    if (isAdmin) return true;
-    const tier = myProfile?.subscription_tier || 'free';
-    const limit = getTierLimit(tierConfig, tier, 'daily_likes');
-    if (isUnlimited(limit)) return true;
-    const today = new Date().toISOString().split('T')[0];
-    if (myProfile?.daily_likes_reset_date !== today) return true;
-    return (myProfile?.daily_likes_count || 0) < limit;
-  };
-
-  // Client-side rate limit for likes (max 3 per second to prevent spam taps)
+  // Client-side rate limit for likes (max 3 per second)
   const likeTimestamps = useRef<number[]>([]);
 
-  // Like mutation
+  // Like mutation — uses server-side atomic edge function
   const likeMutation = useMutation({
     mutationFn: async ({ likedId, isSuperLike = false, likeNote = null }) => {
       if (!myProfile) return;
@@ -338,151 +265,28 @@ export default function Home() {
       // Client-side burst rate limit
       const now = Date.now();
       likeTimestamps.current = likeTimestamps.current.filter(t => now - t < 1000);
-      if (likeTimestamps.current.length >= 3) {
-        throw new Error('slow_down');
-      }
+      if (likeTimestamps.current.length >= 3) throw new Error('slow_down');
       likeTimestamps.current.push(now);
 
-      const likedProfiles = await filterRecords('user_profiles', { id: likedId });
-      if (!likedProfiles.length) throw new Error('Profile not found');
-      const likedProfile = likedProfiles[0];
+      // Call the atomic server-side like-profile function
+      const { data, error } = await supabase.functions.invoke('like-profile', {
+        body: { action: 'like', targetProfileId: likedId, isSuperLike, likeNote }
+      });
 
-      const { data: existingLike, error: existingLikeError } = await supabase
-        .from('likes')
-        .select('id')
-        .eq('liker_id', myProfile.id)
-        .eq('liked_id', likedId)
-        .maybeSingle();
-
-      if (existingLikeError && existingLikeError.code !== 'PGRST116') {
-        throw existingLikeError;
-      }
-
-      const alreadyLiked = !!existingLike;
-
-      if (!alreadyLiked) {
-        if (!canLike()) throw new Error('daily_limit_reached');
-
-        // Server-side limit enforcement
+      if (error) {
         try {
-          const limitRes = await supabase.functions.invoke('check-swipe-limit', {
-            body: { action: 'increment', profileId: myProfile.id }
-          });
-          if (limitRes.data && !limitRes.data.allowed) {
-            throw new Error('daily_limit_reached');
-          }
-        } catch (e: any) {
+          const errBody = JSON.parse(error.message);
+          throw new Error(errBody.error || 'Like failed');
+        } catch (e) {
           if (e.message === 'daily_limit_reached') throw e;
-          // If server check fails, fall back to client-side check (already done above)
-          console.warn('Server swipe limit check failed, using client-side:', e);
-        }
-
-        const today = new Date().toISOString().split('T')[0];
-        const shouldReset = myProfile.daily_likes_reset_date !== today;
-        await updateRecord('user_profiles', myProfile.id, {
-          daily_likes_count: shouldReset ? 1 : (myProfile.daily_likes_count || 0) + 1,
-          daily_likes_reset_date: today
-        });
-      }
-
-      const tier = myProfile.subscription_tier || 'free';
-      const isPriorityLike = tier === 'elite' || tier === 'vip';
-
-      if (!alreadyLiked) {
-        await createRecord('likes', {
-          liker_id: myProfile.id, liked_id: likedId,
-          liker_user_id: myProfile.user_id, liked_user_id: likedProfile.user_id,
-          is_super_like: isSuperLike, is_seen: false,
-          is_priority: isPriorityLike,
-          priority_boost_expires: isPriorityLike ? new Date(Date.now() + 86400000).toISOString() : null
-        });
-      }
-
-      if (likeNote) {
-        const { data: existingMatch } = await supabase.from('matches').select('id')
-          .or(`and(user1_id.eq.${myProfile.id},user2_id.eq.${likedId}),and(user1_id.eq.${likedId},user2_id.eq.${myProfile.id})`);
-        if (existingMatch?.length > 0) {
-          await createRecord('messages', {
-            match_id: existingMatch[0].id, sender_id: myProfile.id, receiver_id: likedId,
-            sender_user_id: myProfile.user_id, receiver_user_id: likedProfile.user_id,
-            content: likeNote, message_type: 'text', like_note: likeNote
-          });
+          throw new Error(error.message || 'Like failed');
         }
       }
 
-      const mutualLikes = await filterRecords('likes', { liker_id: likedId, liked_id: myProfile.id });
+      if (data?.error === 'daily_limit_reached') throw new Error('daily_limit_reached');
+      if (data?.error) throw new Error(data.error);
 
-      // Seed matching is now handled server-side by the seed-user-engine
-      // for more realistic delayed behavior. Only check existing mutual likes here.
-
-      if (mutualLikes.length > 0) {
-        const { data: existingMatches } = await supabase.from('matches').select('id')
-          .or(`and(user1_id.eq.${myProfile.id},user2_id.eq.${likedId}),and(user1_id.eq.${likedId},user2_id.eq.${myProfile.id})`);
-
-        if (!existingMatches?.length) {
-          if (!myProfile.has_matched_before) {
-            trackEvent(CONVERSION_EVENTS.FIRST_MATCH);
-            await updateRecord('user_profiles', myProfile.id, { has_matched_before: true });
-          }
-
-          await createRecord('matches', {
-            user1_id: myProfile.id, user2_id: likedId,
-            user1_user_id: myProfile.user_id, user2_user_id: likedProfile.user_id,
-            user1_liked: true, user2_liked: true, is_match: true,
-            matched_at: new Date().toISOString(),
-            expires_at: new Date(Date.now() + 86400000).toISOString(),
-            is_expired: false, last_chance_sent: false, first_message_sent: false, status: 'active'
-          });
-
-          // Fire-and-forget: notifications and push don't block the match result
-          supabase.rpc('create_notification', {
-            p_user_profile_id: likedId, p_user_id: likedProfile.user_id, p_type: 'match',
-            p_title: "It's a Match! 💕", p_message: `You and ${myProfile.display_name} liked each other!`,
-            p_from_profile_id: myProfile.id, p_link_to: '/matches'
-          }).catch(e => console.warn('Notification skipped:', e));
-
-          supabase.rpc('create_notification', {
-            p_user_profile_id: myProfile.id, p_user_id: myProfile.user_id, p_type: 'match',
-            p_title: "It's a Match! 💕", p_message: `You and ${likedProfile.display_name} liked each other!`,
-            p_from_profile_id: likedId, p_link_to: '/matches'
-          }).catch(e => console.warn('Notification skipped:', e));
-
-          supabase.functions.invoke('send-push-notification', {
-            body: {
-              userId: likedProfile.user_id,
-              title: "It's a Match! 💕",
-              body: `You and ${myProfile.display_name} liked each other!`,
-              type: 'match',
-              data: { link: '/matches' },
-            },
-          }).catch(e => console.warn('Push skipped:', e));
-
-          return { isMatch: true };
-        }
-        return { isMatch: true };
-      } else if (!alreadyLiked) {
-        // Fire-and-forget: don't block the swipe on notification delivery
-        supabase.rpc('create_notification', {
-          p_user_profile_id: likedId, p_user_id: likedProfile.user_id,
-          p_type: isSuperLike ? 'super_like' : 'like',
-          p_title: isSuperLike ? "You got a Super Like! ⭐" : "Someone likes you!",
-          p_message: `${myProfile.display_name} ${isSuperLike ? 'super liked' : 'liked'} your profile`,
-          p_from_profile_id: myProfile.id, p_link_to: '/matches'
-        }).catch(e => console.warn('Notification skipped:', e));
-
-        if (isSuperLike) {
-          supabase.functions.invoke('send-push-notification', {
-            body: {
-              userId: likedProfile.user_id,
-              title: 'You got a Super Like! ⭐',
-              body: `${myProfile.display_name} super liked your profile`,
-              type: 'super_like',
-              data: { link: '/who-likes-you' },
-            },
-          }).catch(e => console.warn('Push skipped:', e));
-        }
-      }
-      return { isMatch: false, alreadyLiked };
+      return data;
     },
     onSuccess: (data, variables) => {
       if (data?.isMatch) {
@@ -491,6 +295,10 @@ export default function Home() {
         setShowMatchCelebration(true);
         setMatchCount(prev => prev + 1);
         setLastMatchedProfile(variables?.profile || pendingLikeProfile);
+        setLastMatchId(data.matchId || null);
+        // Invalidate matches query so it shows up immediately
+        queryClient.invalidateQueries({ queryKey: ['matches'] });
+        queryClient.invalidateQueries({ queryKey: ['conversations-data'] });
       }
       if (data?.alreadyLiked) {
         toast('Already liked — moving to next profile');
@@ -510,7 +318,6 @@ export default function Home() {
         setTimeout(() => setShowMissedMatch(true), 500);
         return;
       }
-      // For any other error, still advance to next profile so the card doesn't get stuck
       console.error('Like mutation error:', error);
       toast.error('Something went wrong. Moving to next profile.');
       setCurrentIndex(prev => prev + 1);
@@ -521,24 +328,24 @@ export default function Home() {
 
   const handleLike = (profile) => {
     if (!profile) return;
-    if (likeMutation.isPending || passMutation.isPending) {
-      console.log('Mutation already pending, ignoring tap');
-      return;
-    }
+    if (likeMutation.isPending || passMutation.isPending) return;
     if (navigator.vibrate) navigator.vibrate(50);
-    // Immediately mark as swiped locally so it never reappears
     localSwipedIds.current.add(profile.id);
+    persistSwipedId(profile.id);
     setPendingLikeProfile(profile);
     setSwipeHistory(prev => [...prev, { profile, action: 'like', index: currentIndex }]);
     likeMutation.mutate({ likedId: profile.id, profile });
   };
+
   const handleLikeWithMessage = async (message) => {
     if (navigator.vibrate) navigator.vibrate(50);
     if (!pendingLikeProfile) return;
     localSwipedIds.current.add(pendingLikeProfile.id);
+    persistSwipedId(pendingLikeProfile.id);
     setSwipeHistory(prev => [...prev, { profile: pendingLikeProfile, action: 'like', index: currentIndex }]);
     likeMutation.mutate({ likedId: pendingLikeProfile.id, likeNote: message, profile: pendingLikeProfile });
-    setShowMessageModal(false); setPendingLikeProfile(null);
+    setShowMessageModal(false);
+    setPendingLikeProfile(null);
   };
 
   const handleSuperLike = async (profile) => {
@@ -552,26 +359,27 @@ export default function Home() {
       }
     }
     localSwipedIds.current.add(profile.id);
+    persistSwipedId(profile.id);
     setPendingLikeProfile(profile);
     if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
     setSwipeHistory(prev => [...prev, { profile, action: 'superlike', index: currentIndex }]);
     likeMutation.mutate({ likedId: profile.id, isSuperLike: true, profile });
   };
 
-  // Pass mutation
+  // Pass mutation — uses server-side edge function
   const passMutation = useMutation({
     mutationFn: async (profileToPass) => {
       const targetProfile = profileToPass || currentProfile;
       if (!targetProfile?.id) return;
       if (navigator.vibrate) navigator.vibrate(30);
-      // Immediately mark as swiped locally
       localSwipedIds.current.add(targetProfile.id);
-      // Use upsert to handle duplicate pass gracefully
-      const { error } = await supabase.from('passes').upsert({
-        passer_id: myProfile.id, passed_id: targetProfile.id,
-        passer_user_id: myProfile.user_id, is_rewindable: true
-      }, { onConflict: 'passer_id,passed_id' });
+      persistSwipedId(targetProfile.id);
+
+      const { data, error } = await supabase.functions.invoke('like-profile', {
+        body: { action: 'pass', targetProfileId: targetProfile.id }
+      });
       if (error) throw error;
+      return data;
     },
     onSuccess: (_data, passedProfile) => {
       const targetProfile = passedProfile || currentProfile;
@@ -587,7 +395,6 @@ export default function Home() {
       if (targetProfile) {
         setSwipeHistory(prev => [...prev, { profile: targetProfile, action: 'pass', index: currentIndex }]);
       }
-      // Still advance — localSwipedIds already prevents reappearance
       setCurrentIndex(prev => prev + 1);
     }
   });
@@ -604,8 +411,8 @@ export default function Home() {
     if (swipeHistory.length === 0) return;
 
     const lastAction = swipeHistory[swipeHistory.length - 1];
-    // Remove from local exclusion set so the profile can reappear
     localSwipedIds.current.delete(lastAction.profile.id);
+    removeSwipedId(lastAction.profile.id);
     if (lastAction.action === 'like' || lastAction.action === 'superlike') {
       const existing = await filterRecords('likes', { liker_id: myProfile.id, liked_id: lastAction.profile.id });
       for (const l of existing) await deleteRecord('likes', l.id);
@@ -639,13 +446,9 @@ export default function Home() {
   }, [discoveryMode, myProfile?.id, filtersKey]);
 
   useEffect(() => {
-    // Don't reset to 0 when exhausted — that causes infinite cycling
-    // Only reset if profiles array changed (e.g. new fetch with different data)
     if (profiles.length === 0) {
       if (currentIndex !== 0) setCurrentIndex(0);
-      return;
     }
-    // If currentIndex is beyond profiles, cap it at the end (shows empty state)
   }, [profiles.length]);
 
   if (isCheckingAuth) {
@@ -676,7 +479,6 @@ export default function Home() {
         {isVerificationGated && <VerificationGateBanner matchCount={gateMatchCount} />}
 
         <main className="flex-1 flex flex-col overflow-hidden pb-16">
-          {/* Profile cards take priority — full remaining space */}
           <div className="flex-1 flex flex-col min-h-0 px-2">
             {viewMode === 'swipe' ? (
               <SwipeView
@@ -706,7 +508,6 @@ export default function Home() {
             )}
           </div>
 
-          {/* All modals and toasts — render but don't take layout space */}
           <HomeModals
             showLimitPaywall={showLimitPaywall} setShowLimitPaywall={setShowLimitPaywall}
             showTutorial={showTutorial} tutorialSteps={tutorialSteps} completeTutorial={completeTutorial}
@@ -718,6 +519,7 @@ export default function Home() {
             showFeedbackModal={showFeedbackModal} setShowFeedbackModal={setShowFeedbackModal}
             feedbackProfile={feedbackProfile} setFeedbackProfile={setFeedbackProfile}
             upgradePrompt={upgradePrompt} dismissPrompt={dismissPrompt}
+            lastMatchId={lastMatchId}
           />
           <NewMatchToast
             show={showNewMatchToast}

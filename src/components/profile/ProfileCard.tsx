@@ -108,7 +108,8 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
   const bioPreview = profile?.bio || profile?.about_me || '';
   const interestChips = (profile?.interests || []).slice(0, 5);
   const socialProofCount = profile?.liked_by_count || profile?.likes_count || profile?.profile_views_count || 0;
-  const socialProof = socialProofCount > 0 ? `Liked by ${socialProofCount} people 👀` : 'Trending in your area 🔥';
+  // Only show social proof if there's real data — never show fabricated text
+  const socialProof = socialProofCount > 0 ? `Liked by ${socialProofCount} people 👀` : null;
 
   const relationshipLabels: Record<string, string> = {
     dating: t('onboarding.goal.dating.label'),
@@ -252,10 +253,12 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
               </div>
             )}
 
-            <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-foreground/20 px-3 py-1.5 text-xs text-primary-foreground/95">
-              <Sparkles size={12} />
-              <span>{socialProof}</span>
-            </div>
+            {socialProof && (
+              <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-foreground/20 px-3 py-1.5 text-xs text-primary-foreground/95">
+                <Sparkles size={12} />
+                <span>{socialProof}</span>
+              </div>
+            )}
           </div>
         </div>
 
