@@ -47,7 +47,7 @@ Deno.serve(async (req) => {
       supabase.from('user_profiles').select('blocked_users').eq('id', profileId).single(),
       supabase.from('likes').select('liked_id').eq('liker_id', profileId),
       supabase.from('passes').select('passed_id').eq('passer_id', profileId),
-      supabase.rpc('get_matched_partner_ids', { p_profile_id: profileId }).catch(() => ({ data: [] })),
+      supabase.rpc('get_matched_partner_ids', { p_profile_id: profileId }).then(res => res, () => ({ data: [] })),
     ]);
 
     const blockedUsers: string[] = blockedRes.data?.blocked_users || [];
