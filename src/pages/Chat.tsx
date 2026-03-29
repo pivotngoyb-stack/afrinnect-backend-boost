@@ -334,7 +334,7 @@ export default function Chat() {
     }
   );
 
-  // Handle message errors and success
+  // Handle message errors and success — reconcile optimistic messages safely
   useEffect(() => {
     if (sendMessageMutation.isError) {
       const error = sendMessageMutation.error;
@@ -345,19 +345,38 @@ export default function Chat() {
       } else {
         toast({ title: error.message, variant: 'destructive' });
       }
-      // Remove all optimistic messages on error
-      queryClient.setQueryData(['messages', matchId], (old = []) => 
+      // Remove only optimistic messages on error — real messages stay
+      queryClient.setQueryData(['messages', matchId], (old: any[] = []) => 
         old.filter(m => !m.__optimistic)
       );
     }
-    if (sendMessageMutation.isSuccess) {
-      // Remove optimistic messages and refetch real data
-      queryClient.setQueryData(['messages', matchId], (old = []) => 
-        old.filter(m => !m.__optimistic)
-      );
-      queryClient.invalidateQueries(['messages', matchId]);
+    if (sendMessageMutation.isSuccess && sendMessageMutation.data) {
+      const realMsg = sendMessageMutation.data;
+      // Replace the optimistic message with the real one by matching content
+      // This avoids the flash caused by remove-then-refetch
+      queryClient.setQueryData(['messages', matchId], (old: any[] = []) => {
+        // Find the optimistic message that matches this real message
+        const optimisticIdx = old.findIndex(
+          m => m.__optimistic && m.content === realMsg.content && m.sender_id === realMsg.sender_id
+        );
+        if (optimisticIdx >= 0) {
+          // Swap the optimistic message for the real one
+          const updated = [...old];
+          updated[optimisticIdx] = { ...realMsg, created_date: realMsg.created_at };
+          return updated;
+        }
+        // If no optimistic match found (websocket may have already delivered it),
+        // just remove any remaining optimistic messages to avoid duplicates
+        const withoutOptimistic = old.filter(m => !m.__optimistic);
+        // Check if real message is already present from websocket
+        const alreadyExists = withoutOptimistic.some(m => m.id === realMsg.id);
+        if (!alreadyExists) {
+          return [...withoutOptimistic, { ...realMsg, created_date: realMsg.created_at }];
+        }
+        return withoutOptimistic;
+      });
     }
-  }, [sendMessageMutation.isSuccess, sendMessageMutation.isError, matchId, queryClient]);
+  }, [sendMessageMutation.isSuccess, sendMessageMutation.isError, sendMessageMutation.data, matchId, queryClient]);
 
 
   // Image mutation

@@ -128,24 +128,59 @@ export default function Notifications() {
       }
     }
 
+    // Trim leading/trailing whitespace
+    normalized = normalized.trim();
+
     // Legacy chat format: /chat/<matchId>
     if (normalized.startsWith('/chat/')) {
       const matchId = normalized.split('/chat/')[1]?.split(/[?#]/)[0];
       return matchId ? createPageUrl('Chat', { matchId }) : createPageUrl('Chat');
     }
 
-    // Legacy query format: /chat?match=<matchId>
-    if (normalized.startsWith('/chat?')) {
+    // Legacy query format: /chat?match=<matchId> or /chat?matchId=<matchId>
+    if (normalized.startsWith('/chat?') || normalized === '/chat') {
       const query = normalized.split('?')[1] || '';
       const params = new URLSearchParams(query);
       const matchId = params.get('matchId') || params.get('match');
-      return matchId ? createPageUrl('Chat', { matchId }) : createPageUrl('Chat');
+      return matchId ? createPageUrl('Chat', { matchId }) : '/matches';
     }
 
     // Legacy event format: /events/<eventId>
     if (normalized.startsWith('/events/')) {
       const eventId = normalized.split('/events/')[1]?.split(/[?#]/)[0];
       return eventId ? createPageUrl('EventDetails', { id: eventId }) : createPageUrl('Events');
+    }
+
+    // Community deep links: /community/<id> or /communities/<id>
+    if (/^\/(community|communities)\//.test(normalized)) {
+      const id = normalized.split(/\/(community|communities)\//)[2]?.split(/[?#]/)[0];
+      return id ? `/communitychat?communityId=${id}` : '/communities';
+    }
+
+    // Profile deep links: /profile/<id>
+    if (normalized.startsWith('/profile/')) {
+      const id = normalized.split('/profile/')[1]?.split(/[?#]/)[0];
+      return id ? `/profile?id=${id}` : '/home';
+    }
+
+    // Who likes you deep link
+    if (normalized === '/who-likes-you' || normalized === '/wholikesyou') {
+      return '/wholikesyou';
+    }
+
+    // Matches shortcut
+    if (normalized === '/matches' || normalized === '/match') {
+      return '/matches';
+    }
+
+    // Settings / account
+    if (normalized === '/settings' || normalized === '/account') {
+      return '/settings';
+    }
+
+    // Pricing
+    if (normalized === '/pricing' || normalized === '/upgrade') {
+      return '/pricingplans';
     }
 
     return normalized;
