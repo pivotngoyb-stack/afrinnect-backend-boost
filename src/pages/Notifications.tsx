@@ -187,14 +187,14 @@ export default function Notifications() {
             </Link>
             <h1 className="text-lg font-bold">Notifications</h1>
             {unreadCount > 0 && (
-              <Badge className="bg-purple-600">{unreadCount} new</Badge>
+              <Badge className="bg-primary">{unreadCount} new</Badge>
             )}
           </div>
           {unreadCount > 0 && (
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-purple-600 hover:bg-purple-50"
+              className="text-primary hover:bg-primary/5"
               onClick={() => markAllReadMutation.mutate()}
               disabled={markAllReadMutation.isPending}
             >

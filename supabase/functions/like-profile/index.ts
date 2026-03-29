@@ -284,7 +284,20 @@ Deno.serve(async (req) => {
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    return new Response(JSON.stringify({ error: 'Invalid action. Use "like" or "pass".' }), {
+    // === REWIND ACTION ===
+    if (action === 'rewind') {
+      // Delete both like and pass records for this target atomically
+      await Promise.all([
+        supabase.from('likes').delete().eq('liker_id', myProfile.id).eq('liked_id', targetProfileId),
+        supabase.from('passes').delete().eq('passer_id', myProfile.id).eq('passed_id', targetProfileId),
+      ]);
+
+      return new Response(JSON.stringify({ success: true, action: 'rewind' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    return new Response(JSON.stringify({ error: 'Invalid action. Use "like", "pass", or "rewind".' }), {
       status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
   } catch (err) {

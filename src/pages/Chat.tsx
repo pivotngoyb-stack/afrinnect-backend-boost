@@ -589,7 +589,7 @@ export default function Chat() {
             <Button
               variant="ghost"
               size="icon"
-              className="text-pink-600 hover:bg-pink-50"
+              className="text-destructive hover:bg-destructive/10"
               title="Send Gift (Elite/VIP)"
             >
               <Gift size={20} />
