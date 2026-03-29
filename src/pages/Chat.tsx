@@ -574,7 +574,14 @@ export default function Chat() {
           </Avatar>
           <div>
             <h2 className="font-semibold">{otherProfile.display_name}</h2>
-            <p className="text-xs text-muted-foreground">Active now</p>
+            <p className="text-xs text-muted-foreground">
+              {otherProfile?.last_active && (Date.now() - new Date(otherProfile.last_active).getTime()) < 10 * 60 * 1000
+                ? 'Active now'
+                : otherProfile?.last_active
+                  ? `Last active ${(() => { const mins = Math.floor((Date.now() - new Date(otherProfile.last_active).getTime()) / 60000); if (mins < 60) return mins + 'm ago'; const hrs = Math.floor(mins / 60); if (hrs < 24) return hrs + 'h ago'; return Math.floor(hrs / 24) + 'd ago'; })()}`
+                  : 'Recently active'
+              }
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">

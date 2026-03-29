@@ -85,16 +85,7 @@ export default function Onboarding() {
   const [gettingLocation, setGettingLocation] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   
-  // Social proof for conversion
-  const [recentSignups] = useState(() => {
-    const names = ['Amara', 'Kwame', 'Fatou', 'Kofi', 'Nia', 'Adaeze', 'Jabari', 'Zuri'];
-    const cities = ['Atlanta', 'Toronto', 'Houston', 'London', 'Chicago', 'Dallas', 'DMV', 'NYC'];
-    return names.slice(0, 3).map((name, i) => ({
-      name,
-      city: cities[i],
-      time: `${Math.floor(Math.random() * 5) + 1} min ago`
-    }));
-  });
+  // Social proof removed — no fabricated signup data
 
   // Auto-save to localStorage
   useEffect(() => {
@@ -753,18 +744,7 @@ export default function Onboarding() {
       {/* Bottom Navigation - Enhanced */}
       <div className="fixed bottom-0 left-0 right-0 bg-card border-t p-4 shadow-lg">
         <div className="max-w-lg mx-auto">
-          {/* Social proof ticker */}
-          {step > 0 && step < 6 && (
-            <div className="mb-3 overflow-hidden">
-              <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
-                <span>{recentSignups[step % 3]?.name} from {recentSignups[step % 3]?.city} just signed up</span>
-              </div>
-            </div>
-          )}
+          {/* Social proof ticker removed — no fabricated data */}
           
           <Button
             onClick={() => {
