@@ -32,12 +32,6 @@ export default function SwipeView({
   const { t } = useLanguage();
 
   const handlePass = () => {
-    if (currentProfile?.is_seed && Math.random() < 0.2) {
-      toast('You almost matched with someone! Keep swiping ✨', {
-        icon: '💫',
-        duration: 3000,
-      });
-    }
     originalHandlePass(currentProfile);
   };
 

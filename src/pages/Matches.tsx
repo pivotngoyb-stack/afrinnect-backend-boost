@@ -140,9 +140,9 @@ export default function Matches() {
       }
     },
     enabled: !!myProfile,
-    refetchInterval: false,
-    refetchOnWindowFocus: false,
-    staleTime: 600000,
+    refetchInterval: 30000,
+    refetchOnWindowFocus: true,
+    staleTime: 15000,
     retry: 2,
     retryDelay: 3000
   });
