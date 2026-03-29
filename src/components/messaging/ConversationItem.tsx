@@ -37,7 +37,8 @@ const ConversationItem = React.forwardRef(function ConversationItem({ match, pro
   const photo = profile?.primary_photo || profile?.photos?.[0] || '/placeholder.svg';
 
   return (
-    <div 
+    <div
+      ref={ref}
       onClick={onClick}
       className={`flex items-center gap-4 p-4 cursor-pointer hover:bg-muted active:bg-muted transition-colors ${
         unreadCount > 0 ? 'bg-primary/5' : ''
@@ -86,4 +87,6 @@ const ConversationItem = React.forwardRef(function ConversationItem({ match, pro
       </div>
     </div>
   );
-}
+});
+
+export default ConversationItem;
