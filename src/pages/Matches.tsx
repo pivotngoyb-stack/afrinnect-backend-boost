@@ -63,12 +63,19 @@ export default function Matches() {
         event: 'INSERT',
         schema: 'public',
         table: 'matches',
-      }, (payload) => {
-        const m = payload.new as any;
-        if (m.user1_id === myProfile.id || m.user2_id === myProfile.id) {
-          queryClient.invalidateQueries({ queryKey: ['matches'] });
-          queryClient.invalidateQueries({ queryKey: ['conversations-data'] });
-        }
+        filter: `user1_id=eq.${myProfile.id}`,
+      }, () => {
+        queryClient.invalidateQueries({ queryKey: ['matches'] });
+        queryClient.invalidateQueries({ queryKey: ['conversations-data'] });
+      })
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'matches',
+        filter: `user2_id=eq.${myProfile.id}`,
+      }, () => {
+        queryClient.invalidateQueries({ queryKey: ['matches'] });
+        queryClient.invalidateQueries({ queryKey: ['conversations-data'] });
       })
       .on('postgres_changes', {
         event: 'INSERT',
