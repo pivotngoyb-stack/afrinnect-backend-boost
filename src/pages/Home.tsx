@@ -411,19 +411,29 @@ export default function Home() {
     if (swipeHistory.length === 0) return;
 
     const lastAction = swipeHistory[swipeHistory.length - 1];
-    localSwipedIds.current.delete(lastAction.profile.id);
-    removeSwipedId(lastAction.profile.id);
-    if (lastAction.action === 'like' || lastAction.action === 'superlike') {
-      const existing = await filterRecords('likes', { liker_id: myProfile.id, liked_id: lastAction.profile.id });
-      for (const l of existing) await deleteRecord('likes', l.id);
+
+    try {
+      // Server-side rewind via edge function — undo like/pass atomically
+      const { data, error } = await supabase.functions.invoke('like-profile', {
+        body: { action: 'rewind', targetProfileId: lastAction.profile.id }
+      });
+
+      if (error) {
+        console.error('Rewind failed:', error);
+        toast.error('Could not rewind. Please try again.');
+        return;
+      }
+
+      // Only update local state after server confirms
+      localSwipedIds.current.delete(lastAction.profile.id);
+      removeSwipedId(lastAction.profile.id);
+      setCurrentIndex(lastAction.index);
+      setSwipeHistory(swipeHistory.slice(0, -1));
+      if (navigator.vibrate) navigator.vibrate(100);
+    } catch (err) {
+      console.error('Rewind error:', err);
+      toast.error('Rewind failed. Try again.');
     }
-    if (lastAction.action === 'pass') {
-      const existing = await filterRecords('passes', { passer_id: myProfile.id, passed_id: lastAction.profile.id });
-      for (const p of existing) await deleteRecord('passes', p.id);
-    }
-    setCurrentIndex(lastAction.index);
-    setSwipeHistory(swipeHistory.slice(0, -1));
-    if (navigator.vibrate) navigator.vibrate(100);
   };
 
   const completeTutorial = async () => {
@@ -530,7 +540,6 @@ export default function Home() {
           <MissedMatchRegret
             show={showMissedMatch && !showLimitPaywall}
             onClose={() => setShowMissedMatch(false)}
-            matchScore={Math.floor(Math.random() * 10) + 90}
           />
         </main>
       </div>

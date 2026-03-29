@@ -589,7 +589,7 @@ export default function Chat() {
             <Button
               variant="ghost"
               size="icon"
-              className="text-pink-600 hover:bg-pink-50"
+              className="text-destructive hover:bg-destructive/10"
               title="Send Gift (Elite/VIP)"
             >
               <Gift size={20} />
@@ -632,7 +632,7 @@ export default function Chat() {
           <div className="text-center py-2">
             <button
               onClick={loadMoreMessages}
-              className="text-sm text-purple-600 hover:underline"
+              className="text-sm text-primary hover:underline"
             >
               Load older messages
             </button>
@@ -641,7 +641,7 @@ export default function Chat() {
 
         {isLoadingMoreMessages && (
           <div className="text-center py-2">
-            <div className="animate-spin inline-block w-4 h-4 border-2 border-purple-600 border-t-transparent rounded-full" />
+            <div className="animate-spin inline-block w-4 h-4 border-2 border-primary border-t-transparent rounded-full" />
           </div>
         )}
 
@@ -708,9 +708,9 @@ export default function Chat() {
               
               <div className={`max-w-xs md:max-w-md ${
                 isMine 
-                  ? 'bg-gradient-to-br from-purple-600 to-purple-700 text-white' 
+                  ? 'bg-gradient-to-br from-primary to-primary/80 text-primary-foreground' 
                   : 'bg-secondary text-secondary-foreground'
-              } rounded-2xl ${isMine ? 'rounded-br-md' : 'rounded-bl-md'} px-4 py-2.5 shadow-sm`}>
+              } rounded-2xl ${isMine ? 'rounded-br-md' : 'rounded-bl-md'} px-4 py-2.5 shadow-sm transition-opacity duration-200`}>
                 {msg.message_type === 'voice_note' ? (
                   <audio controls src={msg.media_url} className="w-full" preload="metadata" />
                 ) : msg.message_type === 'image' ? (

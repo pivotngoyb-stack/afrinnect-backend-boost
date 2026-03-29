@@ -53,6 +53,38 @@ export default function Matches() {
     fetchMyProfile();
   }, []);
 
+  // Realtime subscription for new matches and messages
+  useEffect(() => {
+    if (!myProfile?.id) return;
+    
+    const channel = supabase
+      .channel('matches-realtime')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'matches',
+      }, (payload) => {
+        const m = payload.new as any;
+        if (m.user1_id === myProfile.id || m.user2_id === myProfile.id) {
+          queryClient.invalidateQueries({ queryKey: ['matches'] });
+          queryClient.invalidateQueries({ queryKey: ['conversations-data'] });
+        }
+      })
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'messages',
+      }, (payload) => {
+        const msg = payload.new as any;
+        if (msg.receiver_id === myProfile.id || msg.sender_id === myProfile.id) {
+          queryClient.invalidateQueries({ queryKey: ['conversations-data'] });
+        }
+      })
+      .subscribe();
+    
+    return () => { supabase.removeChannel(channel); };
+  }, [myProfile?.id, queryClient]);
+
   // Fetch matches - OPTIMIZED: single query with .or() instead of 2 separate calls
   const { data: matchesData = [], isLoading: loadingMatches } = useQuery({
     queryKey: ['matches', myProfile?.id],
@@ -140,9 +172,9 @@ export default function Matches() {
       }
     },
     enabled: !!myProfile,
-    refetchInterval: false,
-    refetchOnWindowFocus: false,
-    staleTime: 600000,
+    refetchInterval: 30000,
+    refetchOnWindowFocus: true,
+    staleTime: 15000,
     retry: 2,
     retryDelay: 3000
   });
