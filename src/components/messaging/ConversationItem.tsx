@@ -4,7 +4,7 @@ import { format, isToday, isYesterday, formatDistanceToNowStrict } from 'date-fn
 import { Badge } from "@/components/ui/badge";
 import VerificationBadge from '../shared/VerificationBadge';
 
-export default function ConversationItem({ match, profile, lastMessage, unreadCount = 0, onClick }) {
+const ConversationItem = React.forwardRef(function ConversationItem({ match, profile, lastMessage, unreadCount = 0, onClick }, ref) {
   const formatMessageDate = (date) => {
     if (!date) return '';
     try {
@@ -37,7 +37,8 @@ export default function ConversationItem({ match, profile, lastMessage, unreadCo
   const photo = profile?.primary_photo || profile?.photos?.[0] || '/placeholder.svg';
 
   return (
-    <div 
+    <div
+      ref={ref}
       onClick={onClick}
       className={`flex items-center gap-4 p-4 cursor-pointer hover:bg-muted active:bg-muted transition-colors ${
         unreadCount > 0 ? 'bg-primary/5' : ''
@@ -50,7 +51,7 @@ export default function ConversationItem({ match, profile, lastMessage, unreadCo
           className="w-16 h-16 rounded-full object-cover"
         />
         {isOnline && (
-          <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-card" />
+          <div className="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 rounded-full border-2 border-card" />
         )}
       </div>
       
@@ -86,4 +87,6 @@ export default function ConversationItem({ match, profile, lastMessage, unreadCo
       </div>
     </div>
   );
-}
+});
+
+export default ConversationItem;
