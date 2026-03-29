@@ -4,7 +4,7 @@ import { format, isToday, isYesterday, formatDistanceToNowStrict } from 'date-fn
 import { Badge } from "@/components/ui/badge";
 import VerificationBadge from '../shared/VerificationBadge';
 
-export default function ConversationItem({ match, profile, lastMessage, unreadCount = 0, onClick }) {
+const ConversationItem = React.forwardRef(function ConversationItem({ match, profile, lastMessage, unreadCount = 0, onClick }, ref) {
   const formatMessageDate = (date) => {
     if (!date) return '';
     try {
