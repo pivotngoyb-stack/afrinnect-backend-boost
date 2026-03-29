@@ -173,7 +173,7 @@ export default function Home() {
           setMyProfile(profile);
 
           // Defer login streak update to avoid blocking initial render
-          requestIdleCallback?.(() => {
+          const updateStreak = () => {
             const today = new Date().toISOString().split('T')[0];
             const lastLogin = profile.last_login_date;
             const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
@@ -181,15 +181,12 @@ export default function Home() {
               const newStreak = lastLogin === yesterday ? (profile.login_streak || 0) + 1 : 1;
               updateRecord('user_profiles', profile.id, { login_streak: newStreak, last_login_date: today, last_active: new Date().toISOString() }).catch(() => {});
             }
-          }) ?? setTimeout(() => {
-            const today = new Date().toISOString().split('T')[0];
-            const lastLogin = profile.last_login_date;
-            const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-            if (lastLogin !== today) {
-              const newStreak = lastLogin === yesterday ? (profile.login_streak || 0) + 1 : 1;
-              updateRecord('user_profiles', profile.id, { login_streak: newStreak, last_login_date: today, last_active: new Date().toISOString() }).catch(() => {});
-            }
-          }, 3000);
+          };
+          if (typeof requestIdleCallback === 'function') {
+            requestIdleCallback(updateStreak);
+          } else {
+            setTimeout(updateStreak, 3000);
+          }
         } else { navigate(createPageUrl('Onboarding')); }
       } catch (error) {
         console.error('Failed to load current profile for discovery:', error);
