@@ -259,6 +259,8 @@ const functionNameMap: Record<string, string> = {
   boostProfile: 'boost-profile',
   updateHeatScore: 'update-heat-score',
   checkSwipeLimit: 'check-swipe-limit',
+  likeProfile: 'like-profile',
+  discoverProfiles: 'discover-profiles',
 };
 
 /**
