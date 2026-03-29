@@ -85,12 +85,25 @@ export default function SwipeView({
               We’ll keep your deck fresh as new people join.
             </p>
             <div className="space-y-3 w-full">
-              <Button onClick={() => setFilters({})} className="w-full h-11 text-sm gradient-hero text-primary-foreground">
+              <Button
+                onClick={() => {
+                  setFilters({});
+                  try { sessionStorage.removeItem('swiped_ids'); } catch {}
+                  window.location.reload();
+                }}
+                className="w-full h-11 text-sm gradient-hero text-primary-foreground"
+              >
                 Refresh Discovery
               </Button>
-              <Button onClick={() => setFilters({})} variant="outline" className="w-full h-10 text-sm">
-                Reset Filters
-              </Button>
+              {setDiscoveryMode && (
+                <Button
+                  onClick={() => setDiscoveryMode('global')}
+                  variant="outline"
+                  className="w-full h-10 text-sm"
+                >
+                  Try Global Discovery
+                </Button>
+              )}
             </div>
           </div>
         )}
