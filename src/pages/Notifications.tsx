@@ -97,10 +97,13 @@ export default function Notifications() {
     }
   });
 
-  // Auto-mark all as read when user visits the notifications page
+  // Mark notifications as read after a short delay so user has time to see them
   useEffect(() => {
     if (notifications.length > 0 && notifications.some(n => !n.is_read)) {
-      markAllReadMutation.mutate();
+      const timer = setTimeout(() => {
+        markAllReadMutation.mutate();
+      }, 2000);
+      return () => clearTimeout(timer);
     }
   }, [notifications, myProfile?.id]);
 

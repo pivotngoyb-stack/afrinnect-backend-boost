@@ -355,14 +355,19 @@ export default function Chat() {
       // Replace the optimistic message with the real one by matching content
       // This avoids the flash caused by remove-then-refetch
       queryClient.setQueryData(['messages', matchId], (old: any[] = []) => {
-        // Find the optimistic message that matches this real message
+      // Find the optimistic message by its unique temp ID first, then fall back to content match
         const optimisticIdx = old.findIndex(
+          m => m.__optimistic && m.__optimisticId === realMsg.__optimisticId
+        );
+        // If ID match fails (e.g. backend didn't echo it), try content+timestamp proximity
+        const fallbackIdx = optimisticIdx >= 0 ? optimisticIdx : old.findIndex(
           m => m.__optimistic && m.content === realMsg.content && m.sender_id === realMsg.sender_id
         );
-        if (optimisticIdx >= 0) {
+        const matchIdx = optimisticIdx >= 0 ? optimisticIdx : fallbackIdx;
+        if (matchIdx >= 0) {
           // Swap the optimistic message for the real one
           const updated = [...old];
-          updated[optimisticIdx] = { ...realMsg, created_date: realMsg.created_at };
+          updated[matchIdx] = { ...realMsg, created_date: realMsg.created_at };
           return updated;
         }
         // If no optimistic match found (websocket may have already delivered it),
@@ -476,8 +481,10 @@ export default function Chat() {
     setMessageText('');
 
     // Create optimistic message with unique temp ID
+    const optimisticId = `temp-${Date.now()}-${Math.random()}`;
     const optimisticMessage = {
-      id: `temp-${Date.now()}-${Math.random()}`,
+      id: optimisticId,
+      __optimisticId: optimisticId,
       match_id: matchId,
       sender_id: myProfile.id,
       receiver_id: otherProfile.id,
