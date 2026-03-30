@@ -10,6 +10,10 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const correlationId = req.headers.get('x-correlation-id') || `srv-${Date.now().toString(36)}`;
+  const log = (action: string, meta?: Record<string, any>) => 
+    console.log(JSON.stringify({ correlation_id: correlationId, fn: 'like-profile', action, ts: new Date().toISOString(), ...meta }));
+
   try {
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
