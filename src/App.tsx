@@ -248,6 +248,7 @@ const App = () => (
             <Route path="/adminlaunchchecklist" element={<AdminProtected><AdminLaunchChecklist /></AdminProtected>} />
             <Route path="/adminmarketplace" element={<AdminProtected><AdminMarketplace /></AdminProtected>} />
             <Route path="/adminauditlogs" element={<AdminProtected><AdminAuditLogs /></AdminProtected>} />
+            <Route path="/adminlaunchcertification" element={<AdminProtected><AdminLaunchCertification /></AdminProtected>} />
 
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
