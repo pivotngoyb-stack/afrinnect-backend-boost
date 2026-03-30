@@ -187,7 +187,7 @@ Deno.serve(async (req) => {
           isMatch = true;
           matchId = existingMatch.id;
         } else {
-          // Create match atomically
+          log('match_create', { user1: myProfile.id, user2: targetProfileId });
           const { data: newMatch, error: matchError } = await supabase
             .from('matches')
             .insert({
