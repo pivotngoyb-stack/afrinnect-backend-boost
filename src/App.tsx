@@ -125,6 +125,7 @@ const AdminManual = lazy(() => import("./pages/AdminManual"));
 const AdminLaunchChecklist = lazy(() => import("./pages/AdminLaunchChecklist"));
 const AdminMarketplace = lazy(() => import("./pages/AdminMarketplace"));
 const AdminAuditLogs = lazy(() => import("./pages/AdminAuditLogs"));
+const AdminLaunchCertification = lazy(() => import("./pages/AdminLaunchCertification"));
 const Login = lazy(() => import("./pages/Login"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
