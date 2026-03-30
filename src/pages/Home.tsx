@@ -1,6 +1,8 @@
 // @ts-nocheck
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { filterRecords, getCurrentUser, updateRecord, deleteRecord } from '@/lib/supabase-helpers';
+import { generateCorrelationId } from '@/lib/correlation';
+import { logMutation } from '@/lib/structured-logger';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
