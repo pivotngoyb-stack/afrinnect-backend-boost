@@ -484,6 +484,9 @@ export default function Chat() {
 
     // Create optimistic message with unique temp ID
     const optimisticId = `temp-${Date.now()}-${Math.random()}`;
+    const cid = generateCorrelationId('msg_send');
+    logMutation('message_send', cid, 'info', { profile_id: myProfile.id, metadata: { matchId, optimisticId } });
+
     const optimisticMessage = {
       id: optimisticId,
       __optimisticId: optimisticId,

@@ -274,7 +274,9 @@ export default function Home() {
       if (likeTimestamps.current.length >= 3) throw new Error('slow_down');
       likeTimestamps.current.push(now);
 
-      // Call the atomic server-side like-profile function
+      const cid = generateCorrelationId('like');
+      logMutation('like', cid, 'info', { profile_id: myProfile.id, metadata: { target: likedId, isSuperLike } });
+
       const { data, error } = await supabase.functions.invoke('like-profile', {
         body: { action: 'like', targetProfileId: likedId, isSuperLike, likeNote }
       });
