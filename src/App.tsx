@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import DebugPanel from "@/components/admin/DebugPanel";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -125,6 +126,7 @@ const AdminManual = lazy(() => import("./pages/AdminManual"));
 const AdminLaunchChecklist = lazy(() => import("./pages/AdminLaunchChecklist"));
 const AdminMarketplace = lazy(() => import("./pages/AdminMarketplace"));
 const AdminAuditLogs = lazy(() => import("./pages/AdminAuditLogs"));
+const AdminLaunchCertification = lazy(() => import("./pages/AdminLaunchCertification"));
 const Login = lazy(() => import("./pages/Login"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -246,12 +248,14 @@ const App = () => (
             <Route path="/adminlaunchchecklist" element={<AdminProtected><AdminLaunchChecklist /></AdminProtected>} />
             <Route path="/adminmarketplace" element={<AdminProtected><AdminMarketplace /></AdminProtected>} />
             <Route path="/adminauditlogs" element={<AdminProtected><AdminAuditLogs /></AdminProtected>} />
+            <Route path="/adminlaunchcertification" element={<AdminProtected><AdminLaunchCertification /></AdminProtected>} />
 
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
         <AppBottomNav />
+        <DebugPanel />
       </BrowserRouter>
       <InstallPrompt />
     </TooltipProvider>

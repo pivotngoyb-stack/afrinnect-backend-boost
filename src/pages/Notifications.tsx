@@ -196,6 +196,8 @@ export default function Notifications() {
 
     const targetPath = normalizeNotificationLink(notif.link_to);
     if (targetPath) {
+      // Track deep link for debug panel
+      sessionStorage.setItem('__last_deep_link', targetPath);
       navigate(targetPath);
     }
   };

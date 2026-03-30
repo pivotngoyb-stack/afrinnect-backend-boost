@@ -10,6 +10,10 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const correlationId = req.headers.get('x-correlation-id') || `srv-${Date.now().toString(36)}`;
+  const log = (action: string, meta?: Record<string, any>) => 
+    console.log(JSON.stringify({ correlation_id: correlationId, fn: 'like-profile', action, ts: new Date().toISOString(), ...meta }));
+
   try {
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
@@ -79,6 +83,7 @@ Deno.serve(async (req) => {
 
     // === PASS ACTION ===
     if (action === 'pass') {
+      log('pass', { liker: myProfile.id, target: targetProfileId });
       await supabase.from('passes').upsert({
         passer_id: myProfile.id,
         passed_id: targetProfileId,
@@ -93,7 +98,7 @@ Deno.serve(async (req) => {
 
     // === LIKE ACTION ===
     if (action === 'like') {
-      // Check for existing like (idempotency)
+      log('like_start', { liker: myProfile.id, target: targetProfileId, is_super: isSuperLike });
       const { data: existingLike } = await supabase
         .from('likes')
         .select('id')
@@ -183,7 +188,7 @@ Deno.serve(async (req) => {
           isMatch = true;
           matchId = existingMatch.id;
         } else {
-          // Create match atomically
+          log('match_create', { user1: myProfile.id, user2: targetProfileId });
           const { data: newMatch, error: matchError } = await supabase
             .from('matches')
             .insert({
@@ -205,7 +210,7 @@ Deno.serve(async (req) => {
             .single();
 
           if (matchError) {
-            // Likely unique constraint - fetch existing
+            log('match_create_conflict', { code: matchError.code, user1: myProfile.id, user2: targetProfileId });
             if (matchError.code === '23505') {
               const { data: raceMatch } = await supabase
                 .from('matches')

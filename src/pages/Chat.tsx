@@ -1,6 +1,8 @@
 // @ts-nocheck
 import React, { useState, useEffect, useRef } from 'react';
 import { createRecord, filterRecords, getCurrentUser, invokeFunction, invokeLLM, updateRecord, uploadFile } from '@/lib/supabase-helpers';
+import { generateCorrelationId } from '@/lib/correlation';
+import { logMutation } from '@/lib/structured-logger';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPageUrl } from '@/utils';
@@ -482,6 +484,9 @@ export default function Chat() {
 
     // Create optimistic message with unique temp ID
     const optimisticId = `temp-${Date.now()}-${Math.random()}`;
+    const cid = generateCorrelationId('msg_send');
+    logMutation('message_send', cid, 'info', { profile_id: myProfile.id, metadata: { matchId, optimisticId } });
+
     const optimisticMessage = {
       id: optimisticId,
       __optimisticId: optimisticId,
