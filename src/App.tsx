@@ -255,6 +255,7 @@ const App = () => (
           </Routes>
         </Suspense>
         <AppBottomNav />
+        <DebugPanel />
       </BrowserRouter>
       <InstallPrompt />
     </TooltipProvider>
