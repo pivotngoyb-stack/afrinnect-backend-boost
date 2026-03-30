@@ -97,7 +97,7 @@ Deno.serve(async (req) => {
 
     // === LIKE ACTION ===
     if (action === 'like') {
-      // Check for existing like (idempotency)
+      log('like_start', { liker: myProfile.id, target: targetProfileId, is_super: isSuperLike });
       const { data: existingLike } = await supabase
         .from('likes')
         .select('id')
