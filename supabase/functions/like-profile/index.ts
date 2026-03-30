@@ -209,7 +209,7 @@ Deno.serve(async (req) => {
             .single();
 
           if (matchError) {
-            // Likely unique constraint - fetch existing
+            log('match_create_conflict', { code: matchError.code, user1: myProfile.id, user2: targetProfileId });
             if (matchError.code === '23505') {
               const { data: raceMatch } = await supabase
                 .from('matches')
