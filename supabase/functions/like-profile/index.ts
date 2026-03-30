@@ -83,7 +83,7 @@ Deno.serve(async (req) => {
 
     // === PASS ACTION ===
     if (action === 'pass') {
-      await supabase.from('passes').upsert({
+      log('pass', { liker: myProfile.id, target: targetProfileId });
         passer_id: myProfile.id,
         passed_id: targetProfileId,
         passer_user_id: myProfile.user_id,
