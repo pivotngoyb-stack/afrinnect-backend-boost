@@ -36,11 +36,14 @@ export default function NotificationBell({ className = "", variant = "ghost" }) 
     queryFn: async () => {
       if (!myProfile?.id) return 0;
       try {
+        // Only count notification types that actually appear on the Notifications page
+        // Messages and likes are shown on the Matches page, not Notifications
         const { count } = await supabase
           .from('notifications')
           .select('*', { count: 'exact', head: true })
           .eq('user_profile_id', myProfile.id)
-          .eq('is_read', false);
+          .eq('is_read', false)
+          .not('type', 'in', '("message","like","super_like")');
         return count || 0;
       } catch (error) {
         return 0;
