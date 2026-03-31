@@ -1,4 +1,10 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
+
+interface AfricanPatternProps {
+  className?: string;
+  opacity?: number;
+  variant?: "kente" | "adinkra" | "mudcloth";
+}
 
 /**
  * Enhanced African Pattern component with multiple pattern styles:
@@ -6,15 +12,11 @@ import React from 'react';
  * - adinkra: Adinkra symbols (Sankofa, Gye Nyame inspired)
  * - mudcloth: Malian Bògòlanfini geometric
  */
-export default function AfricanPattern({ 
+const AfricanPattern = forwardRef<HTMLDivElement, AfricanPatternProps>(({ 
   className = "", 
   opacity = 0.05, 
   variant = "kente" 
-}: { 
-  className?: string; 
-  opacity?: number; 
-  variant?: "kente" | "adinkra" | "mudcloth";
-}) {
+}, ref) => {
   const patterns: Record<string, React.ReactNode> = {
     kente: (
       <pattern id="african-kente" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -77,7 +79,11 @@ export default function AfricanPattern({
       </svg>
     </div>
   );
-}
+});
+
+AfricanPattern.displayName = 'AfricanPattern';
+
+export default AfricanPattern;
 
 /**
  * Kente-inspired horizontal divider line

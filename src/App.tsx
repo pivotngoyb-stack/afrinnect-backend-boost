@@ -162,6 +162,8 @@ const App = () => (
             <Route path="/pricing" element={<Navigate to="/pricingplans" replace />} />
             <Route path="/support-chat" element={<Navigate to="/supportchat" replace />} />
             <Route path="/edit-profile" element={<Navigate to="/editprofile" replace />} />
+            <Route path="/delete-account" element={<Navigate to="/deleteaccount" replace />} />
+            <Route path="/blocked-users" element={<Navigate to="/blockedusers" replace />} />
             <Route path="/videochat" element={<Navigate to="/chat" replace />} />
             <Route path="/admin" element={<Navigate to="/admindashboard" replace />} />
 
