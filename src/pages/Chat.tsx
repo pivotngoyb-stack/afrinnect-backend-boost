@@ -505,7 +505,8 @@ export default function Chat() {
     queryClient.setQueryData(['messages', matchId], (old = []) => [...old, optimisticMessage]);
 
     sendMessageMutation.mutate({ 
-      content: textToSend
+      content: textToSend,
+      __optimisticId: optimisticId
     });
   };
 

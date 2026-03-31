@@ -289,6 +289,7 @@ export default function Notifications() {
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ delay: idx * 0.05 }}
                   onClick={() => handleNotificationClick(notif)}
+                  data-unread={!notif.is_read ? 'true' : undefined}
                   className={`p-4 rounded-xl border cursor-pointer transition-all hover:shadow-md ${
                     notif.is_read
                       ? 'bg-card border-border'

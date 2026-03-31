@@ -274,7 +274,7 @@ Allow: flirting, compliments, date planning, personal questions, humor.`,
     }
 
     return new Response(
-      JSON.stringify(message),
+      JSON.stringify({ ...message, __optimisticId }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
