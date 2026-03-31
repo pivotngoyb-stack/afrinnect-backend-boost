@@ -44,8 +44,12 @@ export async function isAuthenticated() {
 
 export async function logout(redirectUrl?: string) {
   await db.auth.signOut();
-  if (redirectUrl) window.location.href = redirectUrl;
-  else window.location.reload();
+  // Use SPA navigation instead of full page reload
+  if (redirectUrl) {
+    window.location.href = redirectUrl;
+  } else {
+    window.location.href = '/landing';
+  }
 }
 
 export async function updateCurrentUser(data: any) {
