@@ -145,7 +145,7 @@ export default function BoostButton({ userProfile, onBoostActivated, onBoostSucc
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.96, y: 24 }}
             onClick={e => e.stopPropagation()}
-            className="bg-background rounded-xl p-4 max-w-xs w-full shadow-2xl relative max-h-[72vh] overflow-y-auto"
+            className="rounded-xl p-4 max-w-xs w-full shadow-2xl relative max-h-[72vh] overflow-y-auto px-[10px] py-[12px] mx-[3px] my-0 bg-secondary text-secondary text-center"
           >
             <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground">
               <X size={20} />
