@@ -1306,92 +1306,83 @@ export default function AdminManual() {
   );
 
   return (
-    <div className="min-h-screen bg-muted">
-      {/* Header */}
-      <header className="sticky top-0 bg-card border-b z-40">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+    <div className="min-h-screen bg-slate-950 flex">
+      <AdminSidebar />
+
+      <main className="flex-1 overflow-auto">
+        <header className="sticky top-0 z-10 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800 px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link to={createPageUrl('AdminDashboard')}>
-                <Button variant="ghost" size="icon">
-                  <ArrowLeft size={20} />
-                </Button>
-              </Link>
-              <div>
-                <h1 className="text-xl font-bold text-foreground flex items-center gap-2">
-                  <Book className="text-purple-600" />
-                  Admin Manual
-                </h1>
-                <p className="text-sm text-muted-foreground">Complete guide to managing Afrinnect</p>
-              </div>
+            <div>
+              <h1 className="text-xl font-bold text-white flex items-center gap-2">
+                <Book className="text-purple-400" />
+                Admin Manual
+              </h1>
+              <p className="text-sm text-slate-400">Complete guide to managing Afrinnect</p>
             </div>
             <div className="relative w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
               <Input
                 placeholder="Search manual..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-10 bg-slate-800 border-slate-700 text-white placeholder:text-slate-500"
               />
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex gap-6">
-          {/* Sidebar */}
-          <aside className="w-64 flex-shrink-0 hidden lg:block">
-            <nav className="sticky top-24 space-y-1">
-              {filteredSections.map(section => {
-                const Icon = section.icon;
-                return (
-                  <button
-                    key={section.id}
-                    onClick={() => setActiveSection(section.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                      activeSection === section.id
-                        ? 'bg-purple-100 text-purple-700 font-medium'
-                        : 'text-muted-foreground hover:bg-muted'
-                    }`}
-                  >
-                    <Icon size={18} />
-                    {section.label}
-                  </button>
-                );
-              })}
-            </nav>
-          </aside>
+        <div className="p-6">
+          <div className="flex gap-6">
+            <aside className="w-56 flex-shrink-0 hidden lg:block">
+              <nav className="sticky top-24 space-y-1">
+                {filteredSections.map(section => {
+                  const Icon = section.icon;
+                  return (
+                    <button
+                      key={section.id}
+                      onClick={() => setActiveSection(section.id)}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm transition-colors ${
+                        activeSection === section.id
+                          ? 'bg-purple-500/20 text-purple-400 font-medium'
+                          : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                      }`}
+                    >
+                      <Icon size={16} />
+                      {section.label}
+                    </button>
+                  );
+                })}
+              </nav>
+            </aside>
 
-          {/* Mobile Navigation */}
-          <div className="lg:hidden w-full mb-4">
-            <select
-              value={activeSection}
-              onChange={(e) => setActiveSection(e.target.value)}
-              className="w-full p-3 border rounded-lg"
-            >
-              {sections.map(s => (
-                <option key={s.id} value={s.id}>{s.label}</option>
-              ))}
-            </select>
+            <div className="lg:hidden w-full mb-4">
+              <select
+                value={activeSection}
+                onChange={(e) => setActiveSection(e.target.value)}
+                className="w-full p-3 bg-slate-800 border-slate-700 text-white rounded-lg"
+              >
+                {sections.map(s => (
+                  <option key={s.id} value={s.id}>{s.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <motion.div
+                key={activeSection}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <h2 className="text-2xl font-bold text-white mb-6">
+                  {manualContent[activeSection]?.title}
+                </h2>
+                {manualContent[activeSection]?.content}
+              </motion.div>
+            </div>
           </div>
-
-          {/* Content */}
-          <main className="flex-1 min-w-0">
-            <motion.div
-              key={activeSection}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <h2 className="text-2xl font-bold text-foreground mb-6">
-                {manualContent[activeSection]?.title}
-              </h2>
-              {manualContent[activeSection]?.content}
-            </motion.div>
-          </main>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
