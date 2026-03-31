@@ -28,7 +28,7 @@ export default function SwipeView({
   isLoading, currentProfile, hasMoreProfiles, myProfile,
   swipeHistory, likeMutation, passMutation,
   handleLike, handlePass: originalHandlePass, handleSuperLike, handleRewind, setFilters,
-  setDiscoveryMode,
+  setDiscoveryMode, isMutating = false,
 }: SwipeViewProps) {
   const { t } = useLanguage();
 
