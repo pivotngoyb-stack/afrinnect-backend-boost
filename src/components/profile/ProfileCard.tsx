@@ -22,6 +22,7 @@ const ProfileCard = React.memo(function ProfileCard({
   profile, myLocation, onLike, onPass, onSuperLike,
   showActions = true, expanded = false,
   isLiking = false, isPassing = false, isSuperLiking = false,
+  isDisabled = false,
   matchScore, matchReasons, matchBreakdown
 }: any) {
   const { t } = useLanguage();
