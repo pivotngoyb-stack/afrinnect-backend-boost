@@ -136,40 +136,23 @@ Deno.serve(async (req) => {
       const limit = tierLimits[tier] ?? 10;
 
     if (limit > 0) {
-        const today = new Date().toISOString().split('T')[0];
-        const currentCount = myProfile.daily_likes_reset_date === today ? (myProfile.daily_likes_count || 0) : 0;
+        // True atomic increment using DB-level row locking (SELECT FOR UPDATE)
+        const { data: limitResult, error: limitError } = await supabase.rpc('increment_daily_likes', {
+          p_profile_id: myProfile.id,
+          p_tier_limit: limit
+        });
 
-        if (currentCount >= limit) {
-          return new Response(JSON.stringify({ error: 'daily_limit_reached', limit, count: currentCount }), {
-            status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        if (limitError) {
+          log('daily_limit_error', { error: limitError.message });
+          return new Response(JSON.stringify({ error: 'Failed to check daily limit' }), {
+            status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           });
         }
 
-        // Atomic increment to prevent race conditions on two devices
-        // Reset count if it's a new day, otherwise increment
-        const newCount = myProfile.daily_likes_reset_date === today ? currentCount + 1 : 1;
-        const { error: updateError } = await supabase.from('user_profiles').update({
-          daily_likes_count: newCount,
-          daily_likes_reset_date: today
-        }).eq('id', myProfile.id)
-          .eq('daily_likes_count', myProfile.daily_likes_count || 0); // Optimistic lock
-
-        if (updateError) {
-          // Concurrent update — re-read and check
-          const { data: freshProfile } = await supabase.from('user_profiles')
-            .select('daily_likes_count,daily_likes_reset_date')
-            .eq('id', myProfile.id).single();
-          const freshCount = freshProfile?.daily_likes_reset_date === today ? (freshProfile?.daily_likes_count || 0) : 0;
-          if (freshCount >= limit) {
-            return new Response(JSON.stringify({ error: 'daily_limit_reached', limit, count: freshCount }), {
-              status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-            });
-          }
-          // Retry increment
-          await supabase.from('user_profiles').update({
-            daily_likes_count: freshCount + 1,
-            daily_likes_reset_date: today
-          }).eq('id', myProfile.id);
+        if (!limitResult?.allowed) {
+          return new Response(JSON.stringify({ error: 'daily_limit_reached', limit: limitResult.limit, count: limitResult.count }), {
+            status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
         }
       }
 
