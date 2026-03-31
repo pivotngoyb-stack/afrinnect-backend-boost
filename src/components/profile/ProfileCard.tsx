@@ -62,7 +62,7 @@ const ProfileCard = React.memo(function ProfileCard({
       y: targetY,
       rotate: targetRotate,
       opacity: 0,
-      transition: { duration: 0.35, ease: [0.4, 0, 0.2, 1] }
+      transition: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }
     });
 
     if (direction === 'right') onLike?.();
@@ -96,13 +96,13 @@ const ProfileCard = React.memo(function ProfileCard({
       return;
     }
 
-    // Snap back with spring
+    // Snap back with tight spring — Tinder-like responsiveness
     controls.start({
       x: 0,
       y: 0,
       rotate: 0,
       opacity: 1,
-      transition: { type: 'spring', stiffness: 500, damping: 35 }
+      transition: { type: 'spring', stiffness: 600, damping: 30 }
     });
   }, [controls, flyAway, onSuperLike]);
 
@@ -173,8 +173,8 @@ const ProfileCard = React.memo(function ProfileCard({
   const isActiveNow = !!lastActiveDate && (Date.now() - lastActiveDate.getTime()) < 10 * 60 * 1000;
   const bioPreview = profile?.bio || profile?.about_me || '';
   const interestChips = (profile?.interests || []).slice(0, 5);
-  const socialProofCount = profile?.liked_by_count || profile?.likes_count || profile?.profile_views_count || 0;
-  const socialProof = socialProofCount > 0 ? `Liked by ${socialProofCount} people 👀` : null;
+  // Removed: fabricated social proof violates trust rules
+  const socialProof = null;
 
   const relationshipLabels: Record<string, string> = {
     dating: t('onboarding.goal.dating.label'),
@@ -210,11 +210,11 @@ const ProfileCard = React.memo(function ProfileCard({
             ? 'w-full max-w-xl max-h-[90dvh] rounded-3xl'
             : 'h-full min-h-[500px] w-full rounded-[1.75rem] cursor-grab active:cursor-grabbing'
         }`}
-        style={{ x, y, rotate, scale, willChange: 'transform' }}
+        style={{ x, y, rotate, scale, willChange: 'transform', touchAction: expanded ? 'auto' : 'none' }}
         animate={controls}
-        drag={!expanded && showActions && !exitDirection}
+        drag={!expanded && showActions && !exitDirection && !isDisabled}
         dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-        dragElastic={1}
+        dragElastic={0.7}
         dragMomentum={false}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
