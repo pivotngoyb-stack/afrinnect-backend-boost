@@ -445,14 +445,14 @@ export default function AdminModeration() {
 
               {/* Pagination */}
               <div className="flex items-center justify-between pt-2">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-slate-400">
                   Page {page + 1} of {totalPages} ({totalReports} total)
                 </p>
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" disabled={page === 0} onClick={() => setPage(p => p - 1)}>
+                  <Button size="sm" variant="outline" disabled={page === 0} onClick={() => setPage(p => p - 1)} className="border-slate-700 text-slate-300">
                     <ChevronLeft className="w-4 h-4 mr-1" /> Prev
                   </Button>
-                  <Button size="sm" variant="outline" disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)}>
+                  <Button size="sm" variant="outline" disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)} className="border-slate-700 text-slate-300">
                     Next <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
                 </div>
