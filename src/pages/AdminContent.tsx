@@ -51,9 +51,7 @@ export default function AdminContent() {
   const loadContent = async () => {
     setLoading(true);
     try {
-      const [breakers] = await Promise.all([
-        base44.entities.IceBreaker?.list('-created_date', 100) || []
-      ]);
+      const breakers = await listRecords('ice_breakers', '-created_at', 100);
       setIceBreakers(breakers);
 
       // Default prompts (could be stored in DB later)

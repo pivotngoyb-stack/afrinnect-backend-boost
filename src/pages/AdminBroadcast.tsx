@@ -65,8 +65,8 @@ export default function AdminBroadcast() {
     setLoading(true);
     try {
       const [profs, history] = await Promise.all([
-        listRecords('user_profiles', '-created_date', 2000),
-        base44.entities.BroadcastMessage?.list('-created_date', 20) || []
+        listRecords('user_profiles', '-created_at', 2000),
+        listRecords('broadcast_messages', '-created_at', 20)
       ]);
       setProfiles(profs.filter(p => p.is_active && !p.is_banned));
       setBroadcastHistory(history);
@@ -122,16 +122,14 @@ export default function AdminBroadcast() {
       }
 
       // Record broadcast
-      if (base44.entities.BroadcastMessage) {
-        await createRecord('broadcast_messages', {
-          title: broadcast.title,
-          message: broadcast.message,
-          target_audience: broadcast.targetAudience,
-          recipients_count: targetUsers.length,
-          sent_by: user.email,
-          sent_at: new Date().toISOString()
-        });
-      }
+      await createRecord('broadcast_messages', {
+        title: broadcast.title,
+        message: broadcast.message,
+        target_audience: broadcast.targetAudience,
+        recipients_count: targetUsers.length,
+        sent_by: user.email,
+        sent_at: new Date().toISOString()
+      });
 
       toast.success(`Broadcast sent to ${targetUsers.length} users`);
       setBroadcast({
