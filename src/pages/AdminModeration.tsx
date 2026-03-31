@@ -314,18 +314,18 @@ export default function AdminModeration() {
               { label: "Pending", value: statusCounts?.pending, icon: Clock, color: "text-yellow-500" },
               { label: "Under Review", value: statusCounts?.under_review, icon: Eye, color: "text-blue-500" },
               { label: "Resolved", value: statusCounts?.resolved, icon: Check, color: "text-green-500" },
-              { label: "Dismissed", value: statusCounts?.dismissed, icon: X, color: "text-muted-foreground" },
+              { label: "Dismissed", value: statusCounts?.dismissed, icon: X, color: "text-slate-400" },
             ].map((stat, i) => (
-              <Card key={i}>
+              <Card key={i} className="bg-slate-900 border-slate-800">
                 <CardContent className="p-4 flex items-center gap-3">
                   <stat.icon className={`w-5 h-5 ${stat.color}`} />
                   <div>
                     {stat.value === undefined ? (
-                      <Skeleton className="h-7 w-10" />
+                      <Skeleton className="h-7 w-10 bg-slate-700" />
                     ) : (
-                      <p className="text-2xl font-bold">{stat.value}</p>
+                      <p className="text-2xl font-bold text-white">{stat.value}</p>
                     )}
-                    <p className="text-sm text-muted-foreground">{stat.label}</p>
+                    <p className="text-sm text-slate-400">{stat.label}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -335,8 +335,8 @@ export default function AdminModeration() {
           {/* Filters */}
           <div className="flex flex-wrap gap-3 items-center">
             <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPage(0); setSelectedIds(new Set()); }}>
-              <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
-              <SelectContent>
+              <SelectTrigger className="w-40 bg-slate-800 border-slate-700 text-white"><SelectValue /></SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-700">
                 <SelectItem value="all">All Status</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
                 <SelectItem value="under_review">Under Review</SelectItem>
@@ -346,8 +346,8 @@ export default function AdminModeration() {
             </Select>
 
             <Select value={typeFilter} onValueChange={(v) => { setTypeFilter(v); setPage(0); }}>
-              <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
-              <SelectContent>
+              <SelectTrigger className="w-48 bg-slate-800 border-slate-700 text-white"><SelectValue /></SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-700">
                 <SelectItem value="all">All Types</SelectItem>
                 <SelectItem value="fake_profile">Fake Profile</SelectItem>
                 <SelectItem value="harassment">Harassment</SelectItem>
@@ -362,7 +362,7 @@ export default function AdminModeration() {
             {/* Bulk actions */}
             {selectedIds.size > 0 && (
               <div className="flex gap-2 ml-auto items-center">
-                <span className="text-sm text-muted-foreground">{selectedIds.size} selected</span>
+                <span className="text-sm text-slate-400">{selectedIds.size} selected</span>
                 <Button size="sm" variant="outline" onClick={() => handleBulkAction("dismiss")}>
                   Dismiss Selected
                 </Button>
@@ -380,21 +380,21 @@ export default function AdminModeration() {
           {reportsLoading ? (
             <div className="space-y-3">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton key={i} className="h-24 w-full" />
+                <Skeleton key={i} className="h-24 w-full bg-slate-800" />
               ))}
             </div>
           ) : reportsError ? (
-            <Card>
+            <Card className="bg-slate-900 border-slate-800">
               <CardContent className="p-8 text-center">
-                <AlertTriangle className="w-8 h-8 text-destructive mx-auto mb-2" />
-                <p className="text-destructive">Failed to load reports</p>
+                <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-2" />
+                <p className="text-red-400">Failed to load reports</p>
               </CardContent>
             </Card>
           ) : reports.length === 0 ? (
-            <Card>
+            <Card className="bg-slate-900 border-slate-800">
               <CardContent className="p-12 text-center">
-                <Shield className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No reports match your filters</p>
+                <Shield className="w-12 h-12 text-slate-600 mx-auto mb-4" />
+                <p className="text-slate-400">No reports match your filters</p>
               </CardContent>
             </Card>
           ) : (
@@ -405,15 +405,15 @@ export default function AdminModeration() {
                   checked={selectedIds.size === reports.length && reports.length > 0}
                   onCheckedChange={toggleSelectAll}
                 />
-                <span className="text-sm text-muted-foreground">Select all on this page</span>
+                <span className="text-sm text-slate-400">Select all on this page</span>
               </div>
 
               <div className="space-y-2">
                 {reports.map((report) => (
                   <Card
                     key={report.id}
-                    className={`cursor-pointer transition-colors hover:border-primary/50 ${
-                      selectedReport?.id === report.id ? "border-primary" : ""
+                    className={`cursor-pointer transition-colors bg-slate-900 border-slate-800 hover:border-orange-500/50 ${
+                      selectedReport?.id === report.id ? "border-orange-500" : ""
                     }`}
                   >
                     <CardContent className="p-4 flex items-start gap-3">
@@ -430,14 +430,14 @@ export default function AdminModeration() {
                           <Badge className={STATUS_STYLES[report.status || "pending"]}>
                             {(report.status || "pending").replace(/_/g, " ")}
                           </Badge>
-                          <span className="text-xs text-muted-foreground ml-auto">
+                          <span className="text-xs text-slate-500 ml-auto">
                             {report.created_at ? new Date(report.created_at).toLocaleDateString() : "N/A"}
                           </span>
                         </div>
-                        <p className="text-sm truncate">{report.description || "No description"}</p>
-                        <p className="text-xs text-muted-foreground mt-1">ID: {report.id.slice(-8)}</p>
+                        <p className="text-sm text-slate-300 truncate">{report.description || "No description"}</p>
+                        <p className="text-xs text-slate-500 mt-1">ID: {report.id.slice(-8)}</p>
                       </div>
-                      <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0 mt-1" />
+                      <ChevronRight className="w-5 h-5 text-slate-500 shrink-0 mt-1" />
                     </CardContent>
                   </Card>
                 ))}
@@ -445,14 +445,14 @@ export default function AdminModeration() {
 
               {/* Pagination */}
               <div className="flex items-center justify-between pt-2">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-slate-400">
                   Page {page + 1} of {totalPages} ({totalReports} total)
                 </p>
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" disabled={page === 0} onClick={() => setPage(p => p - 1)}>
+                  <Button size="sm" variant="outline" disabled={page === 0} onClick={() => setPage(p => p - 1)} className="border-slate-700 text-slate-300">
                     <ChevronLeft className="w-4 h-4 mr-1" /> Prev
                   </Button>
-                  <Button size="sm" variant="outline" disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)}>
+                  <Button size="sm" variant="outline" disabled={page >= totalPages - 1} onClick={() => setPage(p => p + 1)} className="border-slate-700 text-slate-300">
                     Next <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
                 </div>
@@ -464,9 +464,9 @@ export default function AdminModeration() {
 
       {/* Side-by-side review panel */}
       {selectedReport && (
-        <div className="w-[420px] border-l bg-card flex flex-col shrink-0">
-          <div className="flex items-center justify-between p-4 border-b">
-            <h2 className="font-bold">Report Review</h2>
+        <div className="w-[420px] border-l border-slate-800 bg-slate-900 flex flex-col shrink-0">
+          <div className="flex items-center justify-between p-4 border-b border-slate-800">
+            <h2 className="font-bold text-white">Report Review</h2>
             <Button variant="ghost" size="icon" onClick={() => setSelectedReport(null)}>
               <X className="w-5 h-5" />
             </Button>

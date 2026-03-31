@@ -5,9 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Shield, CheckCircle, XCircle, AlertTriangle, Download } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
+import { Shield, CheckCircle, XCircle, AlertTriangle, Download } from 'lucide-react';
+import AdminSidebar from '@/components/admin/AdminSidebar';
 
 type Status = 'untested' | 'pass' | 'fail' | 'blocked';
 
@@ -82,10 +81,10 @@ const INITIAL_CASES: TestCase[] = [
 ];
 
 const statusConfig: Record<Status, { label: string; color: string; icon: any }> = {
-  untested: { label: 'Untested', color: 'bg-muted text-muted-foreground', icon: AlertTriangle },
-  pass: { label: 'PASS', color: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400', icon: CheckCircle },
-  fail: { label: 'FAIL', color: 'bg-destructive/10 text-destructive', icon: XCircle },
-  blocked: { label: 'Blocked', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400', icon: AlertTriangle },
+  untested: { label: 'Untested', color: 'text-slate-400', icon: AlertTriangle },
+  pass: { label: 'PASS', color: 'text-green-400', icon: CheckCircle },
+  fail: { label: 'FAIL', color: 'text-red-400', icon: XCircle },
+  blocked: { label: 'Blocked', color: 'text-yellow-400', icon: AlertTriangle },
 };
 
 export default function AdminLaunchCertification() {
@@ -144,163 +143,163 @@ export default function AdminLaunchCertification() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Link to={createPageUrl('AdminDashboard')}>
-              <Button variant="outline" size="icon"><ArrowLeft size={16} /></Button>
-            </Link>
+    <div className="min-h-screen bg-slate-950 flex">
+      <AdminSidebar />
+
+      <main className="flex-1 overflow-auto">
+        <header className="sticky top-0 z-10 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800 px-6 py-4">
+          <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-                <Shield className="text-primary" /> Launch Certification
+              <h1 className="text-xl font-bold text-white flex items-center gap-2">
+                <Shield className="text-orange-400" /> Launch Certification
               </h1>
-              <p className="text-muted-foreground text-sm">Track every P0/P1 scenario before go-live</p>
+              <p className="text-sm text-slate-400">Track every P0/P1 scenario before go-live</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge className={isLaunchReady ? 'bg-green-500' : 'bg-red-500'}>
+                {isLaunchReady ? '✅ LAUNCH READY' : '❌ NOT READY'}
+              </Badge>
+              <Button variant="outline" size="sm" onClick={exportReport} className="border-slate-700 text-slate-300">
+                <Download size={14} className="mr-1" /> Export
+              </Button>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Badge variant={isLaunchReady ? 'default' : 'destructive'} className="text-sm px-3 py-1">
-              {isLaunchReady ? '✅ LAUNCH READY' : '❌ NOT READY'}
-            </Badge>
-            <Button variant="outline" size="sm" onClick={exportReport}>
-              <Download size={14} className="mr-1" /> Export
-            </Button>
+        </header>
+
+        <div className="p-6 space-y-6">
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <StatCard label="Total" value={stats.total} />
+            <StatCard label="Pass" value={stats.pass} className="text-green-400" />
+            <StatCard label="Fail" value={stats.fail} className="text-red-400" />
+            <StatCard label="Blocked" value={stats.blocked} className="text-yellow-400" />
+            <StatCard label="Untested" value={stats.untested} className="text-slate-400" />
           </div>
-        </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          <StatCard label="Total" value={stats.total} />
-          <StatCard label="Pass" value={stats.pass} className="text-green-600" />
-          <StatCard label="Fail" value={stats.fail} className="text-destructive" />
-          <StatCard label="Blocked" value={stats.blocked} className="text-yellow-600" />
-          <StatCard label="Untested" value={stats.untested} className="text-muted-foreground" />
-        </div>
+          {/* P0 Progress */}
+          <Card className="bg-slate-900 border-slate-800">
+            <CardContent className="pt-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-white">P0 Progress</span>
+                <span className="text-sm text-slate-400">{stats.p0Pass}/{stats.p0Total}</span>
+              </div>
+              <div className="w-full bg-slate-700 rounded-full h-3">
+                <div
+                  className={`h-3 rounded-full transition-all ${stats.p0Fail > 0 ? 'bg-red-500' : 'bg-green-500'}`}
+                  style={{ width: `${(stats.p0Pass / stats.p0Total) * 100}%` }}
+                />
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* P0 Progress */}
-        <Card>
-          <CardContent className="pt-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium">P0 Progress</span>
-              <span className="text-sm text-muted-foreground">{stats.p0Pass}/{stats.p0Total}</span>
-            </div>
-            <div className="w-full bg-muted rounded-full h-3">
-              <div
-                className={`h-3 rounded-full transition-all ${stats.p0Fail > 0 ? 'bg-destructive' : 'bg-green-500'}`}
-                style={{ width: `${(stats.p0Pass / stats.p0Total) * 100}%` }}
-              />
-            </div>
-          </CardContent>
-        </Card>
+          {/* Filters */}
+          <div className="flex flex-wrap gap-3">
+            <Select value={filterCategory} onValueChange={setFilterCategory}>
+              <SelectTrigger className="w-40 bg-slate-800 border-slate-700 text-white"><SelectValue placeholder="Category" /></SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-700">
+                <SelectItem value="all">All Categories</SelectItem>
+                {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Select value={filterPriority} onValueChange={setFilterPriority}>
+              <SelectTrigger className="w-28 bg-slate-800 border-slate-700 text-white"><SelectValue placeholder="Priority" /></SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-700">
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="P0">P0</SelectItem>
+                <SelectItem value="P1">P1</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <SelectTrigger className="w-32 bg-slate-800 border-slate-700 text-white"><SelectValue placeholder="Status" /></SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-700">
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="untested">Untested</SelectItem>
+                <SelectItem value="pass">Pass</SelectItem>
+                <SelectItem value="fail">Fail</SelectItem>
+                <SelectItem value="blocked">Blocked</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-        {/* Filters */}
-        <div className="flex flex-wrap gap-3">
-          <Select value={filterCategory} onValueChange={setFilterCategory}>
-            <SelectTrigger className="w-40"><SelectValue placeholder="Category" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-            </SelectContent>
-          </Select>
-          <Select value={filterPriority} onValueChange={setFilterPriority}>
-            <SelectTrigger className="w-28"><SelectValue placeholder="Priority" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="P0">P0</SelectItem>
-              <SelectItem value="P1">P1</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={filterStatus} onValueChange={setFilterStatus}>
-            <SelectTrigger className="w-32"><SelectValue placeholder="Status" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="untested">Untested</SelectItem>
-              <SelectItem value="pass">Pass</SelectItem>
-              <SelectItem value="fail">Fail</SelectItem>
-              <SelectItem value="blocked">Blocked</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Test Cases */}
-        <div className="space-y-3">
-          {filtered.map(tc => {
-            const cfg = statusConfig[tc.status];
-            const Icon = cfg.icon;
-            return (
-              <Card key={tc.id} className={`border-l-4 ${
-                tc.status === 'pass' ? 'border-l-green-500' :
-                tc.status === 'fail' ? 'border-l-destructive' :
-                tc.status === 'blocked' ? 'border-l-yellow-500' :
-                'border-l-muted'
-              }`}>
-                <CardContent className="pt-4 space-y-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Badge variant="outline" className="text-[10px]">{tc.id}</Badge>
-                        <Badge variant={tc.priority === 'P0' ? 'destructive' : 'secondary'} className="text-[10px]">{tc.priority}</Badge>
-                        <Badge variant="outline" className="text-[10px]">{tc.category}</Badge>
+          {/* Test Cases */}
+          <div className="space-y-3">
+            {filtered.map(tc => {
+              const cfg = statusConfig[tc.status];
+              const Icon = cfg.icon;
+              return (
+                <Card key={tc.id} className={`bg-slate-900 border-slate-800 border-l-4 ${
+                  tc.status === 'pass' ? 'border-l-green-500' :
+                  tc.status === 'fail' ? 'border-l-red-500' :
+                  tc.status === 'blocked' ? 'border-l-yellow-500' :
+                  'border-l-slate-600'
+                }`}>
+                  <CardContent className="pt-4 space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Badge variant="outline" className="text-[10px] border-slate-600 text-slate-300">{tc.id}</Badge>
+                          <Badge className={`text-[10px] ${tc.priority === 'P0' ? 'bg-red-500' : 'bg-slate-600'}`}>{tc.priority}</Badge>
+                          <Badge variant="outline" className="text-[10px] border-slate-600 text-slate-300">{tc.category}</Badge>
+                        </div>
+                        <h3 className="font-semibold text-white text-sm">{tc.scenario}</h3>
                       </div>
-                      <h3 className="font-semibold text-foreground text-sm">{tc.scenario}</h3>
+                      <Select value={tc.status} onValueChange={(v) => updateCase(tc.id, 'status', v as Status)}>
+                        <SelectTrigger className={`w-28 h-8 text-xs bg-slate-800 border-slate-700 ${cfg.color}`}>
+                          <Icon size={12} className="mr-1" />
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-800 border-slate-700">
+                          <SelectItem value="untested">Untested</SelectItem>
+                          <SelectItem value="pass">✅ Pass</SelectItem>
+                          <SelectItem value="fail">❌ Fail</SelectItem>
+                          <SelectItem value="blocked">⚠️ Blocked</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
-                    <Select value={tc.status} onValueChange={(v) => updateCase(tc.id, 'status', v as Status)}>
-                      <SelectTrigger className={`w-28 h-8 text-xs ${cfg.color}`}>
-                        <Icon size={12} className="mr-1" />
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="untested">Untested</SelectItem>
-                        <SelectItem value="pass">✅ Pass</SelectItem>
-                        <SelectItem value="fail">❌ Fail</SelectItem>
-                        <SelectItem value="blocked">⚠️ Blocked</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
 
-                  <div className="grid md:grid-cols-2 gap-3 text-xs">
-                    <div>
-                      <p className="font-medium text-muted-foreground mb-1">Preconditions</p>
-                      <p className="text-foreground">{tc.preconditions}</p>
+                    <div className="grid md:grid-cols-2 gap-3 text-xs">
+                      <div>
+                        <p className="font-medium text-slate-500 mb-1">Preconditions</p>
+                        <p className="text-slate-300">{tc.preconditions}</p>
+                      </div>
+                      <div>
+                        <p className="font-medium text-slate-500 mb-1">Expected Result</p>
+                        <p className="text-slate-300">{tc.expected}</p>
+                      </div>
+                      <div>
+                        <p className="font-medium text-slate-500 mb-1">Steps</p>
+                        <pre className="text-slate-300 whitespace-pre-wrap">{tc.steps}</pre>
+                      </div>
+                      <div>
+                        <p className="font-medium text-slate-500 mb-1">Backend/State Expectation</p>
+                        <p className="text-slate-300">{tc.backendExpectation}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-muted-foreground mb-1">Expected Result</p>
-                      <p className="text-foreground">{tc.expected}</p>
-                    </div>
-                    <div>
-                      <p className="font-medium text-muted-foreground mb-1">Steps</p>
-                      <pre className="text-foreground whitespace-pre-wrap">{tc.steps}</pre>
-                    </div>
-                    <div>
-                      <p className="font-medium text-muted-foreground mb-1">Backend/State Expectation</p>
-                      <p className="text-foreground">{tc.backendExpectation}</p>
-                    </div>
-                  </div>
 
-                  <Textarea
-                    placeholder="Notes / evidence / failure details…"
-                    value={tc.notes}
-                    onChange={(e) => updateCase(tc.id, 'notes', e.target.value)}
-                    className="text-xs min-h-[40px]"
-                    rows={1}
-                  />
-                </CardContent>
-              </Card>
-            );
-          })}
+                    <Textarea
+                      placeholder="Notes / evidence / failure details…"
+                      value={tc.notes}
+                      onChange={(e) => updateCase(tc.id, 'notes', e.target.value)}
+                      className="text-xs min-h-[40px] bg-slate-800 border-slate-700 text-white"
+                      rows={1}
+                    />
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
 
 function StatCard({ label, value, className = '' }: { label: string; value: number; className?: string }) {
   return (
-    <Card>
+    <Card className="bg-slate-900 border-slate-800">
       <CardContent className="pt-4 text-center">
-        <div className={`text-2xl font-bold ${className}`}>{value}</div>
-        <div className="text-xs text-muted-foreground">{label}</div>
+        <div className={`text-2xl font-bold ${className || 'text-white'}`}>{value}</div>
+        <div className="text-xs text-slate-400">{label}</div>
       </CardContent>
     </Card>
   );

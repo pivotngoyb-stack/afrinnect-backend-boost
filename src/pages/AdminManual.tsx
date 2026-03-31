@@ -42,7 +42,7 @@ export default function AdminManual() {
       title: "Afrinnect Admin Overview",
       content: (
         <div className="space-y-6">
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Globe className="text-purple-600" />
@@ -53,26 +53,26 @@ export default function AdminManual() {
               <p>Afrinnect is a premium dating platform designed specifically for the African diaspora and those interested in African culture. The app connects singles worldwide with a focus on cultural compatibility, shared values, and meaningful relationships.</p>
               
               <div className="grid md:grid-cols-3 gap-4 mt-4">
-                <div className="bg-purple-50 p-4 rounded-lg">
-                  <h4 className="font-semibold text-purple-900">Target Audience</h4>
-                  <ul className="text-sm text-purple-700 mt-2 space-y-1">
+                <div className="bg-purple-500/10 p-4 rounded-lg">
+                  <h4 className="font-semibold text-purple-300">Target Audience</h4>
+                  <ul className="text-sm text-purple-400 mt-2 space-y-1">
                     <li>• African singles worldwide</li>
                     <li>• African diaspora communities</li>
                     <li>• People interested in African culture</li>
                   </ul>
                 </div>
-                <div className="bg-amber-50 p-4 rounded-lg">
-                  <h4 className="font-semibold text-amber-900">Key Differentiators</h4>
-                  <ul className="text-sm text-amber-700 mt-2 space-y-1">
+                <div className="bg-amber-500/10 p-4 rounded-lg">
+                  <h4 className="font-semibold text-amber-300">Key Differentiators</h4>
+                  <ul className="text-sm text-amber-400 mt-2 space-y-1">
                     <li>• Cultural compatibility matching</li>
                     <li>• Country of origin filters</li>
                     <li>• Tribe/ethnicity options</li>
                     <li>• Language preferences</li>
                   </ul>
                 </div>
-                <div className="bg-green-50 p-4 rounded-lg">
-                  <h4 className="font-semibold text-green-900">Business Model</h4>
-                  <ul className="text-sm text-green-700 mt-2 space-y-1">
+                <div className="bg-green-500/10 p-4 rounded-lg">
+                  <h4 className="font-semibold text-green-300">Business Model</h4>
+                  <ul className="text-sm text-green-400 mt-2 space-y-1">
                     <li>• Freemium with 4 tiers</li>
                     <li>• In-app purchases</li>
                     <li>• Ambassador referrals</li>
@@ -82,13 +82,13 @@ export default function AdminManual() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <CardTitle>Admin Dashboard Navigation</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-2 gap-4">
-                <div className="border rounded-lg p-4">
+                <div className="border border-slate-700 rounded-lg p-4 bg-slate-800/50">
                   <h4 className="font-semibold mb-2">Quick Actions</h4>
                   <ul className="text-sm space-y-2">
                     <li className="flex items-center gap-2"><Users size={16} /> <strong>Users:</strong> View, edit, ban, verify users</li>
@@ -98,7 +98,7 @@ export default function AdminManual() {
                     <li className="flex items-center gap-2"><Mail size={16} /> <strong>Broadcast:</strong> Send mass notifications</li>
                   </ul>
                 </div>
-                <div className="border rounded-lg p-4">
+                <div className="border border-slate-700 rounded-lg p-4 bg-slate-800/50">
                   <h4 className="font-semibold mb-2">Key Metrics to Monitor</h4>
                   <ul className="text-sm space-y-2">
                     <li>• Daily Active Users (DAU)</li>
@@ -119,7 +119,7 @@ export default function AdminManual() {
       title: "User Management",
       content: (
         <div className="space-y-6">
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="text-blue-600" />
@@ -131,10 +131,10 @@ export default function AdminManual() {
                 {['Sign Up', 'Onboarding', 'Photo Verify', 'Active User', 'Premium Convert'].map((step, i) => (
                   <div key={step} className="flex items-center gap-2">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm ${
-                      i === 0 ? 'bg-muted' : i === 4 ? 'bg-green-500' : 'bg-purple-500'
+                      i === 0 ? 'bg-muted' : i === 4 ? 'bg-green-500/100' : 'bg-purple-500/100'
                     }`}>{i + 1}</div>
                     <span className="text-sm font-medium">{step}</span>
-                    {i < 4 && <ChevronRight size={16} className="text-muted-foreground" />}
+                    {i < 4 && <ChevronRight size={16} className="text-slate-400" />}
                   </div>
                 ))}
               </div>
@@ -160,21 +160,21 @@ export default function AdminManual() {
                   <AccordionTrigger>User Statuses</AccordionTrigger>
                   <AccordionContent>
                     <div className="grid md:grid-cols-2 gap-4">
-                      <div className="bg-green-50 p-3 rounded-lg">
+                      <div className="bg-green-500/10 p-3 rounded-lg">
                         <h5 className="font-semibold text-green-800">Active (is_active: true)</h5>
-                        <p className="text-sm text-green-700">Normal user, can use all features</p>
+                        <p className="text-sm text-green-400">Normal user, can use all features</p>
                       </div>
-                      <div className="bg-yellow-50 p-3 rounded-lg">
-                        <h5 className="font-semibold text-yellow-800">Suspended (is_suspended: true)</h5>
-                        <p className="text-sm text-yellow-700">Temporary ban with expiry date. User sees countdown.</p>
+                      <div className="bg-yellow-500/10 p-3 rounded-lg">
+                        <h5 className="font-semibold text-yellow-300">Suspended (is_suspended: true)</h5>
+                        <p className="text-sm text-yellow-400">Temporary ban with expiry date. User sees countdown.</p>
                       </div>
-                      <div className="bg-red-50 p-3 rounded-lg">
-                        <h5 className="font-semibold text-red-800">Banned (is_banned: true)</h5>
-                        <p className="text-sm text-red-700">Permanent ban. User can file dispute.</p>
+                      <div className="bg-red-500/10 p-3 rounded-lg">
+                        <h5 className="font-semibold text-red-300">Banned (is_banned: true)</h5>
+                        <p className="text-sm text-red-400">Permanent ban. User can file dispute.</p>
                       </div>
-                      <div className="bg-muted p-3 rounded-lg">
-                        <h5 className="font-semibold text-foreground">Inactive</h5>
-                        <p className="text-sm text-foreground">User hasn't logged in for 30+ days</p>
+                      <div className="bg-slate-800 p-3 rounded-lg">
+                        <h5 className="font-semibold text-white">Inactive</h5>
+                        <p className="text-sm text-white">User hasn't logged in for 30+ days</p>
                       </div>
                     </div>
                   </AccordionContent>
@@ -250,7 +250,7 @@ export default function AdminManual() {
       title: "Matching System",
       content: (
         <div className="space-y-6">
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Heart className="text-pink-600" />
@@ -259,9 +259,9 @@ export default function AdminManual() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="bg-pink-50 p-4 rounded-lg">
-                  <h4 className="font-semibold text-pink-900 mb-2">Match Flow</h4>
-                  <ol className="list-decimal ml-6 text-sm text-pink-800 space-y-1">
+                <div className="bg-pink-500/10 p-4 rounded-lg">
+                  <h4 className="font-semibold text-pink-300 mb-2">Match Flow</h4>
+                  <ol className="list-decimal ml-6 text-sm text-pink-400 space-y-1">
                     <li>User A likes User B → Like record created</li>
                     <li>If User B already liked User A → Match created!</li>
                     <li>Both users notified via push notification</li>
@@ -327,19 +327,19 @@ export default function AdminManual() {
                     <AccordionTrigger>Like Types</AccordionTrigger>
                     <AccordionContent>
                       <div className="grid md:grid-cols-2 gap-4">
-                        <div className="border p-3 rounded-lg">
+                        <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                           <h5 className="font-semibold flex items-center gap-2">
                             <Heart size={16} className="text-pink-500" /> Regular Like
                           </h5>
                           <p className="text-sm mt-1">Standard like, limited daily (Free: 25, Premium: 50, Elite+: Unlimited)</p>
                         </div>
-                        <div className="border p-3 rounded-lg">
+                        <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                           <h5 className="font-semibold flex items-center gap-2">
                             <Star size={16} className="text-amber-500" /> Super Like
                           </h5>
                           <p className="text-sm mt-1">Highlighted to recipient, shown first. Free: 1/week, Premium: 5/day, Elite+: Unlimited</p>
                         </div>
-                        <div className="border p-3 rounded-lg">
+                        <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                           <h5 className="font-semibold flex items-center gap-2">
                             <Zap size={16} className="text-purple-500" /> Priority Like (Elite/VIP)
                           </h5>
@@ -391,7 +391,7 @@ export default function AdminManual() {
       title: "Moderation & Safety",
       content: (
         <div className="space-y-6">
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Shield className="text-red-600" />
@@ -412,12 +412,12 @@ export default function AdminManual() {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr className="border-b bg-red-50">
+                        <tr className="border-b bg-red-500/10">
                           <td className="py-2 font-medium">Underage</td>
                           <td className="py-2"><Badge variant="destructive">Critical</Badge></td>
                           <td className="py-2">Immediate ban + report to authorities if needed</td>
                         </tr>
-                        <tr className="border-b bg-red-50">
+                        <tr className="border-b bg-red-500/10">
                           <td className="py-2 font-medium">Scam</td>
                           <td className="py-2"><Badge variant="destructive">Critical</Badge></td>
                           <td className="py-2">Ban if confirmed, warn if unclear</td>
@@ -432,14 +432,14 @@ export default function AdminManual() {
                           <td className="py-2"><Badge className="bg-orange-500">High</Badge></td>
                           <td className="py-2">Remove content, warn or ban</td>
                         </tr>
-                        <tr className="border-b bg-yellow-50">
+                        <tr className="border-b bg-yellow-500/10">
                           <td className="py-2 font-medium">Fake Profile</td>
-                          <td className="py-2"><Badge className="bg-yellow-500">Medium</Badge></td>
+                          <td className="py-2"><Badge className="bg-yellow-500/100">Medium</Badge></td>
                           <td className="py-2">Request photo verification, ban if fake</td>
                         </tr>
-                        <tr className="border-b bg-yellow-50">
+                        <tr className="border-b bg-yellow-500/10">
                           <td className="py-2 font-medium">Inappropriate Content</td>
-                          <td className="py-2"><Badge className="bg-yellow-500">Medium</Badge></td>
+                          <td className="py-2"><Badge className="bg-yellow-500/100">Medium</Badge></td>
                           <td className="py-2">Remove content, warn user</td>
                         </tr>
                         <tr className="border-b">
@@ -460,28 +460,28 @@ export default function AdminManual() {
                         <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600 font-bold">1</div>
                         <div>
                           <p className="font-medium">1st Violation: Warning</p>
-                          <p className="text-sm text-muted-foreground">warning_count = 1, notification sent</p>
+                          <p className="text-sm text-slate-400">warning_count = 1, notification sent</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold">2</div>
                         <div>
                           <p className="font-medium">2nd Violation: 24-hour Suspension</p>
-                          <p className="text-sm text-muted-foreground">is_suspended = true, suspension_expires_at set</p>
+                          <p className="text-sm text-slate-400">is_suspended = true, suspension_expires_at set</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center text-red-600 font-bold">3</div>
                         <div>
                           <p className="font-medium">3rd Violation: 7-day Suspension</p>
-                          <p className="text-sm text-muted-foreground">Longer suspension period</p>
+                          <p className="text-sm text-slate-400">Longer suspension period</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
-                        <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white font-bold">4</div>
+                        <div className="w-8 h-8 bg-red-500/100 rounded-full flex items-center justify-center text-white font-bold">4</div>
                         <div>
                           <p className="font-medium">4th Violation: Permanent Ban</p>
-                          <p className="text-sm text-muted-foreground">is_banned = true, user can file dispute</p>
+                          <p className="text-sm text-slate-400">is_banned = true, user can file dispute</p>
                         </div>
                       </div>
                     </div>
@@ -497,8 +497,8 @@ export default function AdminManual() {
                       <li><strong>Manual queue:</strong> Flagged photos require admin review</li>
                       <li><strong>Photo Verification:</strong> Selfie compared to profile photos using AI</li>
                     </ul>
-                    <div className="mt-3 p-3 bg-blue-50 rounded-lg">
-                      <p className="text-sm text-blue-800"><strong>Action:</strong> Go to Admin Dashboard → Photo Moderation to review flagged photos</p>
+                    <div className="mt-3 p-3 bg-blue-500/10 rounded-lg">
+                      <p className="text-sm text-blue-300"><strong>Action:</strong> Go to Admin Dashboard → Photo Moderation to review flagged photos</p>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -515,7 +515,7 @@ export default function AdminManual() {
                       <li>Copy-paste message patterns</li>
                       <li>Profile photo reverse image search hits</li>
                     </ul>
-                    <p className="mt-3 text-sm text-muted-foreground">Suspicious accounts are flagged in <code>ScamAnalysis</code> entity for review.</p>
+                    <p className="mt-3 text-sm text-slate-400">Suspicious accounts are flagged in <code>ScamAnalysis</code> entity for review.</p>
                   </AccordionContent>
                 </AccordionItem>
 
@@ -530,8 +530,8 @@ export default function AdminManual() {
                       <li>Approve (unban) or Reject with explanation</li>
                       <li>User notified of decision</li>
                     </ol>
-                    <div className="mt-3 p-3 bg-yellow-50 rounded-lg">
-                      <p className="text-sm text-yellow-800"><strong>Note:</strong> Always document your decision in admin_response field</p>
+                    <div className="mt-3 p-3 bg-yellow-500/10 rounded-lg">
+                      <p className="text-sm text-yellow-300"><strong>Note:</strong> Always document your decision in admin_response field</p>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -546,7 +546,7 @@ export default function AdminManual() {
       title: "Subscriptions & Revenue",
       content: (
         <div className="space-y-6">
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Crown className="text-amber-600" />
@@ -555,8 +555,8 @@ export default function AdminManual() {
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-4 gap-4 mb-6">
-                <div className="border rounded-lg p-4">
-                  <h4 className="font-bold text-muted-foreground">Free</h4>
+                <div className="border border-slate-700 rounded-lg p-4 bg-slate-800/50">
+                  <h4 className="font-bold text-slate-400">Free</h4>
                   <ul className="text-xs mt-2 space-y-1">
                     <li>• 25 likes/day</li>
                     <li>• 1 super like/week</li>
@@ -565,9 +565,9 @@ export default function AdminManual() {
                     <li>• Ads shown</li>
                   </ul>
                 </div>
-                <div className="border-2 border-purple-300 rounded-lg p-4 bg-purple-50">
+                <div className="border-2 border-purple-300 rounded-lg p-4 bg-purple-500/10">
                   <h4 className="font-bold text-purple-600">Premium</h4>
-                  <p className="text-xs text-muted-foreground">$14.99/mo</p>
+                  <p className="text-xs text-slate-400">$14.99/mo</p>
                   <ul className="text-xs mt-2 space-y-1">
                     <li>• 50 likes/day</li>
                     <li>• 5 super likes/day</li>
@@ -576,9 +576,9 @@ export default function AdminManual() {
                     <li>• No ads</li>
                   </ul>
                 </div>
-                <div className="border-2 border-amber-300 rounded-lg p-4 bg-amber-50">
+                <div className="border-2 border-amber-300 rounded-lg p-4 bg-amber-500/10">
                   <h4 className="font-bold text-amber-600">Elite</h4>
-                  <p className="text-xs text-muted-foreground">$29.99/mo</p>
+                  <p className="text-xs text-slate-400">$29.99/mo</p>
                   <ul className="text-xs mt-2 space-y-1">
                     <li>• Unlimited likes</li>
                     <li>• Unlimited super likes</li>
@@ -590,7 +590,7 @@ export default function AdminManual() {
                 </div>
                 <div className="border-2 border-pink-300 rounded-lg p-4 bg-gradient-to-br from-pink-50 to-purple-50">
                   <h4 className="font-bold text-pink-600">VIP</h4>
-                  <p className="text-xs text-muted-foreground">$79.99/mo</p>
+                  <p className="text-xs text-slate-400">$79.99/mo</p>
                   <ul className="text-xs mt-2 space-y-1">
                     <li>• All Elite features</li>
                     <li>• VIP speed dating events</li>
@@ -661,8 +661,8 @@ export default function AdminManual() {
                       <li>Subscription status auto-updates on payment success/failure</li>
                       <li>Refunds can be issued from Admin → Subscriptions</li>
                     </ul>
-                    <div className="mt-3 p-3 bg-blue-50 rounded-lg">
-                      <p className="text-sm text-blue-800"><strong>Stripe Dashboard:</strong> dashboard.stripe.com for detailed payment logs</p>
+                    <div className="mt-3 p-3 bg-blue-500/10 rounded-lg">
+                      <p className="text-sm text-blue-300"><strong>Stripe Dashboard:</strong> dashboard.stripe.com for detailed payment logs</p>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -690,7 +690,7 @@ export default function AdminManual() {
       title: "Events & VIP",
       content: (
         <div className="space-y-6">
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="text-indigo-600" />
@@ -703,19 +703,19 @@ export default function AdminManual() {
                   <AccordionTrigger>Event Types</AccordionTrigger>
                   <AccordionContent>
                     <div className="grid md:grid-cols-2 gap-4">
-                      <div className="border p-3 rounded-lg">
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                         <h5 className="font-semibold">💕 Speed Dating</h5>
                         <p className="text-sm mt-1">3-minute video rounds, automatic matching after</p>
                       </div>
-                      <div className="border p-3 rounded-lg">
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                         <h5 className="font-semibold">🎉 Mixer</h5>
                         <p className="text-sm mt-1">Group video chat, icebreaker games</p>
                       </div>
-                      <div className="border p-3 rounded-lg">
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                         <h5 className="font-semibold">📚 Workshop</h5>
                         <p className="text-sm mt-1">Dating tips, relationship advice sessions</p>
                       </div>
-                      <div className="border p-3 rounded-lg">
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                         <h5 className="font-semibold">✨ Exclusive Party</h5>
                         <p className="text-sm mt-1">VIP-only virtual events</p>
                       </div>
@@ -762,7 +762,7 @@ export default function AdminManual() {
       title: "Stories Feature",
       content: (
         <div className="space-y-6">
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Camera className="text-orange-600" />
@@ -818,7 +818,7 @@ export default function AdminManual() {
       title: "Messaging System",
       content: (
         <div className="space-y-6">
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MessageCircle className="text-blue-600" />
@@ -831,19 +831,19 @@ export default function AdminManual() {
                   <AccordionTrigger>Message Types</AccordionTrigger>
                   <AccordionContent>
                     <div className="grid md:grid-cols-2 gap-4">
-                      <div className="border p-3 rounded-lg">
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                         <h5 className="font-semibold">💬 Text</h5>
                         <p className="text-sm mt-1">Standard text messages</p>
                       </div>
-                      <div className="border p-3 rounded-lg">
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                         <h5 className="font-semibold">🎤 Voice Note</h5>
                         <p className="text-sm mt-1">Audio recordings</p>
                       </div>
-                      <div className="border p-3 rounded-lg">
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                         <h5 className="font-semibold">📷 Image</h5>
                         <p className="text-sm mt-1">Photo sharing (moderated)</p>
                       </div>
-                      <div className="border p-3 rounded-lg">
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                         <h5 className="font-semibold">❄️ Ice Breaker</h5>
                         <p className="text-sm mt-1">Pre-written conversation starters</p>
                       </div>
@@ -909,7 +909,7 @@ export default function AdminManual() {
       title: "Notifications",
       content: (
         <div className="space-y-6">
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Bell className="text-green-600" />
@@ -996,7 +996,7 @@ export default function AdminManual() {
       title: "Analytics & Reports",
       content: (
         <div className="space-y-6">
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <BarChart3 className="text-purple-600" />
@@ -1086,7 +1086,7 @@ export default function AdminManual() {
       title: "Ambassador Program",
       content: (
         <div className="space-y-6">
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Award className="text-pink-600" />
@@ -1144,22 +1144,22 @@ export default function AdminManual() {
                   <AccordionTrigger>Ambassador Tiers</AccordionTrigger>
                   <AccordionContent>
                     <div className="grid md:grid-cols-4 gap-3">
-                      <div className="border p-3 rounded-lg">
-                        <h5 className="font-semibold text-muted-foreground">Bronze</h5>
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
+                        <h5 className="font-semibold text-slate-400">Bronze</h5>
                         <p className="text-xs">0-10 referrals</p>
                         <p className="text-xs mt-1">1x multiplier</p>
                       </div>
                       <div className="border p-3 rounded-lg bg-muted">
-                        <h5 className="font-semibold text-muted-foreground">Silver</h5>
+                        <h5 className="font-semibold text-slate-400">Silver</h5>
                         <p className="text-xs">11-50 referrals</p>
                         <p className="text-xs mt-1">1.1x multiplier</p>
                       </div>
-                      <div className="border p-3 rounded-lg bg-amber-50">
+                      <div className="border p-3 rounded-lg bg-amber-500/10">
                         <h5 className="font-semibold text-amber-600">Gold</h5>
                         <p className="text-xs">51-100 referrals</p>
                         <p className="text-xs mt-1">1.25x multiplier</p>
                       </div>
-                      <div className="border p-3 rounded-lg bg-purple-50">
+                      <div className="border p-3 rounded-lg bg-purple-500/10">
                         <h5 className="font-semibold text-purple-600">Platinum</h5>
                         <p className="text-xs">100+ referrals</p>
                         <p className="text-xs mt-1">1.5x multiplier</p>
@@ -1190,10 +1190,10 @@ export default function AdminManual() {
       title: "System Settings",
       content: (
         <div className="space-y-6">
-          <Card>
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Settings className="text-muted-foreground" />
+                <Settings className="text-slate-400" />
                 Configuration
               </CardTitle>
             </CardHeader>
@@ -1343,7 +1343,7 @@ export default function AdminManual() {
                       onClick={() => setActiveSection(section.id)}
                       className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left text-sm transition-colors ${
                         activeSection === section.id
-                          ? 'bg-purple-500/20 text-purple-400 font-medium'
+                          ? 'bg-purple-500/100/20 text-purple-400 font-medium'
                           : 'text-slate-400 hover:bg-slate-800 hover:text-white'
                       }`}
                     >
