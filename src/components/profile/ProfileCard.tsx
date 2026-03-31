@@ -1,7 +1,7 @@
 // @ts-nocheck
-import React, { useState, useEffect } from 'react';
-import { createRecord, filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
-import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import React, { useState, useEffect, useCallback } from 'react';
+import { createRecord } from '@/lib/supabase-helpers';
+import { motion, useMotionValue, useTransform, useAnimation, PanInfo } from 'framer-motion';
 import ProgressiveImage from '../shared/ProgressiveImage';
 import { MapPin, Briefcase, GraduationCap, Heart, ChevronLeft, ChevronRight, Languages, Book, Sparkles, Mic, Loader2 } from 'lucide-react';
 import { KenteDivider } from '../shared/AfricanPattern';
@@ -12,51 +12,114 @@ import ProfileTierDecoration from './ProfileTierDecoration';
 import { useLanguage } from '@/components/i18n/LanguageContext';
 import MatchExplanation from '../matching/MatchExplanation';
 
-const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLike, onPass, onSuperLike, showActions = true, expanded = false, isLiking = false, isPassing = false, isSuperLiking = false, matchScore, matchReasons, matchBreakdown }: any) {
+const SWIPE_THRESHOLD = 100;        // px drag to trigger action
+const SWIPE_VELOCITY_THRESHOLD = 500; // px/s velocity to trigger action
+const FLY_DISTANCE = 1500;           // how far the card flies off-screen
+const SUPER_LIKE_Y_THRESHOLD = -100;
+
+const ProfileCard = React.memo(function ProfileCard({
+  profile, myLocation, onLike, onPass, onSuperLike,
+  showActions = true, expanded = false,
+  isLiking = false, isPassing = false, isSuperLiking = false,
+  matchScore, matchReasons, matchBreakdown
+}: any) {
   const { t } = useLanguage();
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  const [exitDirection, setExitDirection] = useState<'left' | 'right' | 'up' | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const controls = useAnimation();
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const rotate = useTransform(x, [-220, 220], [-6, 6]);
-  const likeOpacity = useTransform(x, [40, 150], [0, 1]);
-  const nopeOpacity = useTransform(x, [-40, -150], [0, 1]);
-  const superOpacity = useTransform(y, [-40, -180], [0, 1]);
 
-  const handleDragEnd = React.useCallback((event: any, info: any) => {
-    const xThreshold = 110;
-    const yThreshold = -120;
+  // Tinder-style rotation: subtle tilt based on drag distance
+  const rotate = useTransform(x, [-300, 0, 300], [-12, 0, 12]);
 
-    if (info.offset.y < yThreshold && onSuperLike) {
-      onSuperLike();
+  // Stamp overlays fade in as you drag
+  const likeOpacity = useTransform(x, [0, SWIPE_THRESHOLD], [0, 1]);
+  const nopeOpacity = useTransform(x, [0, -SWIPE_THRESHOLD], [0, 1]);
+  const superOpacity = useTransform(y, [0, SUPER_LIKE_Y_THRESHOLD], [0, 1]);
+
+  // Scale down slightly while dragging for depth effect
+  const scale = useTransform(
+    x,
+    [-300, -50, 0, 50, 300],
+    [0.95, 1, 1, 1, 0.95]
+  );
+
+  const flyAway = useCallback(async (direction: 'left' | 'right' | 'up') => {
+    setExitDirection(direction);
+    if (navigator.vibrate) navigator.vibrate(direction === 'up' ? [30, 30, 30] : direction === 'right' ? 50 : 30);
+
+    const targetX = direction === 'left' ? -FLY_DISTANCE : direction === 'right' ? FLY_DISTANCE : 0;
+    const targetY = direction === 'up' ? -FLY_DISTANCE : 0;
+    const targetRotate = direction === 'left' ? -30 : direction === 'right' ? 30 : 0;
+
+    await controls.start({
+      x: targetX,
+      y: targetY,
+      rotate: targetRotate,
+      opacity: 0,
+      transition: { duration: 0.35, ease: [0.4, 0, 0.2, 1] }
+    });
+
+    if (direction === 'right') onLike?.();
+    else if (direction === 'left') onPass?.();
+    else if (direction === 'up') onSuperLike?.();
+  }, [controls, onLike, onPass, onSuperLike]);
+
+  const handleDragStart = useCallback(() => {
+    setIsDragging(true);
+  }, []);
+
+  const handleDragEnd = useCallback((_event: any, info: PanInfo) => {
+    setIsDragging(false);
+    const { offset, velocity } = info;
+
+    // Super like: strong upward swipe
+    if (offset.y < SUPER_LIKE_Y_THRESHOLD && onSuperLike) {
+      flyAway('up');
       return;
     }
 
-    if (info.offset.x > xThreshold && onLike) {
-      onLike();
+    // Right swipe = like (by distance or velocity)
+    if (offset.x > SWIPE_THRESHOLD || (velocity.x > SWIPE_VELOCITY_THRESHOLD && offset.x > 40)) {
+      flyAway('right');
       return;
     }
 
-    if (info.offset.x < -xThreshold && onPass) {
-      onPass();
+    // Left swipe = pass (by distance or velocity)
+    if (offset.x < -SWIPE_THRESHOLD || (velocity.x < -SWIPE_VELOCITY_THRESHOLD && offset.x < -40)) {
+      flyAway('left');
+      return;
     }
-  }, [onLike, onPass, onSuperLike]);
+
+    // Snap back with spring
+    controls.start({
+      x: 0,
+      y: 0,
+      rotate: 0,
+      opacity: 1,
+      transition: { type: 'spring', stiffness: 500, damping: 35 }
+    });
+  }, [controls, flyAway, onSuperLike]);
+
+  // Button taps trigger fly-away animation too
+  const handleButtonLike = useCallback(() => { if (!exitDirection) flyAway('right'); }, [flyAway, exitDirection]);
+  const handleButtonPass = useCallback(() => { if (!exitDirection) flyAway('left'); }, [flyAway, exitDirection]);
+  const handleButtonSuperLike = useCallback(() => { if (!exitDirection) flyAway('up'); }, [flyAway, exitDirection]);
 
   const [showDetails, setShowDetails] = useState(expanded);
   const [viewLogged, setViewLogged] = useState(false);
 
-  // OPTIMIZED: Log profile view without re-fetching current user (pass viewer ID from parent if needed)
   useEffect(() => {
     if (viewLogged || !profile?.id) return;
     const timer = setTimeout(async () => {
       try {
         const { data: { user } } = await (await import('@/integrations/supabase/client')).supabase.auth.getUser();
         if (!user) return;
-        // Use a lightweight query to get just the viewer's profile ID
         const { data: viewerProfiles } = await (await import('@/integrations/supabase/client')).supabase
-          .from('user_profiles')
-          .select('id')
-          .eq('user_id', user.id)
-          .limit(1);
+          .from('user_profiles').select('id').eq('user_id', user.id).limit(1);
         if (viewerProfiles?.[0] && viewerProfiles[0].id !== profile.id) {
           await createRecord('profile_views', {
             viewer_profile_id: viewerProfiles[0].id,
@@ -67,7 +130,7 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
           setViewLogged(true);
         }
       } catch (e) {}
-    }, 2000); // Increased delay to reduce API pressure
+    }, 2000);
     return () => clearTimeout(timer);
   }, [profile?.id, viewLogged]);
 
@@ -97,7 +160,7 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
   const nextPhoto = (e?: React.MouseEvent) => { e?.stopPropagation(); setCurrentPhotoIndex((prev) => (prev + 1) % photos.length); };
   const prevPhoto = (e?: React.MouseEvent) => { e?.stopPropagation(); setCurrentPhotoIndex((prev) => (prev - 1 + photos.length) % photos.length); };
   const toggleDetails = () => {
-    if (expanded) return;
+    if (expanded || isDragging) return;
     setShowDetails((prev) => !prev);
   };
 
@@ -108,7 +171,6 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
   const bioPreview = profile?.bio || profile?.about_me || '';
   const interestChips = (profile?.interests || []).slice(0, 5);
   const socialProofCount = profile?.liked_by_count || profile?.likes_count || profile?.profile_views_count || 0;
-  // Only show social proof if there's real data — never show fabricated text
   const socialProof = socialProofCount > 0 ? `Liked by ${socialProofCount} people 👀` : null;
 
   const relationshipLabels: Record<string, string> = {
@@ -140,17 +202,22 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
   return (
     <ProfileTierDecoration tier={profile?.subscription_tier}>
       <motion.div
-        className={`relative mx-auto overflow-hidden border border-border/50 bg-card shadow-elevated ${expanded ? 'w-full max-w-xl max-h-[90dvh] rounded-3xl' : 'h-full min-h-[500px] w-full rounded-[1.75rem] cursor-grab active:cursor-grabbing'}`}
-        style={{ x, y, rotate, willChange: 'transform' }}
-        initial={false}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0, transition: { duration: 0.15 } }}
-        drag={!expanded && showActions ? true : false}
+        className={`relative mx-auto overflow-hidden border border-border/50 bg-card shadow-elevated select-none ${
+          expanded
+            ? 'w-full max-w-xl max-h-[90dvh] rounded-3xl'
+            : 'h-full min-h-[500px] w-full rounded-[1.75rem] cursor-grab active:cursor-grabbing'
+        }`}
+        style={{ x, y, rotate, scale, willChange: 'transform' }}
+        animate={controls}
+        drag={!expanded && showActions && !exitDirection}
         dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-        dragElastic={0.08}
-        dragTransition={{ bounceStiffness: 600, bounceDamping: 30 }}
+        dragElastic={1}
+        dragMomentum={false}
+        onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
+        whileTap={!expanded && showActions ? { cursor: 'grabbing' } : undefined}
       >
+        {/* LIKE / NOPE / SUPER stamps */}
         {!expanded && showActions && (
           <>
             <motion.div style={{ opacity: likeOpacity }} className="absolute top-12 left-7 z-50 pointer-events-none -rotate-12">
@@ -171,7 +238,10 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
           </>
         )}
 
-        <div className={`relative overflow-hidden group ${expanded ? 'min-h-[70dvh] h-full' : 'h-full min-h-[500px] cursor-pointer'}`} onClick={toggleDetails}>
+        <div
+          className={`relative overflow-hidden group ${expanded ? 'min-h-[70dvh] h-full' : 'h-full min-h-[500px] cursor-pointer'}`}
+          onClick={toggleDetails}
+        >
           <div className="absolute inset-0">
             <ProgressiveImage
               src={photos[currentPhotoIndex]}
@@ -262,89 +332,89 @@ const ProfileCard = React.memo(function ProfileCard({ profile, myLocation, onLik
           </div>
         </div>
 
-        <AnimatePresence>
-          {showDetails && (
-            <motion.div
-              initial={{ y: '100%', opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: '100%', opacity: 0 }}
-              transition={{ type: 'spring', damping: 24, stiffness: 220 }}
-              className="absolute inset-x-0 bottom-0 z-40 max-h-[72%] overflow-y-auto rounded-t-[1.6rem] border-t border-border/60 bg-card touch-pan-y"
-              onPointerDown={(e) => e.stopPropagation()}
-              onTouchStart={(e) => e.stopPropagation()}
-            >
-              <div className="p-5 space-y-4">
-                <div className="mx-auto h-1.5 w-12 rounded-full bg-muted" />
-                <KenteDivider className="mb-1" />
-                {(matchScore || profile?.matchScore) && (
-                  <MatchExplanation score={matchScore || profile?.matchScore || 0} reasons={matchReasons || profile?.matchReasons || []} breakdown={matchBreakdown || profile?.matchBreakdown || {}} confidence="good" />
-                )}
-                {profile?.bio && (
-                  <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">About</h3>
-                    <p className="text-foreground leading-relaxed">{profile.bio}</p>
-                  </div>
-                )}
-                {profile?.voice_intro_url && (
-                  <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary"><Mic size={20} /></div>
-                    <div className="flex-1">
-                      <p className="text-xs font-semibold mb-1">{t('editProfile.voiceIntro')}</p>
-                      <audio controls src={profile.voice_intro_url} className="w-full h-8" />
-                    </div>
-                  </div>
-                )}
+        {/* Expanded details sheet */}
+        {showDetails && !expanded && (
+          <motion.div
+            initial={{ y: '100%', opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: '100%', opacity: 0 }}
+            transition={{ type: 'spring', damping: 24, stiffness: 220 }}
+            className="absolute inset-x-0 bottom-0 z-40 max-h-[72%] overflow-y-auto rounded-t-[1.6rem] border-t border-border/60 bg-card touch-pan-y"
+            onPointerDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+          >
+            <div className="p-5 space-y-4">
+              <div className="mx-auto h-1.5 w-12 rounded-full bg-muted" />
+              <KenteDivider className="mb-1" />
+              {(matchScore || profile?.matchScore) && (
+                <MatchExplanation score={matchScore || profile?.matchScore || 0} reasons={matchReasons || profile?.matchReasons || []} breakdown={matchBreakdown || profile?.matchBreakdown || {}} confidence="good" />
+              )}
+              {profile?.bio && (
                 <div>
-                  <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Lifestyle</h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    {profile?.profession && (<div className="flex items-center gap-2 text-muted-foreground"><Briefcase size={16} className="text-primary" /><span className="text-sm">{profile.profession}</span></div>)}
-                    {profile?.education && (<div className="flex items-center gap-2 text-muted-foreground"><GraduationCap size={16} className="text-primary" /><span className="text-sm capitalize">{profile.education?.replace('_', ' ')}</span></div>)}
-                    {profile?.religion && (<div className="flex items-center gap-2 text-muted-foreground"><Book size={16} className="text-primary" /><span className="text-sm">{religionLabels[profile.religion]}</span></div>)}
-                    {profile?.languages?.length > 0 && (<div className="flex items-center gap-2 text-muted-foreground"><Languages size={16} className="text-primary" /><span className="text-sm">{profile.languages.slice(0, 3).join(', ')}</span></div>)}
+                  <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">About</h3>
+                  <p className="text-foreground leading-relaxed">{profile.bio}</p>
+                </div>
+              )}
+              {profile?.voice_intro_url && (
+                <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary"><Mic size={20} /></div>
+                  <div className="flex-1">
+                    <p className="text-xs font-semibold mb-1">{t('editProfile.voiceIntro')}</p>
+                    <audio controls src={profile.voice_intro_url} className="w-full h-8" />
                   </div>
                 </div>
-                {profile?.cultural_values?.length > 0 && (
-                  <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">{t('editProfile.culturalValues')}</h3>
-                    <div className="flex flex-wrap gap-2">{profile.cultural_values.map((value: string, idx: number) => (<Badge key={idx} variant="outline" className="border-accent/30 text-accent bg-accent/10">{value}</Badge>))}</div>
-                  </div>
-                )}
-                {profile?.interests?.length > 0 && (
-                  <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">{t('profile.interests')}</h3>
-                    <div className="flex flex-wrap gap-2">{profile.interests.map((interest: string, idx: number) => (<Badge key={idx} variant="secondary">{addInterestEmoji(interest)}</Badge>))}</div>
-                  </div>
-                )}
-                {profile?.community_name && (
-                  <div>
-                    <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Community</h3>
-                    <p className="text-sm text-foreground">{profile.community_name}</p>
-                  </div>
-                )}
-                {profile?.prompts?.length > 0 && (
-                  <div className="space-y-3">
-                    {profile.prompts.map((prompt: any, idx: number) => (
-                      <div key={idx} className="rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 p-4">
-                        <p className="mb-1 text-sm font-medium text-primary">{prompt.question}</p>
-                        <p className="text-foreground">{prompt.answer}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
+              )}
+              <div>
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Lifestyle</h3>
+                <div className="grid grid-cols-2 gap-3">
+                  {profile?.profession && (<div className="flex items-center gap-2 text-muted-foreground"><Briefcase size={16} className="text-primary" /><span className="text-sm">{profile.profession}</span></div>)}
+                  {profile?.education && (<div className="flex items-center gap-2 text-muted-foreground"><GraduationCap size={16} className="text-primary" /><span className="text-sm capitalize">{profile.education?.replace('_', ' ')}</span></div>)}
+                  {profile?.religion && (<div className="flex items-center gap-2 text-muted-foreground"><Book size={16} className="text-primary" /><span className="text-sm">{religionLabels[profile.religion]}</span></div>)}
+                  {profile?.languages?.length > 0 && (<div className="flex items-center gap-2 text-muted-foreground"><Languages size={16} className="text-primary" /><span className="text-sm">{profile.languages.slice(0, 3).join(', ')}</span></div>)}
+                </div>
               </div>
+              {profile?.cultural_values?.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">{t('editProfile.culturalValues')}</h3>
+                  <div className="flex flex-wrap gap-2">{profile.cultural_values.map((value: string, idx: number) => (<Badge key={idx} variant="outline" className="border-accent/30 text-accent bg-accent/10">{value}</Badge>))}</div>
+                </div>
+              )}
+              {profile?.interests?.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">{t('profile.interests')}</h3>
+                  <div className="flex flex-wrap gap-2">{profile.interests.map((interest: string, idx: number) => (<Badge key={idx} variant="secondary">{addInterestEmoji(interest)}</Badge>))}</div>
+                </div>
+              )}
+              {profile?.community_name && (
+                <div>
+                  <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Community</h3>
+                  <p className="text-sm text-foreground">{profile.community_name}</p>
+                </div>
+              )}
+              {profile?.prompts?.length > 0 && (
+                <div className="space-y-3">
+                  {profile.prompts.map((prompt: any, idx: number) => (
+                    <div key={idx} className="rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 p-4">
+                      <p className="mb-1 text-sm font-medium text-primary">{prompt.question}</p>
+                      <p className="text-foreground">{prompt.answer}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </motion.div>
-          )}
-        </AnimatePresence>
+        )}
 
+        {/* Action buttons */}
         {showActions && (
           <div className="absolute bottom-4 left-1/2 z-50 flex -translate-x-1/2 items-center justify-center gap-4">
-            <motion.button whileTap={{ scale: 0.85 }} transition={{ type: 'spring', stiffness: 400, damping: 16 }} onClick={() => { if (navigator.vibrate) navigator.vibrate(30); onPass?.(); }} disabled={isPassing || isLiking || isSuperLiking} className="h-14 w-14 rounded-full bg-muted text-muted-foreground shadow-card flex items-center justify-center border border-border active:bg-muted/80 transition-all touch-manipulation disabled:opacity-50">
+            <motion.button whileTap={{ scale: 0.85 }} transition={{ type: 'spring', stiffness: 400, damping: 16 }} onClick={handleButtonPass} disabled={isPassing || isLiking || isSuperLiking || !!exitDirection} className="h-14 w-14 rounded-full bg-muted text-muted-foreground shadow-card flex items-center justify-center border border-border active:bg-muted/80 transition-all touch-manipulation disabled:opacity-50">
               {isPassing ? <Loader2 size={28} className="animate-spin text-muted-foreground" /> : <span className="text-3xl text-destructive/70">✕</span>}
             </motion.button>
-            <motion.button whileTap={{ scale: 0.82 }} transition={{ type: 'spring', stiffness: 420, damping: 14 }} onClick={() => { if (navigator.vibrate) navigator.vibrate([30, 30, 30]); onSuperLike?.(); }} disabled={isPassing || isLiking || isSuperLiking} className="h-12 w-12 rounded-full bg-[linear-gradient(135deg,hsl(var(--brand-gold)),hsl(var(--accent)))] text-primary-foreground shadow-elevated flex items-center justify-center transition-all touch-manipulation disabled:opacity-50">
+            <motion.button whileTap={{ scale: 0.82 }} transition={{ type: 'spring', stiffness: 420, damping: 14 }} onClick={handleButtonSuperLike} disabled={isPassing || isLiking || isSuperLiking || !!exitDirection} className="h-12 w-12 rounded-full bg-[linear-gradient(135deg,hsl(var(--brand-gold)),hsl(var(--accent)))] text-primary-foreground shadow-elevated flex items-center justify-center transition-all touch-manipulation disabled:opacity-50">
               {isSuperLiking ? <Loader2 size={20} className="animate-spin text-primary-foreground" /> : <Sparkles className="text-primary-foreground" size={20} />}
             </motion.button>
-            <motion.button whileTap={{ scale: 0.82 }} transition={{ type: 'spring', stiffness: 420, damping: 14 }} onClick={() => { if (navigator.vibrate) navigator.vibrate(50); onLike?.(); }} disabled={isPassing || isLiking || isSuperLiking} className="h-16 w-16 rounded-full bg-[linear-gradient(135deg,hsl(var(--primary)),hsl(var(--brand-coral)))] text-primary-foreground shadow-elevated flex items-center justify-center transition-all touch-manipulation disabled:opacity-50">
+            <motion.button whileTap={{ scale: 0.82 }} transition={{ type: 'spring', stiffness: 420, damping: 14 }} onClick={handleButtonLike} disabled={isPassing || isLiking || isSuperLiking || !!exitDirection} className="h-16 w-16 rounded-full bg-[linear-gradient(135deg,hsl(var(--primary)),hsl(var(--brand-coral)))] text-primary-foreground shadow-elevated flex items-center justify-center transition-all touch-manipulation disabled:opacity-50">
               {isLiking ? <Loader2 size={28} className="animate-spin text-primary-foreground" /> : <Heart className="fill-primary-foreground text-primary-foreground" size={28} />}
             </motion.button>
           </div>
