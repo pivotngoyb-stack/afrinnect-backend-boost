@@ -112,13 +112,14 @@ const ProfileCard = React.memo(function ProfileCard({
   const [showDetails, setShowDetails] = useState(expanded);
   const [viewLogged, setViewLogged] = useState(false);
 
+  // Log profile view — fire-and-forget, no dynamic imports to avoid jank
   useEffect(() => {
     if (viewLogged || !profile?.id) return;
     const timer = setTimeout(async () => {
       try {
-        const { data: { user } } = await (await import('@/integrations/supabase/client')).supabase.auth.getUser();
+        const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
-        const { data: viewerProfiles } = await (await import('@/integrations/supabase/client')).supabase
+        const { data: viewerProfiles } = await supabase
           .from('user_profiles').select('id').eq('user_id', user.id).limit(1);
         if (viewerProfiles?.[0] && viewerProfiles[0].id !== profile.id) {
           await createRecord('profile_views', {
