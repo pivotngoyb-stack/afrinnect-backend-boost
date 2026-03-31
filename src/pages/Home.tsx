@@ -530,6 +530,7 @@ export default function Home() {
                 handleRewind={handleRewind}
                 setFilters={setFilters}
                 setDiscoveryMode={setDiscoveryMode}
+                isMutating={likeMutation.isPending || passMutation.isPending}
               />
             ) : (
               <GridView
