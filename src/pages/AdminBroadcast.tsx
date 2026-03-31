@@ -122,16 +122,14 @@ export default function AdminBroadcast() {
       }
 
       // Record broadcast
-      if (base44.entities.BroadcastMessage) {
-        await createRecord('broadcast_messages', {
-          title: broadcast.title,
-          message: broadcast.message,
-          target_audience: broadcast.targetAudience,
-          recipients_count: targetUsers.length,
-          sent_by: user.email,
-          sent_at: new Date().toISOString()
-        });
-      }
+      await createRecord('broadcast_messages', {
+        title: broadcast.title,
+        message: broadcast.message,
+        target_audience: broadcast.targetAudience,
+        recipients_count: targetUsers.length,
+        sent_by: user.email,
+        sent_at: new Date().toISOString()
+      });
 
       toast.success(`Broadcast sent to ${targetUsers.length} users`);
       setBroadcast({

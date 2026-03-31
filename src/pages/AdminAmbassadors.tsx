@@ -60,9 +60,9 @@ export default function AdminAmbassadors() {
     setLoading(true);
     try {
       const [ambs, refs, comms] = await Promise.all([
-        listRecords('ambassadors', '-created_date', 100),
-        base44.entities.AmbassadorReferral?.list('-created_date', 500) || [],
-        base44.entities.AmbassadorCommission?.list('-created_date', 500) || []
+        listRecords('ambassadors', '-created_at', 100),
+        listRecords('ambassador_referrals', '-created_at', 500),
+        listRecords('ambassador_commissions', '-created_at', 500)
       ]);
       setAmbassadors(ambs);
       setReferrals(refs);
