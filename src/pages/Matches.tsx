@@ -249,6 +249,13 @@ export default function Matches() {
     retryDelay: 5000
   });
 
+  // Re-filter matched profiles against latest blocked_users (handles realtime block updates)
+  const safeMatchedProfiles = useMemo(() => {
+    if (!myProfile?.blocked_users?.length) return matchedProfiles;
+    const blockedSet = new Set(myProfile.blocked_users);
+    return matchedProfiles.filter(p => !blockedSet.has(p.id));
+  }, [matchedProfiles, myProfile?.blocked_users]);
+
   // Fetch likes received - OPTIMIZED (excludes likes that became matches)
   const { data: likesReceived = [], isLoading: loadingLikes } = useQuery({
     queryKey: ['likes-received', myProfile?.id, matchesData.length],
