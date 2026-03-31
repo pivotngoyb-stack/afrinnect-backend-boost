@@ -327,19 +327,19 @@ export default function AdminManual() {
                     <AccordionTrigger>Like Types</AccordionTrigger>
                     <AccordionContent>
                       <div className="grid md:grid-cols-2 gap-4">
-                        <div className="border p-3 rounded-lg">
+                        <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                           <h5 className="font-semibold flex items-center gap-2">
                             <Heart size={16} className="text-pink-500" /> Regular Like
                           </h5>
                           <p className="text-sm mt-1">Standard like, limited daily (Free: 25, Premium: 50, Elite+: Unlimited)</p>
                         </div>
-                        <div className="border p-3 rounded-lg">
+                        <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                           <h5 className="font-semibold flex items-center gap-2">
                             <Star size={16} className="text-amber-500" /> Super Like
                           </h5>
                           <p className="text-sm mt-1">Highlighted to recipient, shown first. Free: 1/week, Premium: 5/day, Elite+: Unlimited</p>
                         </div>
-                        <div className="border p-3 rounded-lg">
+                        <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                           <h5 className="font-semibold flex items-center gap-2">
                             <Zap size={16} className="text-purple-500" /> Priority Like (Elite/VIP)
                           </h5>
@@ -703,19 +703,19 @@ export default function AdminManual() {
                   <AccordionTrigger>Event Types</AccordionTrigger>
                   <AccordionContent>
                     <div className="grid md:grid-cols-2 gap-4">
-                      <div className="border p-3 rounded-lg">
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                         <h5 className="font-semibold">💕 Speed Dating</h5>
                         <p className="text-sm mt-1">3-minute video rounds, automatic matching after</p>
                       </div>
-                      <div className="border p-3 rounded-lg">
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                         <h5 className="font-semibold">🎉 Mixer</h5>
                         <p className="text-sm mt-1">Group video chat, icebreaker games</p>
                       </div>
-                      <div className="border p-3 rounded-lg">
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                         <h5 className="font-semibold">📚 Workshop</h5>
                         <p className="text-sm mt-1">Dating tips, relationship advice sessions</p>
                       </div>
-                      <div className="border p-3 rounded-lg">
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                         <h5 className="font-semibold">✨ Exclusive Party</h5>
                         <p className="text-sm mt-1">VIP-only virtual events</p>
                       </div>
@@ -831,19 +831,19 @@ export default function AdminManual() {
                   <AccordionTrigger>Message Types</AccordionTrigger>
                   <AccordionContent>
                     <div className="grid md:grid-cols-2 gap-4">
-                      <div className="border p-3 rounded-lg">
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                         <h5 className="font-semibold">💬 Text</h5>
                         <p className="text-sm mt-1">Standard text messages</p>
                       </div>
-                      <div className="border p-3 rounded-lg">
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                         <h5 className="font-semibold">🎤 Voice Note</h5>
                         <p className="text-sm mt-1">Audio recordings</p>
                       </div>
-                      <div className="border p-3 rounded-lg">
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                         <h5 className="font-semibold">📷 Image</h5>
                         <p className="text-sm mt-1">Photo sharing (moderated)</p>
                       </div>
-                      <div className="border p-3 rounded-lg">
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                         <h5 className="font-semibold">❄️ Ice Breaker</h5>
                         <p className="text-sm mt-1">Pre-written conversation starters</p>
                       </div>
@@ -1144,7 +1144,7 @@ export default function AdminManual() {
                   <AccordionTrigger>Ambassador Tiers</AccordionTrigger>
                   <AccordionContent>
                     <div className="grid md:grid-cols-4 gap-3">
-                      <div className="border p-3 rounded-lg">
+                      <div className="border border-slate-700 p-3 rounded-lg bg-slate-800/50">
                         <h5 className="font-semibold text-slate-400">Bronze</h5>
                         <p className="text-xs">0-10 referrals</p>
                         <p className="text-xs mt-1">1x multiplier</p>
