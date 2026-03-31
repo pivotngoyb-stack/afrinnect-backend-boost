@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 const lazyConfetti = () => import('canvas-confetti').then(m => m.default);
 import { usePerformanceMonitor } from '@/components/shared/usePerformanceMonitor';
+import { useForegroundRefresh } from '@/hooks/useForegroundRefresh';
 import { useConversionTracker, CONVERSION_EVENTS } from '@/components/shared/ConversionTracker';
 import { hasAccess } from '@/components/shared/TierGate';
 import { useTierConfig, getTierLimit, isUnlimited } from '@/components/shared/useTierConfig';
