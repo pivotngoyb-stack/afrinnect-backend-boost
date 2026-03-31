@@ -21,8 +21,6 @@ export default function Landing() {
   const navigate = useNavigate();
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [liveCount, setLiveCount] = useState(47);
-  const [recentSignup, setRecentSignup] = useState(null);
   const [founderTrialDays, setFounderTrialDays] = useState(183);
   const [founderEnabled, setFounderEnabled] = useState(true);
 
@@ -30,7 +28,8 @@ export default function Landing() {
     trackEvent(CONVERSION_EVENTS.LANDING_VIEW);
     isAuthenticated().then(setIsLoggedIn).catch(() => {});
     
-    // Fetch founder program settings
+    // Fetch founder program settings (public read allowed via service role in edge function)
+    // system_settings is now admin-only, so use a fallback
     filterRecords('system_settings', { key: 'founder_program' })
       .then(records => {
         const config = records?.[0]?.value;
@@ -39,33 +38,11 @@ export default function Landing() {
           setFounderEnabled(config.founders_mode_enabled !== false);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        // Non-admin users can't read system_settings — use defaults
+      });
     
-    // Simulate live activity (realistic numbers)
-    const liveInterval = setInterval(() => {
-      setLiveCount(prev => prev + Math.floor(Math.random() * 3) - 1);
-    }, 8000);
-    
-    // Show recent signup notifications
-    const signups = [
-      { name: "Amara", location: "Atlanta", time: "2 min ago" },
-      { name: "Kwesi", location: "London", time: "5 min ago" },
-      { name: "Fatou", location: "Paris", time: "8 min ago" },
-      { name: "David", location: "Toronto", time: "12 min ago" },
-    ];
-    let idx = 0;
-    const showSignup = () => {
-      setRecentSignup(signups[idx % signups.length]);
-      idx++;
-      setTimeout(() => setRecentSignup(null), 4000);
-    };
-    showSignup();
-    const signupInterval = setInterval(showSignup, 15000);
-    
-    return () => {
-      clearInterval(liveInterval);
-      clearInterval(signupInterval);
-    };
+    return () => {};
   }, []);
 
   // Auto-rotate testimonials
@@ -200,25 +177,6 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* Recent Signup Notification - Social Proof */}
-      <AnimatePresence>
-        {recentSignup && (
-          <motion.div
-            initial={{ opacity: 0, x: -100 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -100 }}
-            className="fixed bottom-24 md:bottom-8 left-4 z-50 bg-card rounded-xl shadow-2xl p-4 flex items-center gap-3 max-w-xs"
-          >
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-amber-500 rounded-full flex items-center justify-center text-white font-bold">
-              {recentSignup.name[0]}
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-foreground">{t('landingExtra.justJoined').replace('{name}', recentSignup.name)}</p>
-              <p className="text-xs text-muted-foreground">{recentSignup.location} • {recentSignup.time}</p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Hero Section */}
       <section className="relative z-10 max-w-7xl mx-auto px-4 py-12 md:py-20">
@@ -230,17 +188,14 @@ export default function Landing() {
             transition={{ duration: 0.8 }}
             className="text-left"
           >
-            {/* Live Activity Badge */}
+            {/* Community Badge */}
             <motion.div 
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               className="inline-flex items-center gap-2 bg-card/10 backdrop-blur-lg border border-card/20 px-4 py-2 rounded-full mb-6"
             >
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-              </span>
-              <span className="text-white/90 text-sm font-medium">{t('landingExtra.liveCount').replace('{count}', String(liveCount))}</span>
+              <Shield size={14} className="text-green-400" />
+              <span className="text-white/90 text-sm font-medium">{t('landing.features.safety.title')}</span>
             </motion.div>
 
             {/* Logo */}
@@ -678,11 +633,8 @@ export default function Landing() {
             
             {/* Scarcity/Urgency */}
             <div className="inline-flex items-center gap-2 bg-card/10 backdrop-blur-lg px-6 py-3 rounded-full mb-8">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-              </span>
-              <span className="text-white/90 text-sm">{t('landingExtra.ctaLive').replace('{count}', String(liveCount))}</span>
+              <Shield size={14} className="text-green-400" />
+              <span className="text-white/90 text-sm">{t('landing.features.safety.title')}</span>
             </div>
             
             <div className="flex flex-col items-center gap-4">
@@ -722,7 +674,7 @@ export default function Landing() {
               <ArrowRight size={18} className="ml-2" />
             </Button>
             <p className="text-center text-xs text-muted-foreground">
-              {t('landingExtra.joinMembers').replace('{count}', String(liveCount))}
+              {t('landingExtra.free')} • {t('landingExtra.twoMinSignup')}
             </p>
           </div>
         )}
