@@ -53,6 +53,7 @@ const removeSwipedId = (id: string) => {
 
 export default function Home() {
   usePerformanceMonitor('Home');
+  useForegroundRefresh([['discovery-profiles-v2'], ['activity-counts'], ['who-likes-me']]);
   const { trackEvent } = useConversionTracker();
   const { t } = useLanguage();
 
