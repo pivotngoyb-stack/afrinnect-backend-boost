@@ -450,9 +450,9 @@ export default function Matches() {
               <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 {t('matchesPage.connections')}
               </h1>
-              {matchedProfiles.length > 0 && (
+              {safeMatchedProfiles.length > 0 && (
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  {matchedProfiles.length} match{matchedProfiles.length !== 1 ? 'es' : ''} • {conversations.length} conversation{conversations.length !== 1 ? 's' : ''}
+                  {safeMatchedProfiles.length} match{safeMatchedProfiles.length !== 1 ? 'es' : ''} • {conversations.length} conversation{conversations.length !== 1 ? 's' : ''}
                 </p>
               )}
             </div>
