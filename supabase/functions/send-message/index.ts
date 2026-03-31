@@ -238,16 +238,16 @@ Allow: flirting, compliments, date planning, personal questions, humor.`,
         .eq("id", matchId);
     }
 
-    // Create notification for receiver
+    // Create notification for receiver — use 'message' type to match client filters
     try {
-      await supabase.from("notifications").insert({
-        user_profile_id: receiverId,
-        user_id: receiverUserId,
-        type: "new_message",
-        title: "New Message",
-        message: `${senderProfile.display_name} sent you a message`,
-        link_to: `/chat?matchId=${matchId}`,
-        is_read: false,
+      await supabase.rpc('create_notification', {
+        p_user_profile_id: receiverId,
+        p_user_id: receiverUserId,
+        p_type: 'message',
+        p_title: 'New Message',
+        p_message: `${senderProfile.display_name} sent you a message`,
+        p_from_profile_id: senderProfile.id,
+        p_link_to: `/chat?matchId=${matchId}`
       });
     } catch (_) {
       // ignore notification insert failures

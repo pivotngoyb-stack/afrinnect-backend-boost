@@ -15,21 +15,23 @@ export default function AuthGuard({
   const navigate = useNavigate();
 
   useEffect(() => {
+    let mounted = true;
+
     const checkAuth = async () => {
       try {
         if (!requireAuth) {
-          setLoading(false);
+          if (mounted) setLoading(false);
           return;
         }
 
         const { data: { user } } = await supabase.auth.getUser();
         
         if (!user) {
-          navigate(redirectTo + '?next=' + encodeURIComponent(window.location.pathname));
+          if (mounted) navigate(redirectTo + '?next=' + encodeURIComponent(window.location.pathname));
           return;
         }
 
-        setAuthenticated(true);
+        if (mounted) setAuthenticated(true);
 
         if (requireProfile) {
           const { data: profiles } = await supabase
@@ -39,19 +41,38 @@ export default function AuthGuard({
             .limit(1);
 
           if (!profiles || profiles.length === 0) {
-            navigate('/onboarding');
+            if (mounted) navigate('/onboarding');
             return;
           }
         }
 
-        setLoading(false);
+        if (mounted) setLoading(false);
       } catch (error) {
         console.error('Auth check failed:', error);
-        navigate(redirectTo);
+        if (mounted) navigate(redirectTo);
       }
     };
 
     checkAuth();
+
+    // Listen for auth state changes (session restore, token refresh, sign out)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return;
+      if (event === 'SIGNED_OUT') {
+        setAuthenticated(false);
+        navigate(redirectTo);
+      } else if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN') {
+        if (session?.user) {
+          setAuthenticated(true);
+          setLoading(false);
+        }
+      }
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, [requireAuth, requireProfile, redirectTo, navigate]);
 
   if (loading) {
