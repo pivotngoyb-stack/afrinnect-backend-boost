@@ -4032,6 +4032,13 @@ export type Database = {
         Returns: number
       }
       get_my_profile_id: { Args: never; Returns: string }
+      get_unread_counts: {
+        Args: { p_profile_id: string }
+        Returns: {
+          match_id: string
+          unread_count: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
