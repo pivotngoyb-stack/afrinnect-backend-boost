@@ -458,7 +458,8 @@ export default function Onboarding() {
           />
           <label htmlFor="age-confirm" className="text-sm text-muted-foreground leading-tight">
             I confirm that I am 18 years or older and agree to the{' '}
-            <a href="/terms" className="text-primary underline">Terms of Service</a>.
+            <a href="/terms" className="text-primary underline">Terms of Service</a>{' & '}
+            <a href="/privacy" className="text-primary underline">Privacy Policy</a>.
           </label>
         </div>
 

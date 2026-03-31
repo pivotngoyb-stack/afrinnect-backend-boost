@@ -294,9 +294,10 @@ export default function Login() {
                 </div>
                 <div className="flex items-start gap-3">
                   <input type="checkbox" id="age-confirm-signup" checked={ageConfirmed} onChange={(e) => setAgeConfirmed(e.target.checked)} className="mt-1 h-4 w-4 rounded border-border" disabled={anyLoading} />
-                  <label htmlFor="age-confirm-signup" className="text-xs text-muted-foreground leading-tight">
+                   <label htmlFor="age-confirm-signup" className="text-xs text-muted-foreground leading-tight">
                     {t('auth.ageConfirm')}{' '}
-                    <a href="/terms" className="text-primary underline">{t('auth.termsOfService')}</a>.
+                    <a href="/terms" className="text-primary underline">{t('auth.termsOfService')}</a>{' & '}
+                    <a href="/privacy" className="text-primary underline">{t('auth.privacyPolicy') || 'Privacy Policy'}</a>.
                   </label>
                 </div>
                 <Button type="submit" className="w-full" disabled={anyLoading || !ageConfirmed}>
