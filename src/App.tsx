@@ -11,13 +11,14 @@ import AppBottomNav from "@/components/shared/AppBottomNav";
 import AuthGuard from "@/components/shared/AuthGuard";
 import AdminGuard from "@/components/shared/AdminGuard";
 import ScrollToTop from "@/components/ScrollToTop";
+import OfflineIndicator from "@/components/shared/OfflineIndicator";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 60000,
       gcTime: 300000,
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: true,
       retry: 1,
     },
   },
