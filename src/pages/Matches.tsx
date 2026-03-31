@@ -402,14 +402,14 @@ export default function Matches() {
   };
 
   // Separate new matches from active conversations
-  const newMatches = matchedProfiles.filter(p => {
+  const newMatches = safeMatchedProfiles.filter(p => {
     const hasMessages = conversationData[p.match?.id]?.lastMessage;
     return !hasMessages && !p.match?.is_expired && filterBySearch(p);
   });
   
   // Active conversations sorted by most recent message
   // Show ALL matches as conversations — ones with messages sorted first, then unmessaged ones
-  const conversations = matchedProfiles
+  const conversations = safeMatchedProfiles
     .filter(p => filterBySearch(p))
     .sort((a, b) => {
       const aMsg = conversationData[a.match?.id]?.lastMessage;
