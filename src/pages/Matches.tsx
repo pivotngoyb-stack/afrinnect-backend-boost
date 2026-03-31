@@ -521,9 +521,9 @@ export default function Matches() {
             {!loadingMatches && (
               <>
                 {/* Urgency prompts for unmessaged matches */}
-                <MatchUrgencyPrompt unmessagedMatches={matchedProfiles} conversationData={conversationData} />
+                <MatchUrgencyPrompt unmessagedMatches={safeMatchedProfiles} conversationData={conversationData} />
                 {/* Dead chat reminders */}
-                <ChatReminderBanner staleConversations={matchedProfiles} conversationData={conversationData} myProfile={myProfile} />
+                <ChatReminderBanner staleConversations={safeMatchedProfiles} conversationData={conversationData} myProfile={myProfile} />
                 {/* New Matches Row */}
                 {newMatches.length > 0 && (
                   <div>
