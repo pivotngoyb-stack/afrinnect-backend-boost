@@ -362,7 +362,7 @@ export default function AdminModeration() {
             {/* Bulk actions */}
             {selectedIds.size > 0 && (
               <div className="flex gap-2 ml-auto items-center">
-                <span className="text-sm text-muted-foreground">{selectedIds.size} selected</span>
+                <span className="text-sm text-slate-400">{selectedIds.size} selected</span>
                 <Button size="sm" variant="outline" onClick={() => handleBulkAction("dismiss")}>
                   Dismiss Selected
                 </Button>
