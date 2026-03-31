@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Zap, Crown, Users, Loader2, X, CheckCircle, AlertCircle, ShieldCheck } from 'lucide-react';
@@ -130,7 +131,7 @@ export default function BoostButton({ userProfile, onBoostActivated, onBoostSucc
     </Button>
   );
 
-  const modal = (
+  const modal = typeof document !== 'undefined' ? createPortal(
     <AnimatePresence>
       {showModal && (
         <motion.div
@@ -216,8 +217,9 @@ export default function BoostButton({ userProfile, onBoostActivated, onBoostSucc
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
-  );
+    </AnimatePresence>,
+    document.body
+  ) : null;
 
   if (variant === 'compact') {
     return <>{compactButton}{modal}</>;
