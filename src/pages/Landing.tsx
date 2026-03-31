@@ -188,17 +188,14 @@ export default function Landing() {
             transition={{ duration: 0.8 }}
             className="text-left"
           >
-            {/* Live Activity Badge */}
+            {/* Community Badge */}
             <motion.div 
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               className="inline-flex items-center gap-2 bg-card/10 backdrop-blur-lg border border-card/20 px-4 py-2 rounded-full mb-6"
             >
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-              </span>
-              <span className="text-white/90 text-sm font-medium">{t('landingExtra.liveCount').replace('{count}', String(liveCount))}</span>
+              <Shield size={14} className="text-green-400" />
+              <span className="text-white/90 text-sm font-medium">{t('landing.features.safety.title')}</span>
             </motion.div>
 
             {/* Logo */}
