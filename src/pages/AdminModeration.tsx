@@ -412,8 +412,8 @@ export default function AdminModeration() {
                 {reports.map((report) => (
                   <Card
                     key={report.id}
-                    className={`cursor-pointer transition-colors hover:border-primary/50 ${
-                      selectedReport?.id === report.id ? "border-primary" : ""
+                    className={`cursor-pointer transition-colors bg-slate-900 border-slate-800 hover:border-orange-500/50 ${
+                      selectedReport?.id === report.id ? "border-orange-500" : ""
                     }`}
                   >
                     <CardContent className="p-4 flex items-start gap-3">
@@ -430,14 +430,14 @@ export default function AdminModeration() {
                           <Badge className={STATUS_STYLES[report.status || "pending"]}>
                             {(report.status || "pending").replace(/_/g, " ")}
                           </Badge>
-                          <span className="text-xs text-muted-foreground ml-auto">
+                          <span className="text-xs text-slate-500 ml-auto">
                             {report.created_at ? new Date(report.created_at).toLocaleDateString() : "N/A"}
                           </span>
                         </div>
-                        <p className="text-sm truncate">{report.description || "No description"}</p>
-                        <p className="text-xs text-muted-foreground mt-1">ID: {report.id.slice(-8)}</p>
+                        <p className="text-sm text-slate-300 truncate">{report.description || "No description"}</p>
+                        <p className="text-xs text-slate-500 mt-1">ID: {report.id.slice(-8)}</p>
                       </div>
-                      <ChevronRight className="w-5 h-5 text-muted-foreground shrink-0 mt-1" />
+                      <ChevronRight className="w-5 h-5 text-slate-500 shrink-0 mt-1" />
                     </CardContent>
                   </Card>
                 ))}
