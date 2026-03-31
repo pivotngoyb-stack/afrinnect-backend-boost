@@ -380,7 +380,7 @@ export default function AdminModeration() {
           {reportsLoading ? (
             <div className="space-y-3">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton key={i} className="h-24 w-full" />
+                <Skeleton key={i} className="h-24 w-full bg-slate-800" />
               ))}
             </div>
           ) : reportsError ? (
