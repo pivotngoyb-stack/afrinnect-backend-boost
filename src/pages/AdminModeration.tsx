@@ -285,23 +285,23 @@ export default function AdminModeration() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-slate-950 flex">
       <AdminSidebar pendingReports={statusCounts?.pending || 0} />
 
       <main className="flex-1 overflow-auto">
         {/* Header */}
-        <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-xl border-b px-6 py-4">
+        <header className="sticky top-0 z-10 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800 px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-xl font-bold">Content Moderation</h1>
-              <p className="text-sm text-muted-foreground">
+              <h1 className="text-xl font-bold text-white">Content Moderation</h1>
+              <p className="text-sm text-slate-400">
                 {statusCounts?.pending || 0} reports pending review
               </p>
             </div>
             <Button onClick={() => {
               queryClient.invalidateQueries({ queryKey: ["admin-reports"] });
               queryClient.invalidateQueries({ queryKey: ["admin-report-counts"] });
-            }} variant="outline" size="sm">
+            }} variant="outline" size="sm" className="border-slate-700 text-slate-300">
               <RefreshCw className="w-4 h-4 mr-2" /> Refresh
             </Button>
           </div>
