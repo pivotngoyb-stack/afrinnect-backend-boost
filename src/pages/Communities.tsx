@@ -222,7 +222,7 @@ export default function Communities() {
         </CardContent>
       </Card>
     );
-  };
+  });
 
   if (!currentUser && !isLoading) {
     return (
