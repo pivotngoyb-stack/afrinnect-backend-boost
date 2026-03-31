@@ -28,7 +28,8 @@ export default function Landing() {
     trackEvent(CONVERSION_EVENTS.LANDING_VIEW);
     isAuthenticated().then(setIsLoggedIn).catch(() => {});
     
-    // Fetch founder program settings
+    // Fetch founder program settings (public read allowed via service role in edge function)
+    // system_settings is now admin-only, so use a fallback
     filterRecords('system_settings', { key: 'founder_program' })
       .then(records => {
         const config = records?.[0]?.value;
@@ -37,33 +38,11 @@ export default function Landing() {
           setFounderEnabled(config.founders_mode_enabled !== false);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        // Non-admin users can't read system_settings — use defaults
+      });
     
-    // Simulate live activity (realistic numbers)
-    const liveInterval = setInterval(() => {
-      setLiveCount(prev => prev + Math.floor(Math.random() * 3) - 1);
-    }, 8000);
-    
-    // Show recent signup notifications
-    const signups = [
-      { name: "Amara", location: "Atlanta", time: "2 min ago" },
-      { name: "Kwesi", location: "London", time: "5 min ago" },
-      { name: "Fatou", location: "Paris", time: "8 min ago" },
-      { name: "David", location: "Toronto", time: "12 min ago" },
-    ];
-    let idx = 0;
-    const showSignup = () => {
-      setRecentSignup(signups[idx % signups.length]);
-      idx++;
-      setTimeout(() => setRecentSignup(null), 4000);
-    };
-    showSignup();
-    const signupInterval = setInterval(showSignup, 15000);
-    
-    return () => {
-      clearInterval(liveInterval);
-      clearInterval(signupInterval);
-    };
+    return () => {};
   }, []);
 
   // Auto-rotate testimonials
