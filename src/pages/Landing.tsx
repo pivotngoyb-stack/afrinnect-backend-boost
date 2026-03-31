@@ -177,25 +177,6 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* Recent Signup Notification - Social Proof */}
-      <AnimatePresence>
-        {recentSignup && (
-          <motion.div
-            initial={{ opacity: 0, x: -100 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -100 }}
-            className="fixed bottom-24 md:bottom-8 left-4 z-50 bg-card rounded-xl shadow-2xl p-4 flex items-center gap-3 max-w-xs"
-          >
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-amber-500 rounded-full flex items-center justify-center text-white font-bold">
-              {recentSignup.name[0]}
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-foreground">{t('landingExtra.justJoined').replace('{name}', recentSignup.name)}</p>
-              <p className="text-xs text-muted-foreground">{recentSignup.location} • {recentSignup.time}</p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Hero Section */}
       <section className="relative z-10 max-w-7xl mx-auto px-4 py-12 md:py-20">
