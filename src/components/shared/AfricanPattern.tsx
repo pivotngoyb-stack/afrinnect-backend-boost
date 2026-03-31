@@ -79,7 +79,11 @@ const AfricanPattern = forwardRef<HTMLDivElement, AfricanPatternProps>(({
       </svg>
     </div>
   );
-}
+});
+
+AfricanPattern.displayName = 'AfricanPattern';
+
+export default AfricanPattern;
 
 /**
  * Kente-inspired horizontal divider line
