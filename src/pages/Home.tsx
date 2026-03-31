@@ -251,13 +251,28 @@ export default function Home() {
     retry: 1
   });
 
-  // Image preloading
+  // Image preloading — preload next 3 cards
   useEffect(() => {
-    if (profiles.length > 0 && currentIndex + 1 < profiles.length) {
-      const img = new Image();
-      img.src = profiles[currentIndex + 1]?.primary_photo;
+    if (profiles.length === 0) return;
+    for (let i = 1; i <= 3; i++) {
+      const idx = currentIndex + i;
+      if (idx < profiles.length && profiles[idx]?.primary_photo) {
+        const img = new Image();
+        img.src = profiles[idx].primary_photo;
+      }
     }
   }, [currentIndex, profiles]);
+
+  // SPA-safe refresh discovery (no full page reload)
+  useEffect(() => {
+    const handler = () => {
+      localSwipedIds.current = new Set();
+      setCurrentIndex(0);
+      queryClient.invalidateQueries({ queryKey: ['discovery-profiles-v2'] });
+    };
+    window.addEventListener('refresh-discovery', handler);
+    return () => window.removeEventListener('refresh-discovery', handler);
+  }, [queryClient]);
 
   // Client-side rate limit for likes (max 3 per second)
   const likeTimestamps = useRef<number[]>([]);

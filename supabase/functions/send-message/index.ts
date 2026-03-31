@@ -40,7 +40,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { matchId, content, type = "text", mediaUrl = null } = await req.json();
+    const { matchId, content, type = "text", mediaUrl = null, __optimisticId = null } = await req.json();
 
     if (!matchId) {
       return new Response(JSON.stringify({ error: "matchId is required" }), {
@@ -274,7 +274,7 @@ Allow: flirting, compliments, date planning, personal questions, humor.`,
     }
 
     return new Response(
-      JSON.stringify(message),
+      JSON.stringify({ ...message, __optimisticId }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {

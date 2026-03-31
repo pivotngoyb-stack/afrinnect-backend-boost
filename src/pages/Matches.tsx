@@ -81,11 +81,17 @@ export default function Matches() {
         event: 'INSERT',
         schema: 'public',
         table: 'messages',
-      }, (payload) => {
-        const msg = payload.new as any;
-        if (msg.receiver_id === myProfile.id || msg.sender_id === myProfile.id) {
-          queryClient.invalidateQueries({ queryKey: ['conversations-data'] });
-        }
+        filter: `receiver_id=eq.${myProfile.id}`,
+      }, () => {
+        queryClient.invalidateQueries({ queryKey: ['conversations-data'] });
+      })
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'messages',
+        filter: `sender_id=eq.${myProfile.id}`,
+      }, () => {
+        queryClient.invalidateQueries({ queryKey: ['conversations-data'] });
       })
       .subscribe();
     

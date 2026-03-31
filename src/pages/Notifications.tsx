@@ -97,14 +97,38 @@ export default function Notifications() {
     }
   });
 
-  // Mark notifications as read after a short delay so user has time to see them
+  // Mark notifications as read only when user scrolls to them or after 5s delay
   useEffect(() => {
-    if (notifications.length > 0 && notifications.some(n => !n.is_read)) {
-      const timer = setTimeout(() => {
-        markAllReadMutation.mutate();
-      }, 2000);
-      return () => clearTimeout(timer);
+    if (notifications.length === 0 || !notifications.some(n => !n.is_read)) return;
+
+    // Use IntersectionObserver if available, otherwise fall back to 5s delay
+    const scrollArea = document.querySelector('[data-notif-list]');
+    if (scrollArea && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const anyVisible = entries.some(e => e.isIntersecting);
+          if (anyVisible) {
+            markAllReadMutation.mutate();
+            observer.disconnect();
+          }
+        },
+        { root: scrollArea, threshold: 0.5 }
+      );
+      // Observe the last unread notification
+      const unreadEls = scrollArea.querySelectorAll('[data-unread="true"]');
+      if (unreadEls.length > 0) {
+        observer.observe(unreadEls[0]);
+      } else {
+        // Fallback: mark after delay
+        const timer = setTimeout(() => markAllReadMutation.mutate(), 5000);
+        return () => { clearTimeout(timer); observer.disconnect(); };
+      }
+      return () => observer.disconnect();
     }
+
+    // Fallback for browsers without IntersectionObserver
+    const timer = setTimeout(() => markAllReadMutation.mutate(), 5000);
+    return () => clearTimeout(timer);
   }, [notifications, myProfile?.id]);
 
   const deleteNotifMutation = useMutation({
@@ -246,7 +270,7 @@ export default function Notifications() {
       </header>
 
       <ScrollArea className="max-w-2xl mx-auto">
-        <div className="p-4 space-y-2">
+        <div className="p-4 space-y-2" data-notif-list>
           <AnimatePresence>
             {notifications.length === 0 ? (
               <EmptyState
@@ -265,6 +289,7 @@ export default function Notifications() {
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ delay: idx * 0.05 }}
                   onClick={() => handleNotificationClick(notif)}
+                  data-unread={!notif.is_read ? 'true' : undefined}
                   className={`p-4 rounded-xl border cursor-pointer transition-all hover:shadow-md ${
                     notif.is_read
                       ? 'bg-card border-border'

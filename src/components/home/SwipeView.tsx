@@ -89,7 +89,7 @@ export default function SwipeView({
                 onClick={() => {
                   setFilters({});
                   try { sessionStorage.removeItem('swiped_ids'); } catch {}
-                  window.location.reload();
+                  window.dispatchEvent(new CustomEvent('refresh-discovery'));
                 }}
                 className="w-full h-11 text-sm gradient-hero text-primary-foreground"
               >
