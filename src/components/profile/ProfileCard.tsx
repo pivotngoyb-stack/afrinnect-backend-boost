@@ -22,6 +22,7 @@ const ProfileCard = React.memo(function ProfileCard({
   profile, myLocation, onLike, onPass, onSuperLike,
   showActions = true, expanded = false,
   isLiking = false, isPassing = false, isSuperLiking = false,
+  isDisabled = false,
   matchScore, matchReasons, matchBreakdown
 }: any) {
   const { t } = useLanguage();
@@ -105,10 +106,10 @@ const ProfileCard = React.memo(function ProfileCard({
     });
   }, [controls, flyAway, onSuperLike]);
 
-  // Button taps trigger fly-away animation too
-  const handleButtonLike = useCallback(() => { if (!exitDirection) flyAway('right'); }, [flyAway, exitDirection]);
-  const handleButtonPass = useCallback(() => { if (!exitDirection) flyAway('left'); }, [flyAway, exitDirection]);
-  const handleButtonSuperLike = useCallback(() => { if (!exitDirection) flyAway('up'); }, [flyAway, exitDirection]);
+  // Button taps trigger fly-away animation too — blocked when isDisabled
+  const handleButtonLike = useCallback(() => { if (!exitDirection && !isDisabled) flyAway('right'); }, [flyAway, exitDirection, isDisabled]);
+  const handleButtonPass = useCallback(() => { if (!exitDirection && !isDisabled) flyAway('left'); }, [flyAway, exitDirection, isDisabled]);
+  const handleButtonSuperLike = useCallback(() => { if (!exitDirection && !isDisabled) flyAway('up'); }, [flyAway, exitDirection, isDisabled]);
 
   const [showDetails, setShowDetails] = useState(expanded);
   const [viewLogged, setViewLogged] = useState(false);
@@ -410,13 +411,13 @@ const ProfileCard = React.memo(function ProfileCard({
         {/* Action buttons */}
         {showActions && (
           <div className="absolute bottom-4 left-1/2 z-50 flex -translate-x-1/2 items-center justify-center gap-4">
-            <motion.button whileTap={{ scale: 0.85 }} transition={{ type: 'spring', stiffness: 400, damping: 16 }} onClick={handleButtonPass} disabled={isPassing || isLiking || isSuperLiking || !!exitDirection} className="h-14 w-14 rounded-full bg-muted text-muted-foreground shadow-card flex items-center justify-center border border-border active:bg-muted/80 transition-all touch-manipulation disabled:opacity-50">
+            <motion.button whileTap={{ scale: 0.85 }} transition={{ type: 'spring', stiffness: 400, damping: 16 }} onClick={handleButtonPass} disabled={isPassing || isLiking || isSuperLiking || isDisabled || !!exitDirection} className="h-14 w-14 rounded-full bg-muted text-muted-foreground shadow-card flex items-center justify-center border border-border active:bg-muted/80 transition-all touch-manipulation disabled:opacity-50">
               {isPassing ? <Loader2 size={28} className="animate-spin text-muted-foreground" /> : <span className="text-3xl text-destructive/70">✕</span>}
             </motion.button>
-            <motion.button whileTap={{ scale: 0.82 }} transition={{ type: 'spring', stiffness: 420, damping: 14 }} onClick={handleButtonSuperLike} disabled={isPassing || isLiking || isSuperLiking || !!exitDirection} className="h-12 w-12 rounded-full bg-[linear-gradient(135deg,hsl(var(--brand-gold)),hsl(var(--accent)))] text-primary-foreground shadow-elevated flex items-center justify-center transition-all touch-manipulation disabled:opacity-50">
+            <motion.button whileTap={{ scale: 0.82 }} transition={{ type: 'spring', stiffness: 420, damping: 14 }} onClick={handleButtonSuperLike} disabled={isPassing || isLiking || isSuperLiking || isDisabled || !!exitDirection} className="h-12 w-12 rounded-full bg-[linear-gradient(135deg,hsl(var(--brand-gold)),hsl(var(--accent)))] text-primary-foreground shadow-elevated flex items-center justify-center transition-all touch-manipulation disabled:opacity-50">
               {isSuperLiking ? <Loader2 size={20} className="animate-spin text-primary-foreground" /> : <Sparkles className="text-primary-foreground" size={20} />}
             </motion.button>
-            <motion.button whileTap={{ scale: 0.82 }} transition={{ type: 'spring', stiffness: 420, damping: 14 }} onClick={handleButtonLike} disabled={isPassing || isLiking || isSuperLiking || !!exitDirection} className="h-16 w-16 rounded-full bg-[linear-gradient(135deg,hsl(var(--primary)),hsl(var(--brand-coral)))] text-primary-foreground shadow-elevated flex items-center justify-center transition-all touch-manipulation disabled:opacity-50">
+            <motion.button whileTap={{ scale: 0.82 }} transition={{ type: 'spring', stiffness: 420, damping: 14 }} onClick={handleButtonLike} disabled={isPassing || isLiking || isSuperLiking || isDisabled || !!exitDirection} className="h-16 w-16 rounded-full bg-[linear-gradient(135deg,hsl(var(--primary)),hsl(var(--brand-coral)))] text-primary-foreground shadow-elevated flex items-center justify-center transition-all touch-manipulation disabled:opacity-50">
               {isLiking ? <Loader2 size={28} className="animate-spin text-primary-foreground" /> : <Heart className="fill-primary-foreground text-primary-foreground" size={28} />}
             </motion.button>
           </div>

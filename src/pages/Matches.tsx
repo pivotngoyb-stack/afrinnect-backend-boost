@@ -1,11 +1,12 @@
 // @ts-nocheck
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useLanguage } from '@/components/i18n/LanguageContext';
 import { filterRecords, getCurrentUser } from '@/lib/supabase-helpers';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { useForegroundRefresh } from '@/hooks/useForegroundRefresh';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, MessageCircle, Sparkles, Crown, Eye, Users, Search, X } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -29,6 +30,7 @@ import ChatReminderBanner from '@/components/engagement/ChatReminderBanner';
 
 export default function Matches() {
   const { t } = useLanguage();
+  useForegroundRefresh([['matches'], ['conversations-data'], ['likes-received']]);
   
   const [myProfile, setMyProfile] = useState(null);
   const [selectedProfile, setSelectedProfile] = useState(null);
@@ -247,6 +249,13 @@ export default function Matches() {
     retryDelay: 5000
   });
 
+  // Re-filter matched profiles against latest blocked_users (handles realtime block updates)
+  const safeMatchedProfiles = useMemo(() => {
+    if (!myProfile?.blocked_users?.length) return matchedProfiles;
+    const blockedSet = new Set(myProfile.blocked_users);
+    return matchedProfiles.filter(p => !blockedSet.has(p.id));
+  }, [matchedProfiles, myProfile?.blocked_users]);
+
   // Fetch likes received - OPTIMIZED (excludes likes that became matches)
   const { data: likesReceived = [], isLoading: loadingLikes } = useQuery({
     queryKey: ['likes-received', myProfile?.id, matchesData.length],
@@ -393,14 +402,14 @@ export default function Matches() {
   };
 
   // Separate new matches from active conversations
-  const newMatches = matchedProfiles.filter(p => {
+  const newMatches = safeMatchedProfiles.filter(p => {
     const hasMessages = conversationData[p.match?.id]?.lastMessage;
     return !hasMessages && !p.match?.is_expired && filterBySearch(p);
   });
   
   // Active conversations sorted by most recent message
   // Show ALL matches as conversations — ones with messages sorted first, then unmessaged ones
-  const conversations = matchedProfiles
+  const conversations = safeMatchedProfiles
     .filter(p => filterBySearch(p))
     .sort((a, b) => {
       const aMsg = conversationData[a.match?.id]?.lastMessage;
@@ -441,9 +450,9 @@ export default function Matches() {
               <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 {t('matchesPage.connections')}
               </h1>
-              {matchedProfiles.length > 0 && (
+              {safeMatchedProfiles.length > 0 && (
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  {matchedProfiles.length} match{matchedProfiles.length !== 1 ? 'es' : ''} • {conversations.length} conversation{conversations.length !== 1 ? 's' : ''}
+                  {safeMatchedProfiles.length} match{safeMatchedProfiles.length !== 1 ? 'es' : ''} • {conversations.length} conversation{conversations.length !== 1 ? 's' : ''}
                 </p>
               )}
             </div>
@@ -512,9 +521,9 @@ export default function Matches() {
             {!loadingMatches && (
               <>
                 {/* Urgency prompts for unmessaged matches */}
-                <MatchUrgencyPrompt unmessagedMatches={matchedProfiles} conversationData={conversationData} />
+                <MatchUrgencyPrompt unmessagedMatches={safeMatchedProfiles} conversationData={conversationData} />
                 {/* Dead chat reminders */}
-                <ChatReminderBanner staleConversations={matchedProfiles} conversationData={conversationData} myProfile={myProfile} />
+                <ChatReminderBanner staleConversations={safeMatchedProfiles} conversationData={conversationData} myProfile={myProfile} />
                 {/* New Matches Row */}
                 {newMatches.length > 0 && (
                   <div>
@@ -573,7 +582,7 @@ export default function Matches() {
                   </div>
                 )}
 
-                {matchedProfiles.length === 0 && (
+                {safeMatchedProfiles.length === 0 && (
                   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-12">
                     <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-primary/20 to-destructive/20 rounded-full flex items-center justify-center">
                       <span className="text-4xl">💕</span>

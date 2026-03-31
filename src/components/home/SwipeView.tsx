@@ -21,13 +21,14 @@ interface SwipeViewProps {
   handleRewind: () => void;
   setFilters: (f: any) => void;
   setDiscoveryMode?: (mode: string) => void;
+  isMutating?: boolean;
 }
 
 export default function SwipeView({
   isLoading, currentProfile, hasMoreProfiles, myProfile,
   swipeHistory, likeMutation, passMutation,
   handleLike, handlePass: originalHandlePass, handleSuperLike, handleRewind, setFilters,
-  setDiscoveryMode,
+  setDiscoveryMode, isMutating = false,
 }: SwipeViewProps) {
   const { t } = useLanguage();
 
@@ -71,6 +72,7 @@ export default function SwipeView({
             isLiking={likeMutation.isPending && !likeMutation.variables?.isSuperLike}
             isPassing={passMutation.isPending}
             isSuperLiking={likeMutation.isPending && likeMutation.variables?.isSuperLike}
+            isDisabled={isMutating}
             matchScore={currentProfile.matchScore}
             matchReasons={currentProfile.matchReasons || []}
             matchBreakdown={currentProfile.matchBreakdown || {}}

@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 const lazyConfetti = () => import('canvas-confetti').then(m => m.default);
 import { usePerformanceMonitor } from '@/components/shared/usePerformanceMonitor';
+import { useForegroundRefresh } from '@/hooks/useForegroundRefresh';
 import { useConversionTracker, CONVERSION_EVENTS } from '@/components/shared/ConversionTracker';
 import { hasAccess } from '@/components/shared/TierGate';
 import { useTierConfig, getTierLimit, isUnlimited } from '@/components/shared/useTierConfig';
@@ -52,6 +53,7 @@ const removeSwipedId = (id: string) => {
 
 export default function Home() {
   usePerformanceMonitor('Home');
+  useForegroundRefresh([['discovery-profiles-v2'], ['activity-counts'], ['who-likes-me']]);
   const { trackEvent } = useConversionTracker();
   const { t } = useLanguage();
 
@@ -528,6 +530,7 @@ export default function Home() {
                 handleRewind={handleRewind}
                 setFilters={setFilters}
                 setDiscoveryMode={setDiscoveryMode}
+                isMutating={likeMutation.isPending || passMutation.isPending}
               />
             ) : (
               <GridView
