@@ -405,7 +405,7 @@ export default function AdminModeration() {
                   checked={selectedIds.size === reports.length && reports.length > 0}
                   onCheckedChange={toggleSelectAll}
                 />
-                <span className="text-sm text-muted-foreground">Select all on this page</span>
+                <span className="text-sm text-slate-400">Select all on this page</span>
               </div>
 
               <div className="space-y-2">
