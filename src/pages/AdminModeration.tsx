@@ -346,8 +346,8 @@ export default function AdminModeration() {
             </Select>
 
             <Select value={typeFilter} onValueChange={(v) => { setTypeFilter(v); setPage(0); }}>
-              <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
-              <SelectContent>
+              <SelectTrigger className="w-48 bg-slate-800 border-slate-700 text-white"><SelectValue /></SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-700">
                 <SelectItem value="all">All Types</SelectItem>
                 <SelectItem value="fake_profile">Fake Profile</SelectItem>
                 <SelectItem value="harassment">Harassment</SelectItem>
