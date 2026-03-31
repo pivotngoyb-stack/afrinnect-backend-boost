@@ -30,6 +30,7 @@ import ChatReminderBanner from '@/components/engagement/ChatReminderBanner';
 
 export default function Matches() {
   const { t } = useLanguage();
+  useForegroundRefresh([['matches'], ['conversations-data'], ['likes-received']]);
   
   const [myProfile, setMyProfile] = useState(null);
   const [selectedProfile, setSelectedProfile] = useState(null);
