@@ -81,10 +81,10 @@ const INITIAL_CASES: TestCase[] = [
 ];
 
 const statusConfig: Record<Status, { label: string; color: string; icon: any }> = {
-  untested: { label: 'Untested', color: 'bg-muted text-muted-foreground', icon: AlertTriangle },
-  pass: { label: 'PASS', color: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400', icon: CheckCircle },
-  fail: { label: 'FAIL', color: 'bg-destructive/10 text-destructive', icon: XCircle },
-  blocked: { label: 'Blocked', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400', icon: AlertTriangle },
+  untested: { label: 'Untested', color: 'text-slate-400', icon: AlertTriangle },
+  pass: { label: 'PASS', color: 'text-green-400', icon: CheckCircle },
+  fail: { label: 'FAIL', color: 'text-red-400', icon: XCircle },
+  blocked: { label: 'Blocked', color: 'text-yellow-400', icon: AlertTriangle },
 };
 
 export default function AdminLaunchCertification() {
