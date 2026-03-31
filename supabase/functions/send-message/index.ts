@@ -40,7 +40,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { matchId, content, type = "text", mediaUrl = null } = await req.json();
+    const { matchId, content, type = "text", mediaUrl = null, __optimisticId = null } = await req.json();
 
     if (!matchId) {
       return new Response(JSON.stringify({ error: "matchId is required" }), {
