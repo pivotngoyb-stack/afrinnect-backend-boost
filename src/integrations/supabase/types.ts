@@ -4019,6 +4019,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      decrement_daily_likes: {
+        Args: { p_profile_id: string }
+        Returns: undefined
+      }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -4034,6 +4038,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_daily_likes: {
+        Args: { p_profile_id: string; p_tier_limit: number }
+        Returns: Json
       }
       move_to_dlq: {
         Args: {
