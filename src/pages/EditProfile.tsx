@@ -186,6 +186,8 @@ export default function EditProfile() {
     };
 
     setSaving(true);
+    const cid = generateCorrelationId('profile_save');
+    logMutation('profile_save', cid, 'info', { profile_id: profile?.id });
     try {
       // Handle Height Conversion
       if (measurementSystem === 'imperial') {
@@ -210,8 +212,16 @@ export default function EditProfile() {
         if (response.data.error) throw new Error(response.data.error);
         setProfile(response.data.profile);
       }
+      
+      // Invalidate all queries that depend on profile data to prevent stale state
+      queryClient.invalidateQueries({ queryKey: ['discovery-profiles-v2'] });
+      queryClient.invalidateQueries({ queryKey: ['matched-profiles'] });
+      queryClient.invalidateQueries({ queryKey: ['my-profile'] });
+      
+      logMutation('profile_save', cid, 'info', { profile_id: profile?.id, metadata: { result: 'success' } });
       navigate('/profile');
     } catch (error) {
+      logMutation('profile_save', cid, 'error', { profile_id: profile?.id, error: error.message });
       console.error('Save error:', error);
       toast({ title: t('errors.saveFailed') + error.message, variant: 'destructive' });
       setSaving(false);
