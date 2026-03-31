@@ -697,7 +697,7 @@ export default function Landing() {
             <p className="text-sm text-muted-foreground mb-2">
               {t('landingExtra.footerContact')} <a href="mailto:Support@afrinnect.com" className="text-amber-400 hover:text-amber-300">Support@afrinnect.com</a>
             </p>
-            <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} Afrinnect. {t('landingExtra.footerRights')}</p>
+            <p className="text-sm text-muted-foreground">© 2025 Afrinnect. {t('landingExtra.footerRights')}</p>
             <p className="text-xs text-muted-foreground mt-2">
               {t('landingExtra.footerTrademark')}
             </p>
