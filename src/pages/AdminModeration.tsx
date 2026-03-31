@@ -464,9 +464,9 @@ export default function AdminModeration() {
 
       {/* Side-by-side review panel */}
       {selectedReport && (
-        <div className="w-[420px] border-l bg-card flex flex-col shrink-0">
-          <div className="flex items-center justify-between p-4 border-b">
-            <h2 className="font-bold">Report Review</h2>
+        <div className="w-[420px] border-l border-slate-800 bg-slate-900 flex flex-col shrink-0">
+          <div className="flex items-center justify-between p-4 border-b border-slate-800">
+            <h2 className="font-bold text-white">Report Review</h2>
             <Button variant="ghost" size="icon" onClick={() => setSelectedReport(null)}>
               <X className="w-5 h-5" />
             </Button>
