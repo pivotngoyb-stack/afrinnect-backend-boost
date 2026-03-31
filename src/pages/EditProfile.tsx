@@ -1,6 +1,9 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser, invokeFunction, updateCurrentUser, uploadFile } from '@/lib/supabase-helpers';
+import { generateCorrelationId } from '@/lib/correlation';
+import { logMutation } from '@/lib/structured-logger';
+import { useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
