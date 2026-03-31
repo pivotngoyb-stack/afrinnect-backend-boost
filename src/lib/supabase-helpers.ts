@@ -44,12 +44,17 @@ export async function isAuthenticated() {
 
 export async function logout(redirectUrl?: string) {
   await db.auth.signOut();
-  // Use SPA navigation instead of full page reload
-  if (redirectUrl) {
-    window.location.href = redirectUrl;
-  } else {
-    window.location.href = '/landing';
-  }
+  // SPA-safe navigation — dispatch event so React Router handles it
+  const target = redirectUrl || '/landing';
+  // Use pushState + popstate to trigger React Router without full reload
+  window.history.pushState({}, '', target);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+  // Fallback: if React Router didn't pick it up after 100ms, force navigate
+  setTimeout(() => {
+    if (window.location.pathname !== target) {
+      window.location.href = target;
+    }
+  }, 100);
 }
 
 export async function updateCurrentUser(data: any) {

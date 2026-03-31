@@ -4,6 +4,7 @@ import { createRecord, filterRecords, getCurrentUser, invokeFunction, invokeLLM,
 import { generateCorrelationId } from '@/lib/correlation';
 import { logMutation } from '@/lib/structured-logger';
 import { supabase } from '@/integrations/supabase/client';
+import { useForegroundRefresh } from '@/hooks/useForegroundRefresh';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPageUrl } from '@/utils';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
@@ -53,6 +54,7 @@ import { toast } from '@/hooks/use-toast';
 
 export default function Chat() {
   usePerformanceMonitor('Chat');
+  useForegroundRefresh([['messages'], ['match'], ['conversations-data']]);
   const navigate = useNavigate();
   
   const [searchParams] = useSearchParams();
