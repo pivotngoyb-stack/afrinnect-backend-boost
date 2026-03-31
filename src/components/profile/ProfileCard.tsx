@@ -173,8 +173,8 @@ const ProfileCard = React.memo(function ProfileCard({
   const isActiveNow = !!lastActiveDate && (Date.now() - lastActiveDate.getTime()) < 10 * 60 * 1000;
   const bioPreview = profile?.bio || profile?.about_me || '';
   const interestChips = (profile?.interests || []).slice(0, 5);
-  const socialProofCount = profile?.liked_by_count || profile?.likes_count || profile?.profile_views_count || 0;
-  const socialProof = socialProofCount > 0 ? `Liked by ${socialProofCount} people 👀` : null;
+  // Removed: fabricated social proof violates trust rules
+  const socialProof = null;
 
   const relationshipLabels: Record<string, string> = {
     dating: t('onboarding.goal.dating.label'),
