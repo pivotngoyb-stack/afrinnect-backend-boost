@@ -10,7 +10,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { format } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
 
-export default function CommunityChat() {
+const CommunityChat = React.forwardRef<HTMLDivElement>(function CommunityChat(_props, _ref) {
   const [searchParams] = useSearchParams();
   const communityId = searchParams.get('id');
   const [message, setMessage] = useState('');
@@ -253,4 +253,6 @@ export default function CommunityChat() {
       )}
     </div>
   );
-}
+});
+
+export default CommunityChat;
