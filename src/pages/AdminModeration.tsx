@@ -314,18 +314,18 @@ export default function AdminModeration() {
               { label: "Pending", value: statusCounts?.pending, icon: Clock, color: "text-yellow-500" },
               { label: "Under Review", value: statusCounts?.under_review, icon: Eye, color: "text-blue-500" },
               { label: "Resolved", value: statusCounts?.resolved, icon: Check, color: "text-green-500" },
-              { label: "Dismissed", value: statusCounts?.dismissed, icon: X, color: "text-muted-foreground" },
+              { label: "Dismissed", value: statusCounts?.dismissed, icon: X, color: "text-slate-400" },
             ].map((stat, i) => (
-              <Card key={i}>
+              <Card key={i} className="bg-slate-900 border-slate-800">
                 <CardContent className="p-4 flex items-center gap-3">
                   <stat.icon className={`w-5 h-5 ${stat.color}`} />
                   <div>
                     {stat.value === undefined ? (
-                      <Skeleton className="h-7 w-10" />
+                      <Skeleton className="h-7 w-10 bg-slate-700" />
                     ) : (
-                      <p className="text-2xl font-bold">{stat.value}</p>
+                      <p className="text-2xl font-bold text-white">{stat.value}</p>
                     )}
-                    <p className="text-sm text-muted-foreground">{stat.label}</p>
+                    <p className="text-sm text-slate-400">{stat.label}</p>
                   </div>
                 </CardContent>
               </Card>
