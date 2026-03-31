@@ -55,6 +55,7 @@ const CULTURAL_VALUES = [
 
 export default function EditProfile() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { t: rawT } = useLanguage();
   // editProfile and errors keys are nested under onboarding in translations
   const t = (key: string) => {
