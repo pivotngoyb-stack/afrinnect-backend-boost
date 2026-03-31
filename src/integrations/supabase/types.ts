@@ -4019,6 +4019,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      decrement_daily_likes: {
+        Args: { p_profile_id: string }
+        Returns: undefined
+      }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -4028,12 +4032,23 @@ export type Database = {
         Returns: number
       }
       get_my_profile_id: { Args: never; Returns: string }
+      get_unread_counts: {
+        Args: { p_profile_id: string }
+        Returns: {
+          match_id: string
+          unread_count: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_daily_likes: {
+        Args: { p_profile_id: string; p_tier_limit: number }
+        Returns: Json
       }
       move_to_dlq: {
         Args: {

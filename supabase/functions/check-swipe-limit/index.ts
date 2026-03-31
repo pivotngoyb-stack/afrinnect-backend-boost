@@ -69,8 +69,30 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'increment') {
-      // Check limit before incrementing
-      if (limit !== -1 && currentCount >= limit) {
+      // Use atomic DB function with row-level locking
+      const dbLimit = limit === -1 ? -1 : limit;
+      if (dbLimit === -1) {
+        // Unlimited — no need to call the function
+        return new Response(JSON.stringify({
+          allowed: true,
+          remaining: -1,
+          count: currentCount,
+          tier,
+        }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+
+      const { data: result, error: rpcError } = await supabase.rpc('increment_daily_likes', {
+        p_profile_id: profileId,
+        p_tier_limit: dbLimit
+      });
+
+      if (rpcError) {
+        return new Response(JSON.stringify({ error: rpcError.message }), {
+          status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      if (!result?.allowed) {
         const resetTime = new Date();
         resetTime.setUTCHours(24, 0, 0, 0);
         return new Response(JSON.stringify({
@@ -82,19 +104,12 @@ Deno.serve(async (req) => {
         }), { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
       }
 
-      // Atomically increment
-      const newCount = shouldReset ? 1 : currentCount + 1;
-      await supabase.from('user_profiles').update({
-        daily_likes_count: newCount,
-        daily_likes_reset_date: today,
-      }).eq('id', profileId);
-
-      const remaining = limit === -1 ? -1 : Math.max(0, limit - newCount);
+      const remaining = Math.max(0, dbLimit - (result.count || 0));
 
       return new Response(JSON.stringify({
         allowed: true,
         remaining,
-        count: newCount,
+        count: result.count,
         tier,
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
