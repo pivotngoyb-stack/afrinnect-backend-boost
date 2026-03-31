@@ -384,17 +384,17 @@ export default function AdminModeration() {
               ))}
             </div>
           ) : reportsError ? (
-            <Card>
+            <Card className="bg-slate-900 border-slate-800">
               <CardContent className="p-8 text-center">
-                <AlertTriangle className="w-8 h-8 text-destructive mx-auto mb-2" />
-                <p className="text-destructive">Failed to load reports</p>
+                <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-2" />
+                <p className="text-red-400">Failed to load reports</p>
               </CardContent>
             </Card>
           ) : reports.length === 0 ? (
-            <Card>
+            <Card className="bg-slate-900 border-slate-800">
               <CardContent className="p-12 text-center">
-                <Shield className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No reports match your filters</p>
+                <Shield className="w-12 h-12 text-slate-600 mx-auto mb-4" />
+                <p className="text-slate-400">No reports match your filters</p>
               </CardContent>
             </Card>
           ) : (
