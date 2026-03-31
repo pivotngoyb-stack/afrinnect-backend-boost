@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect, useCallback } from 'react';
 import { createRecord } from '@/lib/supabase-helpers';
+import { supabase } from '@/integrations/supabase/client';
 import { motion, useMotionValue, useTransform, useAnimation, PanInfo } from 'framer-motion';
 import ProgressiveImage from '../shared/ProgressiveImage';
 import { MapPin, Briefcase, GraduationCap, Heart, ChevronLeft, ChevronRight, Languages, Book, Sparkles, Mic, Loader2 } from 'lucide-react';
