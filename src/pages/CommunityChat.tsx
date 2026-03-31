@@ -253,4 +253,6 @@ const CommunityChat = React.forwardRef<HTMLDivElement>(function CommunityChat(_p
       )}
     </div>
   );
-}
+});
+
+export default CommunityChat;

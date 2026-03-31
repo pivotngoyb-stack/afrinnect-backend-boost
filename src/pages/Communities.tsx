@@ -171,7 +171,7 @@ export default function Communities() {
     'Events': <CalendarDays size={16} />,
   };
 
-  const CommunityCard = ({ community }: { community: any }) => {
+  const CommunityCard = React.forwardRef<HTMLDivElement, { community: any }>(({ community }, ref) => {
     const isMember = myMemberships.includes(community.id);
     const count = memberCounts[community.id] || 0;
 
