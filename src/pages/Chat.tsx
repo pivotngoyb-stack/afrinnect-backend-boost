@@ -54,12 +54,13 @@ import { toast } from '@/hooks/use-toast';
 
 export default function Chat() {
   usePerformanceMonitor('Chat');
-  // Use matchId-specific keys so foreground refresh targets the right data
-  useForegroundRefresh([['messages', matchId], ['match', matchId], ['conversations-data']]);
   const navigate = useNavigate();
   
   const [searchParams] = useSearchParams();
   const matchId = searchParams.get('matchId');
+
+  // Use matchId-specific keys so foreground refresh targets the right data
+  useForegroundRefresh([['messages', matchId], ['match', matchId], ['conversations-data']]);
   
   const [myProfile, setMyProfile] = useState(null);
   const [otherProfile, setOtherProfile] = useState(null);
