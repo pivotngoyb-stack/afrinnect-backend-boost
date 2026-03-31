@@ -67,6 +67,26 @@ Deno.serve(async (req) => {
       );
     }
 
+    // CRITICAL: Server-side 18+ age enforcement (Apple Guideline 1.1.4)
+    if (birth_date) {
+      const birthDate = new Date(birth_date);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+      if (age < 18) {
+        return new Response(
+          JSON.stringify({ error: 'You must be at least 18 years old to use Afrinnect' }),
+          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    } else {
+      return new Response(
+        JSON.stringify({ error: 'Birth date is required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Idempotent create: if profile exists, return it (or repair incomplete one)
     const { data: existingProfile } = await admin
       .from('user_profiles')
