@@ -62,7 +62,7 @@ const ProfileCard = React.memo(function ProfileCard({
       y: targetY,
       rotate: targetRotate,
       opacity: 0,
-      transition: { duration: 0.35, ease: [0.4, 0, 0.2, 1] }
+      transition: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }
     });
 
     if (direction === 'right') onLike?.();
