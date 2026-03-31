@@ -633,11 +633,8 @@ export default function Landing() {
             
             {/* Scarcity/Urgency */}
             <div className="inline-flex items-center gap-2 bg-card/10 backdrop-blur-lg px-6 py-3 rounded-full mb-8">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-              </span>
-              <span className="text-white/90 text-sm">{t('landingExtra.ctaLive').replace('{count}', String(liveCount))}</span>
+              <Shield size={14} className="text-green-400" />
+              <span className="text-white/90 text-sm">{t('landing.features.safety.title')}</span>
             </div>
             
             <div className="flex flex-col items-center gap-4">
