@@ -72,6 +72,7 @@ export default function SwipeView({
             isLiking={likeMutation.isPending && !likeMutation.variables?.isSuperLike}
             isPassing={passMutation.isPending}
             isSuperLiking={likeMutation.isPending && likeMutation.variables?.isSuperLike}
+            isDisabled={isMutating}
             matchScore={currentProfile.matchScore}
             matchReasons={currentProfile.matchReasons || []}
             matchBreakdown={currentProfile.matchBreakdown || {}}

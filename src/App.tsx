@@ -139,6 +139,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
+        <OfflineIndicator />
         <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Public */}
