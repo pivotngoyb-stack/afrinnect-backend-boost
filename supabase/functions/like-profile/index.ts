@@ -312,11 +312,22 @@ Deno.serve(async (req) => {
 
     // === REWIND ACTION ===
     if (action === 'rewind') {
+      log('rewind', { liker: myProfile.id, target: targetProfileId });
       // Delete both like and pass records for this target atomically
-      await Promise.all([
-        supabase.from('likes').delete().eq('liker_id', myProfile.id).eq('liked_id', targetProfileId),
+      const [likeResult] = await Promise.all([
+        supabase.from('likes').delete().eq('liker_id', myProfile.id).eq('liked_id', targetProfileId).select('id'),
         supabase.from('passes').delete().eq('passer_id', myProfile.id).eq('passed_id', targetProfileId),
       ]);
+
+      // If a like was deleted, decrement the daily count
+      if (likeResult.data && likeResult.data.length > 0) {
+        const today = new Date().toISOString().split('T')[0];
+        if (myProfile.daily_likes_reset_date === today && (myProfile.daily_likes_count || 0) > 0) {
+          await supabase.from('user_profiles').update({
+            daily_likes_count: Math.max(0, (myProfile.daily_likes_count || 0) - 1)
+          }).eq('id', myProfile.id);
+        }
+      }
 
       return new Response(JSON.stringify({ success: true, action: 'rewind' }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
