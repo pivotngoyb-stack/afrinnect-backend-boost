@@ -9,7 +9,7 @@ export default function UbuntuAIButton() {
     <motion.div
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
-      className="fixed bottom-24 right-6 z-40"
+      className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40"
     >
       <Link to="/supportchat">
         <Button
