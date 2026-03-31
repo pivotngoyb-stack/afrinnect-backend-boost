@@ -106,10 +106,10 @@ const ProfileCard = React.memo(function ProfileCard({
     });
   }, [controls, flyAway, onSuperLike]);
 
-  // Button taps trigger fly-away animation too
-  const handleButtonLike = useCallback(() => { if (!exitDirection) flyAway('right'); }, [flyAway, exitDirection]);
-  const handleButtonPass = useCallback(() => { if (!exitDirection) flyAway('left'); }, [flyAway, exitDirection]);
-  const handleButtonSuperLike = useCallback(() => { if (!exitDirection) flyAway('up'); }, [flyAway, exitDirection]);
+  // Button taps trigger fly-away animation too — blocked when isDisabled
+  const handleButtonLike = useCallback(() => { if (!exitDirection && !isDisabled) flyAway('right'); }, [flyAway, exitDirection, isDisabled]);
+  const handleButtonPass = useCallback(() => { if (!exitDirection && !isDisabled) flyAway('left'); }, [flyAway, exitDirection, isDisabled]);
+  const handleButtonSuperLike = useCallback(() => { if (!exitDirection && !isDisabled) flyAway('up'); }, [flyAway, exitDirection, isDisabled]);
 
   const [showDetails, setShowDetails] = useState(expanded);
   const [viewLogged, setViewLogged] = useState(false);
