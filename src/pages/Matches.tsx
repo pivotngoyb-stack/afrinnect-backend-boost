@@ -346,7 +346,7 @@ export default function Matches() {
         const matchIds = matchesData.slice(0, 50).map(m => m.id);
         if (!matchIds.length) return {};
 
-        // Batch fetch: last message per match + unread counts in 2 queries
+        // Batch fetch: last message per match + unread counts via efficient DB function
         const [lastMsgsResult, unreadResult] = await Promise.all([
           // Get recent messages for all matches at once
           supabase
@@ -355,13 +355,8 @@ export default function Matches() {
             .in('match_id', matchIds)
             .order('created_at', { ascending: false })
             .limit(Math.max(matchIds.length * 5, 50)),
-          // Get unread messages for current user
-          supabase
-            .from('messages')
-            .select('id,match_id')
-            .in('match_id', matchIds)
-            .eq('receiver_id', myProfile.id)
-            .eq('is_read', false)
+          // Get unread counts via efficient DB function (single query, no N+1)
+          supabase.rpc('get_unread_counts', { p_profile_id: myProfile.id })
         ]);
 
         const data: Record<string, any> = {};
@@ -375,10 +370,10 @@ export default function Matches() {
           }
         });
 
-        // Count unreads per match
-        (unreadResult.data || []).forEach(msg => {
-          if (data[msg.match_id]) {
-            data[msg.match_id].unreadCount = (data[msg.match_id].unreadCount || 0) + 1;
+        // Apply unread counts from DB function
+        (unreadResult.data || []).forEach((row: any) => {
+          if (data[row.match_id]) {
+            data[row.match_id].unreadCount = Number(row.unread_count) || 0;
           }
         });
 
