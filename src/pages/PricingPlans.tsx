@@ -395,6 +395,36 @@ export default function PricingPlans() {
             </table>
           </div>
         </div>
+
+        {/* Apple IAP Disclaimer & EULA (Apple Guideline 3.1.1 / 3.1.2) */}
+        <div className="mt-12 max-w-2xl mx-auto text-center space-y-4 pb-24">
+          <div className="bg-muted/50 rounded-xl p-6 text-xs text-muted-foreground space-y-3 leading-relaxed">
+            <p className="font-semibold text-sm text-foreground">Subscription Terms</p>
+            <p>
+              Payment will be charged to your Apple ID account at the confirmation of purchase.
+              Subscriptions automatically renew unless auto-renew is turned off at least 24 hours
+              before the end of the current period. Your account will be charged for renewal within
+              24 hours prior to the end of the current period at the rate of the selected plan.
+            </p>
+            <p>
+              You can manage and cancel your subscriptions by going to your App Store account
+              settings after purchase. Any unused portion of a free trial period, if offered,
+              will be forfeited when you purchase a subscription.
+            </p>
+            <p>
+              Prices are in USD. Actual charges may vary depending on your region and applicable taxes.
+            </p>
+            <div className="flex items-center justify-center gap-4 pt-2 text-primary">
+              <Link to="/terms" className="underline hover:text-primary/80">
+                Terms of Service (EULA)
+              </Link>
+              <span className="text-muted-foreground">•</span>
+              <Link to="/privacy" className="underline hover:text-primary/80">
+                Privacy Policy
+              </Link>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   );
