@@ -210,11 +210,11 @@ const ProfileCard = React.memo(function ProfileCard({
             ? 'w-full max-w-xl max-h-[90dvh] rounded-3xl'
             : 'h-full min-h-[500px] w-full rounded-[1.75rem] cursor-grab active:cursor-grabbing'
         }`}
-        style={{ x, y, rotate, scale, willChange: 'transform' }}
+        style={{ x, y, rotate, scale, willChange: 'transform', touchAction: expanded ? 'auto' : 'none' }}
         animate={controls}
-        drag={!expanded && showActions && !exitDirection}
+        drag={!expanded && showActions && !exitDirection && !isDisabled}
         dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-        dragElastic={1}
+        dragElastic={0.7}
         dragMomentum={false}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
