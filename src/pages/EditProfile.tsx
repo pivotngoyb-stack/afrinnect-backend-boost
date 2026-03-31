@@ -217,6 +217,8 @@ export default function EditProfile() {
       queryClient.invalidateQueries({ queryKey: ['discovery-profiles-v2'] });
       queryClient.invalidateQueries({ queryKey: ['matched-profiles'] });
       queryClient.invalidateQueries({ queryKey: ['my-profile'] });
+      queryClient.invalidateQueries({ queryKey: ['user-profile'] });
+      queryClient.invalidateQueries({ queryKey: ['profile'] });
       
       logMutation('profile_save', cid, 'info', { profile_id: profile?.id, metadata: { result: 'success' } });
       navigate('/profile');

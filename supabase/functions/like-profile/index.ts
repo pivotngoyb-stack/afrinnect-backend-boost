@@ -302,14 +302,9 @@ Deno.serve(async (req) => {
         supabase.from('passes').delete().eq('passer_id', myProfile.id).eq('passed_id', targetProfileId),
       ]);
 
-      // If a like was deleted, decrement the daily count
+      // If a like was deleted, atomically decrement the daily count
       if (likeResult.data && likeResult.data.length > 0) {
-        const today = new Date().toISOString().split('T')[0];
-        if (myProfile.daily_likes_reset_date === today && (myProfile.daily_likes_count || 0) > 0) {
-          await supabase.from('user_profiles').update({
-            daily_likes_count: Math.max(0, (myProfile.daily_likes_count || 0) - 1)
-          }).eq('id', myProfile.id);
-        }
+        await supabase.rpc('decrement_daily_likes', { p_profile_id: myProfile.id });
       }
 
       return new Response(JSON.stringify({ success: true, action: 'rewind' }), {

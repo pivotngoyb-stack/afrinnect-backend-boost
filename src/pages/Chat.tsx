@@ -54,7 +54,8 @@ import { toast } from '@/hooks/use-toast';
 
 export default function Chat() {
   usePerformanceMonitor('Chat');
-  useForegroundRefresh([['messages'], ['match'], ['conversations-data']]);
+  // Use matchId-specific keys so foreground refresh targets the right data
+  useForegroundRefresh([['messages', matchId], ['match', matchId], ['conversations-data']]);
   const navigate = useNavigate();
   
   const [searchParams] = useSearchParams();
