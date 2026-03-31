@@ -270,7 +270,7 @@ export default function Notifications() {
       </header>
 
       <ScrollArea className="max-w-2xl mx-auto">
-        <div className="p-4 space-y-2">
+        <div className="p-4 space-y-2" data-notif-list>
           <AnimatePresence>
             {notifications.length === 0 ? (
               <EmptyState
