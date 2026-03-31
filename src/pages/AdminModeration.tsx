@@ -335,8 +335,8 @@ export default function AdminModeration() {
           {/* Filters */}
           <div className="flex flex-wrap gap-3 items-center">
             <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPage(0); setSelectedIds(new Set()); }}>
-              <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
-              <SelectContent>
+              <SelectTrigger className="w-40 bg-slate-800 border-slate-700 text-white"><SelectValue /></SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-700">
                 <SelectItem value="all">All Status</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
                 <SelectItem value="under_review">Under Review</SelectItem>
