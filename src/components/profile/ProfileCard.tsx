@@ -96,13 +96,13 @@ const ProfileCard = React.memo(function ProfileCard({
       return;
     }
 
-    // Snap back with spring
+    // Snap back with tight spring — Tinder-like responsiveness
     controls.start({
       x: 0,
       y: 0,
       rotate: 0,
       opacity: 1,
-      transition: { type: 'spring', stiffness: 500, damping: 35 }
+      transition: { type: 'spring', stiffness: 600, damping: 30 }
     });
   }, [controls, flyAway, onSuperLike]);
 
