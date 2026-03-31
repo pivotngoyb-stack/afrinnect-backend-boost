@@ -5,9 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Shield, CheckCircle, XCircle, AlertTriangle, Download } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
+import { Shield, CheckCircle, XCircle, AlertTriangle, Download } from 'lucide-react';
+import AdminSidebar from '@/components/admin/AdminSidebar';
 
 type Status = 'untested' | 'pass' | 'fail' | 'blocked';
 
