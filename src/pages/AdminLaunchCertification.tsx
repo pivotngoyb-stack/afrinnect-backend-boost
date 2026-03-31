@@ -296,10 +296,10 @@ export default function AdminLaunchCertification() {
 
 function StatCard({ label, value, className = '' }: { label: string; value: number; className?: string }) {
   return (
-    <Card>
+    <Card className="bg-slate-900 border-slate-800">
       <CardContent className="pt-4 text-center">
-        <div className={`text-2xl font-bold ${className}`}>{value}</div>
-        <div className="text-xs text-muted-foreground">{label}</div>
+        <div className={`text-2xl font-bold ${className || 'text-white'}`}>{value}</div>
+        <div className="text-xs text-slate-400">{label}</div>
       </CardContent>
     </Card>
   );
