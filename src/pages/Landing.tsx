@@ -674,7 +674,7 @@ export default function Landing() {
               <ArrowRight size={18} className="ml-2" />
             </Button>
             <p className="text-center text-xs text-muted-foreground">
-              {t('landingExtra.joinMembers').replace('{count}', String(liveCount))}
+              {t('landingExtra.free')} • {t('landingExtra.twoMinSignup')}
             </p>
           </div>
         )}
