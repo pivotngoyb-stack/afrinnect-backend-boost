@@ -21,6 +21,7 @@ interface SwipeViewProps {
   handleRewind: () => void;
   setFilters: (f: any) => void;
   setDiscoveryMode?: (mode: string) => void;
+  isMutating?: boolean;
 }
 
 export default function SwipeView({
