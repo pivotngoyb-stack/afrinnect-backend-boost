@@ -318,9 +318,9 @@ export default function EditProfile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-amber-50">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <Loader2 className="animate-spin mx-auto mb-4 text-purple-600" size={48} />
+          <Loader2 className="animate-spin mx-auto mb-4 text-primary" size={48} />
           <p className="text-muted-foreground">{t('common.loading')}</p>
         </div>
       </div>
@@ -330,8 +330,8 @@ export default function EditProfile() {
   const completion = calculateCompletion();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative pb-24">
-      <AfricanPattern className="text-purple-600" opacity={0.03} />
+    <div className="min-h-screen bg-background relative pb-24">
+      <AfricanPattern className="text-primary" opacity={0.03} />
 
       {/* Sticky Header */}
       <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border shadow-sm">
@@ -358,7 +358,7 @@ export default function EditProfile() {
               <DialogContent className="max-w-md p-0 overflow-hidden bg-transparent border-0 shadow-none">
                 <div className="bg-card rounded-3xl overflow-hidden h-[600px] overflow-y-auto">
                   <ProfileCard 
-                    profile={{ ...formData, id: 'preview', matchScore: 95 }} 
+                    profile={{ ...formData, id: 'preview' }} 
                     previewMode 
                     expanded
                   />
@@ -369,7 +369,7 @@ export default function EditProfile() {
             <Button 
               onClick={handleSave} 
               disabled={saving}
-              className="bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-700 hover:to-amber-700 text-white shadow-lg"
+              className="gradient-hero text-primary-foreground shadow-lg"
             >
               {saving ? (
                 <>
@@ -454,14 +454,14 @@ export default function EditProfile() {
           transition={{ duration: 0.4, delay: 0.15 }}
         >
           <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
-            <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-6">
-              <div className="flex items-center gap-3 text-white">
+            <div className="bg-gradient-to-r from-primary to-accent p-6">
+              <div className="flex items-center gap-3 text-primary-foreground">
                 <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Sparkles size={24} />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold">Opening Move</h2>
-                  <p className="text-sm text-white/80">Set a prompt your matches will see first</p>
+                  <p className="text-sm text-primary-foreground/80">Set a prompt your matches will see first</p>
                 </div>
               </div>
             </div>
@@ -474,7 +474,7 @@ export default function EditProfile() {
                   placeholder='e.g. "Tell me your favorite African dish 🍲" or "Where would you travel next?"'
                   maxLength={150}
                   rows={2}
-                  className="border-2 focus:border-purple-400 rounded-xl resize-none"
+                  className="border-2 focus:border-primary rounded-xl resize-none"
                 />
                 <p className="text-xs text-muted-foreground mt-1">
                   {(formData.opening_move || '').length}/150 — This prompt shows when someone matches with you
@@ -502,14 +502,14 @@ export default function EditProfile() {
           transition={{ duration: 0.4, delay: 0.2 }}
         >
           <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
-            <div className="bg-gradient-to-r from-green-500 to-teal-600 p-6">
-              <div className="flex items-center gap-3 text-white">
+            <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-6">
+              <div className="flex items-center gap-3 text-primary-foreground">
                 <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Globe size={24} />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold">{t('editProfile.locationHeritage')}</h2>
-                  <p className="text-sm text-white/80">{t('editProfile.locationSubtitle')}</p>
+                  <p className="text-sm text-primary-foreground/80">{t('editProfile.locationSubtitle')}</p>
                 </div>
               </div>
             </div>
@@ -539,7 +539,7 @@ export default function EditProfile() {
                     value={formData.tribe_ethnicity || ''}
                     onChange={(e) => setFormData({ ...formData, tribe_ethnicity: e.target.value })}
                     placeholder="e.g., Yoruba, Zulu, Kikuyu"
-                    className="border-2 focus:border-purple-400 rounded-xl"
+                    className="border-2 focus:border-primary rounded-xl"
                   />
                 </div>
               </div>
@@ -568,7 +568,7 @@ export default function EditProfile() {
                     value={formData.current_city || ''}
                     onChange={(e) => setFormData({ ...formData, current_city: e.target.value })}
                     placeholder={t('onboarding.location.yourCity')}
-                    className="border-2 focus:border-purple-400 rounded-xl"
+                    className="border-2 focus:border-primary rounded-xl"
                   />
                 </div>
               </div>
@@ -603,7 +603,7 @@ export default function EditProfile() {
                     value={formData.profession || ''}
                     onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
                     placeholder={t('editProfile.whatDoYouDo')}
-                    className="border-2 focus:border-purple-400 rounded-xl"
+                    className="border-2 focus:border-primary rounded-xl"
                   />
                 </div>
 
@@ -656,13 +656,13 @@ export default function EditProfile() {
                     <div className="flex bg-muted rounded-lg p-1">
                       <button
                         onClick={() => setMeasurementSystem('imperial')}
-                        className={`text-xs px-2 py-1 rounded-md transition ${measurementSystem === 'imperial' ? 'bg-card shadow text-purple-600 font-medium' : 'text-muted-foreground'}`}
+                        className={`text-xs px-2 py-1 rounded-md transition ${measurementSystem === 'imperial' ? 'bg-card shadow text-primary font-medium' : 'text-muted-foreground'}`}
                       >
                         {t('editProfile.ft_in')}
                       </button>
                       <button
                         onClick={() => setMeasurementSystem('metric')}
-                        className={`text-xs px-2 py-1 rounded-md transition ${measurementSystem === 'metric' ? 'bg-card shadow text-purple-600 font-medium' : 'text-muted-foreground'}`}
+                        className={`text-xs px-2 py-1 rounded-md transition ${measurementSystem === 'metric' ? 'bg-card shadow text-primary font-medium' : 'text-muted-foreground'}`}
                       >
                         {t('editProfile.cm_short')}
                       </button>
@@ -679,7 +679,7 @@ export default function EditProfile() {
                           placeholder={t('editProfile.feet')}
                           min="0"
                           max="8"
-                          className="border-2 focus:border-purple-400 rounded-xl"
+                          className="border-2 focus:border-primary rounded-xl"
                         />
                         <p className="text-xs text-muted-foreground mt-1 text-center">{t('editProfile.feet')}</p>
                       </div>
@@ -691,7 +691,7 @@ export default function EditProfile() {
                           placeholder={t('editProfile.inches')}
                           min="0"
                           max="11"
-                          className="border-2 focus:border-purple-400 rounded-xl"
+                          className="border-2 focus:border-primary rounded-xl"
                         />
                         <p className="text-xs text-muted-foreground mt-1 text-center">{t('editProfile.inches')}</p>
                       </div>
@@ -705,7 +705,7 @@ export default function EditProfile() {
                         placeholder={t('editProfile.cm')}
                         min="50"
                         max="300"
-                        className="border-2 focus:border-purple-400 rounded-xl"
+                        className="border-2 focus:border-primary rounded-xl"
                       />
                       <p className="text-xs text-muted-foreground mt-1 text-center">{t('editProfile.cm')}</p>
                     </div>
@@ -723,8 +723,8 @@ export default function EditProfile() {
           transition={{ duration: 0.4, delay: 0.4 }}
         >
           <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
-            <div className="bg-gradient-to-r from-amber-500 to-orange-600 p-6">
-              <div className="flex items-center gap-3 text-white">
+            <div className="bg-gradient-to-r from-accent to-orange-600 p-6">
+              <div className="flex items-center gap-3 text-primary-foreground">
                 <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Globe size={24} />
                 </div>
@@ -743,8 +743,8 @@ export default function EditProfile() {
                     variant={formData.languages?.includes(lang) ? "default" : "outline"}
                     className={`cursor-pointer transition-all text-sm px-4 py-2 ${
                       formData.languages?.includes(lang)
-                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 shadow-md scale-105'
-                        : 'hover:bg-amber-50 hover:border-amber-300'
+                        ? 'bg-gradient-to-r from-accent to-orange-500 text-primary-foreground border-0 shadow-md scale-105'
+                        : 'hover:bg-accent/10 hover:border-accent/30'
                     }`}
                     onClick={() => toggleItem('languages', lang)}
                   >
@@ -764,8 +764,8 @@ export default function EditProfile() {
           transition={{ duration: 0.4, delay: 0.5 }}
         >
           <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
-            <div className="bg-gradient-to-r from-purple-500 to-pink-600 p-6">
-              <div className="flex items-center gap-3 text-white">
+            <div className="bg-gradient-to-r from-primary to-accent p-6">
+              <div className="flex items-center gap-3 text-primary-foreground">
                 <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Award size={24} />
                 </div>
@@ -784,8 +784,8 @@ export default function EditProfile() {
                     variant={formData.cultural_values?.includes(val) ? "default" : "outline"}
                     className={`cursor-pointer transition-all text-sm px-4 py-2 ${
                       formData.cultural_values?.includes(val)
-                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 shadow-md scale-105'
-                        : 'hover:bg-purple-50 hover:border-purple-300'
+                        ? 'bg-gradient-to-r from-primary to-accent text-primary-foreground border-0 shadow-md scale-105'
+                        : 'hover:bg-primary/10 hover:border-primary/30'
                     }`}
                     onClick={() => toggleItem('cultural_values', val)}
                   >
@@ -852,7 +852,7 @@ export default function EditProfile() {
             onClick={handleSave}
             disabled={saving}
             size="lg"
-            className="bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-700 hover:to-amber-700 text-white px-12 py-6 text-lg rounded-full shadow-2xl hover:shadow-xl transition-all"
+            className="gradient-hero text-primary-foreground px-12 py-6 text-lg rounded-full shadow-2xl hover:shadow-xl transition-all"
           >
             {saving ? (
               <>

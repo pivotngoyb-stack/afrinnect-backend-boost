@@ -163,11 +163,12 @@ export default function PricingPlans() {
   };
 
   const handleRestorePurchases = () => {
-    toast.info('Checking for previous purchases...');
-    // Native restore purchases will be handled by Capacitor/StoreKit
-    setTimeout(() => {
-      toast.success('No previous purchases found. If you believe this is an error, please contact support.');
-    }, 2000);
+    // On web, direct users to native app for purchase restoration
+    // On native (Capacitor), this would trigger StoreKit/BillingClient restore
+    toast.info(
+      'To restore purchases, open the Afrinnect app on your device and go to Settings → Restore Purchases. If you need help, contact support.',
+      { duration: 6000 }
+    );
   };
 
   return (
