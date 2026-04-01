@@ -187,9 +187,9 @@ export default function Matches() {
       }
     },
     enabled: !!myProfile,
-    refetchInterval: 30000,
+    refetchInterval: 60000,
     refetchOnWindowFocus: true,
-    staleTime: 15000,
+    staleTime: 30000,
     retry: 2,
     retryDelay: 3000
   });
