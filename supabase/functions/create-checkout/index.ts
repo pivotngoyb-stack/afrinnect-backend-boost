@@ -25,7 +25,8 @@ Deno.serve(async (req) => {
       });
     }
     
-    const { data: { user }, error: authErr } = await supabase.auth.getUser(
+    const anonClient = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!);
+    const { data: { user }, error: authErr } = await anonClient.auth.getUser(
       authHeader.replace('Bearer ', ''),
     );
     if (authErr || !user) {
