@@ -47,8 +47,8 @@ export default function LiveViewerNotification({
 
           if (viewerProfile) {
             setViewer({
-              name: viewerProfile.full_name || 'Someone',
-              photo: viewerProfile.profile_photo || undefined,
+              name: viewerProfile.display_name || 'Someone',
+              photo: viewerProfile.primary_photo || undefined,
             });
             setIsVisible(true);
 

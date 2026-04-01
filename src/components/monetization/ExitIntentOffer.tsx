@@ -29,7 +29,7 @@ export default function ExitIntentOffer({ userProfileId, onDismiss }: ExitIntent
         .from('subscriptions')
         .select('id')
         .eq('user_profile_id', userProfileId)
-        .in('status', ['active', 'trialing'])
+        .eq('status', 'active')
         .limit(1);
 
       if (subs && subs.length > 0) return; // Already subscribed

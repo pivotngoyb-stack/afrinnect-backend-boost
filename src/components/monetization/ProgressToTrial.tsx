@@ -37,7 +37,7 @@ export default function ProgressToTrial({ userProfile, className = "" }: Progres
         .from('subscriptions')
         .select('id, is_trial, trial_end, status')
         .eq('user_profile_id', userProfile.id)
-        .in('status', ['active', 'trialing'])
+        .eq('status', 'active')
         .limit(1);
       
       if (data && data.length > 0) setHasActiveTrial(true);

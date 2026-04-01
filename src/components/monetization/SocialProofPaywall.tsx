@@ -19,7 +19,7 @@ export default function SocialProofPaywall({ className = "" }: SocialProofPaywal
         .from('subscriptions')
         .select('id', { count: 'exact', head: true })
         .gte('created_at', sevenDaysAgo)
-        .in('status', ['active', 'trialing']);
+        .eq('status', 'active');
 
       // Count total premium users
       const { count: totalPremium } = await supabase

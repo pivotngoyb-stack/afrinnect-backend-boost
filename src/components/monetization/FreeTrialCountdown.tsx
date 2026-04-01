@@ -24,7 +24,7 @@ export default function FreeTrialCountdown({ userProfileId }: FreeTrialCountdown
         .select('trial_end, is_trial, status')
         .eq('user_profile_id', userProfileId)
         .eq('is_trial', true)
-        .in('status', ['active', 'trialing'])
+        .eq('status', 'active')
         .order('created_at', { ascending: false })
         .limit(1);
 
