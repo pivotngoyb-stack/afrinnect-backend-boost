@@ -630,14 +630,15 @@ export default function Matches() {
                        <p className="text-muted-foreground mb-4 text-sm">
                           {t('matchesPage.noNewLikesDesc')}
                         </p>
-                        <Button 
-                          onClick={() => window.dispatchEvent(new CustomEvent('navigate-to', { detail: '/pricingplans' }))}
-                          variant="outline"
-                          className="border-primary/30 text-primary hover:bg-primary/5"
-                        >
-                         <Sparkles size={16} className="mr-2" />
-                         {t('matchesPage.boostProfile')}
-                       </Button>
+                        <Link to="/pricingplans">
+                         <Button 
+                           variant="outline"
+                           className="border-primary/30 text-primary hover:bg-primary/5"
+                         >
+                          <Sparkles size={16} className="mr-2" />
+                          {t('matchesPage.boostProfile')}
+                        </Button>
+                        </Link>
                     </motion.div>
                   </div>
                 )}
