@@ -105,18 +105,8 @@ Deno.serve(async (req) => {
         heatScore -= Math.min(reportCount * 5, 20);  // -20 max penalty from reports
         heatScore = Math.max(0, Math.min(100, heatScore));
 
-        // Update profile and ML profile
-        await Promise.all([
-          supabase.from('user_profiles').update({ heat_score: heatScore }).eq('id', pid),
-          supabase.from('user_ml_profiles').upsert({
-            user_id: pid, // This may need to be the auth user_id
-            heat_score: heatScore,
-            swipe_right_rate: swipeRightRate,
-            response_rate: responseRate,
-            profile_completeness: completeness,
-            updated_at: new Date().toISOString(),
-          }, { onConflict: 'user_id' }),
-        ]);
+        // Update heat score on profile
+        await supabase.from('user_profiles').update({ heat_score: heatScore }).eq('id', pid);
 
         results.push({ profileId: pid, heatScore: Math.round(heatScore * 10) / 10, completeness });
       } catch (e) {

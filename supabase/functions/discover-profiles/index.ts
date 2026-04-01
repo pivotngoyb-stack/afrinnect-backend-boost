@@ -47,13 +47,19 @@ Deno.serve(async (req) => {
       supabase.from('user_profiles').select('blocked_users').eq('id', profileId).single(),
       supabase.from('likes').select('liked_id').eq('liker_id', profileId),
       supabase.from('passes').select('passed_id').eq('passer_id', profileId),
-      supabase.rpc('get_matched_partner_ids', { p_profile_id: profileId }).then(res => res, () => ({ data: [] })),
+      // Direct query instead of missing RPC
+      supabase.from('matches')
+        .select('user1_id,user2_id')
+        .eq('is_match', true)
+        .or(`user1_id.eq.${profileId},user2_id.eq.${profileId}`),
     ]);
 
     const blockedUsers: string[] = blockedRes.data?.blocked_users || [];
     const likedIds: string[] = (likesRes.data || []).map((l: any) => l.liked_id);
     const passedIds: string[] = (passesRes.data || []).map((p: any) => p.passed_id);
-    const matchedIds: string[] = (matchesRes.data || []).map((m: any) => m.partner_id || m);
+    const matchedIds: string[] = (matchesRes.data || []).map((m: any) =>
+      m.user1_id === profileId ? m.user2_id : m.user1_id
+    );
 
     // Build exclusion set — includes passes so swiped-left profiles don't reappear
     const excludeSet = new Set([profileId, ...blockedUsers, ...likedIds, ...passedIds, ...matchedIds, ...excludeIds]);

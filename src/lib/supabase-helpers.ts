@@ -255,8 +255,7 @@ const functionNameMap: Record<string, string> = {
   sendEmail: 'send-email',
   sendMessage: 'send-message',
   blockUser: 'block-user',
-  stripeWebhook: 'stripe-webhook',
-  verifyVideoIdentity: 'verify-photo',
+  verifyPhoto: 'verify-photo',
   moderateContent: 'moderate-content',
   ubuntuAi: 'ubuntu-ai',
   createProfile: 'createProfile',
@@ -267,7 +266,6 @@ const functionNameMap: Record<string, string> = {
   sendWinbackEmail: 'send-winback-email',
   boostProfile: 'boost-profile',
   updateHeatScore: 'update-heat-score',
-  checkSwipeLimit: 'check-swipe-limit',
   likeProfile: 'like-profile',
   discoverProfiles: 'discover-profiles',
 };

@@ -75,14 +75,8 @@ Deno.serve(async (req) => {
       is_admin: true,
     });
 
-    // Audit log
-    await supabase.from('admin_audit_logs').insert({
-      admin_user_id: user.id,
-      action: 'subscription_cancelled',
-      target_type: 'subscription',
-      target_id: subscription.id,
-      details: { reason, feedback, plan: subscription.plan_type },
-    });
+    // Structured log (user action, not admin action)
+    console.log(JSON.stringify({ action: 'subscription_cancelled', user_id: user.id, subscription_id: subscription.id, plan: subscription.plan_type, reason }));
 
     return new Response(JSON.stringify({
       success: true,
