@@ -852,7 +852,7 @@ export default function EditProfile() {
             onClick={handleSave}
             disabled={saving}
             size="lg"
-            className="bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-700 hover:to-amber-700 text-white px-12 py-6 text-lg rounded-full shadow-2xl hover:shadow-xl transition-all"
+            className="gradient-hero text-primary-foreground px-12 py-6 text-lg rounded-full shadow-2xl hover:shadow-xl transition-all"
           >
             {saving ? (
               <>
