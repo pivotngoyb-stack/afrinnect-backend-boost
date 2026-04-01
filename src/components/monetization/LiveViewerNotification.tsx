@@ -41,7 +41,7 @@ export default function LiveViewerNotification({
           // Fetch viewer's basic info
           const { data: viewerProfile } = await supabase
             .from('user_profiles')
-            .select('full_name, profile_photo')
+            .select('display_name, primary_photo')
             .eq('id', viewerProfileId)
             .single();
 
