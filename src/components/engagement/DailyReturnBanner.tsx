@@ -1,8 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Flame, Gift, Star, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Flame, Star, X } from 'lucide-react';
 import { useLanguage } from '@/components/i18n/LanguageContext';
 
 interface DailyReturnBannerProps {
@@ -28,12 +27,12 @@ export default function DailyReturnBanner({ userProfile, className = '' }: Daily
   if (!shown || dismissed || !userProfile) return null;
 
   const streak = userProfile.login_streak || 1;
-  const messages = [
-    { text: t('engagement.dailyReturn.newPeople'), sub: t('engagement.dailyReturn.newPeopleSub'), icon: Star },
-    { text: t('engagement.dailyReturn.streak').replace('{count}', String(streak)), sub: t('engagement.dailyReturn.streakSub'), icon: Flame },
-    { text: t('engagement.dailyReturn.newLike'), sub: t('engagement.dailyReturn.newLikeSub'), icon: Gift },
-  ];
-  const msg = streak > 2 ? messages[1] : messages[Math.floor(Math.random() * messages.length)];
+
+  // Only show streak-based message — no fabricated "someone liked you" claims
+  const msg = streak > 1
+    ? { text: t('engagement.dailyReturn.streak').replace('{count}', String(streak)), sub: t('engagement.dailyReturn.streakSub'), icon: Flame }
+    : { text: t('engagement.dailyReturn.newPeople'), sub: t('engagement.dailyReturn.newPeopleSub'), icon: Star };
+
   const Icon = msg.icon;
 
   return (

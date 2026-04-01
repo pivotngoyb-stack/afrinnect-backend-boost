@@ -1,68 +1,74 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Zap, MapPin, Heart, TrendingUp, Trophy } from 'lucide-react';
-import { useLanguage } from '@/components/i18n/LanguageContext';
+import { Users, Heart } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
-const CITIES = ['New York', 'Toronto', 'Houston', 'Atlanta', 'Chicago', 'Vancouver', 'Montreal', 'Miami', 'Los Angeles', 'Dallas', 'Washington DC', 'Calgary', 'Ottawa', 'Philadelphia', 'San Francisco', 'Boston'];
-const NAMES_M = ['Kwame', 'Chidi', 'Amari', 'Kofi', 'Jabari', 'Tendai', 'Emeka', 'Sekou'];
-const NAMES_F = ['Amina', 'Zuri', 'Nia', 'Aisha', 'Fatou', 'Adama', 'Nala', 'Sade'];
-
-function randomItem(arr: string[]) { return arr[Math.floor(Math.random() * arr.length)]; }
-function randomNum(min: number, max: number) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-
-function getTemplates(t: (key: string) => string, userCity?: string) {
-  const city = userCity || randomItem(CITIES);
-  return [
-    () => ({ icon: Heart, text: t('engagement.liveActivity.matched').replace('{name1}', randomItem(NAMES_M)).replace('{name2}', randomItem(NAMES_F)), color: 'text-pink-500' }),
-    () => ({ icon: Users, text: t('engagement.liveActivity.joined').replace('{city}', randomItem(CITIES)), color: 'text-primary' }),
-    () => ({ icon: Zap, text: t('engagement.liveActivity.online').replace('{count}', String(randomNum(3, 12))), color: 'text-amber-500' }),
-    () => ({ icon: MapPin, text: t('engagement.liveActivity.newMatch').replace('{city}', randomItem(CITIES)), color: 'text-emerald-500' }),
-    () => ({ icon: TrendingUp, text: t('engagement.liveActivity.matchesToday').replace('{city}', city).replace('{count}', String(randomNum(8, 25))), color: 'text-primary' }),
-    () => ({ icon: Trophy, text: t('engagement.liveActivity.matchesHour').replace('{name}', randomItem(NAMES_M)).replace('{count}', String(randomNum(2, 5))), color: 'text-amber-500' }),
-    () => ({ icon: Zap, text: t('engagement.liveActivity.completeTip'), color: 'text-emerald-500' }),
-    () => ({ icon: Heart, text: t('engagement.liveActivity.swiping').replace('{count}', String(randomNum(15, 40))).replace('{city}', city), color: 'text-pink-500' }),
-  ];
-}
-
+/**
+ * LiveActivityFeed — shows REAL platform stats, not fabricated activity.
+ */
 export default function LiveActivityFeed({ className = '', userProfile }: { className?: string; userProfile?: any }) {
-  const { t } = useLanguage();
-  const userCity = userProfile?.current_city;
-  const templates = getTemplates(t, userCity);
-  const [activity, setActivity] = useState(() => templates[0]());
+  const [stats, setStats] = useState<{ totalUsers: number; recentMatches: number } | null>(null);
   const [visible, setVisible] = useState(true);
+  const [currentIdx, setCurrentIdx] = useState(0);
 
   useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const [usersRes, matchesRes] = await Promise.all([
+          supabase.from('user_profiles').select('id', { count: 'exact', head: true }),
+          supabase.from('matches').select('id', { count: 'exact', head: true })
+            .eq('is_match', true)
+            .gte('matched_at', new Date(Date.now() - 7 * 86400000).toISOString()),
+        ]);
+        setStats({
+          totalUsers: usersRes.count || 0,
+          recentMatches: matchesRes.count || 0,
+        });
+      } catch {}
+    };
+    fetchStats();
+    const interval = setInterval(fetchStats, 300000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const items = stats ? [
+    stats.totalUsers > 0 && { icon: Users, text: `${stats.totalUsers.toLocaleString()} members on Afrinnect`, color: 'text-primary' },
+    stats.recentMatches > 0 && { icon: Heart, text: `${stats.recentMatches.toLocaleString()} matches made this week`, color: 'text-pink-500' },
+  ].filter(Boolean) : [];
+
+  useEffect(() => {
+    if (items.length <= 1) return;
     const interval = setInterval(() => {
       setVisible(false);
       setTimeout(() => {
-        const tpls = getTemplates(t, userCity);
-        setActivity(tpls[Math.floor(Math.random() * tpls.length)]());
+        setCurrentIdx(prev => (prev + 1) % items.length);
         setVisible(true);
-      }, 500);
-    }, 6000 + Math.random() * 4000);
+      }, 400);
+    }, 8000);
     return () => clearInterval(interval);
-  }, [userCity, t]);
+  }, [items.length]);
 
-  const Icon = activity.icon;
+  if (!stats || items.length === 0) return null;
+
+  const current = items[currentIdx % items.length];
+  if (!current) return null;
+  const Icon = current.icon;
 
   return (
     <div className={`mb-3 ${className}`}>
       <AnimatePresence mode="wait">
         {visible && (
           <motion.div
-            key={activity.text}
+            key={current.text}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.3 }}
             className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2"
           >
-            <div className="relative">
-              <Icon size={14} className={activity.color} />
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            </div>
-            <p className="text-xs text-muted-foreground">{activity.text}</p>
+            <Icon size={14} className={current.color} />
+            <p className="text-xs text-muted-foreground">{current.text}</p>
           </motion.div>
         )}
       </AnimatePresence>

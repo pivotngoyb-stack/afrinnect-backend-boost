@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Crown, Sparkles } from 'lucide-react';
+import { Heart, Crown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
@@ -8,10 +8,13 @@ import { Button } from '@/components/ui/button';
 interface Props {
   show: boolean;
   onClose: () => void;
-  matchScore?: number;
 }
 
-export default function MissedMatchRegret({ show, onClose, matchScore = 95 }: Props) {
+/**
+ * MissedMatchRegret — upgrade prompt shown when daily like limit is hit.
+ * No fabricated match scores, shared interests, or distance claims.
+ */
+export default function MissedMatchRegret({ show, onClose }: Props) {
   if (!show) return null;
 
   return (
@@ -31,53 +34,30 @@ export default function MissedMatchRegret({ show, onClose, matchScore = 95 }: Pr
           className="w-full max-w-sm relative"
         >
           <div className="bg-card rounded-2xl overflow-hidden shadow-2xl border border-border">
-            {/* Blurred profile teaser */}
-            <div className="relative h-56 bg-gradient-to-br from-pink-400 via-purple-400 to-amber-400">
+            <div className="relative h-40 bg-gradient-to-br from-pink-400 via-purple-400 to-amber-400">
               <div className="absolute inset-0 backdrop-blur-3xl bg-foreground/20 flex flex-col items-center justify-center">
                 <motion.div
                   animate={{ scale: [1, 1.1, 1] }}
                   transition={{ repeat: Infinity, duration: 2 }}
-                  className="w-20 h-20 rounded-full bg-card/20 backdrop-blur-xl flex items-center justify-center mb-3"
+                  className="w-16 h-16 rounded-full bg-card/20 backdrop-blur-xl flex items-center justify-center"
                 >
-                  <Heart size={36} className="text-white" fill="white" />
+                  <Heart size={32} className="text-white" fill="white" />
                 </motion.div>
-                <div className="bg-card/20 backdrop-blur-sm rounded-full px-4 py-1.5">
-                  <span className="text-white font-bold text-lg flex items-center gap-1.5">
-                    <Sparkles size={16} />
-                    {matchScore}% Match
-                  </span>
-                </div>
               </div>
             </div>
 
             <div className="p-5 text-center">
               <h3 className="text-xl font-bold text-foreground mb-1">
-                You just missed a {matchScore}% match! 💔
+                You've used all your daily likes
               </h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                This person matched almost perfectly with your preferences. 
-                With Premium, you'd never miss connections like this.
+              <p className="text-sm text-muted-foreground mb-5">
+                Upgrade to Premium for more likes and never miss a potential connection.
               </p>
-
-              <div className="bg-muted/50 rounded-xl p-3 mb-4">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Shared interests</span>
-                  <span className="font-semibold text-foreground">5 in common</span>
-                </div>
-                <div className="flex items-center justify-between text-sm mt-1">
-                  <span className="text-muted-foreground">Compatibility</span>
-                  <span className="font-semibold text-primary">{matchScore}%</span>
-                </div>
-                <div className="flex items-center justify-between text-sm mt-1">
-                  <span className="text-muted-foreground">Distance</span>
-                  <span className="font-semibold text-foreground">Nearby</span>
-                </div>
-              </div>
 
               <Link to={createPageUrl('PricingPlans')}>
                 <Button className="w-full py-5 text-base shadow-lg gap-2">
                   <Crown size={18} />
-                  Unlock Unlimited Likes
+                  See Premium Plans
                 </Button>
               </Link>
 
@@ -85,7 +65,7 @@ export default function MissedMatchRegret({ show, onClose, matchScore = 95 }: Pr
                 onClick={onClose}
                 className="mt-3 text-sm text-muted-foreground hover:text-foreground"
               >
-                I'm okay missing matches
+                Maybe later
               </button>
             </div>
           </div>
