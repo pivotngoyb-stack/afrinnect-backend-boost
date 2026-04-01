@@ -461,7 +461,7 @@ export default function EditProfile() {
                 </div>
                 <div>
                   <h2 className="text-xl font-bold">Opening Move</h2>
-                  <p className="text-sm text-white/80">Set a prompt your matches will see first</p>
+                  <p className="text-sm text-primary-foreground/80">Set a prompt your matches will see first</p>
                 </div>
               </div>
             </div>
