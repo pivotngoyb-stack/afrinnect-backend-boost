@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Lock, Sparkles, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { filterRecords } from '@/lib/supabase-helpers';
+import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/components/i18n/LanguageContext';
 
@@ -14,23 +14,32 @@ interface PeopleLikeYouTeaserProps {
 
 export default function PeopleLikeYouTeaser({ userProfile, className = '' }: PeopleLikeYouTeaserProps) {
   const { t } = useLanguage();
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState<number | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!userProfile?.id) return;
-    const fetch = async () => {
+    const fetchReal = async () => {
       try {
-        const likes = await filterRecords('likes', { liked_id: userProfile.id });
-        const real = likes.length;
-        const simulated = real < 3 ? Math.floor(Math.random() * 4) + 3 : real;
-        setCount(simulated);
-      } catch { setCount(Math.floor(Math.random() * 5) + 2); }
+        const { count: realCount, error } = await supabase
+          .from('likes')
+          .select('id', { count: 'exact', head: true })
+          .eq('liked_id', userProfile.id);
+
+        if (!error && realCount !== null) {
+          setCount(realCount);
+        } else {
+          setCount(0);
+        }
+      } catch {
+        setCount(0);
+      }
     };
-    fetch();
+    fetchReal();
   }, [userProfile?.id]);
 
-  if (count === 0) return null;
+  // Don't show until data loads, and don't show if zero
+  if (count === null || count === 0) return null;
 
   const isPremium = userProfile?.subscription_tier && userProfile.subscription_tier !== 'free';
   const noun = count === 1 ? t('engagement.peopleLikeYou.personIs') : t('engagement.peopleLikeYou.peopleAre');
@@ -39,9 +48,9 @@ export default function PeopleLikeYouTeaser({ userProfile, className = '' }: Peo
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className={`relative overflow-hidden bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-amber-500/10 border border-pink-200/50 dark:border-pink-800/30 rounded-xl p-4 mb-3 ${className}`}
+      className={`relative overflow-hidden bg-gradient-to-br from-pink-500/10 via-purple-500/10 to-amber-500/10 border border-border rounded-xl p-4 mb-3 ${className}`}
     >
-      <div className="absolute inset-0 bg-gradient-to-r from-pink-500/5 via-transparent to-purple-500/5 animate-pulse" />
+      <div className="absolute inset-0 bg-gradient-to-r from-pink-500/5 via-transparent to-purple-500/5" />
       <div className="relative">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
