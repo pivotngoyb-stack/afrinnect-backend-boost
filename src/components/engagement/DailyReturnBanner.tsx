@@ -9,7 +9,7 @@ interface DailyReturnBannerProps {
   className?: string;
 }
 
-export default function DailyReturnBanner({ userProfile, className = '' }: DailyReturnBannerProps) {
+const DailyReturnBanner = React.forwardRef<HTMLDivElement, DailyReturnBannerProps>(function DailyReturnBanner({ userProfile, className = '' }, ref) {
   const { t } = useLanguage();
   const [dismissed, setDismissed] = useState(false);
   const [shown, setShown] = useState(false);
