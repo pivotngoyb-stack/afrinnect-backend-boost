@@ -595,7 +595,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="h-screen bg-background flex flex-col overflow-hidden">
+    <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
       {/* Header - Native App Bar */}
       <header className="bg-card/95 backdrop-blur-lg border-b border-border/50 px-4 py-3 flex items-center justify-between sticky top-0 z-10" style={{ paddingTop: 'max(12px, env(safe-area-inset-top))' }}>
         <div className="flex items-center gap-3">
