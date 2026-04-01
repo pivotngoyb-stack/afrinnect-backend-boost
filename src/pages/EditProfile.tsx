@@ -656,7 +656,7 @@ export default function EditProfile() {
                     <div className="flex bg-muted rounded-lg p-1">
                       <button
                         onClick={() => setMeasurementSystem('imperial')}
-                        className={`text-xs px-2 py-1 rounded-md transition ${measurementSystem === 'imperial' ? 'bg-card shadow text-purple-600 font-medium' : 'text-muted-foreground'}`}
+                        className={`text-xs px-2 py-1 rounded-md transition ${measurementSystem === 'imperial' ? 'bg-card shadow text-primary font-medium' : 'text-muted-foreground'}`}
                       >
                         {t('editProfile.ft_in')}
                       </button>
