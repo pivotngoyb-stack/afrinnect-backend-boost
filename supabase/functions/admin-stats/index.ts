@@ -77,9 +77,9 @@ Deno.serve(async (req) => {
     const foundingMembers = profiles.filter(p => p.is_founding_member);
 
     // Tier breakdown
-    const goldUsers = profiles.filter(p => p.subscription_tier === 'gold').length;
-    const platinumUsers = profiles.filter(p => p.subscription_tier === 'platinum').length;
-    const diamondUsers = profiles.filter(p => p.subscription_tier === 'diamond').length;
+    const premiumTierUsers = profiles.filter(p => p.subscription_tier === 'premium').length;
+    const eliteUsers = profiles.filter(p => p.subscription_tier === 'elite').length;
+    const vipUsers = profiles.filter(p => p.subscription_tier === 'vip').length;
 
     // DAU/MAU
     const dau = profiles.filter(p => p.last_active && new Date(p.last_active) >= new Date(now.getTime() - 24 * 60 * 60 * 1000)).length;
