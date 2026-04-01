@@ -764,8 +764,8 @@ export default function EditProfile() {
           transition={{ duration: 0.4, delay: 0.5 }}
         >
           <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
-            <div className="bg-gradient-to-r from-purple-500 to-pink-600 p-6">
-              <div className="flex items-center gap-3 text-white">
+            <div className="bg-gradient-to-r from-primary to-accent p-6">
+              <div className="flex items-center gap-3 text-primary-foreground">
                 <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Award size={24} />
                 </div>
