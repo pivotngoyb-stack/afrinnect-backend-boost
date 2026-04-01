@@ -318,9 +318,9 @@ export default function EditProfile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-amber-50">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <Loader2 className="animate-spin mx-auto mb-4 text-purple-600" size={48} />
+          <Loader2 className="animate-spin mx-auto mb-4 text-primary" size={48} />
           <p className="text-muted-foreground">{t('common.loading')}</p>
         </div>
       </div>
