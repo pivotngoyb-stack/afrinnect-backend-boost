@@ -383,20 +383,7 @@ export default function Home() {
   };
 
   const handleSuperLike = async (profile) => {
-    const tier = myProfile?.subscription_tier || 'free';
-    if (tier === 'free') {
-      const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
-      const { count } = await supabase
-        .from('likes')
-        .select('id', { count: 'exact', head: true })
-        .eq('liker_id', myProfile.id)
-        .eq('is_super_like', true)
-        .gte('created_at', weekAgo);
-      if ((count || 0) >= 1) {
-        toast('You have used your weekly Super Like');
-        return;
-      }
-    }
+    if (likeMutation.isPending || passMutation.isPending) return;
     localSwipedIds.current.add(profile.id);
     persistSwipedId(profile.id);
     setPendingLikeProfile(profile);
