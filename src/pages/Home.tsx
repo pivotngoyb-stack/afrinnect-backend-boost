@@ -307,12 +307,12 @@ export default function Home() {
           const errBody = JSON.parse(error.message);
           throw new Error(errBody.error || 'Like failed');
         } catch (e) {
-          if (e.message === 'daily_limit_reached') throw e;
+          if (e.message === 'daily_limit_reached' || e.message === 'super_like_limit_reached' || e.message === 'rewind_requires_upgrade') throw e;
           throw new Error(error.message || 'Like failed');
         }
       }
 
-      if (data?.error === 'daily_limit_reached') throw new Error('daily_limit_reached');
+      if (data?.error === 'daily_limit_reached' || data?.error === 'super_like_limit_reached' || data?.error === 'rewind_requires_upgrade') throw new Error(data.error);
       if (data?.error) throw new Error(data.error);
 
       return data;
