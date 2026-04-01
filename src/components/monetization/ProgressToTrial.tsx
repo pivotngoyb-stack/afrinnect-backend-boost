@@ -1,36 +1,67 @@
-// @ts-nocheck
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gift, Check, Crown, Star, Heart, MessageCircle, User, ChevronDown, ChevronUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { supabase } from '@/integrations/supabase/client';
 
-export default function ProgressToTrial({ 
-  completedActions = [],
-  totalRequired = 5,
-  className = "" 
-}) {
+const ACTIONS = [
+  { id: 'profile_photo', label: 'Add profile photo', icon: User },
+  { id: 'bio', label: 'Write your bio', icon: User },
+  { id: 'first_like', label: 'Like someone', icon: Heart },
+  { id: 'view_profiles', label: 'View 5 profiles', icon: Star },
+  { id: 'send_message', label: 'Send a message', icon: MessageCircle },
+];
+
+const TOTAL_REQUIRED = 5;
+
+interface ProgressToTrialProps {
+  userProfile: { id: string; user_id: string; onboarding_actions?: string[] } | null;
+  className?: string;
+}
+
+export default function ProgressToTrial({ userProfile, className = "" }: ProgressToTrialProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  
-  const actions = [
-    { id: 'profile_photo', label: 'Add profile photo', icon: User, completed: completedActions.includes('profile_photo') },
-    { id: 'bio', label: 'Write your bio', icon: User, completed: completedActions.includes('bio') },
-    { id: 'first_like', label: 'Like someone', icon: Heart, completed: completedActions.includes('first_like') },
-    { id: 'view_profiles', label: 'View 5 profiles', icon: Star, completed: completedActions.includes('view_profiles') },
-    { id: 'send_message', label: 'Send a message', icon: MessageCircle, completed: completedActions.includes('send_message') },
-  ];
+  const [completedActions, setCompletedActions] = useState<string[]>([]);
+  const [hasActiveTrial, setHasActiveTrial] = useState(false);
+
+  useEffect(() => {
+    if (!userProfile) return;
+    setCompletedActions(userProfile.onboarding_actions || []);
+
+    // Check if user already has an active trial or subscription
+    const checkSub = async () => {
+      const { data } = await supabase
+        .from('subscriptions')
+        .select('id, is_trial, trial_end, status')
+        .eq('user_profile_id', userProfile.id)
+        .eq('status', 'active')
+        .limit(1);
+      
+      if (data && data.length > 0) setHasActiveTrial(true);
+    };
+    checkSub();
+  }, [userProfile]);
+
+  const actions = ACTIONS.map(a => ({
+    ...a,
+    completed: completedActions.includes(a.id),
+  }));
 
   const completedCount = actions.filter(a => a.completed).length;
-  const progress = (completedCount / totalRequired) * 100;
-  const isComplete = completedCount >= totalRequired;
+  const progress = (completedCount / TOTAL_REQUIRED) * 100;
+  const isComplete = completedCount >= TOTAL_REQUIRED;
+
+  // Don't show if user already has a subscription/trial or if user has no profile
+  if (!userProfile || hasActiveTrial) return null;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`bg-gradient-to-r from-amber-50 to-purple-50 rounded-xl border border-amber-200/50 overflow-hidden ${className}`}
+      className={`bg-gradient-to-r from-amber-50 to-purple-50 dark:from-amber-950/30 dark:to-purple-950/30 rounded-xl border border-amber-200/50 dark:border-amber-800/30 overflow-hidden ${className}`}
     >
       <button 
         onClick={() => setIsExpanded(!isExpanded)}
@@ -42,8 +73,8 @@ export default function ProgressToTrial({
         <div className="flex-1 text-left">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-sm">Free Trial</span>
-            <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-medium">
-              {completedCount}/{totalRequired}
+            <span className="text-xs bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded-full font-medium">
+              {completedCount}/{TOTAL_REQUIRED}
             </span>
           </div>
           <Progress value={progress} className="h-1.5 bg-muted mt-1.5" />
@@ -64,7 +95,7 @@ export default function ProgressToTrial({
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="px-3 pb-3 pt-1 border-t border-amber-100">
+            <div className="px-3 pb-3 pt-1 border-t border-amber-100 dark:border-amber-800/30">
               <div className="grid grid-cols-2 gap-1.5 mb-3">
                 {actions.map((action) => {
                   const Icon = action.icon;
@@ -73,7 +104,7 @@ export default function ProgressToTrial({
                       key={action.id}
                       className={`flex items-center gap-2 p-1.5 rounded-lg text-xs ${
                         action.completed 
-                          ? 'bg-green-50 text-green-700' 
+                          ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300' 
                           : 'bg-card/50 text-muted-foreground'
                       }`}
                     >
@@ -103,7 +134,7 @@ export default function ProgressToTrial({
                 </Link>
               ) : (
                 <p className="text-center text-xs text-muted-foreground">
-                  {totalRequired - completedCount} more to unlock premium
+                  {TOTAL_REQUIRED - completedCount} more to unlock premium trial
                 </p>
               )}
             </div>

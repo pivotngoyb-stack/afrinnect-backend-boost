@@ -961,6 +961,50 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_rewards: {
+        Row: {
+          claim_date: string
+          claimed_at: string
+          id: string
+          reward_day: number
+          reward_type: string
+          reward_value: number
+          streak_count: number
+          user_id: string
+          user_profile_id: string
+        }
+        Insert: {
+          claim_date: string
+          claimed_at?: string
+          id?: string
+          reward_day: number
+          reward_type: string
+          reward_value?: number
+          streak_count?: number
+          user_id: string
+          user_profile_id: string
+        }
+        Update: {
+          claim_date?: string
+          claimed_at?: string
+          id?: string
+          reward_day?: number
+          reward_type?: string
+          reward_value?: number
+          streak_count?: number
+          user_id?: string
+          user_profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_rewards_user_profile_id_fkey"
+            columns: ["user_profile_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       date_feedbacks: {
         Row: {
           created_at: string | null
@@ -2583,6 +2627,84 @@ export type Database = {
         }
         Relationships: []
       }
+      promo_code_redemptions: {
+        Row: {
+          id: string
+          promo_code_id: string
+          redeemed_at: string
+          user_id: string
+          user_profile_id: string
+        }
+        Insert: {
+          id?: string
+          promo_code_id: string
+          redeemed_at?: string
+          user_id: string
+          user_profile_id: string
+        }
+        Update: {
+          id?: string
+          promo_code_id?: string
+          redeemed_at?: string
+          user_id?: string
+          user_profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promo_code_redemptions_promo_code_id_fkey"
+            columns: ["promo_code_id"]
+            isOneToOne: false
+            referencedRelation: "promo_codes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "promo_code_redemptions_user_profile_id_fkey"
+            columns: ["user_profile_id"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      promo_codes: {
+        Row: {
+          code: string
+          created_at: string | null
+          current_redemptions: number
+          discount_percent: number
+          id: string
+          is_active: boolean
+          max_redemptions: number | null
+          target_tier: string | null
+          valid_from: string
+          valid_until: string
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          current_redemptions?: number
+          discount_percent: number
+          id?: string
+          is_active?: boolean
+          max_redemptions?: number | null
+          target_tier?: string | null
+          valid_from?: string
+          valid_until: string
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          current_redemptions?: number
+          discount_percent?: number
+          id?: string
+          is_active?: boolean
+          max_redemptions?: number | null
+          target_tier?: string | null
+          valid_from?: string
+          valid_until?: string
+        }
+        Relationships: []
+      }
       promotions: {
         Row: {
           code: string | null
@@ -3037,6 +3159,7 @@ export type Database = {
           end_date: string | null
           external_id: string | null
           id: string
+          is_trial: boolean
           payment_provider:
             | Database["public"]["Enums"]["payment_provider_type"]
             | null
@@ -3045,6 +3168,8 @@ export type Database = {
           start_date: string | null
           status: Database["public"]["Enums"]["subscription_status_type"]
           super_likes_remaining: number | null
+          trial_end: string | null
+          trial_start: string | null
           updated_at: string | null
           user_profile_id: string
         }
@@ -3057,6 +3182,7 @@ export type Database = {
           end_date?: string | null
           external_id?: string | null
           id?: string
+          is_trial?: boolean
           payment_provider?:
             | Database["public"]["Enums"]["payment_provider_type"]
             | null
@@ -3065,6 +3191,8 @@ export type Database = {
           start_date?: string | null
           status: Database["public"]["Enums"]["subscription_status_type"]
           super_likes_remaining?: number | null
+          trial_end?: string | null
+          trial_start?: string | null
           updated_at?: string | null
           user_profile_id: string
         }
@@ -3077,6 +3205,7 @@ export type Database = {
           end_date?: string | null
           external_id?: string | null
           id?: string
+          is_trial?: boolean
           payment_provider?:
             | Database["public"]["Enums"]["payment_provider_type"]
             | null
@@ -3085,6 +3214,8 @@ export type Database = {
           start_date?: string | null
           status?: Database["public"]["Enums"]["subscription_status_type"]
           super_likes_remaining?: number | null
+          trial_end?: string | null
+          trial_start?: string | null
           updated_at?: string | null
           user_profile_id?: string
         }
@@ -3431,6 +3562,7 @@ export type Database = {
           location: Json | null
           login_streak: number | null
           looking_for: string[] | null
+          onboarding_actions: string[]
           opening_move: string | null
           phone_number: string | null
           photos: string[] | null
@@ -3524,6 +3656,7 @@ export type Database = {
           location?: Json | null
           login_streak?: number | null
           looking_for?: string[] | null
+          onboarding_actions?: string[]
           opening_move?: string | null
           phone_number?: string | null
           photos?: string[] | null
@@ -3617,6 +3750,7 @@ export type Database = {
           location?: Json | null
           login_streak?: number | null
           looking_for?: string[] | null
+          onboarding_actions?: string[]
           opening_move?: string | null
           phone_number?: string | null
           photos?: string[] | null

@@ -1,9 +1,10 @@
-// @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gift, X, Trophy, Check, Flame } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const REWARD_LADDER = [
   { day: 1, title: 'Welcome Boost', description: '+5 Free Likes', emoji: '🎉', type: 'likes', value: 5 },
@@ -15,30 +16,76 @@ const REWARD_LADDER = [
   { day: 7, title: 'Streak Champion', description: '1 Super Like + Streak Badge', emoji: '🏆', type: 'streak_badge', value: 1 },
 ];
 
-export default function RetentionRewards({ userProfile }) {
+interface RetentionRewardsProps {
+  userProfile: { id: string; login_streak?: number } | null;
+}
+
+export default function RetentionRewards({ userProfile }: RetentionRewardsProps) {
   const [showReward, setShowReward] = useState(false);
-  const [currentReward, setCurrentReward] = useState(null);
+  const [currentReward, setCurrentReward] = useState<(typeof REWARD_LADDER[0] & { streak: number }) | null>(null);
   const [claimed, setClaimed] = useState(false);
+  const [claiming, setClaiming] = useState(false);
 
   useEffect(() => {
-    if (!userProfile) return;
-    const streak = Math.max(userProfile.login_streak || 0, 1);
-    const lastClaim = localStorage.getItem('last_reward_claim');
-    const today = new Date().toISOString().split('T')[0];
-    if (lastClaim === today) return;
+    if (!userProfile?.id) return;
 
-    const dayIndex = ((streak - 1) % 7);
-    const reward = REWARD_LADDER[dayIndex];
-    if (reward) {
-      setCurrentReward({ ...reward, streak });
-      setTimeout(() => setShowReward(true), 2000);
-    }
+    const checkEligibility = async () => {
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Check if already claimed today via server
+      const { data: existing } = await supabase
+        .from('daily_rewards')
+        .select('id')
+        .eq('user_profile_id', userProfile.id)
+        .eq('claim_date', today)
+        .limit(1);
+
+      if (existing && existing.length > 0) return; // Already claimed
+
+      const streak = Math.max(userProfile.login_streak || 0, 1);
+      const dayIndex = (streak - 1) % 7;
+      const reward = REWARD_LADDER[dayIndex];
+      
+      if (reward) {
+        setCurrentReward({ ...reward, streak });
+        setTimeout(() => setShowReward(true), 2000);
+      }
+    };
+
+    checkEligibility();
   }, [userProfile]);
 
-  const claimReward = () => {
-    localStorage.setItem('last_reward_claim', new Date().toISOString().split('T')[0]);
-    setClaimed(true);
-    setTimeout(() => setShowReward(false), 2500);
+  const claimReward = async () => {
+    if (claiming) return;
+    setClaiming(true);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Not authenticated');
+
+      const { data, error } = await supabase.functions.invoke('claim-daily-reward', {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+
+      if (error) throw error;
+      if (data?.error) {
+        if (data.error === 'Already claimed today') {
+          setClaimed(true);
+          setTimeout(() => setShowReward(false), 2500);
+          return;
+        }
+        throw new Error(data.error);
+      }
+
+      setClaimed(true);
+      toast.success(`${currentReward?.title} claimed! ${currentReward?.description}`);
+      setTimeout(() => setShowReward(false), 2500);
+    } catch (err) {
+      console.error('Failed to claim reward:', err);
+      toast.error('Failed to claim reward. Try again later.');
+    } finally {
+      setClaiming(false);
+    }
   };
 
   if (!showReward || !currentReward) return null;
@@ -65,7 +112,6 @@ export default function RetentionRewards({ userProfile }) {
             </button>
           )}
 
-          {/* Streak Progress Dots */}
           <div className="flex items-center justify-center gap-2 mb-5">
             {REWARD_LADDER.map((r, i) => (
               <div key={i} className="flex flex-col items-center">
@@ -96,9 +142,13 @@ export default function RetentionRewards({ userProfile }) {
           <p className="text-lg text-muted-foreground mb-5">{currentReward.description}</p>
 
           {!claimed ? (
-            <Button onClick={claimReward} className="w-full bg-gradient-to-r from-primary to-amber-500 text-primary-foreground py-5 text-base rounded-full shadow-lg">
+            <Button
+              onClick={claimReward}
+              disabled={claiming}
+              className="w-full bg-gradient-to-r from-primary to-amber-500 text-primary-foreground py-5 text-base rounded-full shadow-lg"
+            >
               <Gift size={18} className="mr-2" />
-              Claim Day {streakDay} Reward
+              {claiming ? 'Claiming...' : `Claim Day ${streakDay} Reward`}
             </Button>
           ) : (
             <div className="space-y-2">

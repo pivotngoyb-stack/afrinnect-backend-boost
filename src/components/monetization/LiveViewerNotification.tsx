@@ -1,45 +1,74 @@
-// @ts-nocheck
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, Crown, Lock, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from "@/components/ui/button";
+import { supabase } from '@/integrations/supabase/client';
 
 interface LiveViewerNotificationProps {
-  viewerName: string;
-  viewerPhoto?: string;
+  userProfileId: string;
   isPremium?: boolean;
-  onDismiss?: () => void;
   className?: string;
 }
 
 export default function LiveViewerNotification({ 
-  viewerName,
-  viewerPhoto,
+  userProfileId,
   isPremium = false,
-  onDismiss,
   className = "" 
 }: LiveViewerNotificationProps) {
-  const [isVisible, setIsVisible] = useState(true);
+  const [viewer, setViewer] = useState<{ name: string; photo?: string } | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(false);
-      setTimeout(() => onDismiss?.(), 300);
-    }, 10000);
+    if (!userProfileId) return;
 
-    return () => clearTimeout(timer);
-  }, [onDismiss]);
+    // Subscribe to realtime profile_views for this user
+    const channel = supabase
+      .channel(`profile-views-${userProfileId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'profile_views',
+          filter: `viewed_profile_id=eq.${userProfileId}`,
+        },
+        async (payload) => {
+          const viewerProfileId = payload.new?.viewer_profile_id;
+          if (!viewerProfileId) return;
 
-  const handleDismiss = () => {
-    setIsVisible(false);
-    setTimeout(() => onDismiss?.(), 300);
-  };
+          // Fetch viewer's basic info
+          const { data: viewerProfile } = await supabase
+            .from('user_profiles')
+            .select('display_name, primary_photo')
+            .eq('id', viewerProfileId)
+            .single();
+
+          if (viewerProfile) {
+            setViewer({
+              name: viewerProfile.display_name || 'Someone',
+              photo: viewerProfile.primary_photo || undefined,
+            });
+            setIsVisible(true);
+
+            // Auto-dismiss after 10s
+            setTimeout(() => setIsVisible(false), 10000);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [userProfileId]);
+
+  const handleDismiss = () => setIsVisible(false);
 
   return (
     <AnimatePresence>
-      {isVisible && (
+      {isVisible && viewer && (
         <motion.div
           initial={{ opacity: 0, y: -100, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -64,8 +93,8 @@ export default function LiveViewerNotification({
                   <div className={`w-16 h-16 rounded-full overflow-hidden border-2 border-purple-200 ${!isPremium ? 'relative' : ''}`}>
                     {isPremium ? (
                       <img
-                        src={viewerPhoto || '/default-avatar.png'}
-                        alt={viewerName}
+                        src={viewer.photo || '/default-avatar.png'}
+                        alt={viewer.name}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -84,7 +113,7 @@ export default function LiveViewerNotification({
 
                 <div className="flex-1">
                   <h4 className="font-bold">
-                    {isPremium ? viewerName : 'Someone'} viewed your profile
+                    {isPremium ? viewer.name : 'Someone'} viewed your profile
                   </h4>
                   <p className="text-sm text-muted-foreground">
                     {isPremium ? 'Check out their profile!' : 'Upgrade to see who'}
