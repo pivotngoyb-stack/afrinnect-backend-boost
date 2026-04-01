@@ -539,7 +539,7 @@ export default function EditProfile() {
                     value={formData.tribe_ethnicity || ''}
                     onChange={(e) => setFormData({ ...formData, tribe_ethnicity: e.target.value })}
                     placeholder="e.g., Yoruba, Zulu, Kikuyu"
-                    className="border-2 focus:border-purple-400 rounded-xl"
+                    className="border-2 focus:border-primary rounded-xl"
                   />
                 </div>
               </div>
@@ -568,7 +568,7 @@ export default function EditProfile() {
                     value={formData.current_city || ''}
                     onChange={(e) => setFormData({ ...formData, current_city: e.target.value })}
                     placeholder={t('onboarding.location.yourCity')}
-                    className="border-2 focus:border-purple-400 rounded-xl"
+                    className="border-2 focus:border-primary rounded-xl"
                   />
                 </div>
               </div>
@@ -603,7 +603,7 @@ export default function EditProfile() {
                     value={formData.profession || ''}
                     onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
                     placeholder={t('editProfile.whatDoYouDo')}
-                    className="border-2 focus:border-purple-400 rounded-xl"
+                    className="border-2 focus:border-primary rounded-xl"
                   />
                 </div>
 
@@ -679,7 +679,7 @@ export default function EditProfile() {
                           placeholder={t('editProfile.feet')}
                           min="0"
                           max="8"
-                          className="border-2 focus:border-purple-400 rounded-xl"
+                          className="border-2 focus:border-primary rounded-xl"
                         />
                         <p className="text-xs text-muted-foreground mt-1 text-center">{t('editProfile.feet')}</p>
                       </div>
@@ -691,7 +691,7 @@ export default function EditProfile() {
                           placeholder={t('editProfile.inches')}
                           min="0"
                           max="11"
-                          className="border-2 focus:border-purple-400 rounded-xl"
+                          className="border-2 focus:border-primary rounded-xl"
                         />
                         <p className="text-xs text-muted-foreground mt-1 text-center">{t('editProfile.inches')}</p>
                       </div>
@@ -705,7 +705,7 @@ export default function EditProfile() {
                         placeholder={t('editProfile.cm')}
                         min="50"
                         max="300"
-                        className="border-2 focus:border-purple-400 rounded-xl"
+                        className="border-2 focus:border-primary rounded-xl"
                       />
                       <p className="text-xs text-muted-foreground mt-1 text-center">{t('editProfile.cm')}</p>
                     </div>
