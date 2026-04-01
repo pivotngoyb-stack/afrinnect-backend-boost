@@ -59,6 +59,11 @@ export default function Chat() {
   const [searchParams] = useSearchParams();
   const matchId = searchParams.get('matchId');
 
+  // Redirect if no matchId provided
+  useEffect(() => {
+    if (!matchId) navigate('/matches', { replace: true });
+  }, [matchId, navigate]);
+
   // Use matchId-specific keys so foreground refresh targets the right data
   useForegroundRefresh([['messages', matchId], ['match', matchId], ['conversations-data']]);
   

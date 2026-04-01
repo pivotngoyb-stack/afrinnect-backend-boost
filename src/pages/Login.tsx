@@ -35,9 +35,9 @@ export default function Login() {
       }
     });
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        handlePostLogin(session.user);
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        handlePostLogin(user);
       }
     });
 

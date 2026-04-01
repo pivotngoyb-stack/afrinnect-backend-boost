@@ -38,8 +38,8 @@ export async function getCurrentUser() {
 }
 
 export async function isAuthenticated() {
-  const { data: { session } } = await db.auth.getSession();
-  return !!session;
+  const { data: { user } } = await db.auth.getUser();
+  return !!user;
 }
 
 export async function logout(redirectUrl?: string) {

@@ -152,7 +152,7 @@ export default function Home() {
       try {
         const user = await getCurrentUser();
         if (!user) { navigate(createPageUrl('Landing')); return; }
-        if (user.role === 'admin' || user.email === 'pivotngoyb@gmail.com') setIsAdmin(true);
+        if (user.role === 'admin') setIsAdmin(true);
 
         const { data: profiles } = await supabase
           .from('user_profiles')
