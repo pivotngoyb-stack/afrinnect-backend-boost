@@ -53,12 +53,25 @@ export function useAuth() {
     loadUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session && mounted) {
-        setState({ user: null, profile: null, isAdmin: false, loading: false, authenticated: false });
+      if (_event === 'SIGNED_OUT' || _event === 'TOKEN_REFRESHED' && !session) {
+        if (mounted) setState({ user: null, profile: null, isAdmin: false, loading: false, authenticated: false });
       } else if (session && mounted) {
         loadUser();
       }
     });
+
+    // Session heartbeat: detect stale/revoked tokens (e.g. signed in on another device)
+    const heartbeat = setInterval(async () => {
+      if (!mounted) return;
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user && mounted) {
+          setState({ user: null, profile: null, isAdmin: false, loading: false, authenticated: false });
+        }
+      } catch {
+        // Network error — don't sign out, just skip
+      }
+    }, 5 * 60 * 1000); // Check every 5 minutes
 
     return () => {
       mounted = false;
