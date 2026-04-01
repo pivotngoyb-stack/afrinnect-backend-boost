@@ -268,7 +268,6 @@ const functionNameMap: Record<string, string> = {
   updateHeatScore: 'update-heat-score',
   likeProfile: 'like-profile',
   discoverProfiles: 'discover-profiles',
-  discoverProfiles: 'discover-profiles',
 };
 
 /**
