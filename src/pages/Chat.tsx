@@ -889,7 +889,7 @@ export default function Chat() {
             <Button
               onClick={() => reportMutation.mutate()}
               disabled={!reportReason || reportMutation.isPending}
-              className="w-full bg-red-600 hover:bg-red-700"
+              className="w-full bg-destructive hover:bg-destructive/90"
             >
               {reportMutation.isPending ? (
                 <>
