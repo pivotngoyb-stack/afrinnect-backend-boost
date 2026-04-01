@@ -330,8 +330,8 @@ export default function EditProfile() {
   const completion = calculateCompletion();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative pb-24">
-      <AfricanPattern className="text-purple-600" opacity={0.03} />
+    <div className="min-h-screen bg-background relative pb-24">
+      <AfricanPattern className="text-primary" opacity={0.03} />
 
       {/* Sticky Header */}
       <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border shadow-sm">
