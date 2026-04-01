@@ -564,7 +564,7 @@ export default function Chat() {
   if (!otherProfile) {
     const showError = (matchFetched && !match) || matchError;
     return (
-      <div className="h-screen bg-background flex flex-col overflow-hidden">
+     <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
         <header className="bg-card border-b border-border px-4 py-3 flex items-center gap-3">
           <Link to={createPageUrl('Matches')}>
             <Button variant="ghost" size="icon">
