@@ -743,8 +743,8 @@ export default function EditProfile() {
                     variant={formData.languages?.includes(lang) ? "default" : "outline"}
                     className={`cursor-pointer transition-all text-sm px-4 py-2 ${
                       formData.languages?.includes(lang)
-                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 shadow-md scale-105'
-                        : 'hover:bg-amber-50 hover:border-amber-300'
+                        ? 'bg-gradient-to-r from-accent to-orange-500 text-primary-foreground border-0 shadow-md scale-105'
+                        : 'hover:bg-accent/10 hover:border-accent/30'
                     }`}
                     onClick={() => toggleItem('languages', lang)}
                   >
