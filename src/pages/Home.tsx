@@ -347,6 +347,14 @@ export default function Home() {
         setTimeout(() => setShowMissedMatch(true), 500);
         return;
       }
+      if (error.message === 'super_like_limit_reached') {
+        toast('You have used your weekly Super Like allowance');
+        return;
+      }
+      if (error.message === 'rewind_requires_upgrade') {
+        setShowLimitPaywall(true);
+        return;
+      }
       console.error('Like mutation error:', error);
       // Keep the swiped ID persisted to prevent reappearance even on error
       if (variables?.likedId) {
