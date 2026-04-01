@@ -115,7 +115,7 @@ Deno.serve(async (req) => {
     let query = supabase.from('user_profiles').select('id, user_id, display_name, email');
     
     if (target_audience === 'premium') {
-      query = query.in('subscription_tier', ['gold', 'platinum', 'diamond']);
+      query = query.in('subscription_tier', ['premium', 'elite', 'vip']);
     } else if (target_audience === 'founding_members') {
       query = query.eq('is_founding_member', true);
     } else if (target_audience === 'free') {
