@@ -458,7 +458,7 @@ export default function Matches() {
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col overflow-hidden max-w-4xl mx-auto w-full px-4" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+      <main className="flex-1 flex flex-col overflow-hidden max-w-4xl mx-auto w-full px-4 pb-20" style={{ paddingBottom: 'max(5rem, env(safe-area-inset-bottom, 0px) + 4rem)' }}>
         {/* Search Bar */}
         <div className="flex-shrink-0 py-3">
           <div className="relative">
