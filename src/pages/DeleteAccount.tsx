@@ -62,8 +62,8 @@ export default function DeleteAccount() {
     setIsDeleting(true);
     setError(null);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('You must be logged in to delete your account.');
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) throw new Error('You must be logged in to delete your account.');
 
       const { data, error: fnError } = await supabase.functions.invoke('delete-account', {
         body: { reason: selectedReason, confirmDelete: true }

@@ -36,7 +36,9 @@ export default function PasswordReset() {
     setLoading(true);
     try {
       // Base44's built-in password reset
-      await supabase.auth.resetPasswordForEmail(email);
+      await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/password-reset`
+      });
       setSent(true);
     } catch (err) {
       setError(err.message || 'Failed to send reset email. Please try again.');
