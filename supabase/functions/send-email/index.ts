@@ -40,14 +40,8 @@ Deno.serve(async (req) => {
     // Log the email attempt (actual sending requires an email provider integration)
     console.log(`Email request from ${user.email}: to=${to}, subject=${subject}, fromName=${fromName}`);
 
-    // For now, log to admin_audit_logs so admin can see email activity
-    await supabase.from('admin_audit_logs').insert({
-      admin_user_id: user.id,
-      action: 'send_email',
-      target_type: 'email',
-      target_id: to,
-      details: { to, subject, fromName, body_preview: body.substring(0, 200) },
-    });
+    // Structured log (email activity tracked via email_send_log table, not admin_audit_logs)
+    console.log(JSON.stringify({ action: 'send_email', to, subject, fromName }));
 
     return new Response(JSON.stringify({ success: true, message: 'Email queued successfully' }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

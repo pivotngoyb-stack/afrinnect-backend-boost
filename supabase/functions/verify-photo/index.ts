@@ -194,14 +194,8 @@ Reply with ONLY this JSON:
         .eq("id", profileId);
     }
 
-    // Log audit
-    await supabase.from("admin_audit_logs").insert({
-      admin_user_id: user.id,
-      action: "photo_verification_submitted",
-      target_type: "user_profile",
-      target_id: profileId,
-      details: { status: newStatus, ai_confidence: aiResult?.confidence || null },
-    });
+    // Structured log (user-initiated verification, not admin action)
+    console.log(JSON.stringify({ action: 'photo_verification_submitted', profile_id: profileId, status: newStatus, ai_confidence: aiResult?.confidence || null }));
 
     return new Response(
       JSON.stringify({

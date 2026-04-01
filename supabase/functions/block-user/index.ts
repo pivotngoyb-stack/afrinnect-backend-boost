@@ -150,14 +150,7 @@ Deno.serve(async (req) => {
         .update({ blocked_users: updatedBlocked })
         .eq("id", myProfile.id);
 
-      // Audit log
-      await supabase.from("admin_audit_logs").insert({
-        admin_user_id: user.id,
-        action: "user_unblocked",
-        target_type: "user_profile",
-        target_id: target_profile_id,
-        details: { unblocked_by: myProfile.id },
-      });
+      console.log(JSON.stringify({ action: 'user_unblocked', actor: myProfile.id, target: target_profile_id, ts: new Date().toISOString() }));
 
       return new Response(
         JSON.stringify({ success: true, message: `Unblocked ${targetProfile.display_name}` }),

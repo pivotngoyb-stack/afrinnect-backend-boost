@@ -60,14 +60,8 @@ Deno.serve(async (req) => {
 
     if (reportError) throw reportError;
 
-    // Log for admin audit
-    await supabase.from('admin_audit_logs').insert({
-      admin_user_id: user.id,
-      action: 'user_report_submitted',
-      target_type: 'report',
-      target_id: report.id,
-      details: { report_type, reported_id },
-    });
+    // Structured log (report data is already in the reports table — no need to duplicate in admin_audit_logs)
+    console.log(JSON.stringify({ action: 'report_submitted', report_id: report.id, reporter: reporterProfile?.id, reported: reported_id, type: report_type }));
 
     return new Response(JSON.stringify({ success: true, report_id: report.id }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

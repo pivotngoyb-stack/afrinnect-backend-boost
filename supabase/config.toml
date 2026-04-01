@@ -63,8 +63,6 @@ project_id = "uadeiglyltniknemagpk"
     verify_jwt = false
   [functions.stripe-webhook]
     verify_jwt = false
-  [functions.check-swipe-limit]
-    verify_jwt = false
   [functions.send-transactional-email]
     verify_jwt = true
   [functions.send-winback-email]

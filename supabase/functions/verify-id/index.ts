@@ -146,14 +146,8 @@ Deno.serve(async (req) => {
         .eq("id", user_profile_id);
     }
 
-    // Audit log
-    await supabase.from("admin_audit_logs").insert({
-      admin_user_id: user.id,
-      action: "id_verification_submitted",
-      target_type: "user_profile",
-      target_id: user_profile_id,
-      details: { id_type, status: newStatus, ai_confidence: aiResult?.confidence || null },
-    });
+    // Structured log (user-initiated verification, not admin action)
+    console.log(JSON.stringify({ action: 'id_verification_submitted', profile_id: user_profile_id, id_type, status: newStatus, ai_confidence: aiResult?.confidence || null }));
 
     return new Response(
       JSON.stringify({
