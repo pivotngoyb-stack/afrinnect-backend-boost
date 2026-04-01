@@ -81,6 +81,21 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: 'Cannot interact with this user' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
+    // === SERVER-SIDE BURST RATE LIMIT ===
+    // Rolling window: max 5 like/pass actions per 10 seconds per user
+    const tenSecondsAgo = new Date(Date.now() - 10000).toISOString();
+    const [{ count: recentLikes }, { count: recentPasses }] = await Promise.all([
+      supabase.from('likes').select('id', { count: 'exact', head: true })
+        .eq('liker_id', myProfile.id).gte('created_at', tenSecondsAgo),
+      supabase.from('passes').select('id', { count: 'exact', head: true })
+        .eq('passer_id', myProfile.id).gte('created_at', tenSecondsAgo),
+    ]);
+    if (((recentLikes || 0) + (recentPasses || 0)) >= 5) {
+      return new Response(JSON.stringify({ error: 'rate_limited', message: 'Too many actions. Please slow down.' }), {
+        status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     // === PASS ACTION ===
     if (action === 'pass') {
       log('pass', { liker: myProfile.id, target: targetProfileId });
