@@ -271,11 +271,11 @@ export default function Profile() {
             <span>{profile?.current_city}, {profile?.current_country}</span>
           </div>
 
-          <Badge className={`mt-2 text-white ${
-            profile?.subscription_tier === 'vip' ? 'bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 border-0' :
-            profile?.subscription_tier === 'elite' ? 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 border-0' :
-            profile?.subscription_tier === 'premium' ? 'bg-gradient-to-r from-purple-500 to-purple-600 border-0' :
-            'bg-muted0 border-0'
+          <Badge className={`mt-2 ${
+            profile?.subscription_tier === 'vip' ? 'bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 text-white border-0' :
+            profile?.subscription_tier === 'elite' ? 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-white border-0' :
+            profile?.subscription_tier === 'premium' ? 'bg-gradient-to-r from-primary to-primary/80 text-primary-foreground border-0' :
+            'bg-muted text-muted-foreground border-0'
           }`}>
             {profile?.subscription_tier === 'vip' ? <Crown size={12} className="mr-1" /> :
              profile?.subscription_tier === 'elite' ? <Zap size={12} className="mr-1" /> :
