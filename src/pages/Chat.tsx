@@ -399,12 +399,23 @@ export default function Chat() {
   // Image mutation
   const sendImageMutation = useMutation({
     mutationFn: async (file) => {
-      const { file_url } = await uploadFile(file);
-      await sendMessageMutation.mutateAsync({ content: 'Image', type: 'image', mediaUrl: file_url });
+      // Retry upload up to 2 times on failure
+      let lastError;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          const { file_url } = await uploadFile(file);
+          await sendMessageMutation.mutateAsync({ content: 'Image', type: 'image', mediaUrl: file_url });
+          return;
+        } catch (err) {
+          lastError = err;
+          if (attempt < 2) await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
+        }
+      }
+      throw lastError;
     },
     onError: (err) => {
       console.error('Image upload error:', err);
-      toast({ title: 'Failed to upload image', variant: 'destructive' });
+      toast({ title: 'Failed to upload image. Please try again.', variant: 'destructive' });
     }
   });
 
