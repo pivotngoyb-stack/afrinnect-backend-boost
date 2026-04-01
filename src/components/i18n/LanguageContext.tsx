@@ -3,14 +3,12 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
 import { translations } from './translations';
 
-const LanguageContext = createContext();
+const defaultT = (key: string) => key;
+const defaultContext = { language: 'en', changeLanguage: async () => {}, t: defaultT, isLoading: false };
+const LanguageContext = createContext(defaultContext);
 
 export const useLanguage = () => {
-  const context = useContext(LanguageContext);
-  if (!context) {
-    throw new Error('useLanguage must be used within LanguageProvider');
-  }
-  return context;
+  return useContext(LanguageContext);
 };
 
 export const LanguageProvider = ({ children }) => {
