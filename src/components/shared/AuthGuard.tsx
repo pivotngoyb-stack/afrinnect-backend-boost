@@ -24,9 +24,14 @@ export default function AuthGuard({
           return;
         }
 
-        const { data: { user } } = await supabase.auth.getUser();
+        // Use getUser() for server-validated auth (not getSession which trusts local JWT)
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
         
-        if (!user) {
+        if (userError || !user) {
+          // Token expired or invalid — clear stale session and redirect
+          if (userError?.message?.includes('token') || userError?.status === 401) {
+            await supabase.auth.signOut();
+          }
           if (mounted) navigate(redirectTo + '?next=' + encodeURIComponent(window.location.pathname));
           return;
         }
@@ -49,7 +54,11 @@ export default function AuthGuard({
         if (mounted) setLoading(false);
       } catch (error) {
         console.error('Auth check failed:', error);
-        if (mounted) navigate(redirectTo);
+        if (mounted) {
+          // On any auth failure, sign out to prevent stale token loops
+          try { await supabase.auth.signOut(); } catch {}
+          navigate(redirectTo);
+        }
       }
     };
 
