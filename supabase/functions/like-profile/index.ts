@@ -99,6 +99,30 @@ Deno.serve(async (req) => {
     // === LIKE ACTION ===
     if (action === 'like') {
       log('like_start', { liker: myProfile.id, target: targetProfileId, is_super: isSuperLike });
+
+      // Server-side super-like weekly limit enforcement
+      if (isSuperLike) {
+        const tier = myProfile.subscription_tier || 'free';
+        const superLikeLimits: Record<string, number> = { free: 1, premium: 5, elite: -1, vip: -1 };
+        const weeklyLimit = superLikeLimits[tier] ?? 1;
+
+        if (weeklyLimit > 0) {
+          const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+          const { count: superLikeCount } = await supabase
+            .from('likes')
+            .select('id', { count: 'exact', head: true })
+            .eq('liker_id', myProfile.id)
+            .eq('is_super_like', true)
+            .gte('created_at', weekAgo);
+
+          if ((superLikeCount || 0) >= weeklyLimit) {
+            return new Response(JSON.stringify({ error: 'super_like_limit_reached', limit: weeklyLimit }), {
+              status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+        }
+      }
+
       const { data: existingLike } = await supabase
         .from('likes')
         .select('id')
