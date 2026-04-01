@@ -509,7 +509,7 @@ export default function EditProfile() {
                 </div>
                 <div>
                   <h2 className="text-xl font-bold">{t('editProfile.locationHeritage')}</h2>
-                  <p className="text-sm text-white/80">{t('editProfile.locationSubtitle')}</p>
+                  <p className="text-sm text-primary-foreground/80">{t('editProfile.locationSubtitle')}</p>
                 </div>
               </div>
             </div>
