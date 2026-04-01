@@ -814,7 +814,7 @@ export default function Chat() {
             title="Magic Reply"
             className={isGeneratingReply ? "animate-pulse" : ""}
           >
-            <Wand2 size={20} className="text-amber-500" />
+            <Wand2 size={20} className="text-accent" />
           </Button>
 
           <input
