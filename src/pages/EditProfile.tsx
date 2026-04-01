@@ -784,8 +784,8 @@ export default function EditProfile() {
                     variant={formData.cultural_values?.includes(val) ? "default" : "outline"}
                     className={`cursor-pointer transition-all text-sm px-4 py-2 ${
                       formData.cultural_values?.includes(val)
-                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 shadow-md scale-105'
-                        : 'hover:bg-purple-50 hover:border-purple-300'
+                        ? 'bg-gradient-to-r from-primary to-accent text-primary-foreground border-0 shadow-md scale-105'
+                        : 'hover:bg-primary/10 hover:border-primary/30'
                     }`}
                     onClick={() => toggleItem('cultural_values', val)}
                   >
