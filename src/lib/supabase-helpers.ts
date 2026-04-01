@@ -310,26 +310,35 @@ export async function invokeLLM({ prompt, add_context_from_internet, response_js
   return data;
 }
 
-export async function uploadFile(file: File) {
+export async function uploadFile(file: File, maxRetries = 2) {
   const baseName = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-
-  // Upload the main (card-quality) image
   const mainName = `${baseName}.jpg`;
-  const { error } = await db.storage.from('photos').upload(mainName, file);
-  if (error) throw error;
-  const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(mainName);
 
-  // Generate and upload thumbnail in background (non-blocking)
-  try {
-    const { compressImage } = await import('@/components/shared/ImageCompressor');
-    const thumbnail = await compressImage(file, 200, 0.6);
-    const thumbName = `thumb_${baseName}.jpg`;
-    await db.storage.from('photos').upload(thumbName, thumbnail).catch(() => {});
-  } catch {
-    // Thumbnail generation is optional - don't block upload
+  // Upload with retry logic
+  let lastError: any;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const { error } = await db.storage.from('photos').upload(mainName, file);
+    if (!error) {
+      const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(mainName);
+
+      // Generate and upload thumbnail in background (non-blocking)
+      try {
+        const { compressImage } = await import('@/components/shared/ImageCompressor');
+        const thumbnail = await compressImage(file, 200, 0.6);
+        const thumbName = `thumb_${baseName}.jpg`;
+        await db.storage.from('photos').upload(thumbName, thumbnail).catch(() => {});
+      } catch {
+        // Thumbnail generation is optional
+      }
+
+      return { file_url: publicUrl };
+    }
+    lastError = error;
+    if (attempt < maxRetries) {
+      await new Promise(r => setTimeout(r, 1000 * (attempt + 1))); // 1s, 2s backoff
+    }
   }
-
-  return { file_url: publicUrl };
+  throw lastError;
 }
 
 export async function sendEmail({ to, subject, body, from_name }: {
