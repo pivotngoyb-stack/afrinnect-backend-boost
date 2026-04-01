@@ -25,23 +25,22 @@ Deno.serve(async (req) => {
       })
     }
 
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_ANON_KEY')!,
-      { global: { headers: { Authorization: authHeader } } }
-    )
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+    const supabase = createClient(supabaseUrl, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    // Verify JWT via anon client
+    const anonClient = createClient(supabaseUrl, Deno.env.get('SUPABASE_ANON_KEY')!)
+    const { data: { user }, error: authError } = await anonClient.auth.getUser(authHeader.replace('Bearer ', ''))
     if (authError || !user) {
       return new Response(JSON.stringify({ error: 'Invalid token' }), {
         status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
 
-    // Get user profile
+    // Get user profile using service client (bypasses RLS)
     const { data: profile, error: profileError } = await supabase
       .from('user_profiles')
-      .select('id, subscription_tier, profile_boost_active, boost_expires_at, is_photo_verified, is_id_verified')
+      .select('id, subscription_tier, profile_boost_active, boost_expires_at')
       .eq('user_id', user.id)
       .single()
 
@@ -50,8 +49,6 @@ Deno.serve(async (req) => {
         status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
-
-    // Verification no longer required for boosts
 
     // Check active boost
     if (profile.profile_boost_active && profile.boost_expires_at) {
@@ -82,7 +79,7 @@ Deno.serve(async (req) => {
       const { count } = await supabase
         .from('profile_boosts')
         .select('id', { count: 'exact', head: true })
-        .eq('user_id', user.id)
+        .eq('user_profile_id', profile.id)
         .gte('created_at', monthStart.toISOString())
 
       if ((count ?? 0) >= tierConfig.monthly_boosts) {
@@ -99,26 +96,21 @@ Deno.serve(async (req) => {
     const now = new Date()
     const expiresAt = new Date(now.getTime() + tierConfig.duration_minutes * 60 * 1000)
 
-    const serviceClient = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    )
-
-    // Insert boost record
-    await serviceClient.from('profile_boosts').insert({
-      user_id: user.id,
-      user_profile_id: profile.id,
-      boost_type: 'standard',
-      started_at: now.toISOString(),
-      expires_at: expiresAt.toISOString(),
-      is_active: true,
-    })
-
-    // Update profile
-    await serviceClient.from('user_profiles').update({
-      profile_boost_active: true,
-      boost_expires_at: expiresAt.toISOString(),
-    }).eq('id', profile.id)
+    // Insert boost record + update profile atomically
+    await Promise.all([
+      supabase.from('profile_boosts').insert({
+        user_id: user.id,
+        user_profile_id: profile.id,
+        boost_type: 'standard',
+        started_at: now.toISOString(),
+        expires_at: expiresAt.toISOString(),
+        is_active: true,
+      }),
+      supabase.from('user_profiles').update({
+        profile_boost_active: true,
+        boost_expires_at: expiresAt.toISOString(),
+      }).eq('id', profile.id),
+    ])
 
     return new Response(JSON.stringify({
       success: true,
@@ -129,6 +121,7 @@ Deno.serve(async (req) => {
     })
 
   } catch (err) {
+    console.error('Boost profile error:', err)
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
