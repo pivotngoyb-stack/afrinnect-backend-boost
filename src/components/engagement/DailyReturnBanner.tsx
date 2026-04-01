@@ -9,7 +9,7 @@ interface DailyReturnBannerProps {
   className?: string;
 }
 
-export default function DailyReturnBanner({ userProfile, className = '' }: DailyReturnBannerProps) {
+const DailyReturnBanner = React.forwardRef<HTMLDivElement, DailyReturnBannerProps>(function DailyReturnBanner({ userProfile, className = '' }, ref) {
   const { t } = useLanguage();
   const [dismissed, setDismissed] = useState(false);
   const [shown, setShown] = useState(false);
@@ -38,6 +38,7 @@ export default function DailyReturnBanner({ userProfile, className = '' }: Daily
   return (
     <AnimatePresence>
       <motion.div
+        ref={ref}
         initial={{ opacity: 0, y: -20, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: -20, scale: 0.95 }}
@@ -68,4 +69,6 @@ export default function DailyReturnBanner({ userProfile, className = '' }: Daily
       </motion.div>
     </AnimatePresence>
   );
-}
+});
+
+export default DailyReturnBanner;

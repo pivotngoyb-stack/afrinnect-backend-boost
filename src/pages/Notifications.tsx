@@ -84,11 +84,14 @@ export default function Notifications() {
   const markAllReadMutation = useMutation({
     mutationFn: async () => {
       if (!myProfile?.id) return;
+      // Only mark notification types that are displayed on this page as read
+      // Message/like/super_like notifications belong to Matches page
       await supabase
         .from('notifications')
         .update({ is_read: true })
         .eq('user_profile_id', myProfile.id)
-        .eq('is_read', false);
+        .eq('is_read', false)
+        .not('type', 'in', '("message","like","super_like")');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
