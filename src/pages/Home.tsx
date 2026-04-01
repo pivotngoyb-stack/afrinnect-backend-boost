@@ -377,8 +377,13 @@ export default function Home() {
     const tier = myProfile?.subscription_tier || 'free';
     if (tier === 'free') {
       const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
-      const weekly = await filterRecords('likes', { liker_id: myProfile.id, is_super_like: true, created_date: { $gte: weekAgo } });
-      if (weekly.length >= 1) {
+      const { count } = await supabase
+        .from('likes')
+        .select('id', { count: 'exact', head: true })
+        .eq('liker_id', myProfile.id)
+        .eq('is_super_like', true)
+        .gte('created_at', weekAgo);
+      if ((count || 0) >= 1) {
         toast('You have used your weekly Super Like');
         return;
       }

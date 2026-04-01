@@ -631,7 +631,7 @@ export default function Matches() {
                           {t('matchesPage.noNewLikesDesc')}
                         </p>
                         <Button 
-                          onClick={() => window.location.assign('/pricingplans')}
+                          onClick={() => window.dispatchEvent(new CustomEvent('navigate-to', { detail: '/pricingplans' }))}
                           variant="outline"
                           className="border-primary/30 text-primary hover:bg-primary/5"
                         >

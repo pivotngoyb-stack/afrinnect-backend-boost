@@ -940,7 +940,7 @@ export default function Chat() {
                       sendMessageMutation.mutate({ content: `Sent you a gift ${gift}`, type: 'text' });
                       setShowVirtualGifts(false);
                     }}
-                    className="p-6 text-4xl bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl hover:scale-110 transition"
+                    className="p-6 text-4xl bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl hover:scale-110 transition"
                   >
                     {gift}
                   </button>
