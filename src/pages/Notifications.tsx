@@ -320,7 +320,7 @@ export default function Notifications() {
                         </button>
                       </div>
                       <p className="text-xs text-muted-foreground mt-2">
-                        {new Date(notif.created_date).toLocaleString()}
+                        {notif.created_date ? new Date(notif.created_date).toLocaleString() : ''}
                       </p>
                     </div>
                   </div>
