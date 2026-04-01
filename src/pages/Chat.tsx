@@ -755,7 +755,7 @@ export default function Chat() {
                   <p className="text-sm break-words">{msg.content}</p>
                 )}
                 <div className="flex items-center gap-2 mt-1">
-                  <p className={`text-xs ${isMine ? 'text-white/70' : 'text-muted-foreground'}`}>
+                  <p className={`text-xs ${isMine ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
                     {formatMessageTime(msg)}
                   </p>
                   {isMine && (
