@@ -974,7 +974,7 @@ export default function Chat() {
                 </p>
                 <div className="space-y-3">
                   <Link to={createPageUrl('PricingPlans')}>
-                    <Button className="w-full bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-700 hover:to-amber-700">
+                    <Button className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90">
                       Upgrade Now
                     </Button>
                   </Link>
