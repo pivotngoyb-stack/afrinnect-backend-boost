@@ -723,8 +723,8 @@ export default function EditProfile() {
           transition={{ duration: 0.4, delay: 0.4 }}
         >
           <Card className="border-0 shadow-xl bg-card/80 backdrop-blur">
-            <div className="bg-gradient-to-r from-amber-500 to-orange-600 p-6">
-              <div className="flex items-center gap-3 text-white">
+            <div className="bg-gradient-to-r from-accent to-orange-600 p-6">
+              <div className="flex items-center gap-3 text-primary-foreground">
                 <div className="p-3 bg-card/20 rounded-xl backdrop-blur">
                   <Globe size={24} />
                 </div>
