@@ -369,7 +369,7 @@ export default function EditProfile() {
             <Button 
               onClick={handleSave} 
               disabled={saving}
-              className="bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-700 hover:to-amber-700 text-white shadow-lg"
+              className="gradient-hero text-primary-foreground shadow-lg"
             >
               {saving ? (
                 <>
