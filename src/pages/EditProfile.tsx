@@ -358,7 +358,7 @@ export default function EditProfile() {
               <DialogContent className="max-w-md p-0 overflow-hidden bg-transparent border-0 shadow-none">
                 <div className="bg-card rounded-3xl overflow-hidden h-[600px] overflow-y-auto">
                   <ProfileCard 
-                    profile={{ ...formData, id: 'preview', matchScore: 95 }} 
+                    profile={{ ...formData, id: 'preview' }} 
                     previewMode 
                     expanded
                   />
