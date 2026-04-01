@@ -652,7 +652,7 @@ export default function Chat() {
             </DropdownMenuItem>
             <DropdownMenuItem 
               onClick={() => setShowBlockConfirm(true)} 
-              className="text-red-600"
+              className="text-destructive"
             >
               <Ban size={16} className="mr-2" />
               Block User
