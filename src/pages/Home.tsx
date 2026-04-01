@@ -133,8 +133,12 @@ export default function Home() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) { navigate(createPageUrl('Landing')); return; }
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error || !user) {
+          if (error?.status === 401) { try { await supabase.auth.signOut(); } catch {} }
+          navigate(createPageUrl('Landing'));
+          return;
+        }
         setIsCheckingAuth(false);
       } catch { navigate(createPageUrl('Landing')); }
     };

@@ -615,7 +615,7 @@ export default function Chat() {
                 ? 'Active now'
                 : otherProfile?.last_active
                   ? `Last active ${(() => { const mins = Math.floor((Date.now() - new Date(otherProfile.last_active).getTime()) / 60000); if (mins < 60) return mins + 'm ago'; const hrs = Math.floor(mins / 60); if (hrs < 24) return hrs + 'h ago'; return Math.floor(hrs / 24) + 'd ago'; })()}`
-                  : 'Recently active'
+                  : ''
               }
             </p>
           </div>
@@ -652,7 +652,7 @@ export default function Chat() {
             </DropdownMenuItem>
             <DropdownMenuItem 
               onClick={() => setShowBlockConfirm(true)} 
-              className="text-red-600"
+              className="text-destructive"
             >
               <Ban size={16} className="mr-2" />
               Block User
@@ -755,7 +755,7 @@ export default function Chat() {
                   <p className="text-sm break-words">{msg.content}</p>
                 )}
                 <div className="flex items-center gap-2 mt-1">
-                  <p className={`text-xs ${isMine ? 'text-white/70' : 'text-muted-foreground'}`}>
+                  <p className={`text-xs ${isMine ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
                     {formatMessageTime(msg)}
                   </p>
                   {isMine && (
@@ -814,7 +814,7 @@ export default function Chat() {
             title="Magic Reply"
             className={isGeneratingReply ? "animate-pulse" : ""}
           >
-            <Wand2 size={20} className="text-amber-500" />
+            <Wand2 size={20} className="text-accent" />
           </Button>
 
           <input
@@ -889,7 +889,7 @@ export default function Chat() {
             <Button
               onClick={() => reportMutation.mutate()}
               disabled={!reportReason || reportMutation.isPending}
-              className="w-full bg-red-600 hover:bg-red-700"
+              className="w-full bg-destructive hover:bg-destructive/90"
             >
               {reportMutation.isPending ? (
                 <>
@@ -965,7 +965,7 @@ export default function Chat() {
           <div className="fixed inset-0 z-50 bg-foreground/50 flex items-center justify-center p-4" onClick={() => setShowUpgradePrompt(false)}>
             <div className="bg-card rounded-2xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
               <div className="text-center">
-                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-100 to-amber-100 flex items-center justify-center">
+                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
                   <Sparkles size={40} className="text-primary" />
                 </div>
                 <h2 className="text-2xl font-bold mb-2">{upgradeFeature} are Exclusive!</h2>
@@ -974,7 +974,7 @@ export default function Chat() {
                 </p>
                 <div className="space-y-3">
                   <Link to={createPageUrl('PricingPlans')}>
-                    <Button className="w-full bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-700 hover:to-amber-700">
+                    <Button className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90">
                       Upgrade Now
                     </Button>
                   </Link>
@@ -1001,7 +1001,7 @@ export default function Chat() {
               <AlertDialogAction
                 onClick={() => blockMutation.mutate()}
                 disabled={blockMutation.isPending}
-                className="bg-red-600 hover:bg-red-700"
+                className="bg-destructive hover:bg-destructive/90"
               >
                 {blockMutation.isPending ? (
                   <>
