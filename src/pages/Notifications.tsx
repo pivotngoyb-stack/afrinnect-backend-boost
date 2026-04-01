@@ -228,11 +228,11 @@ export default function Notifications() {
 
   const getNotificationIcon = (type) => {
     switch (type) {
-      case 'match': return <Heart className="text-pink-500" size={24} />;
-      case 'like': return <Heart className="text-purple-500" size={24} />;
-      case 'super_like': return <Crown className="text-amber-500" size={24} />;
-      case 'message': return <MessageCircle className="text-blue-500" size={24} />;
-      case 'admin_message': return <Shield className="text-red-500" size={24} />;
+      case 'match': return <Heart className="text-destructive" size={24} />;
+      case 'like': return <Heart className="text-primary" size={24} />;
+      case 'super_like': return <Crown className="text-accent" size={24} />;
+      case 'message': return <MessageCircle className="text-primary" size={24} />;
+      case 'admin_message': return <Shield className="text-destructive" size={24} />;
       default: return <Users className="text-muted-foreground" size={24} />;
     }
   };

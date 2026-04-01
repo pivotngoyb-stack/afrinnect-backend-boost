@@ -615,7 +615,7 @@ export default function Chat() {
                 ? 'Active now'
                 : otherProfile?.last_active
                   ? `Last active ${(() => { const mins = Math.floor((Date.now() - new Date(otherProfile.last_active).getTime()) / 60000); if (mins < 60) return mins + 'm ago'; const hrs = Math.floor(mins / 60); if (hrs < 24) return hrs + 'h ago'; return Math.floor(hrs / 24) + 'd ago'; })()}`
-                  : 'Recently active'
+                  : ''
               }
             </p>
           </div>
