@@ -76,6 +76,7 @@ export function useAuth() {
     return () => {
       mounted = false;
       subscription.unsubscribe();
+      clearInterval(heartbeat);
     };
   }, []);
 
