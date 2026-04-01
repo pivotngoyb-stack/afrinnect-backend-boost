@@ -474,7 +474,7 @@ export default function EditProfile() {
                   placeholder='e.g. "Tell me your favorite African dish 🍲" or "Where would you travel next?"'
                   maxLength={150}
                   rows={2}
-                  className="border-2 focus:border-purple-400 rounded-xl resize-none"
+                  className="border-2 focus:border-primary rounded-xl resize-none"
                 />
                 <p className="text-xs text-muted-foreground mt-1">
                   {(formData.opening_move || '').length}/150 — This prompt shows when someone matches with you
