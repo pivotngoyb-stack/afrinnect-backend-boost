@@ -23,7 +23,8 @@ Deno.serve(async (req) => {
         status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    const { data: { user }, error: authError } = await supabase.auth.getUser(authHeader.replace('Bearer ', ''));
+    const anonClient = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!);
+    const { data: { user }, error: authError } = await anonClient.auth.getUser(authHeader.replace('Bearer ', ''));
     if (authError || !user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -76,9 +77,9 @@ Deno.serve(async (req) => {
     const foundingMembers = profiles.filter(p => p.is_founding_member);
 
     // Tier breakdown
-    const goldUsers = profiles.filter(p => p.subscription_tier === 'gold').length;
-    const platinumUsers = profiles.filter(p => p.subscription_tier === 'platinum').length;
-    const diamondUsers = profiles.filter(p => p.subscription_tier === 'diamond').length;
+    const premiumTierUsers = profiles.filter(p => p.subscription_tier === 'premium').length;
+    const eliteUsers = profiles.filter(p => p.subscription_tier === 'elite').length;
+    const vipUsers = profiles.filter(p => p.subscription_tier === 'vip').length;
 
     // DAU/MAU
     const dau = profiles.filter(p => p.last_active && new Date(p.last_active) >= new Date(now.getTime() - 24 * 60 * 60 * 1000)).length;
@@ -130,8 +131,8 @@ Deno.serve(async (req) => {
       newUsersThisWeek: newUsersWeek.length,
       newUsersThisMonth: newUsersMonth.length,
       premiumUsers: premiumUsers.length,
-      eliteUsers: platinumUsers,
-      vipUsers: diamondUsers,
+      eliteUsers,
+      vipUsers,
       totalPaidUsers: premiumUsers.length,
       bannedUsers: bannedUsers.length,
       suspendedUsers: suspendedUsers.length,
