@@ -53,7 +53,7 @@ export function useAuth() {
     loadUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (_event === 'SIGNED_OUT' || _event === 'TOKEN_REFRESHED' && !session) {
+      if (_event === 'SIGNED_OUT' || (_event === 'TOKEN_REFRESHED' && !session)) {
         if (mounted) setState({ user: null, profile: null, isAdmin: false, loading: false, authenticated: false });
       } else if (session && mounted) {
         loadUser();
