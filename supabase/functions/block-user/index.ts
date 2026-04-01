@@ -128,14 +128,8 @@ Deno.serve(async (req) => {
         }
       }
 
-      // Audit log
-      await supabase.from("admin_audit_logs").insert({
-        admin_user_id: user.id,
-        action: "user_blocked",
-        target_type: "user_profile",
-        target_id: target_profile_id,
-        details: { blocked_by: myProfile.id },
-      });
+      // Structured log for admin visibility (not admin_audit_logs — this is a user action)
+      console.log(JSON.stringify({ action: 'user_blocked', actor: myProfile.id, target: target_profile_id, ts: new Date().toISOString() }));
 
       return new Response(
         JSON.stringify({ success: true, message: `Blocked ${targetProfile.display_name}` }),
