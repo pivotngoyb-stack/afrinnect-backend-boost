@@ -187,9 +187,9 @@ export default function Matches() {
       }
     },
     enabled: !!myProfile,
-    refetchInterval: 30000,
+    refetchInterval: 60000,
     refetchOnWindowFocus: true,
-    staleTime: 15000,
+    staleTime: 30000,
     retry: 2,
     retryDelay: 3000
   });
@@ -384,8 +384,8 @@ export default function Matches() {
       }
     },
     enabled: matchesData.length > 0 && !!myProfile,
-    refetchInterval: 30000,
-    staleTime: 15000,
+    refetchInterval: 60000,
+    staleTime: 30000,
     retry: 1,
     retryDelay: 5000
   });

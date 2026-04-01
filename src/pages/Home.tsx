@@ -336,7 +336,7 @@ export default function Home() {
       setProfileViewStartTime(Date.now());
       setPhotosViewedCount(0);
     },
-    onError: (error) => {
+    onError: (error, variables) => {
       if (error.message === 'verification_required') return;
       if (error.message === 'slow_down') {
         toast.info('Slow down! Take a moment between likes.');
@@ -348,6 +348,11 @@ export default function Home() {
         return;
       }
       console.error('Like mutation error:', error);
+      // Keep the swiped ID persisted to prevent reappearance even on error
+      if (variables?.likedId) {
+        localSwipedIds.current.add(variables.likedId);
+        persistSwipedId(variables.likedId);
+      }
       toast.error('Something went wrong. Moving to next profile.');
       setCurrentIndex(prev => prev + 1);
       setProfileViewStartTime(Date.now());

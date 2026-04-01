@@ -285,7 +285,7 @@ export default function Chat() {
         queryClient.invalidateQueries({ queryKey: ['conversations-data'] });
         queryClient.invalidateQueries({ queryKey: ['bottom-nav-badges'] });
       });
-  }, [messages.length, myProfile?.id, queryClient, matchId]); // Mark all unread in this conversation as soon as chat is opened/new message arrives
+  }, [messages.filter(m => !m.__optimistic).length, myProfile?.id, queryClient, matchId]); // Mark all unread — exclude optimistic messages from triggering
 
   // Send message with optimistic update
   const sendMessageMutation = useOptimisticUpdate(
@@ -564,7 +564,7 @@ export default function Chat() {
   if (!otherProfile) {
     const showError = (matchFetched && !match) || matchError;
     return (
-      <div className="h-screen bg-background flex flex-col overflow-hidden">
+     <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
         <header className="bg-card border-b border-border px-4 py-3 flex items-center gap-3">
           <Link to={createPageUrl('Matches')}>
             <Button variant="ghost" size="icon">
@@ -595,7 +595,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="h-screen bg-background flex flex-col overflow-hidden">
+    <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
       {/* Header - Native App Bar */}
       <header className="bg-card/95 backdrop-blur-lg border-b border-border/50 px-4 py-3 flex items-center justify-between sticky top-0 z-10" style={{ paddingTop: 'max(12px, env(safe-area-inset-top))' }}>
         <div className="flex items-center gap-3">
