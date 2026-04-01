@@ -298,7 +298,15 @@ const ProfileCard = React.memo(function ProfileCard({
 
             <div className="mb-2 flex items-center gap-2 text-xs text-primary-foreground/85">
               <span className={`inline-block h-2 w-2 rounded-full ${isActiveNow ? 'bg-brand-sage' : 'bg-muted-foreground'}`} />
-              <span>{isActiveNow ? 'Active now' : 'Recently active'}</span>
+              <span>{isActiveNow ? 'Active now' : lastActiveDate ? (() => {
+                const mins = Math.floor((Date.now() - lastActiveDate.getTime()) / 60000);
+                if (mins < 60) return `Active ${mins}m ago`;
+                const hrs = Math.floor(mins / 60);
+                if (hrs < 24) return `Active ${hrs}h ago`;
+                const days = Math.floor(hrs / 24);
+                if (days < 7) return `Active ${days}d ago`;
+                return `Active ${Math.floor(days / 7)}w ago`;
+              })() : ''}</span>
             </div>
 
             <div className="flex items-center gap-1 text-sm text-primary-foreground/90">
