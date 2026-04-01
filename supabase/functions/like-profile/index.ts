@@ -99,6 +99,30 @@ Deno.serve(async (req) => {
     // === LIKE ACTION ===
     if (action === 'like') {
       log('like_start', { liker: myProfile.id, target: targetProfileId, is_super: isSuperLike });
+
+      // Server-side super-like weekly limit enforcement
+      if (isSuperLike) {
+        const tier = myProfile.subscription_tier || 'free';
+        const superLikeLimits: Record<string, number> = { free: 1, premium: 5, elite: -1, vip: -1 };
+        const weeklyLimit = superLikeLimits[tier] ?? 1;
+
+        if (weeklyLimit > 0) {
+          const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+          const { count: superLikeCount } = await supabase
+            .from('likes')
+            .select('id', { count: 'exact', head: true })
+            .eq('liker_id', myProfile.id)
+            .eq('is_super_like', true)
+            .gte('created_at', weekAgo);
+
+          if ((superLikeCount || 0) >= weeklyLimit) {
+            return new Response(JSON.stringify({ error: 'super_like_limit_reached', limit: weeklyLimit }), {
+              status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+          }
+        }
+      }
+
       const { data: existingLike } = await supabase
         .from('likes')
         .select('id')
@@ -295,6 +319,28 @@ Deno.serve(async (req) => {
 
     // === REWIND ACTION ===
     if (action === 'rewind') {
+      // Server-side rewind tier enforcement
+      const tier = myProfile.subscription_tier || 'free';
+      const rewindAccess: Record<string, boolean> = { free: false, premium: true, elite: true, vip: true };
+      if (!rewindAccess[tier]) {
+        return new Response(JSON.stringify({ error: 'rewind_requires_upgrade', tier }), {
+          status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
+      // Prevent rewinding into an existing match (cannot undo a match)
+      const { data: existingMatch } = await supabase
+        .from('matches')
+        .select('id')
+        .or(`and(user1_id.eq.${myProfile.id},user2_id.eq.${targetProfileId}),and(user1_id.eq.${targetProfileId},user2_id.eq.${myProfile.id})`)
+        .maybeSingle();
+
+      if (existingMatch) {
+        return new Response(JSON.stringify({ error: 'cannot_rewind_match' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+
       log('rewind', { liker: myProfile.id, target: targetProfileId });
       // Delete both like and pass records for this target atomically
       const [likeResult] = await Promise.all([

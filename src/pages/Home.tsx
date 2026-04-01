@@ -307,12 +307,12 @@ export default function Home() {
           const errBody = JSON.parse(error.message);
           throw new Error(errBody.error || 'Like failed');
         } catch (e) {
-          if (e.message === 'daily_limit_reached') throw e;
+          if (e.message === 'daily_limit_reached' || e.message === 'super_like_limit_reached' || e.message === 'rewind_requires_upgrade') throw e;
           throw new Error(error.message || 'Like failed');
         }
       }
 
-      if (data?.error === 'daily_limit_reached') throw new Error('daily_limit_reached');
+      if (data?.error === 'daily_limit_reached' || data?.error === 'super_like_limit_reached' || data?.error === 'rewind_requires_upgrade') throw new Error(data.error);
       if (data?.error) throw new Error(data.error);
 
       return data;
@@ -345,6 +345,14 @@ export default function Home() {
       if (error.message === 'daily_limit_reached') {
         setShowLimitPaywall(true);
         setTimeout(() => setShowMissedMatch(true), 500);
+        return;
+      }
+      if (error.message === 'super_like_limit_reached') {
+        toast('You have used your weekly Super Like allowance');
+        return;
+      }
+      if (error.message === 'rewind_requires_upgrade') {
+        setShowLimitPaywall(true);
         return;
       }
       console.error('Like mutation error:', error);
@@ -383,20 +391,7 @@ export default function Home() {
   };
 
   const handleSuperLike = async (profile) => {
-    const tier = myProfile?.subscription_tier || 'free';
-    if (tier === 'free') {
-      const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
-      const { count } = await supabase
-        .from('likes')
-        .select('id', { count: 'exact', head: true })
-        .eq('liker_id', myProfile.id)
-        .eq('is_super_like', true)
-        .gte('created_at', weekAgo);
-      if ((count || 0) >= 1) {
-        toast('You have used your weekly Super Like');
-        return;
-      }
-    }
+    if (likeMutation.isPending || passMutation.isPending) return;
     localSwipedIds.current.add(profile.id);
     persistSwipedId(profile.id);
     setPendingLikeProfile(profile);

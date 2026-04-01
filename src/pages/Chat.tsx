@@ -295,19 +295,20 @@ export default function Chat() {
   // Send message with optimistic update
   const sendMessageMutation = useOptimisticUpdate(
     ['messages', matchId],
-    async ({ content, type = 'text', mediaUrl = null }) => {
+    async ({ content, type = 'text', mediaUrl = null, __optimisticId = null }) => {
       // Client-side validation for better UX
       if (!validateInput.length(content, 1, 5000) && !mediaUrl) {
         throw new Error('Message must be between 1 and 5000 characters');
       }
       
-      // Call secure backend function
+      // Call secure backend function — include __optimisticId for reconciliation
       const response = await supabase.functions.invoke('send-message', {
         body: {
           matchId,
           content,
           type,
-          mediaUrl
+          mediaUrl,
+          __optimisticId
         }
       });
 

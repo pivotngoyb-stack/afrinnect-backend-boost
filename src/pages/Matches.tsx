@@ -107,11 +107,13 @@ export default function Matches() {
       try {
         if (!myProfile) return [];
 
-        // Primary source: all matched records for me
+        // Single source of truth: matches table with is_match=true
         const { data: matchedRows, error } = await supabase
           .from('matches')
           .select('*')
           .eq('is_match', true)
+          .neq('status', 'blocked')
+          .neq('status', 'unmatched')
           .or(`user1_id.eq.${myProfile.id},user2_id.eq.${myProfile.id}`)
           .order('matched_at', { ascending: false })
           .limit(100);
@@ -121,41 +123,7 @@ export default function Matches() {
           return [];
         }
 
-        // Secondary source: any match threads where messages already exist
-        // (covers legacy/edge rows where status/is_match fields may be inconsistent)
-        const { data: messageRows } = await supabase
-          .from('messages')
-          .select('match_id,created_at')
-          .or(`sender_id.eq.${myProfile.id},receiver_id.eq.${myProfile.id}`)
-          .order('created_at', { ascending: false })
-          .limit(300);
-
-        const messageMatchIds = Array.from(
-          new Set((messageRows || []).map((m) => m.match_id).filter(Boolean))
-        );
-
-        let messageBackedMatches: any[] = [];
-        if (messageMatchIds.length > 0) {
-          const { data: messageMatches, error: messageMatchesError } = await supabase
-            .from('matches')
-            .select('*')
-            .in('id', messageMatchIds)
-            .or(`user1_id.eq.${myProfile.id},user2_id.eq.${myProfile.id}`)
-            .limit(100);
-
-          if (messageMatchesError) {
-            console.error('Message-backed matches query error:', messageMatchesError);
-          } else {
-            messageBackedMatches = messageMatches || [];
-          }
-        }
-
-        const mergedRawMatches = [...(matchedRows || []), ...messageBackedMatches];
-        if (!mergedRawMatches.length) return [];
-
-        // Only keep actual matches, unless they already have message history
-        const messageMatchSet = new Set(messageMatchIds);
-        const validMatches = mergedRawMatches.filter((m) => m?.is_match || messageMatchSet.has(m?.id));
+        const validMatches = matchedRows || [];
         
         // Filter out matches with blocked users
         const myBlockedUsers = new Set(myProfile.blocked_users || []);
