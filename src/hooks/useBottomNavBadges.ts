@@ -96,12 +96,13 @@ export function useBottomNavBadges() {
           return q;
         })(),
 
-        // Likes received
+        // Likes received — only count unseen likes
         (() => {
           let q = supabase
             .from('likes')
             .select('id', { count: 'exact', head: true })
-            .eq('liked_id', profileId);
+            .eq('liked_id', profileId)
+            .eq('is_seen', false);
           if (matchesSince) q = q.gt('created_at', matchesSince);
           return q;
         })(),

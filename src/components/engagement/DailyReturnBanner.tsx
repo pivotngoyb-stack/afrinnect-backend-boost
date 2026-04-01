@@ -69,4 +69,6 @@ const DailyReturnBanner = React.forwardRef<HTMLDivElement, DailyReturnBannerProp
       </motion.div>
     </AnimatePresence>
   );
-}
+});
+
+export default DailyReturnBanner;
