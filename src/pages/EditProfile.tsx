@@ -662,7 +662,7 @@ export default function EditProfile() {
                       </button>
                       <button
                         onClick={() => setMeasurementSystem('metric')}
-                        className={`text-xs px-2 py-1 rounded-md transition ${measurementSystem === 'metric' ? 'bg-card shadow text-purple-600 font-medium' : 'text-muted-foreground'}`}
+                        className={`text-xs px-2 py-1 rounded-md transition ${measurementSystem === 'metric' ? 'bg-card shadow text-primary font-medium' : 'text-muted-foreground'}`}
                       >
                         {t('editProfile.cm_short')}
                       </button>
