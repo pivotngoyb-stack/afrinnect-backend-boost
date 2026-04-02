@@ -495,7 +495,7 @@ export default function Home() {
     }
   }, [profiles.length]);
 
-  if (isCheckingAuth) {
+  if (isCheckingAuth || !myProfile) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <AfricanProverbLoader />
