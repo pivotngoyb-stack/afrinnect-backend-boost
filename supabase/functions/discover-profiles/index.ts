@@ -64,10 +64,15 @@ Deno.serve(async (req) => {
     // Build exclusion set — includes passes so swiped-left profiles don't reappear
     const excludeSet = new Set([profileId, ...blockedUsers, ...likedIds, ...passedIds, ...matchedIds, ...excludeIds]);
 
+    // Get requester's tier for incognito filtering
+    const requesterProfile = blockedRes.data;
+    const requesterTier = requesterProfile?.subscription_tier || 'free';
+
     // Build query — order by heat_score for quality-based discovery
+    // VIP/Elite profiles with priority_ranking enabled get boosted via heat_score
     let query = supabase
       .from('user_profiles')
-      .select('id,user_id,display_name,primary_photo,photos,birth_date,gender,current_city,current_country,country_of_origin,bio,interests,subscription_tier,is_photo_verified,is_id_verified,verification_status,last_active,heat_score,opening_move,profile_prompts')
+      .select('id,user_id,display_name,primary_photo,photos,birth_date,gender,current_city,current_country,country_of_origin,bio,interests,subscription_tier,is_photo_verified,is_id_verified,verification_status,last_active,heat_score,opening_move,profile_prompts,incognito_mode,profile_boost_active,boost_expires_at')
       .eq('is_active', true)
       .eq('is_banned', false)
       .not('id', 'in', `(${Array.from(excludeSet).join(',')})`)
