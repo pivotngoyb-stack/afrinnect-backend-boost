@@ -119,8 +119,11 @@ Deno.serve(async (req) => {
         .from('user_profiles')
         .select('id,user_id,display_name,primary_photo,photos,birth_date,gender,current_city,current_country,country_of_origin,bio,interests,subscription_tier,is_photo_verified,is_id_verified,verification_status,last_active')
         .eq('is_active', true)
+        .eq('is_banned', false)
         .eq('current_country', currentCountry)
         .not('id', 'in', `(${Array.from(excludeSet).join(',')})`)
+        .not('birth_date', 'is', null)
+        .lte('birth_date', (() => { const d = new Date(); d.setFullYear(d.getFullYear() - 18); return d.toISOString().split('T')[0]; })())
         .order('last_active', { ascending: false })
         .limit(Math.min(limit, 100));
 
