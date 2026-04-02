@@ -95,9 +95,9 @@ export default function Landing() {
   return (
     <>
       <SEOHead
-        title="Afrinnect - Connect with African Singles Worldwide"
-        description="Find meaningful relationships with African singles and diaspora worldwide. Join 10K+ members in 50+ countries for cultural dating based on shared heritage."
-        keywords="african dating, black dating, african singles, diaspora dating, african culture, ethnic dating"
+        title="Afrinnect - The African Diaspora Community Platform"
+        description="Connect with the African diaspora through community groups, cultural events, heritage-based networking, and meaningful relationships. Join thousands across USA & Canada."
+        keywords="african diaspora community, african community platform, diaspora networking, african culture, african events, african heritage connections"
       />
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-amber-900 relative overflow-hidden">
         <AfricanPattern className="text-white" opacity={0.08} />
