@@ -254,44 +254,6 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Floating cards */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="absolute -left-8 top-12 z-20 bg-card rounded-2xl p-4 shadow-xl"
-            >
-              <div className="flex items-center gap-3">
-                <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/728ada3a8_image.png"
-                  alt=""
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-                <div>
-                  <p className="font-bold text-foreground text-sm">{t('landingExtra.newMatch')}</p>
-                  <p className="text-xs text-muted-foreground">Kwame — Ghana</p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.7 }}
-              className="absolute -right-8 bottom-24 z-20 bg-card rounded-2xl p-4 shadow-xl"
-            >
-              <div className="flex items-center gap-3">
-                <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/728ada3a8_image.png"
-                  alt=""
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-                <div>
-                  <p className="font-bold text-foreground text-sm">{t('landingExtra.matchPercent')}</p>
-                  <p className="text-xs text-muted-foreground">Zara — Kenya</p>
-                </div>
-              </div>
-            </motion.div>
           </motion.div>
         </div>
 
