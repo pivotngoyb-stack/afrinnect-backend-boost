@@ -33,10 +33,8 @@ export const TIER_FEATURES = {
   super_likes_daily: ['elite', 'vip'],
   featured_profile: ['vip'],
   profile_insights: ['vip'],
-  concierge_support: ['vip'],
   priority_support: ['vip'],
   exclusive_events: ['vip'],
-  dedicated_matchmaker: ['vip'],
   virtual_speed_dating: ['vip']
 };
 
