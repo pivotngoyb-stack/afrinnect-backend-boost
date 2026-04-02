@@ -14,6 +14,7 @@ import { toast } from '@/hooks/use-toast';
 export default function PhotoPerformance() {
   const [myProfile, setMyProfile] = useState(null);
   const [photoStats, setPhotoStats] = useState([]);
+  const [tierBlocked, setTierBlocked] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -22,16 +23,20 @@ export default function PhotoPerformance() {
       const profiles = await filterRecords('user_profiles', { user_id: user.id });
       if (profiles.length > 0) {
         setMyProfile(profiles[0]);
+        const tier = profiles[0].subscription_tier || 'free';
+        if (tier !== 'vip') {
+          setTierBlocked(true);
+        }
       }
     };
     fetchProfile();
   }, []);
 
-  // Fetch engagement data
+  // Fetch engagement data — must be before any conditional return
   const { data: engagements = [] } = useQuery({
     queryKey: ['photo-engagement', myProfile?.id],
     queryFn: () => filterRecords('photo_engagements', { profile_id: myProfile.id }),
-    enabled: !!myProfile
+    enabled: !!myProfile && !tierBlocked
   });
 
   // Calculate stats
@@ -56,7 +61,6 @@ export default function PhotoPerformance() {
       };
     });
 
-    // Sort by like rate
     stats.sort((a, b) => b.likeRate - a.likeRate);
     setPhotoStats(stats);
   }, [myProfile, engagements]);
@@ -66,7 +70,6 @@ export default function PhotoPerformance() {
     mutationFn: async () => {
       if (!myProfile || photoStats.length === 0) return;
 
-      // Reorder photos by performance
       const optimizedPhotos = photoStats.map(s => s.url);
       const bestPhoto = optimizedPhotos[0];
 
@@ -94,6 +97,25 @@ export default function PhotoPerformance() {
   const avgLikeRate = photoStats.length > 0 
     ? photoStats.reduce((sum, s) => sum + s.likeRate, 0) / photoStats.length 
     : 0;
+
+  if (tierBlocked) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <Card className="max-w-md w-full">
+          <CardContent className="p-8 text-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+              <Sparkles size={32} className="text-primary-foreground" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2">VIP Feature</h2>
+            <p className="text-muted-foreground mb-6">Profile Insights & Analytics is available exclusively for VIP members.</p>
+            <Link to="/pricing">
+              <Button className="w-full">Upgrade to VIP</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative pb-24">

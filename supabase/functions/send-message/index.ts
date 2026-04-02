@@ -124,9 +124,17 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Message limit check for free tier
+    // Message limit check per tier
     const tier = senderProfile.subscription_tier || "free";
-    if (tier === "free") {
+    const tierMessageLimits: Record<string, number> = {
+      free: 50,
+      premium: 100,
+      elite: -1,  // unlimited
+      vip: -1,    // unlimited
+    };
+    const dailyMessageLimit = tierMessageLimits[tier] ?? 50;
+
+    if (dailyMessageLimit > 0) {
       const today = new Date().toISOString().split("T")[0];
       const { count: todayCount } = await supabase
         .from("messages")
@@ -134,8 +142,12 @@ Deno.serve(async (req) => {
         .eq("sender_id", senderProfile.id)
         .gte("created_at", `${today}T00:00:00`);
 
-      if ((todayCount || 0) >= 50) {
-        return new Response(JSON.stringify({ error: "upgrade_required" }), {
+      if ((todayCount || 0) >= dailyMessageLimit) {
+        return new Response(JSON.stringify({ 
+          error: tier === "free" ? "upgrade_required" : "daily_message_limit_reached",
+          limit: dailyMessageLimit,
+          tier,
+        }), {
           status: 403,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
@@ -207,6 +219,9 @@ Allow: flirting, compliments, date planning, personal questions, humor.`,
       );
     }
 
+    // Priority DMs: VIP messages are flagged so they appear first in inbox
+    const isPriorityMessage = tier === 'vip';
+
     // Insert the message
     const { data: message, error: insertError } = await supabase
       .from("messages")
@@ -220,6 +235,7 @@ Allow: flirting, compliments, date planning, personal questions, humor.`,
         message_type: type,
         media_url: mediaUrl,
         is_read: false,
+        is_priority: isPriorityMessage,
       })
       .select()
       .single();

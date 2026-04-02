@@ -86,6 +86,7 @@ export default function VirtualGifts() {
   const [myProfile, setMyProfile] = useState(null);
   const [selectedGift, setSelectedGift] = useState(null);
   const [message, setMessage] = useState('');
+  const [tierBlocked, setTierBlocked] = useState(false);
   const [searchParams] = useSearchParams();
   const profileId = searchParams.get('profileId');
 
@@ -97,6 +98,10 @@ export default function VirtualGifts() {
         if (profiles.length > 0) {
           const profile = profiles[0];
           setMyProfile(profile);
+          const tier = profile.subscription_tier || 'free';
+          if (tier !== 'elite' && tier !== 'vip') {
+            setTierBlocked(true);
+          }
         }
       } catch (e) {}
     };
@@ -107,6 +112,23 @@ export default function VirtualGifts() {
     // Will be implemented via native in-app purchases (iOS/Android)
     console.log('Sending gift:', selectedGift, 'with message:', message);
   };
+
+  if (tierBlocked) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <div className="max-w-md w-full text-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
+            <Send size={32} className="text-primary-foreground" />
+          </div>
+          <h2 className="text-2xl font-bold mb-2">Elite Feature</h2>
+          <p className="text-muted-foreground mb-6">Virtual Gifts are available for Elite and VIP members.</p>
+          <Link to="/pricing">
+            <Button className="w-full">Upgrade to Elite</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-amber-50 pb-24">

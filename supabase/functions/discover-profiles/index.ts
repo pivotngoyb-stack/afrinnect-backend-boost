@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
 
     // Get the user's blocked list, existing likes, passes, and matches in parallel
     const [blockedRes, likesRes, passesRes, matchesRes] = await Promise.all([
-      supabase.from('user_profiles').select('blocked_users').eq('id', profileId).single(),
+      supabase.from('user_profiles').select('blocked_users,subscription_tier').eq('id', profileId).single(),
       supabase.from('likes').select('liked_id').eq('liker_id', profileId),
       supabase.from('passes').select('passed_id').eq('passer_id', profileId),
       // Direct query instead of missing RPC
@@ -64,10 +64,15 @@ Deno.serve(async (req) => {
     // Build exclusion set — includes passes so swiped-left profiles don't reappear
     const excludeSet = new Set([profileId, ...blockedUsers, ...likedIds, ...passedIds, ...matchedIds, ...excludeIds]);
 
+    // Get requester's tier for incognito filtering
+    const requesterProfile = blockedRes.data;
+    const requesterTier = requesterProfile?.subscription_tier || 'free';
+
     // Build query — order by heat_score for quality-based discovery
+    // VIP/Elite profiles with priority_ranking enabled get boosted via heat_score
     let query = supabase
       .from('user_profiles')
-      .select('id,user_id,display_name,primary_photo,photos,birth_date,gender,current_city,current_country,country_of_origin,bio,interests,subscription_tier,is_photo_verified,is_id_verified,verification_status,last_active,heat_score,opening_move,profile_prompts')
+      .select('id,user_id,display_name,primary_photo,photos,birth_date,gender,current_city,current_country,country_of_origin,bio,interests,subscription_tier,is_photo_verified,is_id_verified,verification_status,last_active,heat_score,opening_move,profile_prompts,incognito_mode,profile_boost_active,boost_expires_at')
       .eq('is_active', true)
       .eq('is_banned', false)
       .not('id', 'in', `(${Array.from(excludeSet).join(',')})`)
@@ -134,10 +139,40 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Filter out incognito profiles (they should only be visible to people they liked)
+    finalProfiles = finalProfiles.filter((p: any) => {
+      if (!p.incognito_mode) return true;
+      // Incognito users are hidden from discovery — they only appear if they liked you
+      return likedIds.includes(p.id) === false && (likesRes.data || []).some?.(() => false);
+    });
+    // Actually: incognito profiles should be fully hidden from discovery
+    finalProfiles = finalProfiles.filter((p: any) => !p.incognito_mode);
+
+    // Sort: boosted profiles first, then VIP featured profiles, then by heat_score
+    const now = Date.now();
+    finalProfiles.sort((a: any, b: any) => {
+      // Active boosts first
+      const aBoost = a.profile_boost_active && a.boost_expires_at && new Date(a.boost_expires_at).getTime() > now ? 1 : 0;
+      const bBoost = b.profile_boost_active && b.boost_expires_at && new Date(b.boost_expires_at).getTime() > now ? 1 : 0;
+      if (bBoost !== aBoost) return bBoost - aBoost;
+
+      // VIP featured profiles second
+      const tierOrder: Record<string, number> = { vip: 3, elite: 2, premium: 1, free: 0 };
+      const aTier = tierOrder[a.subscription_tier || 'free'] || 0;
+      const bTier = tierOrder[b.subscription_tier || 'free'] || 0;
+      if (bTier !== aTier) return bTier - aTier;
+
+      // Then by heat_score (already sorted by DB but re-confirm after merge)
+      return (b.heat_score || 0) - (a.heat_score || 0);
+    });
+
     finalProfiles = finalProfiles.map((p: any) => ({
       ...p,
       is_verified: p.verification_status === 'verified' || p.is_photo_verified || p.is_id_verified,
       heat_score: undefined, // strip internal score from client response
+      incognito_mode: undefined,
+      profile_boost_active: undefined,
+      boost_expires_at: undefined,
     }));
 
     return new Response(JSON.stringify({ profiles: finalProfiles, count: finalProfiles.length }), {
