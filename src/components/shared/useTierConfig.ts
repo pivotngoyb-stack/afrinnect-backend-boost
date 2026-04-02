@@ -45,7 +45,7 @@ const DEFAULT_TIERS: Record<string, any> = {
       { key: 'verified_badge', enabled: true },
       { key: 'featured_profile', enabled: true },
       { key: 'profile_insights', enabled: true },
-      { key: 'concierge_support', enabled: true },
+      { key: 'priority_support', enabled: true },
       { key: 'virtual_speed_dating', enabled: true }
     ]
   }
