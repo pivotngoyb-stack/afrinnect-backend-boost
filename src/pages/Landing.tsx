@@ -315,104 +315,46 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Success Stories - Emotional Social Proof */}
+      {/* Community Value Section */}
       <section className="relative z-10 bg-gradient-to-br from-purple-50 to-amber-50 py-20">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <span className="inline-block bg-purple-100 text-purple-700 text-sm font-semibold px-4 py-1 rounded-full mb-4">
-              {t('landingExtra.testimonials.badge')}
-            </span>
             <h2 className="text-4xl font-bold text-foreground mb-4">
-              {t('landingExtra.testimonials.title')}
+              Built for the African Diaspora
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              {t('landingExtra.testimonials.subtitle')}
+              A platform that celebrates your heritage and helps you find meaningful connections through shared culture.
             </p>
           </div>
 
-          {/* Testimonial Carousel - Enhanced */}
-          <div className="max-w-4xl mx-auto mb-16">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTestimonial}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Card className="bg-card shadow-2xl border-0 overflow-hidden">
-                  <CardContent className="p-0">
-                    <div className="flex flex-col md:flex-row">
-                      {/* Couple Photos */}
-                      <div className="md:w-2/5 bg-gradient-to-br from-purple-100 to-amber-100 p-8 flex items-center justify-center">
-                        <div className="relative">
-                          <img
-                            src={testimonials[activeTestimonial].image}
-                            alt=""
-                            className="w-28 h-28 rounded-full object-cover shadow-lg border-4 border-card"
-                          />
-                          <img
-                            src={testimonials[activeTestimonial].secondImage}
-                            alt=""
-                            className="w-28 h-28 rounded-full object-cover shadow-lg border-4 border-card absolute -bottom-4 -right-8"
-                          />
-                          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
-                            <Heart size={12} className="fill-white" /> Matched
-                          </div>
-                        </div>
-                      </div>
-                      {/* Quote */}
-                      <div className="md:w-3/5 p-8 md:p-10">
-                        <div className="text-purple-600 text-5xl font-serif leading-none mb-4">"</div>
-                        <p className="text-lg text-foreground mb-6 leading-relaxed">
-                          {testimonials[activeTestimonial].quote}
-                        </p>
-                        <div className="border-t border-border pt-4">
-                          <p className="font-bold text-foreground text-lg">
-                            {testimonials[activeTestimonial].name}
-                          </p>
-                          <p className="text-sm text-purple-600 font-medium">
-                            {testimonials[activeTestimonial].location}
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {testimonials[activeTestimonial].detail}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </AnimatePresence>
-
-            {/* Dots */}
-            <div className="flex justify-center gap-2 mt-6">
-              {testimonials.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveTestimonial(idx)}
-                  className={`h-2 rounded-full transition-all ${
-                    idx === activeTestimonial ? 'bg-purple-600 w-8' : 'bg-muted w-2'
-                  }`}
-                />
-              ))}
-            </div>
-            
-            {/* CTA after testimonials */}
-            <div className="text-center mt-10">
-              <p className="text-muted-foreground mb-4">{t('landingExtra.testimonials.yourStory')}</p>
-              <Button 
-                onClick={handleGetStarted}
-                size="lg" 
-                className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-8 py-6 rounded-full shadow-xl"
-              >
-                {t('landingExtra.testimonials.joinFree')}
-                <ArrowRight size={18} className="ml-2" />
-              </Button>
-            </div>
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            {[
+              { icon: Globe, title: "Heritage-Based Matching", desc: "Connect through shared cultural backgrounds, languages, and traditions" },
+              { icon: Shield, title: "Verified & Safe", desc: "Photo verification, AI moderation, and 24/7 safety monitoring" },
+              { icon: Users, title: "Real Community", desc: "Join events, communities, and conversations with people who share your roots" }
+            ].map((item, idx) => (
+              <Card key={idx} className="text-center p-6">
+                <CardContent className="pt-4">
+                  <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-100 to-amber-100 flex items-center justify-center">
+                    <item.icon size={28} className="text-purple-600" />
+                  </div>
+                  <h3 className="text-lg font-bold text-foreground mb-2">{item.title}</h3>
+                  <p className="text-muted-foreground text-sm">{item.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
 
-
+          <div className="text-center mt-10">
+            <Button 
+              onClick={handleGetStarted}
+              size="lg" 
+              className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-8 py-6 rounded-full shadow-xl"
+            >
+              {t('landingExtra.testimonials.joinFree')}
+              <ArrowRight size={18} className="ml-2" />
+            </Button>
+          </div>
         </div>
       </section>
 
