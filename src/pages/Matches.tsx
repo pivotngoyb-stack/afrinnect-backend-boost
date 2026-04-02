@@ -36,7 +36,49 @@ export default function Matches() {
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [activeTab, setActiveTab] = useState('matches');
   const [searchQuery, setSearchQuery] = useState('');
+  const [unseenLikesCount, setUnseenLikesCount] = useState(0);
   const queryClient = useQueryClient();
+
+  // Fetch unseen likes count
+  const { data: unseenLikesData = 0 } = useQuery({
+    queryKey: ['unseen-likes-count', myProfile?.id],
+    queryFn: async () => {
+      const { count } = await supabase
+        .from('likes')
+        .select('id', { count: 'exact', head: true })
+        .eq('liked_id', myProfile.id)
+        .eq('is_seen', false);
+      return count || 0;
+    },
+    enabled: !!myProfile?.id,
+    refetchInterval: 30000,
+    staleTime: 5000,
+  });
+
+  useEffect(() => {
+    setUnseenLikesCount(unseenLikesData);
+  }, [unseenLikesData]);
+
+  // Mark likes as seen when user switches to likes tab
+  useEffect(() => {
+    if (activeTab !== 'likes' || !myProfile?.id) return;
+    
+    const markLikesSeen = async () => {
+      await supabase
+        .from('likes')
+        .update({ is_seen: true })
+        .eq('liked_id', myProfile.id)
+        .eq('is_seen', false);
+      
+      setUnseenLikesCount(0);
+      queryClient.invalidateQueries({ queryKey: ['unseen-likes-count'] });
+      queryClient.invalidateQueries({ queryKey: ['bottom-nav-badges'] });
+    };
+    
+    // Small delay so user sees the count before it clears
+    const timer = setTimeout(markLikesSeen, 1500);
+    return () => clearTimeout(timer);
+  }, [activeTab, myProfile?.id, queryClient]);
 
   useEffect(() => {
     const fetchMyProfile = async () => {
