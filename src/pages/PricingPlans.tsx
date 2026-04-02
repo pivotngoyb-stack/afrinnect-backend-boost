@@ -84,11 +84,10 @@ const PRICING_TIERS = {
       { text: 'Everything in Elite', tip: '' },
       { text: 'Virtual Speed Dating', tip: 'Join exclusive live video events' },
       { text: 'VIP Verified Badge', tip: 'Exclusive gold status symbol' },
-      { text: 'Concierge Support', tip: 'Direct line to our team 24/7' },
+      { text: 'Priority Support', tip: 'Faster response times from our team' },
       { text: 'Exclusive VIP Events', tip: 'VIP-only community events' },
       { text: 'Featured Profile Placement', tip: 'Always shown first in discovery' },
       { text: 'Profile Insights & Analytics', tip: 'See who viewed you and detailed stats' },
-      { text: '5 Virtual Gifts/month', tip: 'Free monthly gift allowance' },
       { text: 'Priority DMs', tip: 'Your messages appear first' }
     ]
   }
