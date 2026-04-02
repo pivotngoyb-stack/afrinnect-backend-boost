@@ -32,30 +32,11 @@ export default function PhotoPerformance() {
     fetchProfile();
   }, []);
 
-  if (tierBlocked) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-6">
-        <Card className="max-w-md w-full">
-          <CardContent className="p-8 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
-              <Sparkles size={32} className="text-primary-foreground" />
-            </div>
-            <h2 className="text-2xl font-bold mb-2">VIP Feature</h2>
-            <p className="text-muted-foreground mb-6">Profile Insights & Analytics is available exclusively for VIP members.</p>
-            <Link to="/pricing">
-              <Button className="w-full">Upgrade to VIP</Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // Fetch engagement data
+  // Fetch engagement data — must be before any conditional return
   const { data: engagements = [] } = useQuery({
     queryKey: ['photo-engagement', myProfile?.id],
     queryFn: () => filterRecords('photo_engagements', { profile_id: myProfile.id }),
-    enabled: !!myProfile
+    enabled: !!myProfile && !tierBlocked
   });
 
   // Calculate stats
@@ -80,7 +61,6 @@ export default function PhotoPerformance() {
       };
     });
 
-    // Sort by like rate
     stats.sort((a, b) => b.likeRate - a.likeRate);
     setPhotoStats(stats);
   }, [myProfile, engagements]);
@@ -90,7 +70,6 @@ export default function PhotoPerformance() {
     mutationFn: async () => {
       if (!myProfile || photoStats.length === 0) return;
 
-      // Reorder photos by performance
       const optimizedPhotos = photoStats.map(s => s.url);
       const bestPhoto = optimizedPhotos[0];
 
