@@ -14,12 +14,14 @@ export default function Explore() {
   const [search, setSearch] = useState('');
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
-  const { data: currentUser } = useQuery({
+  const { data: currentUser, isLoading: isLoadingUser } = useQuery({
     queryKey: ['current-user-explore'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
       return user;
     },
+    retry: 2,
   });
 
   const { data: currentProfile } = useQuery({
