@@ -98,6 +98,25 @@ export default function PhotoPerformance() {
     ? photoStats.reduce((sum, s) => sum + s.likeRate, 0) / photoStats.length 
     : 0;
 
+  if (tierBlocked) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <Card className="max-w-md w-full">
+          <CardContent className="p-8 text-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+              <Sparkles size={32} className="text-primary-foreground" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2">VIP Feature</h2>
+            <p className="text-muted-foreground mb-6">Profile Insights & Analytics is available exclusively for VIP members.</p>
+            <Link to="/pricing">
+              <Button className="w-full">Upgrade to VIP</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-muted via-purple-50/30 to-amber-50/20 relative pb-24">
       <AfricanPattern className="text-purple-600" opacity={0.03} />
