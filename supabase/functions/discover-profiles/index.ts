@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
 
     // Get the user's blocked list, existing likes, passes, and matches in parallel
     const [blockedRes, likesRes, passesRes, matchesRes] = await Promise.all([
-      supabase.from('user_profiles').select('blocked_users').eq('id', profileId).single(),
+      supabase.from('user_profiles').select('blocked_users,subscription_tier').eq('id', profileId).single(),
       supabase.from('likes').select('liked_id').eq('liker_id', profileId),
       supabase.from('passes').select('passed_id').eq('passer_id', profileId),
       // Direct query instead of missing RPC
