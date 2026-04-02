@@ -139,10 +139,40 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Filter out incognito profiles (they should only be visible to people they liked)
+    finalProfiles = finalProfiles.filter((p: any) => {
+      if (!p.incognito_mode) return true;
+      // Incognito users are hidden from discovery — they only appear if they liked you
+      return likedIds.includes(p.id) === false && (likesRes.data || []).some?.(() => false);
+    });
+    // Actually: incognito profiles should be fully hidden from discovery
+    finalProfiles = finalProfiles.filter((p: any) => !p.incognito_mode);
+
+    // Sort: boosted profiles first, then VIP featured profiles, then by heat_score
+    const now = Date.now();
+    finalProfiles.sort((a: any, b: any) => {
+      // Active boosts first
+      const aBoost = a.profile_boost_active && a.boost_expires_at && new Date(a.boost_expires_at).getTime() > now ? 1 : 0;
+      const bBoost = b.profile_boost_active && b.boost_expires_at && new Date(b.boost_expires_at).getTime() > now ? 1 : 0;
+      if (bBoost !== aBoost) return bBoost - aBoost;
+
+      // VIP featured profiles second
+      const tierOrder: Record<string, number> = { vip: 3, elite: 2, premium: 1, free: 0 };
+      const aTier = tierOrder[a.subscription_tier || 'free'] || 0;
+      const bTier = tierOrder[b.subscription_tier || 'free'] || 0;
+      if (bTier !== aTier) return bTier - aTier;
+
+      // Then by heat_score (already sorted by DB but re-confirm after merge)
+      return (b.heat_score || 0) - (a.heat_score || 0);
+    });
+
     finalProfiles = finalProfiles.map((p: any) => ({
       ...p,
       is_verified: p.verification_status === 'verified' || p.is_photo_verified || p.is_id_verified,
       heat_score: undefined, // strip internal score from client response
+      incognito_mode: undefined,
+      profile_boost_active: undefined,
+      boost_expires_at: undefined,
     }));
 
     return new Response(JSON.stringify({ profiles: finalProfiles, count: finalProfiles.length }), {

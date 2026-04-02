@@ -219,6 +219,9 @@ Allow: flirting, compliments, date planning, personal questions, humor.`,
       );
     }
 
+    // Priority DMs: VIP messages are flagged so they appear first in inbox
+    const isPriorityMessage = tier === 'vip';
+
     // Insert the message
     const { data: message, error: insertError } = await supabase
       .from("messages")
@@ -232,6 +235,7 @@ Allow: flirting, compliments, date planning, personal questions, humor.`,
         message_type: type,
         media_url: mediaUrl,
         is_read: false,
+        is_priority: isPriorityMessage,
       })
       .select()
       .single();
