@@ -250,19 +250,6 @@ export default function Landing() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
               <div className="absolute bottom-6 left-6 right-6 text-white">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="flex -space-x-3">
-                    {communityPhotos.slice(0, 4).map((photo, idx) => (
-                      <img
-                        key={idx}
-                        src={photo}
-                        alt=""
-                        className="w-10 h-10 rounded-full border-2 border-card object-cover"
-                      />
-                    ))}
-                   </div>
-                  <span className="text-sm font-medium">{t('landingExtra.plusMembers')}</span>
-                </div>
                 <p className="text-lg font-semibold">{t('landingExtra.connectCulture')}</p>
               </div>
             </div>
