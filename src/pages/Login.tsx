@@ -104,7 +104,19 @@ export default function Login() {
     setAppleLoading(true);
     try {
       const result = await lovable.auth.signInWithOAuth("apple", { redirect_uri: window.location.origin });
-      if (result?.error) handleOAuthError(result.error, 'Apple');
+      
+      if (result?.error) {
+        handleOAuthError(result.error, 'Apple');
+        return;
+      }
+      
+      if (result?.redirected) {
+        // Browser will redirect to Apple — just return and let it happen
+        return;
+      }
+      
+      // Tokens received and session set — user is authenticated
+      // onAuthStateChange will handle the redirect
     } catch (error) {
       handleOAuthError(error, 'Apple');
     } finally {
@@ -116,7 +128,15 @@ export default function Login() {
     setGoogleLoading(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-      if (result?.error) handleOAuthError(result.error, 'Google');
+      
+      if (result?.error) {
+        handleOAuthError(result.error, 'Google');
+        return;
+      }
+      
+      if (result?.redirected) {
+        return;
+      }
     } catch (error) {
       handleOAuthError(error, 'Google');
     } finally {
