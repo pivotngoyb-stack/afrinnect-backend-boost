@@ -83,9 +83,9 @@ export default function Terms() {
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
               <p className="font-semibold text-purple-900 mb-2">📋 Subscription Terms</p>
               <ul className="list-disc pl-6 space-y-2 text-foreground text-sm">
-                <li><strong>Auto-Renewal:</strong> Subscriptions automatically renew unless canceled at least 24 hours before the renewal date</li>
-                <li><strong>Cancellation:</strong> You can cancel anytime from Settings → Subscription & Pricing. Cancellation takes effect at the end of your current billing period - <strong>you keep all features until then</strong></li>
-                <li><strong>Billing Cycles:</strong> Monthly, Quarterly (3 months), 6-Month, or Annual billing options are available depending on the plan</li>
+                <li><strong>Auto-Renewal:</strong> Subscriptions automatically renew unless auto-renew is turned off at least 24 hours before the end of the current period</li>
+                <li><strong>Cancellation:</strong> You can manage and cancel your subscriptions through your device's app store account settings (Apple ID or Google Play). Cancellation takes effect at the end of your current billing period — <strong>you keep all features until then</strong></li>
+                <li><strong>Billing Cycles:</strong> Monthly, Quarterly (3 months), or Annual billing options are available depending on the plan</li>
                 <li><strong>Price Changes:</strong> We will notify you at least 30 days before any price changes take effect</li>
               </ul>
             </div>
@@ -93,31 +93,27 @@ export default function Terms() {
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
               <p className="font-semibold text-green-900 mb-2">⬆️ Upgrading Your Plan</p>
               <ul className="list-disc pl-6 space-y-2 text-foreground text-sm">
-                <li>You can upgrade at any time</li>
-                <li><strong>Proration Credit:</strong> When upgrading, you receive a credit for the unused portion of your current subscription</li>
-                <li>The credit is automatically applied to your new plan purchase - <strong>you are never double-charged</strong></li>
+                <li>You can upgrade at any time through the app</li>
                 <li>New features are available immediately upon successful payment</li>
-                <li>Example: If you have 15 days left on Premium ($14.99/month), you get ~$7.50 credit toward Elite</li>
+                <li>Upgrade pricing and proration are handled by your device's app store</li>
               </ul>
             </div>
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
               <p className="font-semibold text-blue-900 mb-2">⬇️ Downgrading Your Plan</p>
               <ul className="list-disc pl-6 space-y-2 text-foreground text-sm">
-                <li>You can downgrade at any time by canceling your current subscription</li>
+                <li>You can downgrade at any time by canceling your current subscription through your app store account settings</li>
                 <li><strong>Keep Your Features:</strong> You retain all current tier features until your billing period ends</li>
-                <li>After expiration, your account automatically moves to the lower tier (or Free)</li>
-                <li>No partial refunds are issued for downgrades - you simply use what you paid for</li>
+                <li>After expiration, your account automatically moves to the Free tier</li>
               </ul>
             </div>
 
             <div className="bg-muted border border-border rounded-lg p-4">
               <p className="font-semibold text-foreground mb-2">💳 Payment Processing</p>
               <ul className="list-disc pl-6 space-y-2 text-foreground text-sm">
-                <li>Payment processing is handled securely by Stripe (PCI-DSS compliant)</li>
-                <li>For iOS: Manage subscriptions in your Apple ID settings</li>
-                <li>For Android: Manage subscriptions in Google Play Store settings</li>
-                <li>We accept major credit/debit cards (Visa, Mastercard, Amex, Discover)</li>
+                <li>For iOS: Payment is charged to your Apple ID account. Manage subscriptions in Settings → Apple ID → Subscriptions</li>
+                <li>For Android: Payment is charged to your Google Play account. Manage subscriptions in Google Play → Subscriptions</li>
+                <li>All payments are processed securely through your device's app store</li>
               </ul>
             </div>
           </section>

@@ -46,6 +46,18 @@ export default function Login() {
 
   const handlePostLogin = async (user) => {
     try {
+      // Check if user has accepted legal terms
+      const { data: acceptances } = await supabase
+        .from('legal_acceptances')
+        .select('id')
+        .eq('user_id', user.id)
+        .limit(1);
+
+      if (!acceptances || acceptances.length === 0) {
+        navigate('/legal-acceptance');
+        return;
+      }
+
       const { data: profiles } = await supabase
         .from('user_profiles')
         .select('id')

@@ -83,41 +83,8 @@ export default function Landing() {
     { number: "100%", label: "Culture-Focused" }
   ];
 
-  const testimonials = [
-    {
-      name: "Amara & Kwame",
-      location: "Met on Afrinnect • Now Engaged",
-      image: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/4aa15e12a_image.png",
-      secondImage: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/a4c7689a9_image.png",
-      quote: t('landingExtra.testimonials.quote1'),
-      detail: t('landingExtra.testimonials.detail1')
-    },
-    {
-      name: "Zara & Malik",
-      location: "Met on Afrinnect • Together 18 months",
-      image: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/4a4914d37_image.png",
-      secondImage: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/600f3567c_image.png",
-      quote: t('landingExtra.testimonials.quote2'),
-      detail: t('landingExtra.testimonials.detail2')
-    },
-    {
-      name: "Thandiwe & David",
-      location: "Met on Afrinnect • Married 2024",
-      image: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/aa7b7d0ce_image.png",
-      secondImage: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/9c6bf76a1_image.png",
-      quote: t('landingExtra.testimonials.quote3'),
-      detail: t('landingExtra.testimonials.detail3')
-    }
-  ];
-
-  const communityPhotos = [
-    "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/4aa15e12a_image.png",
-    "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/a4c7689a9_image.png",
-    "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/4a4914d37_image.png",
-    "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/600f3567c_image.png",
-    "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/aa7b7d0ce_image.png",
-    "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/9c6bf76a1_image.png"
-  ];
+  // Real success stories will be loaded from the database when available
+  // For now, show the product value proposition without fabricated testimonials
 
   const [searchParams] = useSearchParams();
 
