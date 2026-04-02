@@ -78,7 +78,7 @@ const PRICING_TIERS = {
     prices: {
       monthly: { amount: 49.99, period: 'month', total: 49.99 },
       quarterly: { amount: 39.99, period: 'month', total: 119.99, save: '20%', label: '3 Months' },
-      yearly: { amount: 29.99, period: 'month', total: 359.99, save: '40%' }
+      yearly: { amount: 24.99, period: 'month', total: 299.99, save: '50%' }
     },
     features: [
       { text: 'Everything in Elite', tip: '' },

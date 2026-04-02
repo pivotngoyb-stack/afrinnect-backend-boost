@@ -128,7 +128,15 @@ export default function Login() {
     setGoogleLoading(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-      if (result?.error) handleOAuthError(result.error, 'Google');
+      
+      if (result?.error) {
+        handleOAuthError(result.error, 'Google');
+        return;
+      }
+      
+      if (result?.redirected) {
+        return;
+      }
     } catch (error) {
       handleOAuthError(error, 'Google');
     } finally {

@@ -178,10 +178,16 @@ export default function Explore() {
       </header>
 
       <div className="max-w-2xl mx-auto px-4 py-4">
-        {isLoading ? (
+        {(isLoading || isLoadingUser) ? (
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-primary mb-3" />
-            <p className="text-muted-foreground">Loading users...</p>
+            <p className="text-muted-foreground">Loading community members...</p>
+          </div>
+        ) : !currentUser ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <Users size={48} className="text-muted-foreground/40 mb-4" />
+            <p className="text-lg font-medium text-foreground mb-1">Sign in to explore</p>
+            <p className="text-muted-foreground mb-4">Log in to discover community members from around the world.</p>
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
