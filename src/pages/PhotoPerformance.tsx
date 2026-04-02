@@ -14,6 +14,7 @@ import { toast } from '@/hooks/use-toast';
 export default function PhotoPerformance() {
   const [myProfile, setMyProfile] = useState(null);
   const [photoStats, setPhotoStats] = useState([]);
+  const [tierBlocked, setTierBlocked] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -22,10 +23,33 @@ export default function PhotoPerformance() {
       const profiles = await filterRecords('user_profiles', { user_id: user.id });
       if (profiles.length > 0) {
         setMyProfile(profiles[0]);
+        const tier = profiles[0].subscription_tier || 'free';
+        if (tier !== 'vip') {
+          setTierBlocked(true);
+        }
       }
     };
     fetchProfile();
   }, []);
+
+  if (tierBlocked) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <Card className="max-w-md w-full">
+          <CardContent className="p-8 text-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
+              <Sparkles size={32} className="text-primary-foreground" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2">VIP Feature</h2>
+            <p className="text-muted-foreground mb-6">Profile Insights & Analytics is available exclusively for VIP members.</p>
+            <Link to="/pricing">
+              <Button className="w-full">Upgrade to VIP</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // Fetch engagement data
   const { data: engagements = [] } = useQuery({

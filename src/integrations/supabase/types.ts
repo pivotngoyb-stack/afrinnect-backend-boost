@@ -2044,6 +2044,7 @@ export type Database = {
           idempotency_key: string | null
           is_deleted: boolean | null
           is_flagged: boolean | null
+          is_priority: boolean | null
           is_read: boolean | null
           is_translated: boolean | null
           like_note: string | null
@@ -2065,6 +2066,7 @@ export type Database = {
           idempotency_key?: string | null
           is_deleted?: boolean | null
           is_flagged?: boolean | null
+          is_priority?: boolean | null
           is_read?: boolean | null
           is_translated?: boolean | null
           like_note?: string | null
@@ -2086,6 +2088,7 @@ export type Database = {
           idempotency_key?: string | null
           is_deleted?: boolean | null
           is_flagged?: boolean | null
+          is_priority?: boolean | null
           is_read?: boolean | null
           is_translated?: boolean | null
           like_note?: string | null
@@ -3545,6 +3548,7 @@ export type Database = {
           heat_score: number | null
           height_cm: number | null
           id: string
+          incognito_mode: boolean | null
           interests: string[] | null
           is_active: boolean | null
           is_banned: boolean | null
@@ -3639,6 +3643,7 @@ export type Database = {
           heat_score?: number | null
           height_cm?: number | null
           id?: string
+          incognito_mode?: boolean | null
           interests?: string[] | null
           is_active?: boolean | null
           is_banned?: boolean | null
@@ -3733,6 +3738,7 @@ export type Database = {
           heat_score?: number | null
           height_cm?: number | null
           id?: string
+          incognito_mode?: boolean | null
           interests?: string[] | null
           is_active?: boolean | null
           is_banned?: boolean | null

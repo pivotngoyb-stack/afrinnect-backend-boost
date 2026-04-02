@@ -23,7 +23,13 @@ export default function SpeedDatingLobby() {
         const user = await getCurrentUser();
         const profiles = await filterRecords('user_profiles', { user_id: user.id });
         if (profiles.length > 0) {
-          setMyProfile(profiles[0]);
+          const profile = profiles[0];
+          setMyProfile(profile);
+          // VIP-only feature gate
+          const tier = profile.subscription_tier || 'free';
+          if (tier !== 'vip') {
+            navigate('/pricing');
+          }
         }
       } catch (e) {
         navigate(createPageUrl('Landing'));
