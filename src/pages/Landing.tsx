@@ -19,7 +19,7 @@ export default function Landing() {
   const { t } = useLanguage();
   const { trackEvent } = useConversionTracker();
   const navigate = useNavigate();
-  const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [founderTrialDays, setFounderTrialDays] = useState(183);
   const [founderEnabled, setFounderEnabled] = useState(true);
