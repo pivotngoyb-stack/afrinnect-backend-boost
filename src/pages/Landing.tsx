@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { filterRecords, isAuthenticated } from '@/lib/supabase-helpers';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Heart, Shield, Globe, Sparkles, Users, CheckCircle, Crown, ArrowRight, Star, MessageCircle, Download } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -19,7 +19,7 @@ export default function Landing() {
   const { t } = useLanguage();
   const { trackEvent } = useConversionTracker();
   const navigate = useNavigate();
-  const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [founderTrialDays, setFounderTrialDays] = useState(183);
   const [founderEnabled, setFounderEnabled] = useState(true);
@@ -45,13 +45,6 @@ export default function Landing() {
     return () => {};
   }, []);
 
-  // Auto-rotate testimonials
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveTestimonial(prev => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
 
   const features = [
     {
@@ -83,41 +76,8 @@ export default function Landing() {
     { number: "100%", label: "Culture-Focused" }
   ];
 
-  const testimonials = [
-    {
-      name: "Amara & Kwame",
-      location: "Met on Afrinnect • Now Engaged",
-      image: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/4aa15e12a_image.png",
-      secondImage: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/a4c7689a9_image.png",
-      quote: t('landingExtra.testimonials.quote1'),
-      detail: t('landingExtra.testimonials.detail1')
-    },
-    {
-      name: "Zara & Malik",
-      location: "Met on Afrinnect • Together 18 months",
-      image: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/4a4914d37_image.png",
-      secondImage: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/600f3567c_image.png",
-      quote: t('landingExtra.testimonials.quote2'),
-      detail: t('landingExtra.testimonials.detail2')
-    },
-    {
-      name: "Thandiwe & David",
-      location: "Met on Afrinnect • Married 2024",
-      image: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/aa7b7d0ce_image.png",
-      secondImage: "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/9c6bf76a1_image.png",
-      quote: t('landingExtra.testimonials.quote3'),
-      detail: t('landingExtra.testimonials.detail3')
-    }
-  ];
-
-  const communityPhotos = [
-    "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/4aa15e12a_image.png",
-    "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/a4c7689a9_image.png",
-    "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/4a4914d37_image.png",
-    "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/600f3567c_image.png",
-    "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/aa7b7d0ce_image.png",
-    "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/9c6bf76a1_image.png"
-  ];
+  // Real success stories will be loaded from the database when available
+  // For now, show the product value proposition without fabricated testimonials
 
   const [searchParams] = useSearchParams();
 
@@ -290,61 +250,10 @@ export default function Landing() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
               <div className="absolute bottom-6 left-6 right-6 text-white">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="flex -space-x-3">
-                    {communityPhotos.slice(0, 4).map((photo, idx) => (
-                      <img
-                        key={idx}
-                        src={photo}
-                        alt=""
-                        className="w-10 h-10 rounded-full border-2 border-card object-cover"
-                      />
-                    ))}
-                   </div>
-                  <span className="text-sm font-medium">{t('landingExtra.plusMembers')}</span>
-                </div>
                 <p className="text-lg font-semibold">{t('landingExtra.connectCulture')}</p>
               </div>
             </div>
 
-            {/* Floating cards */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="absolute -left-8 top-12 z-20 bg-card rounded-2xl p-4 shadow-xl"
-            >
-              <div className="flex items-center gap-3">
-                <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/728ada3a8_image.png"
-                  alt=""
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-                <div>
-                  <p className="font-bold text-foreground text-sm">{t('landingExtra.newMatch')}</p>
-                  <p className="text-xs text-muted-foreground">Kwame — Ghana</p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.7 }}
-              className="absolute -right-8 bottom-24 z-20 bg-card rounded-2xl p-4 shadow-xl"
-            >
-              <div className="flex items-center gap-3">
-                <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6940c70dbf312aa4658a9066/728ada3a8_image.png"
-                  alt=""
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-                <div>
-                  <p className="font-bold text-foreground text-sm">{t('landingExtra.matchPercent')}</p>
-                  <p className="text-xs text-muted-foreground">Zara — Kenya</p>
-                </div>
-              </div>
-            </motion.div>
           </motion.div>
         </div>
 
@@ -406,104 +315,46 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Success Stories - Emotional Social Proof */}
+      {/* Community Value Section */}
       <section className="relative z-10 bg-gradient-to-br from-purple-50 to-amber-50 py-20">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <span className="inline-block bg-purple-100 text-purple-700 text-sm font-semibold px-4 py-1 rounded-full mb-4">
-              {t('landingExtra.testimonials.badge')}
-            </span>
             <h2 className="text-4xl font-bold text-foreground mb-4">
-              {t('landingExtra.testimonials.title')}
+              Built for the African Diaspora
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              {t('landingExtra.testimonials.subtitle')}
+              A platform that celebrates your heritage and helps you find meaningful connections through shared culture.
             </p>
           </div>
 
-          {/* Testimonial Carousel - Enhanced */}
-          <div className="max-w-4xl mx-auto mb-16">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTestimonial}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Card className="bg-card shadow-2xl border-0 overflow-hidden">
-                  <CardContent className="p-0">
-                    <div className="flex flex-col md:flex-row">
-                      {/* Couple Photos */}
-                      <div className="md:w-2/5 bg-gradient-to-br from-purple-100 to-amber-100 p-8 flex items-center justify-center">
-                        <div className="relative">
-                          <img
-                            src={testimonials[activeTestimonial].image}
-                            alt=""
-                            className="w-28 h-28 rounded-full object-cover shadow-lg border-4 border-card"
-                          />
-                          <img
-                            src={testimonials[activeTestimonial].secondImage}
-                            alt=""
-                            className="w-28 h-28 rounded-full object-cover shadow-lg border-4 border-card absolute -bottom-4 -right-8"
-                          />
-                          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
-                            <Heart size={12} className="fill-white" /> Matched
-                          </div>
-                        </div>
-                      </div>
-                      {/* Quote */}
-                      <div className="md:w-3/5 p-8 md:p-10">
-                        <div className="text-purple-600 text-5xl font-serif leading-none mb-4">"</div>
-                        <p className="text-lg text-foreground mb-6 leading-relaxed">
-                          {testimonials[activeTestimonial].quote}
-                        </p>
-                        <div className="border-t border-border pt-4">
-                          <p className="font-bold text-foreground text-lg">
-                            {testimonials[activeTestimonial].name}
-                          </p>
-                          <p className="text-sm text-purple-600 font-medium">
-                            {testimonials[activeTestimonial].location}
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {testimonials[activeTestimonial].detail}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </AnimatePresence>
-
-            {/* Dots */}
-            <div className="flex justify-center gap-2 mt-6">
-              {testimonials.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveTestimonial(idx)}
-                  className={`h-2 rounded-full transition-all ${
-                    idx === activeTestimonial ? 'bg-purple-600 w-8' : 'bg-muted w-2'
-                  }`}
-                />
-              ))}
-            </div>
-            
-            {/* CTA after testimonials */}
-            <div className="text-center mt-10">
-              <p className="text-muted-foreground mb-4">{t('landingExtra.testimonials.yourStory')}</p>
-              <Button 
-                onClick={handleGetStarted}
-                size="lg" 
-                className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-8 py-6 rounded-full shadow-xl"
-              >
-                {t('landingExtra.testimonials.joinFree')}
-                <ArrowRight size={18} className="ml-2" />
-              </Button>
-            </div>
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            {[
+              { icon: Globe, title: "Heritage-Based Matching", desc: "Connect through shared cultural backgrounds, languages, and traditions" },
+              { icon: Shield, title: "Verified & Safe", desc: "Photo verification, AI moderation, and 24/7 safety monitoring" },
+              { icon: Users, title: "Real Community", desc: "Join events, communities, and conversations with people who share your roots" }
+            ].map((item, idx) => (
+              <Card key={idx} className="text-center p-6">
+                <CardContent className="pt-4">
+                  <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-100 to-amber-100 flex items-center justify-center">
+                    <item.icon size={28} className="text-purple-600" />
+                  </div>
+                  <h3 className="text-lg font-bold text-foreground mb-2">{item.title}</h3>
+                  <p className="text-muted-foreground text-sm">{item.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
 
-
+          <div className="text-center mt-10">
+            <Button 
+              onClick={handleGetStarted}
+              size="lg" 
+              className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-8 py-6 rounded-full shadow-xl"
+            >
+              {t('landingExtra.testimonials.joinFree')}
+              <ArrowRight size={18} className="ml-2" />
+            </Button>
+          </div>
         </div>
       </section>
 
