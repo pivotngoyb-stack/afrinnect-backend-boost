@@ -13,6 +13,7 @@ import AdminGuard from "@/components/shared/AdminGuard";
 import ErrorBoundary from "@/components/shared/ErrorBoundary";
 import ScrollToTop from "@/components/ScrollToTop";
 import OfflineIndicator from "@/components/shared/OfflineIndicator";
+import CapacitorPlugins from "@/components/native/CapacitorPlugins";
 
 const queryClient = new QueryClient({
   defaultOptions: {
