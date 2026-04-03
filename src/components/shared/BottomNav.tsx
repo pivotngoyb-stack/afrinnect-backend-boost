@@ -56,6 +56,8 @@ export default function BottomNav() {
           );
         })}
       </div>
+      {/* Safe area spacer for native iOS home indicator */}
+      <div style={{ height: 'env(safe-area-inset-bottom, 0px)' }} />
     </nav>
   );
 }
