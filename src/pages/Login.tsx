@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { lovable } from '@/integrations/lovable/index';
 import { sanitizeRedirectTarget } from '@/lib/auth-redirect';
+import { Capacitor } from '@capacitor/core';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -111,10 +112,17 @@ export default function Login() {
     console.error(`${provider} sign-in error:`, error);
   };
 
+  const getRedirectUri = () => {
+    if (Capacitor.isNativePlatform()) {
+      return 'app.lovable.74bc1c05193745c29046d75ca322d135://';
+    }
+    return window.location.origin;
+  };
+
   const handleAppleSignIn = async () => {
     setAppleLoading(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("apple", { redirect_uri: window.location.origin });
+      const result = await lovable.auth.signInWithOAuth("apple", { redirect_uri: getRedirectUri() });
       
       if (result?.error) {
         handleOAuthError(result.error, 'Apple');
@@ -138,7 +146,7 @@ export default function Login() {
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+      const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: getRedirectUri() });
       
       if (result?.error) {
         handleOAuthError(result.error, 'Google');
