@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { lovable } from '@/integrations/lovable/index';
@@ -27,26 +27,14 @@ export default function Login() {
   const [ageConfirmed, setAgeConfirmed] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
   const [resending, setResending] = useState(false);
+  const redirectingRef = useRef(false);
 
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) {
-        await handlePostLogin(session.user);
-      }
-    });
+  const handlePostLogin = useCallback(async (user) => {
+    if (!user || redirectingRef.current) return;
 
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) {
-        handlePostLogin(user);
-      }
-    });
+    redirectingRef.current = true;
 
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const handlePostLogin = async (user) => {
     try {
-      // Check if user has accepted legal terms
       const { data: acceptances } = await supabase
         .from('legal_acceptances')
         .select('id')
@@ -54,7 +42,7 @@ export default function Login() {
         .limit(1);
 
       if (!acceptances || acceptances.length === 0) {
-        navigate('/legal-acceptance');
+        navigate('/legalacceptance', { replace: true });
         return;
       }
 
@@ -65,21 +53,48 @@ export default function Login() {
         .limit(1);
 
       if (!profiles || profiles.length === 0) {
-        navigate('/onboarding');
+        navigate('/onboarding', { replace: true });
       } else if (nextUrl) {
         try {
           const url = new URL(nextUrl, window.location.origin);
-          navigate(url.pathname);
+          navigate(`${url.pathname}${url.search}${url.hash}`, { replace: true });
         } catch {
-          navigate('/home');
+          navigate('/home', { replace: true });
         }
       } else {
-        navigate('/home');
+        navigate('/home', { replace: true });
       }
     } catch {
-      navigate('/home');
+      navigate('/home', { replace: true });
     }
-  };
+  }, [navigate, nextUrl]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const syncAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!mounted || !session?.user) return;
+      void handlePostLogin(session.user);
+    };
+
+    void syncAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted || !session?.user) return;
+
+      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        queueMicrotask(() => {
+          void handlePostLogin(session.user);
+        });
+      }
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [handlePostLogin]);
 
   const handleOAuthError = (error, provider) => {
     if (

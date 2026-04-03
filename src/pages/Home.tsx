@@ -131,34 +131,46 @@ export default function Home() {
 
   // Auth check
   useEffect(() => {
-    const checkAuth = async () => {
+    let mounted = true;
+
+    const bootstrapAuth = async () => {
       try {
-        const { data: { user }, error } = await supabase.auth.getUser();
-        if (error || !user) {
-          if (error?.status === 401) { try { await supabase.auth.signOut(); } catch {} }
-          navigate(createPageUrl('Landing'));
-          return;
-        }
-        setIsCheckingAuth(false);
-      } catch { navigate(createPageUrl('Landing')); }
+        await supabase.auth.getSession();
+      } finally {
+        if (mounted) setIsCheckingAuth(false);
+      }
     };
-    checkAuth();
+
+    void bootstrapAuth();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   // Fetch user profile
   useEffect(() => {
     if (isCheckingAuth) return;
+    let mounted = true;
+
     const fetchMyProfile = async () => {
       try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const sessionUser = session?.user;
+        if (!sessionUser) return;
+
         const user = await getCurrentUser();
-        if (!user) { navigate(createPageUrl('Landing')); return; }
-        if (user.role === 'admin') setIsAdmin(true);
+        if (!mounted) return;
+
+        if (user?.role === 'admin') setIsAdmin(true);
 
         const { data: profiles } = await supabase
           .from('user_profiles')
           .select('id,user_id,display_name,primary_photo,photos,subscription_tier,is_banned,is_suspended,ban_reason,suspension_reason,blocked_users,looking_for,current_country,current_city,current_state,location,is_premium,daily_likes_count,daily_likes_reset_date,login_streak,last_login_date,last_active,has_matched_before,tutorial_completed,device_ids,device_info')
-          .eq('user_id', user.id)
+          .eq('user_id', sessionUser.id)
           .limit(1);
+
+        if (!mounted) return;
 
         if (profiles && profiles.length > 0) {
           const profile = profiles[0];
@@ -195,13 +207,20 @@ export default function Home() {
           } else {
             setTimeout(updateStreak, 3000);
           }
-        } else { navigate(createPageUrl('Onboarding')); }
+        } else {
+          navigate(createPageUrl('Onboarding'), { replace: true });
+        }
       } catch (error) {
         console.error('Failed to load current profile for discovery:', error);
       }
     };
-    fetchMyProfile();
-  }, [isCheckingAuth]);
+
+    void fetchMyProfile();
+
+    return () => {
+      mounted = false;
+    };
+  }, [isCheckingAuth, navigate]);
 
   // Discovery profiles query — uses server-side edge function
   const { data: profiles = [], isLoading, refetch } = useQuery({
