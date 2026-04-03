@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { useCallback, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { buildLoginRedirectTarget } from '@/lib/auth-redirect';
 import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 
@@ -15,7 +16,7 @@ export default function AuthGuard({
   const navigate = useNavigate();
 
   const redirectWithNext = useCallback(() => {
-    const next = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    const next = buildLoginRedirectTarget();
     navigate(`${redirectTo}?next=${encodeURIComponent(next)}`, { replace: true });
   }, [navigate, redirectTo]);
 
