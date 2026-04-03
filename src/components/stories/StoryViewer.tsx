@@ -24,14 +24,15 @@ export default function StoryViewer({ stories, currentIndex, onNext, onPrev, onC
   const story = stories[currentIndex];
   const isMyStory = story?.user_profile_id === myProfileId;
 
-  // Mark as viewed
+  // Mark as viewed (atomic)
   useEffect(() => {
     if (!story || !myProfileId || isMyStory) return;
     if (story.views?.includes(myProfileId)) return;
 
-    supabase.from('stories').update({
-      views: [...(story.views || []), myProfileId],
-    }).eq('id', story.id).then(() => {});
+    supabase.rpc('add_story_view', {
+      p_story_id: story.id,
+      p_viewer_id: myProfileId,
+    }).then(() => {});
   }, [story?.id, myProfileId, isMyStory]);
 
   useEffect(() => {
