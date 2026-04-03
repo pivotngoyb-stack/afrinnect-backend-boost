@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { lovable } from '@/integrations/lovable/index';
+import { sanitizeRedirectTarget } from '@/lib/auth-redirect';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -55,12 +56,7 @@ export default function Login() {
       if (!profiles || profiles.length === 0) {
         navigate('/onboarding', { replace: true });
       } else if (nextUrl) {
-        try {
-          const url = new URL(nextUrl, window.location.origin);
-          navigate(`${url.pathname}${url.search}${url.hash}`, { replace: true });
-        } catch {
-          navigate('/home', { replace: true });
-        }
+        navigate(sanitizeRedirectTarget(nextUrl, '/home'), { replace: true });
       } else {
         navigate('/home', { replace: true });
       }
