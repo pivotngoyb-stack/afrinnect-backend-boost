@@ -20,8 +20,9 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-xl border-t border-border" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-xl border-t border-border">
       <div className="flex items-center justify-around h-16 max-w-lg mx-auto px-2">
+
         {navItems.map(({ icon: Icon, label, path, badge }) => {
           const isActive = location.pathname === path;
           return (
