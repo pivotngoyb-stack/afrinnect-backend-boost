@@ -79,5 +79,5 @@ export function invalidateTierCache() {
 }
 
 export function useTierConfig() {
-  return DEFAULT_TIERS;
+  return { tiers: DEFAULT_TIERS };
 }
