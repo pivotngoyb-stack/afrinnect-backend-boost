@@ -10,6 +10,7 @@ import InstallPrompt from "@/components/mobile/InstallPrompt";
 import AppBottomNav from "@/components/shared/AppBottomNav";
 import AuthGuard from "@/components/shared/AuthGuard";
 import AdminGuard from "@/components/shared/AdminGuard";
+import ErrorBoundary from "@/components/shared/ErrorBoundary";
 import ScrollToTop from "@/components/ScrollToTop";
 import OfflineIndicator from "@/components/shared/OfflineIndicator";
 
@@ -138,6 +139,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ErrorBoundary>
         <ScrollToTop />
         <OfflineIndicator />
         <Suspense fallback={<PageLoader />}>
@@ -261,6 +263,7 @@ const App = () => (
         </Suspense>
         <AppBottomNav />
         <DebugPanel />
+        </ErrorBoundary>
       </BrowserRouter>
       <InstallPrompt />
     </TooltipProvider>

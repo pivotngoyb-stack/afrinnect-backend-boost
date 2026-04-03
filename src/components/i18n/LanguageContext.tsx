@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { filterRecords, getCurrentUser, updateRecord } from '@/lib/supabase-helpers';
+import { supabase } from '@/integrations/supabase/client';
 import { translations } from './translations';
 
 const defaultT = (key: string) => key;
@@ -18,12 +18,16 @@ export const LanguageProvider = ({ children }) => {
   useEffect(() => {
     const loadLanguage = async () => {
       try {
-        const user = await getCurrentUser();
-        if (user) {
-          const profiles = await filterRecords('user_profiles', { user_id: user.id });
-          if (profiles.length > 0 && profiles[0].preferred_language) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          const { data: profiles } = await supabase
+            .from('user_profiles')
+            .select('preferred_language')
+            .eq('user_id', session.user.id)
+            .limit(1);
+          if (profiles?.[0]?.preferred_language) {
             setLanguage(profiles[0].preferred_language);
-          }
+          }          
         }
       } catch (e) {
         // Not logged in, use default
@@ -38,14 +42,19 @@ export const LanguageProvider = ({ children }) => {
   const changeLanguage = async (newLanguage) => {
     setLanguage(newLanguage);
     try {
-      const user = await getCurrentUser();
-      if (user) {
-        const profiles = await filterRecords('user_profiles', { user_id: user.id });
-        if (profiles.length > 0) {
-          await updateRecord('user_profiles', profiles[0].id, {
-            preferred_language: newLanguage
-          });
-        }
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const { data: profiles } = await supabase
+          .from('user_profiles')
+          .select('id')
+          .eq('user_id', session.user.id)
+          .limit(1);
+        if (profiles?.[0]?.id) {
+          await supabase
+            .from('user_profiles')
+            .update({ preferred_language: newLanguage })
+            .eq('id', profiles[0].id);
+        }        
       }
     } catch (e) {
       // Not logged in, just update state
