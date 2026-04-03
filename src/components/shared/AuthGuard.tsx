@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
@@ -14,39 +14,68 @@ export default function AuthGuard({
   const [authenticated, setAuthenticated] = useState(false);
   const navigate = useNavigate();
 
+  const redirectWithNext = useCallback(() => {
+    const next = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    navigate(`${redirectTo}?next=${encodeURIComponent(next)}`, { replace: true });
+  }, [navigate, redirectTo]);
+
   useEffect(() => {
     let mounted = true;
 
-    const checkAuth = async () => {
+    const checkAuth = async (sessionUser = null) => {
       try {
         if (!requireAuth) {
           if (mounted) setLoading(false);
           return;
         }
 
-        // Use getUser() for server-validated auth (not getSession which trusts local JWT)
+        const { data: { session } } = await supabase.auth.getSession();
+        const restoredUser = sessionUser ?? session?.user ?? null;
+
+        if (!restoredUser) {
+          if (mounted) {
+            setAuthenticated(false);
+            setLoading(false);
+          }
+          redirectWithNext();
+          return;
+        }
+
+        // Validate restored session with the auth server once startup is complete.
         const { data: { user }, error: userError } = await supabase.auth.getUser();
-        
-        if (userError || !user) {
-          // Token expired or invalid — clear stale session and redirect
+        const activeUserId = user?.id ?? restoredUser.id;
+
+        if (userError?.status === 401 || (!user && !activeUserId)) {
           if (userError?.message?.includes('token') || userError?.status === 401) {
             await supabase.auth.signOut();
           }
-          if (mounted) navigate(redirectTo + '?next=' + encodeURIComponent(window.location.pathname));
+          if (mounted) {
+            setAuthenticated(false);
+            setLoading(false);
+          }
+          redirectWithNext();
           return;
         }
 
         if (mounted) setAuthenticated(true);
 
         if (requireProfile) {
-          const { data: profiles } = await supabase
+          const { data: profiles, error: profileError } = await supabase
             .from('user_profiles')
             .select('id')
-            .eq('user_id', user.id)
+            .eq('user_id', activeUserId)
             .limit(1);
 
+          if (!mounted) return;
+
+          if (profileError) {
+            console.error('Profile check failed:', profileError);
+            setLoading(false);
+            return;
+          }
+
           if (!profiles || profiles.length === 0) {
-            if (mounted) navigate('/onboarding');
+            if (mounted) navigate('/onboarding', { replace: true });
             return;
           }
         }
@@ -54,27 +83,39 @@ export default function AuthGuard({
         if (mounted) setLoading(false);
       } catch (error) {
         console.error('Auth check failed:', error);
-        if (mounted) {
-          // On any auth failure, sign out to prevent stale token loops
-          try { await supabase.auth.signOut(); } catch {}
-          navigate(redirectTo);
-        }
-      }
-    };
 
-    checkAuth();
+        if (!mounted) return;
 
-    // Listen for auth state changes (session restore, token refresh, sign out)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (!mounted) return;
-      if (event === 'SIGNED_OUT') {
-        setAuthenticated(false);
-        navigate(redirectTo);
-      } else if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN') {
+        const { data: { session } } = await supabase.auth.getSession().catch(() => ({ data: { session: null } }));
         if (session?.user) {
           setAuthenticated(true);
           setLoading(false);
+          return;
         }
+
+        setAuthenticated(false);
+        setLoading(false);
+        redirectWithNext();
+      }
+    };
+
+    void checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return;
+
+      if (event === 'SIGNED_OUT' || !session) {
+        setAuthenticated(false);
+        setLoading(false);
+        redirectWithNext();
+        return;
+      }
+
+      if (event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+        setLoading(true);
+        queueMicrotask(() => {
+          void checkAuth(session.user);
+        });
       }
     });
 
@@ -82,7 +123,7 @@ export default function AuthGuard({
       mounted = false;
       subscription.unsubscribe();
     };
-  }, [requireAuth, requireProfile, redirectTo, navigate]);
+  }, [requireAuth, requireProfile, redirectWithNext]);
 
   if (loading) {
     return (
