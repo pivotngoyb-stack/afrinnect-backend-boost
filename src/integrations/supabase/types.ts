@@ -4147,6 +4147,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_story_view: {
+        Args: { p_story_id: string; p_viewer_id: string }
+        Returns: undefined
+      }
       create_notification: {
         Args: {
           p_from_profile_id?: string
