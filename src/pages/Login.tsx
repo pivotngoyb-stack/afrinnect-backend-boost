@@ -112,10 +112,17 @@ export default function Login() {
     console.error(`${provider} sign-in error:`, error);
   };
 
+  const getRedirectUri = () => {
+    if (Capacitor.isNativePlatform()) {
+      return 'app.lovable.74bc1c05193745c29046d75ca322d135://';
+    }
+    return window.location.origin;
+  };
+
   const handleAppleSignIn = async () => {
     setAppleLoading(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("apple", { redirect_uri: window.location.origin });
+      const result = await lovable.auth.signInWithOAuth("apple", { redirect_uri: getRedirectUri() });
       
       if (result?.error) {
         handleOAuthError(result.error, 'Apple');
