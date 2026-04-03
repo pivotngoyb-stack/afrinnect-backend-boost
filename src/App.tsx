@@ -143,6 +143,7 @@ const App = () => (
         <ErrorBoundary>
         <ScrollToTop />
         <OfflineIndicator />
+        <CapacitorPlugins />
         <Suspense fallback={<PageLoader />}>
           <Routes>
             {/* Public */}
