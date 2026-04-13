@@ -11,7 +11,21 @@ const db = supabase as any;
 // ─── AUTH HELPERS ───────────────────────────────────────────────
 
 export async function getCurrentUser() {
-  const { data: { user } } = await db.auth.getUser();
+  // Bootstrap: restore local session first so we have a user even if getUser() is slow
+  const { data: { session } } = await db.auth.getSession();
+  const restoredUser = session?.user ?? null;
+
+  // Validate with server – but don't block on network failure
+  let validatedUser = restoredUser;
+  try {
+    const { data, error } = await db.auth.getUser();
+    if (error?.status === 401) return null; // token revoked
+    if (data?.user) validatedUser = data.user;
+  } catch {
+    // Network error on mobile – fall back to restored session
+  }
+
+  const user = validatedUser;
   if (!user) return null;
 
   const [profileResult, roleResult] = await Promise.all([

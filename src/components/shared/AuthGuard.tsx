@@ -22,6 +22,7 @@ export default function AuthGuard({
 
   useEffect(() => {
     let mounted = true;
+    let safetyTimer: ReturnType<typeof setTimeout> | null = null;
 
     const checkAuth = async (sessionUser = null) => {
       try {
@@ -102,6 +103,13 @@ export default function AuthGuard({
 
     void checkAuth();
 
+    // Safety net: if loading never resolves after 12s, stop loading to avoid blank screen
+    safetyTimer = setTimeout(() => {
+      if (mounted) {
+        setLoading(false);
+      }
+    }, 12000);
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (!mounted) return;
 
@@ -123,6 +131,7 @@ export default function AuthGuard({
     return () => {
       mounted = false;
       subscription.unsubscribe();
+      if (safetyTimer) clearTimeout(safetyTimer);
     };
   }, [requireAuth, requireProfile, redirectWithNext]);
 
