@@ -183,7 +183,14 @@ export default function Home() {
           }
           const existingDeviceIds = Array.isArray(profile.device_ids) ? profile.device_ids : [];
           if (!existingDeviceIds.includes(deviceId)) {
-            if (existingDeviceIds.length >= 4) { navigate(createPageUrl('Settings')); return; }
+            if (existingDeviceIds.length >= 4) {
+              toast.error('Device limit reached', {
+                description: 'You have reached the maximum of 4 devices. Please remove a device in Settings to continue.',
+                duration: 8000
+              });
+              navigate(createPageUrl('Settings'));
+              return;
+            }
             const existingDeviceInfo = Array.isArray(profile.device_info) ? profile.device_info : profile.device_info ? [profile.device_info] : [];
             await updateRecord('user_profiles', profile.id, {
               device_ids: [...existingDeviceIds, deviceId],

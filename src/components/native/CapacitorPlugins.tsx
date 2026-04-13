@@ -1,10 +1,6 @@
 // @ts-nocheck
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Capacitor } from '@capacitor/core';
-import { App } from '@capacitor/app';
-import { SplashScreen } from '@capacitor/splash-screen';
-import { StatusBar, Style } from '@capacitor/status-bar';
 
 /**
  * Handles native Capacitor plugins:
@@ -17,39 +13,69 @@ export default function CapacitorPlugins() {
   const location = useLocation();
 
   useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return;
+    let cleanup = () => {};
 
-    // Hide splash screen after app is ready
-    SplashScreen.hide({ fadeOutDuration: 300 }).catch(() => {});
+    const init = async () => {
+      try {
+        const { Capacitor } = await import('@capacitor/core');
+        if (!Capacitor.isNativePlatform()) return;
 
-    // Configure status bar
-    StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
-    if (Capacitor.getPlatform() === 'android') {
-      StatusBar.setBackgroundColor({ color: '#000000' }).catch(() => {});
-    }
+        const [{ SplashScreen }, { StatusBar, Style }] = await Promise.all([
+          import('@capacitor/splash-screen'),
+          import('@capacitor/status-bar'),
+        ]);
+
+        // Hide splash screen after app is ready
+        SplashScreen.hide({ fadeOutDuration: 300 }).catch(() => {});
+
+        // Configure status bar
+        StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
+        if (Capacitor.getPlatform() === 'android') {
+          StatusBar.setBackgroundColor({ color: '#000000' }).catch(() => {});
+        }
+      } catch {
+        // Capacitor not available — running in browser
+      }
+    };
+
+    init();
+    return () => cleanup();
   }, []);
 
   // Android hardware back button
   useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return;
+    let listenerPromise: any = null;
 
-    const listener = App.addListener('backButton', ({ canGoBack }) => {
-      // If on a root tab, minimize the app instead of going back
-      const rootPaths = ['/home', '/matches', '/communities', '/events', '/profile'];
-      if (rootPaths.includes(location.pathname)) {
-        App.minimizeApp();
-        return;
-      }
+    const setupBackButton = async () => {
+      try {
+        const { Capacitor } = await import('@capacitor/core');
+        if (!Capacitor.isNativePlatform()) return;
 
-      if (canGoBack) {
-        navigate(-1);
-      } else {
-        App.minimizeApp();
+        const { App } = await import('@capacitor/app');
+
+        listenerPromise = App.addListener('backButton', ({ canGoBack }) => {
+          const rootPaths = ['/home', '/matches', '/communities', '/events', '/profile'];
+          if (rootPaths.includes(location.pathname)) {
+            App.minimizeApp();
+            return;
+          }
+          if (canGoBack) {
+            navigate(-1);
+          } else {
+            App.minimizeApp();
+          }
+        });
+      } catch {
+        // Capacitor not available
       }
-    });
+    };
+
+    setupBackButton();
 
     return () => {
-      listener.then(l => l.remove());
+      if (listenerPromise) {
+        listenerPromise.then((l: any) => l.remove()).catch(() => {});
+      }
     };
   }, [navigate, location.pathname]);
 

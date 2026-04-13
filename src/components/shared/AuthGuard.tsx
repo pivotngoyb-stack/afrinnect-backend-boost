@@ -138,7 +138,14 @@ export default function AuthGuard({
   }
 
   if (!authenticated && requireAuth) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <Loader2 className="animate-spin mx-auto mb-4 text-primary" size={40} />
+          <p className="text-muted-foreground text-sm">Redirecting...</p>
+        </div>
+      </div>
+    );
   }
 
   return <>{children}</>;
