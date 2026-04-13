@@ -28,6 +28,7 @@ import NewMatchToast from '@/components/engagement/NewMatchToast';
 import ProfileViewerToast from '@/components/monetization/ProfileViewerToast';
 import MissedMatchRegret from '@/components/monetization/MissedMatchRegret';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 
 // Persist swiped IDs across component remounts within the same session
 const getSessionSwipedIds = (): Set<string> => {
@@ -80,6 +81,7 @@ export default function Home() {
   const [showNewMatchToast, setShowNewMatchToast] = useState(false);
   const [lastMatchedProfile, setLastMatchedProfile] = useState(null);
   const [lastMatchId, setLastMatchId] = useState<string | null>(null);
+  const [deviceLimitHit, setDeviceLimitHit] = useState(false);
   // Session-persisted swiped IDs — survives remounts, cleared on new session
   const localSwipedIds = useRef<Set<string>>(getSessionSwipedIds());
   const queryClient = useQueryClient();
@@ -155,11 +157,8 @@ export default function Home() {
 
     const fetchMyProfile = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        const sessionUser = session?.user;
-        if (!sessionUser) return;
-
         const user = await getCurrentUser();
+        if (!user?.id) return;
         if (!mounted) return;
 
         if (user?.role === 'admin') setIsAdmin(true);
@@ -167,7 +166,7 @@ export default function Home() {
         const { data: profiles } = await supabase
           .from('user_profiles')
           .select('id,user_id,display_name,primary_photo,photos,subscription_tier,is_banned,is_suspended,ban_reason,suspension_reason,blocked_users,looking_for,current_country,current_city,current_state,location,is_premium,daily_likes_count,daily_likes_reset_date,login_streak,last_login_date,last_active,has_matched_before,tutorial_completed,device_ids,device_info')
-          .eq('user_id', sessionUser.id)
+          .eq('user_id', user.id)
           .limit(1);
 
         if (!mounted) return;
@@ -184,11 +183,8 @@ export default function Home() {
           const existingDeviceIds = Array.isArray(profile.device_ids) ? profile.device_ids : [];
           if (!existingDeviceIds.includes(deviceId)) {
             if (existingDeviceIds.length >= 4) {
-              toast.error('Device limit reached', {
-                description: 'You have reached the maximum of 4 devices. Please remove a device in Settings to continue.',
-                duration: 8000
-              });
-              navigate(createPageUrl('Settings'));
+              setMyProfile(profile);
+              setDeviceLimitHit(true);
               return;
             }
             const existingDeviceInfo = Array.isArray(profile.device_info) ? profile.device_info : profile.device_info ? [profile.device_info] : [];
@@ -531,6 +527,33 @@ export default function Home() {
 
   if (myProfile && (myProfile.is_banned || myProfile.is_suspended)) {
     return <BannedScreen userProfile={myProfile} banReason={myProfile.ban_reason || myProfile.suspension_reason || 'Violation of community guidelines'} userEmail={myProfile.created_by} />;
+  }
+
+  if (deviceLimitHit) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-sm text-center space-y-5">
+          <div className="w-16 h-16 mx-auto rounded-full bg-destructive/10 flex items-center justify-center">
+            <span className="text-3xl">📱</span>
+          </div>
+          <h1 className="text-xl font-bold text-foreground">Device limit reached</h1>
+          <p className="text-sm text-muted-foreground">
+            Your account is already active on 4 devices. Remove an old device in Settings to continue on this one.
+          </p>
+          <div className="space-y-3 pt-2">
+            <Button className="w-full" onClick={() => navigate(createPageUrl('Settings'), { replace: true })}>
+              Manage devices
+            </Button>
+            <Button variant="outline" className="w-full" onClick={async () => {
+              await supabase.auth.signOut();
+              navigate('/login', { replace: true });
+            }}>
+              Sign out
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
