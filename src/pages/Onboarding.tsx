@@ -194,12 +194,12 @@ export default function Onboarding() {
         device_name: navigator.userAgent.substring(0, 50)
       });
 
-      if (response.data.error) throw new Error(response.data.error);
-      
+      if (response?.error) throw new Error(response.error);
+      const profile = response?.profile;
+      if (!profile) throw new Error('Profile creation returned no data. Please try again.');
+
       // Clear saved progress on success
       localStorage.removeItem('onboarding_data');
-      
-      const profile = response.data.profile;
 
       // Request push notification permission immediately
       try {
