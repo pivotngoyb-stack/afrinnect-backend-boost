@@ -175,6 +175,16 @@ export default function Home() {
           const profile = profiles[0];
           if (profile.is_banned || profile.is_suspended) { setMyProfile(profile); return; }
 
+          // Check admin/moderator role — privileged users are exempt from device limits
+          const { data: roles } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', user.id);
+          const isPrivileged = (roles || []).some(
+            (r: any) => r.role === 'admin' || r.role === 'moderator'
+          );
+          if (isPrivileged) setIsAdmin(true);
+
           let deviceId = localStorage.getItem('device_id');
           if (!deviceId) {
             deviceId = navigator.userAgent + '_' + Math.random().toString(36).substring(2, 15);
@@ -182,7 +192,8 @@ export default function Home() {
           }
           const existingDeviceIds = Array.isArray(profile.device_ids) ? profile.device_ids : [];
           if (!existingDeviceIds.includes(deviceId)) {
-            if (existingDeviceIds.length >= 4) {
+            // Admins/moderators bypass the 4-device cap
+            if (!isPrivileged && existingDeviceIds.length >= 4) {
               setMyProfile(profile);
               setDeviceLimitHit(true);
               return;
