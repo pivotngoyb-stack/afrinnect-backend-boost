@@ -28,7 +28,12 @@ const queryClient = new QueryClient({
 
 const PageLoader = () => (
   <div className="flex min-h-screen items-center justify-center bg-background">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+    <div className="text-center px-6">
+      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+      <p className="text-muted-foreground text-sm">Loading Afrinnect…</p>
+    </div>
   </div>
 );
 

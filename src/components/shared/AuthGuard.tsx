@@ -138,9 +138,12 @@ export default function AuthGuard({
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <Loader2 className="animate-spin mx-auto mb-4 text-primary" size={40} />
-          <p className="text-muted-foreground text-sm">Loading...</p>
+        <div className="text-center px-6">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+            <Loader2 className="animate-spin text-primary" size={32} />
+          </div>
+          <h2 className="text-lg font-semibold text-foreground mb-1">Afrinnect</h2>
+          <p className="text-muted-foreground text-sm">Getting things ready…</p>
         </div>
       </div>
     );
@@ -149,9 +152,11 @@ export default function AuthGuard({
   if (!authenticated && requireAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <Loader2 className="animate-spin mx-auto mb-4 text-primary" size={40} />
-          <p className="text-muted-foreground text-sm">Redirecting...</p>
+        <div className="text-center px-6">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+            <Loader2 className="animate-spin text-primary" size={32} />
+          </div>
+          <p className="text-muted-foreground text-sm">Redirecting to sign in…</p>
         </div>
       </div>
     );
