@@ -323,22 +323,31 @@ export async function invokeLLM({ prompt, add_context_from_internet, response_js
 }
 
 export async function uploadFile(file: File, maxRetries = 2) {
+  // Storage RLS requires path = `<auth.uid()>/<filename>`
+  const { data: { user } } = await db.auth.getUser();
+  if (!user) throw new Error('You must be signed in to upload photos.');
+
   const baseName = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-  const mainName = `${baseName}.jpg`;
+  const mainPath = `${user.id}/${baseName}.jpg`;
 
   // Upload with retry logic
   let lastError: any;
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    const { error } = await db.storage.from('photos').upload(mainName, file);
+    const { error } = await db.storage
+      .from('photos')
+      .upload(mainPath, file, { contentType: 'image/jpeg', upsert: false });
     if (!error) {
-      const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(mainName);
+      const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(mainPath);
 
       // Generate and upload thumbnail in background (non-blocking)
       try {
         const { compressImage } = await import('@/components/shared/ImageCompressor');
         const thumbnail = await compressImage(file, 200, 0.6);
-        const thumbName = `thumb_${baseName}.jpg`;
-        await db.storage.from('photos').upload(thumbName, thumbnail).catch(() => {});
+        const thumbPath = `${user.id}/thumb_${baseName}.jpg`;
+        await db.storage
+          .from('photos')
+          .upload(thumbPath, thumbnail, { contentType: 'image/jpeg', upsert: false })
+          .catch(() => {});
       } catch {
         // Thumbnail generation is optional
       }

@@ -135,11 +135,19 @@ export default function Onboarding() {
   };
 
   const handlePhotoUpload = async (e) => {
-    const file = e.target.files?.[0];
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0];
+    // Always reset so the same file can be re-selected after an error
+    input.value = '';
     if (!file) return;
 
+    if (!file.type.startsWith('image/')) {
+      toast({ title: 'Please choose a photo (JPG, PNG, or WebP).', variant: 'destructive' });
+      return;
+    }
+
     if (file.size > 15 * 1024 * 1024) {
-      toast({ title: t('errors.photoSize'), variant: 'destructive' });
+      toast({ title: t('errors.photoSize') || 'Photo must be under 15MB.', variant: 'destructive' });
       return;
     }
 
@@ -162,13 +170,20 @@ export default function Onboarding() {
       const { compressImage } = await import('@/components/shared/ImageCompressor');
       const compressed = await compressImage(file, 1080, 0.85);
       const { file_url } = await uploadFile(compressed);
-      updateField('photos', [...formData.photos, file_url]);
-      if (!formData.primary_photo) {
-        updateField('primary_photo', file_url);
-      }
-    } catch (error) {
+      const newPhotos = [...formData.photos, file_url];
+      setFormData(prev => ({
+        ...prev,
+        photos: newPhotos,
+        primary_photo: prev.primary_photo || file_url,
+      }));
+    } catch (error: any) {
       console.error('Upload failed:', error);
-      toast({ title: t('errors.uploadFailed'), variant: 'destructive' });
+      const detail = error?.message || error?.error || '';
+      toast({
+        title: 'Photo upload failed',
+        description: detail ? String(detail).slice(0, 140) : 'Please check your connection and try again.',
+        variant: 'destructive',
+      });
     } finally {
       setIsUploading(false);
     }
@@ -194,12 +209,12 @@ export default function Onboarding() {
         device_name: navigator.userAgent.substring(0, 50)
       });
 
-      if (response.data.error) throw new Error(response.data.error);
-      
+      if (response?.error) throw new Error(response.error);
+      const profile = response?.profile;
+      if (!profile) throw new Error('Profile creation returned no data. Please try again.');
+
       // Clear saved progress on success
       localStorage.removeItem('onboarding_data');
-      
-      const profile = response.data.profile;
 
       // Request push notification permission immediately
       try {
