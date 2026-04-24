@@ -5,8 +5,9 @@ import { supabase } from '@/integrations/supabase/client';
  * Hook that checks if the current user needs photo verification.
  * 
  * Rules:
- * - After 3 matches, if user is NOT photo-verified, they are gated.
- * - Gated users cannot like, swipe, or send messages.
+ * - Admins and moderators are NEVER gated.
+ * - Already photo-verified users are never gated.
+ * - After 3 matches, unverified users are gated.
  */
 export function useVerificationGate(userProfile: any) {
   const [isGated, setIsGated] = useState(false);
@@ -28,6 +29,22 @@ export function useVerificationGate(userProfile: any) {
 
     const checkGate = async () => {
       try {
+        // Admins/moderators are exempt from verification gating
+        if (userProfile.user_id) {
+          const { data: roles } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', userProfile.user_id);
+          const isPrivileged = (roles || []).some(
+            (r: any) => r.role === 'admin' || r.role === 'moderator'
+          );
+          if (isPrivileged) {
+            setIsGated(false);
+            setLoading(false);
+            return;
+          }
+        }
+
         // Count user's total matches (both sides)
         const [{ count: c1 }, { count: c2 }] = await Promise.all([
           supabase.from('matches').select('*', { count: 'exact', head: true })
@@ -48,7 +65,7 @@ export function useVerificationGate(userProfile: any) {
     };
 
     checkGate();
-  }, [userProfile?.id, userProfile?.is_photo_verified]);
+  }, [userProfile?.id, userProfile?.user_id, userProfile?.is_photo_verified]);
 
   return { isGated, matchCount, loading };
 }
